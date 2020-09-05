@@ -7,7 +7,7 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 150.0, horizontal: 25.0),
+        margin: EdgeInsets.symmetric(vertical: 120.0, horizontal: 25.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[

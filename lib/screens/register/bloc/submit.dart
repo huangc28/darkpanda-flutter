@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'submit_result.dart';
+import '../apis.dart' as apis;
 
 class RegisterEvent {
   String username;
@@ -36,17 +37,22 @@ class SubmitBloc {
     print(
         'DEBUG 1 register form ${evt.username} ${evt.gender} ${evt.referalCode}');
 
-    Map<String, dynamic> mockedResponse = {
-      'status': 200,
-    };
+    // Emit different event based on different status code
+    final resp = await apis.createNewUser(
+      username: evt.username,
+      gender: evt.gender,
+      referalCode: evt.referalCode,
+    );
 
-    final resp = await Future.delayed(Duration(seconds: 2)).then((v) {
-      print('DEBUG 4');
+    print('DEBUG 8 ${resp.body}');
 
-      return mockedResponse;
-    });
+    if (resp.statusCode != 200) {
+      _responseBloc.registerFailedSink.add(RegisterFailedEvent(
+        error: 'failed to create user',
+      ));
 
-    print('DEBUG 5 $resp');
+      return;
+    }
 
     _responseBloc.submitResultSink.add(resp);
   }
