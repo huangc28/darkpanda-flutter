@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/submit.dart';
+import './models/models.dart' as models;
+import 'bloc/register_bloc.dart';
 
 enum Gender {
   male,
@@ -8,26 +10,34 @@ enum Gender {
 }
 
 class RegisterForm extends StatefulWidget {
+  final Function onRegister;
+
+  RegisterForm({this.onRegister});
+
   @override
-  _RegisterFormState createState() => _RegisterFormState();
+  _RegisterFormState createState() => _RegisterFormState(
+        onRegister: onRegister,
+      );
 }
 
 // @TODO
 //   - field validation [ok]
 //   - store field value in state widget [ok]
-//   - emit form data to API.
+//   - emit form data to API [ok]
+//   - display error message from backend if API gives failed response [ok]
+//   - add loading icon when submitting register form
+//   - remove error message when submitting register form
 class _RegisterFormState extends State<RegisterForm> {
-  String _username = '';
-  String _gender = Gender.female.toString();
-  String _referalCode = '';
-
   var _genderLabelMap = {
     Gender.female.toString(): 'female',
     Gender.male.toString(): 'male',
   };
 
+  final Function onRegister;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _bloc = SubmitBloc();
+  final models.RegisterForm _registerFromModel = models.RegisterForm();
+
+  _RegisterFormState({this.onRegister});
 
   Widget _buildUsername() {
     return TextFormField(
@@ -38,8 +48,7 @@ class _RegisterFormState extends State<RegisterForm> {
         }
       },
       onSaved: (String value) {
-        print('trigger onsave username $value');
-        _username = value;
+        _registerFromModel.username = value;
       },
     );
   }
@@ -57,7 +66,10 @@ class _RegisterFormState extends State<RegisterForm> {
               ))
           .toList(),
       onChanged: (String value) {
-        _gender = value;
+        _registerFromModel.gender = _genderLabelMap[Gender.female.toString()];
+      },
+      onSaved: (String value) {
+        _registerFromModel.gender = _genderLabelMap[Gender.female.toString()];
       },
     );
   }
@@ -71,8 +83,7 @@ class _RegisterFormState extends State<RegisterForm> {
         }
       },
       onSaved: (String value) {
-        print('trigger onsave referal code $value');
-        _referalCode = value;
+        _registerFromModel.referalCode = value;
       },
     );
   }
@@ -87,7 +98,23 @@ class _RegisterFormState extends State<RegisterForm> {
           _buildUsername(),
           _buildGender(),
           _buildReferalCode(),
-          SizedBox(height: 50.0),
+          SizedBox(height: 25.0),
+          BlocConsumer<RegisterBloc, RegisterState>(
+            builder: (context, state) {
+              print('DEBUG 8 BlocConsumer $state');
+
+              String message =
+                  (state is RegisterFailed) && state.message != null
+                      ? state.message
+                      : '';
+
+              return Container(
+                child: Text(message),
+              );
+            },
+            listener: (context, state) {},
+          ),
+          SizedBox(height: 25.0),
           RaisedButton(
               child: Text(
                 'Submit',
@@ -100,12 +127,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                 _formKey.currentState.save();
 
-                print('DEBUG $_username $_gender $_referalCode');
-                _bloc.registerSink.add(RegisterEvent(
-                  username: _username,
-                  gender: _gender,
-                  referalCode: _referalCode,
-                ));
+                onRegister(_registerFromModel);
               })
         ],
       ),

@@ -1,8 +1,20 @@
+import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'register_form.dart';
+import './register_form.dart';
+import './models/models.dart' as models;
+import './bloc/register_bloc.dart' as registerBloc;
 
 class Register extends StatelessWidget {
+  void _handleRegister(BuildContext context, models.RegisterForm form) {
+    BlocProvider.of<RegisterBloc>(context).add(registerBloc.Register(
+      username: form.username,
+      gender: form.gender,
+      referalcode: form.referalCode,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +24,9 @@ class Register extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Center(
-              child: RegisterForm(),
+              child: RegisterForm(
+                  onRegister: (models.RegisterForm form) =>
+                      _handleRegister(context, form)),
             ),
           ],
         ),
