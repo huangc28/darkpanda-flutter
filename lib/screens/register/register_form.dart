@@ -9,6 +9,14 @@ enum Gender {
   female,
 }
 
+// @TODO
+//   - field validation [ok]
+//   - store field value in state widget [ok]
+//   - emit form data to API [ok]
+//   - display error message from backend if API gives failed response [ok]
+//   - add loading icon when submitting register form [ok]
+//   - remove error message when submitting register form [ok]
+//   - store newly created user in state.
 class RegisterForm extends StatefulWidget {
   final Function onRegister;
 
@@ -20,13 +28,6 @@ class RegisterForm extends StatefulWidget {
       );
 }
 
-// @TODO
-//   - field validation [ok]
-//   - store field value in state widget [ok]
-//   - emit form data to API [ok]
-//   - display error message from backend if API gives failed response [ok]
-//   - add loading icon when submitting register form
-//   - remove error message when submitting register form
 class _RegisterFormState extends State<RegisterForm> {
   var _genderLabelMap = {
     Gender.female.toString(): 'female',
@@ -99,9 +100,13 @@ class _RegisterFormState extends State<RegisterForm> {
           _buildGender(),
           _buildReferalCode(),
           SizedBox(height: 25.0),
-          BlocConsumer<RegisterBloc, RegisterState>(
+          BlocBuilder<RegisterBloc, RegisterState>(
             builder: (context, state) {
-              print('DEBUG 8 BlocConsumer $state');
+              if (state is Registering) {
+                return CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[200]),
+                );
+              }
 
               String message =
                   (state is RegisterFailed) && state.message != null
@@ -112,7 +117,6 @@ class _RegisterFormState extends State<RegisterForm> {
                 child: Text(message),
               );
             },
-            listener: (context, state) {},
           ),
           SizedBox(height: 25.0),
           RaisedButton(

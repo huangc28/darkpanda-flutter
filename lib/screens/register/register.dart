@@ -6,6 +6,8 @@ import './register_form.dart';
 import './models/models.dart' as models;
 import './bloc/register_bloc.dart' as registerBloc;
 
+// TODO:
+//   - Proceed to phone verify page
 class Register extends StatelessWidget {
   void _handleRegister(BuildContext context, models.RegisterForm form) {
     BlocProvider.of<RegisterBloc>(context).add(registerBloc.Register(
@@ -18,17 +20,27 @@ class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 120.0, horizontal: 25.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Center(
-              child: RegisterForm(
-                  onRegister: (models.RegisterForm form) =>
-                      _handleRegister(context, form)),
-            ),
-          ],
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 120.0, horizontal: 25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Center(
+                  child: BlocListener<RegisterBloc, RegisterState>(
+                listener: (BuildContext context, state) {
+                  if (state is Registered) {
+                    // navigate to phone verify page.
+                    print('Navigating to /register/verify-phone ...');
+                    Navigator.pushNamed(context, '/register/verify-phone');
+                  }
+                },
+                child: RegisterForm(
+                    onRegister: (models.RegisterForm form) =>
+                        _handleRegister(context, form)),
+              )),
+            ],
+          ),
         ),
       ),
     );

@@ -22,8 +22,25 @@ class RegisterFailed extends RegisterState {
   const RegisterFailed({this.message, this.code});
 }
 
-// class Registered extends RegisterState {
-//   Register _register;
+ class Registered extends RegisterState {
+	final String username;
+	final bool phoneVerified;
+	final String gender;
+	final String uuid;
 
-//   Registered(this._register) : super();
-// }
+	Registered({
+		this.username,
+		this.phoneVerified,
+		this.gender,
+		this.uuid,
+	});
+
+	static Registered fromJson(Map<String, dynamic> data) {
+		return Registered(
+			username: data['username'],
+			phoneVerified: data['phone_verified'],
+			gender: data['gender'],
+			uuid: data['uuid'],
+		);
+	}
+ }

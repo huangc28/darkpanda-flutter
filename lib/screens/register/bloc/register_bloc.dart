@@ -35,11 +35,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           throw (resp.body);
         }
 
-        print('DEBUG register bloc ${resp.statusCode}, ${resp.body}');
+        yield Registered.fromJson(json.decode(resp.body));
       } catch (e) {
         // transform error message to models. emit the error to bloc event
-        // yield RegisterFailed
         var pe = Error.fromJson(json.decode(e.toString()));
+
+        print('DEBUG pe ${pe.code} ${pe.message}');
 
         yield RegisterFailed(
           message: pe.message,
