@@ -5,26 +5,31 @@ import 'package:darkpanda_flutter/screens/register/repository.dart';
 
 import './screens/login/login.dart';
 import './screens/register/register.dart' as RegisterScreen;
-import './screens/register/screens/phone_verify.dart';
+import './screens/register/screens/phone_verify/phone_verify.dart';
+import './screens/register/screens/data_provider.dart';
+
+import './screens/register/screens/bloc/mobile_verify_bloc.dart';
 
 void main() => runApp(DarkPandaApp());
 
 class DarkPandaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/register/verify-phone',
-      routes: {
-        '/login': (context) => Login(),
-        '/register': (context) => BlocProvider(
-              create: (context) => RegisterBloc(RegisterRepository()),
-              child: RegisterScreen.Register(),
-            ),
-        '/register/verify-phone': (context) => RegisterPhoneVerify(),
-
-        // The following routes are example flutter code.
-        // '/bloc-example': (context) => MainScreen(),
-      },
-    );
+    return BlocProvider(
+        create: (context) => RegisterBloc(RegisterRepository()),
+        child: MaterialApp(
+          initialRoute: '/register',
+          routes: {
+            '/login': (context) => Login(),
+            '/register': (context) => RegisterScreen.Register(),
+            '/register/verify-phone': (context) => BlocProvider(
+                  create: (context) => MobileVerifyBloc(
+											dataProvider : PhoneVerifyDataProvider(),
+									),
+                  child: RegisterPhoneVerify(),
+                ),
+          },
+        ));
   }
 }
+// (context) => RegisterPhoneVerify()

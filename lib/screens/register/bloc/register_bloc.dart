@@ -8,13 +8,15 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/screens/register/repository.dart';
 import 'package:darkpanda_flutter/models/error.dart';
 
+import '../models/registered_user.dart';
+
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterRepository _registerRepository;
 
-  RegisterBloc(this._registerRepository) : super(RegisterInitial());
+  RegisterBloc(this._registerRepository) : super(RegisterState.unknown());
 
   @override
   Stream<RegisterState> mapEventToState(
@@ -22,7 +24,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) async* {
     if (event is Register) {
       try {
-        yield Registering();
+        yield RegisterState.registering();
 
         final resp = await _registerRepository.createNewUser(
           username: event.username,
@@ -34,18 +36,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         if (resp.statusCode != HttpStatus.ok) {
           throw (resp.body);
         }
-
-        yield Registered.fromJson(json.decode(resp.body));
+        yield RegisterState.registered(
+            RegisteredUser.fromJson(json.decode(resp.body)));
       } catch (e) {
         // transform error message to models. emit the error to bloc event
         var pe = Error.fromJson(json.decode(e.toString()));
 
         print('DEBUG pe ${pe.code} ${pe.message}');
 
-        yield RegisterFailed(
-          message: pe.message,
-          code: pe.code,
-        );
+        yield RegisterState.registerFailed(pe);
       }
     }
   }

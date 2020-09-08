@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 
-import './models/models.dart' as models;
+import '../models/models.dart' as models;
 
+// @TODOs
+//   - Instruct backend to send verify code via SMS.
+//   - Mobile number value validation.
+//   - Provide a `onVerify` hook from parent widget.
 class PhoneVerifyForm extends StatefulWidget {
+  final Function onVerify;
+  PhoneVerifyForm({@required this.onVerify});
+
   @override
-  _PhoneVerifyFormState createState() => _PhoneVerifyFormState();
+  _PhoneVerifyFormState createState() => _PhoneVerifyFormState(
+        onVerify: onVerify,
+      );
 }
 
 class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
+  final Function onVerify;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  /// @TODO Retrieve list of country code from backend.
   final List<String> _countryCodes = ['+886'];
   final models.PhoneVerifyFormModel _formModel = models.PhoneVerifyFormModel();
+
+  _PhoneVerifyFormState({@required this.onVerify});
 
   @override
   initState() {
@@ -47,6 +61,9 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
           flex: 2,
           child: TextFormField(
             decoration: InputDecoration(hintText: 'mobile number'),
+            onSaved: (value) {
+              _formModel.mobileNumber = value;
+            },
           ),
         ),
       ],
@@ -64,6 +81,24 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
             'Phone number',
           ),
           _buildPhoneFormField(),
+          SizedBox(height: 25.0),
+          RaisedButton(
+            child: Text(
+              'Submit',
+              style: TextStyle(color: Colors.blue, fontSize: 16),
+            ),
+            onPressed: () {
+              print('DEBUG trigger on press 1');
+              if (!_formKey.currentState.validate()) {
+                return;
+              }
+
+              _formKey.currentState.save();
+
+              print('DEBUG trigger on press 2');
+              onVerify(_formModel);
+            },
+          )
         ],
       ),
     );

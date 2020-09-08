@@ -29,10 +29,13 @@ class Register extends StatelessWidget {
               Center(
                   child: BlocListener<RegisterBloc, RegisterState>(
                 listener: (BuildContext context, state) {
-                  if (state is Registered) {
+                  if (state.status == RegisterStatus.registered) {
                     // navigate to phone verify page.
                     print('Navigating to /register/verify-phone ...');
-                    Navigator.pushNamed(context, '/register/verify-phone');
+                    Navigator.pushNamed(
+                      context,
+                      '/register/verify-phone',
+                    );
                   }
                 },
                 child: RegisterForm(

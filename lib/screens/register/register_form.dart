@@ -102,15 +102,16 @@ class _RegisterFormState extends State<RegisterForm> {
           SizedBox(height: 25.0),
           BlocBuilder<RegisterBloc, RegisterState>(
             builder: (context, state) {
-              if (state is Registering) {
+              if (state.status == RegisterStatus.registering) {
                 return CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[200]),
                 );
               }
 
               String message =
-                  (state is RegisterFailed) && state.message != null
-                      ? state.message
+                  (state.status == RegisterStatus.registerFailed) &&
+                          state.error.message != null
+                      ? state.error.message
                       : '';
 
               return Container(
