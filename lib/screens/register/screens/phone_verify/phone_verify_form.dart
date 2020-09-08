@@ -71,6 +71,11 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
   }
 
   @override
+  Widget _buildVerifyCodeInput() {
+    return Text('testing');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -82,20 +87,20 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
           ),
           _buildPhoneFormField(),
           SizedBox(height: 25.0),
+          _buildVerifyCodeInput(),
+          SizedBox(height: 25.0),
           RaisedButton(
             child: Text(
-              'Submit',
+              'Send',
               style: TextStyle(color: Colors.blue, fontSize: 16),
             ),
             onPressed: () {
-              print('DEBUG trigger on press 1');
               if (!_formKey.currentState.validate()) {
                 return;
               }
 
               _formKey.currentState.save();
 
-              print('DEBUG trigger on press 2');
               onVerify(_formModel);
             },
           )

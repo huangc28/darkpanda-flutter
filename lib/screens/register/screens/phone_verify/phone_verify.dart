@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'phone_verify_form.dart';
-import '../bloc/mobile_verify_bloc.dart';
+import '../bloc/send_sms_code_bloc.dart';
 import '../models/phone_verify_form.dart' as models;
 
 // @TODO:
 //   - Create a phone number form field [ok]
 //   - Create a verify code form field [ok]
+//   - Send verify code via SMS [ok]
+//   - Control the display of `Send`, `ReSend` && `Verify` button of verify form widget
+//     from here.
 class RegisterPhoneVerify extends StatelessWidget {
   /// New user uuid to send to the API alone with other request payload
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
-		print('DEBUG trigger _handleVerify');
-
-    BlocProvider.of<MobileVerifyBloc>(context).add(SendSMSCode(
+    BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
       countryCode: form.countryCode,
       mobileNumber: form.mobileNumber,
       uuid: form.uuid,
@@ -36,6 +37,7 @@ class RegisterPhoneVerify extends StatelessWidget {
               BlocBuilder<RegisterBloc, RegisterState>(
                   cubit: BlocProvider.of<RegisterBloc>(context),
                   builder: (context, state) {
+                    // if send sms success, display verify phone widget.
                     return PhoneVerifyForm(
                         onVerify: (models.PhoneVerifyFormModel form) {
                       form.uuid = state.user.uuid;

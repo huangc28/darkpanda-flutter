@@ -21,27 +21,27 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
   Stream<MobileVerifyState> mapEventToState(
     MobileVerifyEvent event,
   ) async* {
-    if (event is SendSMSCode) {
-      try {
-        yield MobileVerifyState.verifying();
+    // if (event is SendSMSCode) {
+    // try {
+    //     yield MobileVerifyState.verifying();
 
-        print('DEBUG 998');
+    //     print('DEBUG 998');
 
-        final resp = await dataProvider.verifyPhone(
-          countryCode: event.countryCode,
-          mobileNumber: event.mobileNumber,
-          uuid: event.uuid,
-        );
+    //     final resp = await dataProvider.verifyPhone(
+    //       countryCode: event.countryCode,
+    //       mobileNumber: event.mobileNumber,
+    //       uuid: event.uuid,
+    //     );
 
-        print('DEBUG 999 ${resp.body}');
+    //     print('DEBUG 999 ${resp.body}');
 
-        if (resp.statusCode != HttpStatus.ok) {}
+    //     if (resp.statusCode != HttpStatus.ok) {}
 
-        //print('DEBUG 87 ${event.countryCode} ${event.uuid}');
-        // print('DEBUG 87 gg ${resp.body}');
-      } catch (e) {
-        print('DEBUG ${e.toString()}');
-      }
-    }
+    //     //print('DEBUG 87 ${event.countryCode} ${event.uuid}');
+    //     // print('DEBUG 87 gg ${resp.body}');
+    //   } catch (e) {
+    //     print('DEBUG ${e.toString()}');
+    //   }
+    // }
   }
 }

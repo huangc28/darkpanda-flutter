@@ -8,7 +8,8 @@ import './screens/register/register.dart' as RegisterScreen;
 import './screens/register/screens/phone_verify/phone_verify.dart';
 import './screens/register/screens/data_provider.dart';
 
-import './screens/register/screens/bloc/mobile_verify_bloc.dart';
+// import './screens/register/screens/bloc/mobile_verify_bloc.dart';
+import './screens/register/screens/bloc/send_sms_code_bloc.dart';
 
 void main() => runApp(DarkPandaApp());
 
@@ -23,9 +24,9 @@ class DarkPandaApp extends StatelessWidget {
             '/login': (context) => Login(),
             '/register': (context) => RegisterScreen.Register(),
             '/register/verify-phone': (context) => BlocProvider(
-                  create: (context) => MobileVerifyBloc(
-											dataProvider : PhoneVerifyDataProvider(),
-									),
+                  create: (context) => SendSmsCodeBloc(
+                    dataProvider: PhoneVerifyDataProvider(),
+                  ),
                   child: RegisterPhoneVerify(),
                 ),
           },

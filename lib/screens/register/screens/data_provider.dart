@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
 class PhoneVerifyDataProvider {
-  Future<http.Response> verifyPhone({
+  Future<http.Response> sendVerifyCode({
     String countryCode,
     String mobileNumber,
     String uuid,

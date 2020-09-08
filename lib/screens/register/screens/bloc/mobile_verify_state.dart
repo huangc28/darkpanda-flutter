@@ -32,14 +32,3 @@ class MobileVerifyState extends Equatable {
   @override
   List<Object> get props => [];
 }
-
-// class MobileVerifyInitial extends MobileVerifyState {}
-
-// class MobileVerifying extends MobileVerifyState {}
-
-// class MobileVerifyFailed extends MobileVerifyState {
-//   final Error error;
-//   MobileVerifyFailed({this.error});
-// }
-
-// class MobileVerified extends MobileVerifyState
