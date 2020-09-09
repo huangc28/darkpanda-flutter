@@ -1,8 +1,7 @@
-//  {"uuid":"_mKjSQDGg","verify_prefix":"JWB","verify_suffix":1332}
 class SendSMS {
   final String uuid;
   final String verifyPrefix;
-  final String verifySuffix;
+  final int verifySuffix;
 
   SendSMS({
     this.uuid,

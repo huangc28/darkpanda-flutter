@@ -37,11 +37,12 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
           throw (resp.body);
         }
 
-        //  {"uuid":"_mKjSQDGg","verify_prefix":"JWB","verify_suffix":1332}
         // convert response to model
         yield SendSmsCodeState.sendSuccess(
           models.SendSMS.fromJson(json.decode(resp.body)),
         );
+
+        print('DEBUG 1000');
       } catch (e) {
         var pe = Error.fromJson(json.decode(e.toString()));
 
