@@ -6,7 +6,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/screens/register/repository.dart';
-import 'package:darkpanda_flutter/models/error.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import '../models/registered_user.dart';
