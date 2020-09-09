@@ -19,12 +19,14 @@ class VerifyCodeObject {
 //   - Mobile number value validation.
 //   - Provide a `onVerify` hook from parent widget.
 class PhoneVerifyForm<Error extends Exception> extends StatefulWidget {
+  final Function onSendSMS;
   final Function onVerify;
   final bool hasSendSMS;
   final VerifyCodeObject verifyCodeObj;
   final Error verifyCodeError;
 
   const PhoneVerifyForm({
+    @required this.onSendSMS,
     @required this.onVerify,
     this.hasSendSMS: false,
     this.verifyCodeObj,
@@ -199,7 +201,9 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
         ),
         SizedBox(width: 20.0),
         Container(
-          child: Text(verifyCodeError.message),
+          child: verifyCodeError != null
+              ? Text(verifyCodeError.message)
+              : Text(''),
         ),
         RaisedButton(
           child: Text(
