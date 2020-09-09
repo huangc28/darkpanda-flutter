@@ -7,9 +7,9 @@ enum RegisterStatus {
   registered,
 }
 
-class RegisterState extends Equatable {
+class RegisterState<E extends AppBaseException> extends Equatable {
   final RegisterStatus status;
-  final Error error;
+  final E error;
   final RegisteredUser user;
 
   const RegisterState._({
@@ -29,7 +29,7 @@ class RegisterState extends Equatable {
           status: RegisterStatus.registering,
         );
 
-  const RegisterState.registerFailed(Error err)
+  const RegisterState.registerFailed(E err)
       : this._(
           status: RegisterStatus.registerFailed,
           error: err,
@@ -44,30 +44,3 @@ class RegisterState extends Equatable {
   @override
   List<Object> get props => [status, user];
 }
-
-// abstract class RegisterState extends Equatable {
-//   const RegisterState();
-//
-//   @override
-//   List<Object> get props => [];
-// }
-//
-// class RegisterInitial extends RegisterState {
-//   const RegisterInitial();
-// }
-//
-// class Registering extends RegisterState {
-//   const Registering();
-// }
-//
-// class RegisterFailed extends RegisterState {
-//   final Error error;
-//
-//   const RegisterFailed({this.error});
-// }
-//
-// class Registered extends RegisterState {
-//   final RegisteredUser registeredUser;
-//
-//   Registered({this.registeredUser});
-// }

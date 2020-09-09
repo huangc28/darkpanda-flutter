@@ -30,5 +30,5 @@ class MobileVerifyState extends Equatable {
       : this._(status: MobileVerifyStatus.verifyFailed);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [status, error];
 }

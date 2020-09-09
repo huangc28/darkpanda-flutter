@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:darkpanda_flutter/models/error.dart';
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import '../data_provider.dart';
 import '../models/models.dart' as models;
@@ -31,22 +31,19 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
           uuid: event.uuid,
         );
 
-        print('DEBUG 999 ${resp.body}');
-
         if (resp.statusCode != HttpStatus.ok) {
-          throw (resp.body);
+          throw APIException.fromJson(json.decode(resp.body));
         }
 
         // convert response to model
         yield SendSmsCodeState.sendSuccess(
           models.SendSMS.fromJson(json.decode(resp.body)),
         );
-
-        print('DEBUG 1000');
+      } on APIException catch (e) {
+        SendSmsCodeState.sendFailed(e);
       } catch (e) {
-        var pe = Error.fromJson(json.decode(e.toString()));
-
-        yield SendSmsCodeState.sendFailed(pe);
+        yield SendSmsCodeState.sendFailed(
+            AppGeneralExeption(message: e.toString()));
       }
     }
   }

@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/screens/register/repository.dart';
 import 'package:darkpanda_flutter/models/error.dart';
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import '../models/registered_user.dart';
 
@@ -34,17 +35,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
         // if response status is not equal to 200, throw an exception.
         if (resp.statusCode != HttpStatus.ok) {
-          throw (resp.body);
+          throw APIException.fromJson(json.decode(resp.body));
         }
+
         yield RegisterState.registered(
             RegisteredUser.fromJson(json.decode(resp.body)));
+      } on APIException catch (e) {
+        yield RegisterState.registerFailed(e);
       } catch (e) {
-        // transform error message to models. emit the error to bloc event
-        var pe = Error.fromJson(json.decode(e.toString()));
-
-        print('DEBUG pe ${pe.code} ${pe.message}');
-
-        yield RegisterState.registerFailed(pe);
+        yield RegisterState.registerFailed(
+            new AppGeneralExeption(message: e.toString()));
       }
     }
   }

@@ -47,6 +47,8 @@ class _RegisterFormState extends State<RegisterForm> {
         if (value.isEmpty) {
           return 'Name is required';
         }
+
+        return null;
       },
       onSaved: (String value) {
         _registerFromModel.username = value;
@@ -82,6 +84,8 @@ class _RegisterFormState extends State<RegisterForm> {
         if (value.isEmpty) {
           return 'Referal code is required';
         }
+
+        return null;
       },
       onSaved: (String value) {
         _registerFromModel.referalCode = value;

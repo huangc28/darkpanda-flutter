@@ -1,6 +1,8 @@
-import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import 'phone_verify_form.dart';
 import '../bloc/send_sms_code_bloc.dart';
@@ -17,9 +19,14 @@ class RegisterPhoneVerify extends StatefulWidget {
   _RegisterPhoneVerifyState createState() => _RegisterPhoneVerifyState();
 }
 
-class _RegisterPhoneVerifyState extends State<RegisterPhoneVerify> {
+class _RegisterPhoneVerifyState<Error extends AppBaseException>
+    extends State<RegisterPhoneVerify> {
   bool _hasSendSMS = false;
   VerifyCodeObject _verifyCodeObj = VerifyCodeObject();
+
+  // Error object to pass to `phone_verify_form` for displaying error message
+  // when failed to verify mobile.
+  Error _verifyCodeError;
 
   /// New user uuid to send to the API alone with other request payload
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
@@ -53,19 +60,11 @@ class _RegisterPhoneVerifyState extends State<RegisterPhoneVerify> {
               builder: (context, registerState) => Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
-                        listenWhen: (prev, state) {
-                          print('DEBUG state ${state.status}');
-                          print('DEBUG state ${state.status}');
-
-                          return true;
-                        },
+                      BlocConsumer<SendSmsCodeBloc, SendSmsCodeState>(
                         listener: (context, state) {
                           // listen to SendSMS state. if sms has been send successfully for the first time,
                           // show the buttons to send verify code.
-                          print('DEBUG 1 ${state.status}');
                           if (state.status == SendSMSStatus.sendSuccess) {
-                            print('DEBUG 2 ${state.sendSMS.verifyPrefix}');
                             setState(() {
                               _setHasSendSMS(true);
                               _setVerifyCodeObject(
@@ -74,19 +73,25 @@ class _RegisterPhoneVerifyState extends State<RegisterPhoneVerify> {
                               );
                             });
                           }
+
+                          // if send SMS failed, we should display error message in PhoneVerifyForm.
+                          if (state.status == SendSMSStatus.sendFailed) {
+                            setState(() {
+                              _verifyCodeError = state.error;
+                            });
+                          }
                         },
-                        child: Container(
-                          width: 0,
-                          height: 0,
-                        ),
+                        builder: (context, state) {
+                          return PhoneVerifyForm(
+                              hasSendSMS: _hasSendSMS,
+                              verifyCodeObj: _verifyCodeObj,
+                              verifyCodeError: _verifyCodeError,
+                              onVerify: (models.PhoneVerifyFormModel form) {
+                                form.uuid = registerState.user.uuid;
+                                _handleVerify(context, form);
+                              });
+                        },
                       ),
-                      PhoneVerifyForm(
-                          hasSendSMS: _hasSendSMS,
-                          verifyCodeObj: _verifyCodeObj,
-                          onVerify: (models.PhoneVerifyFormModel form) {
-                            form.uuid = registerState.user.uuid;
-                            _handleVerify(context, form);
-                          }),
                     ],
                   )),
         ),

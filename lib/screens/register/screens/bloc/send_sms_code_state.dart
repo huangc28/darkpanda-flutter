@@ -7,8 +7,8 @@ enum SendSMSStatus {
   sendSuccess,
 }
 
-class SendSmsCodeState extends Equatable {
-  final Error error;
+class SendSmsCodeState<E extends AppBaseException> extends Equatable {
+  final E error;
   final models.SendSMS sendSMS;
   final SendSMSStatus status;
 
@@ -25,7 +25,7 @@ class SendSmsCodeState extends Equatable {
 
   const SendSmsCodeState.sending() : this._(status: SendSMSStatus.sending);
 
-  const SendSmsCodeState.sendFailed(Error error)
+  const SendSmsCodeState.sendFailed(E error)
       : this._(
           status: SendSMSStatus.sendFailed,
           error: error,

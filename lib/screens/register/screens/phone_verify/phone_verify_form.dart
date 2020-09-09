@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import '../models/models.dart' as models;
 
 /// Data object to store verify code prefix and verify code suffix.
 class VerifyCodeObject {
-  int suffix;
   String prefix;
+  int suffix;
 
   VerifyCodeObject({
     this.prefix: '',
@@ -17,16 +18,17 @@ class VerifyCodeObject {
 //   - Instruct backend to send verify code via SMS.
 //   - Mobile number value validation.
 //   - Provide a `onVerify` hook from parent widget.
-class PhoneVerifyForm extends StatefulWidget {
+class PhoneVerifyForm<Error extends Exception> extends StatefulWidget {
   final Function onVerify;
   final bool hasSendSMS;
-
   final VerifyCodeObject verifyCodeObj;
+  final Error verifyCodeError;
 
-  PhoneVerifyForm({
+  const PhoneVerifyForm({
     @required this.onVerify,
     this.hasSendSMS: false,
     this.verifyCodeObj,
+    this.verifyCodeError,
   });
 
   @override
@@ -36,7 +38,8 @@ class PhoneVerifyForm extends StatefulWidget {
       );
 }
 
-class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
+class _PhoneVerifyFormState<Error extends AppBaseException>
+    extends State<PhoneVerifyForm> {
   final Function onVerify;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -46,11 +49,13 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
 
   bool hasSendSMS;
   VerifyCodeObject verifyCodeObj;
+  Error verifyCodeError;
 
   _PhoneVerifyFormState({
     @required this.onVerify,
     this.hasSendSMS: false,
     this.verifyCodeObj,
+    this.verifyCodeError,
   });
 
   @override
@@ -64,6 +69,10 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
     if (old.hasSendSMS != widget.hasSendSMS) {
       hasSendSMS = widget.hasSendSMS;
       verifyCodeObj = widget.verifyCodeObj;
+    }
+
+    if (old.verifyCodeError != widget.verifyCodeError) {
+      verifyCodeError = widget.verifyCodeError;
     }
 
     super.didUpdateWidget(old);
@@ -98,6 +107,13 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
           flex: 2,
           child: TextFormField(
             decoration: InputDecoration(hintText: 'mobile number'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'mobile number can\'t be empty';
+              }
+
+              return null;
+            },
             onSaved: (value) {
               _formModel.mobileNumber = value;
             },
@@ -182,6 +198,9 @@ class _PhoneVerifyFormState extends State<PhoneVerifyForm> {
           },
         ),
         SizedBox(width: 20.0),
+        Container(
+          child: Text(verifyCodeError.message),
+        ),
         RaisedButton(
           child: Text(
             'Verify',
