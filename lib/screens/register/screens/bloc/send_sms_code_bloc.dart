@@ -23,6 +23,8 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
   ) async* {
     if (event is SendSMSCode) {
       try {
+        print('DEBUG trigger SendSmsCodeBloc');
+
         yield SendSmsCodeState.sending();
 
         final resp = await dataProvider.sendVerifyCode(
@@ -30,6 +32,8 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
           mobileNumber: event.mobileNumber,
           uuid: event.uuid,
         );
+
+        print('DEBUG trigger SendSmsCodeBloc ${resp.body}');
 
         if (resp.statusCode != HttpStatus.ok) {
           throw APIException.fromJson(json.decode(resp.body));
@@ -40,8 +44,10 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
           models.SendSMS.fromJson(json.decode(resp.body)),
         );
       } on APIException catch (e) {
+        print('DEBUG trigger 2 ${e.toString()}');
         SendSmsCodeState.sendFailed(e);
       } catch (e) {
+        print('DEBUG trigger 3 ${e.toString()}');
         yield SendSmsCodeState.sendFailed(
             AppGeneralExeption(message: e.toString()));
       }

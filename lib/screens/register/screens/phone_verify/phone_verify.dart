@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import 'phone_verify_form.dart';
 import '../bloc/send_sms_code_bloc.dart';
+import '../bloc/mobile_verify_bloc.dart';
 import '../models/phone_verify_form.dart' as models;
 
 // @TODO:
@@ -22,14 +23,40 @@ class RegisterPhoneVerify extends StatefulWidget {
 class _RegisterPhoneVerifyState<Error extends AppBaseException>
     extends State<RegisterPhoneVerify> {
   bool _hasSendSMS = false;
-  VerifyCodeObject _verifyCodeObj = VerifyCodeObject();
+
+  /// verify code prefix as of form {preffix-suffix}
+  String _verifyCodePrefix;
 
   // Error object to pass to `phone_verify_form` for displaying error message
   // when failed to verify mobile.
   Error _verifyCodeError;
 
-  /// New user uuid to send to the API alone with other request payload
+  /// Error object to pass to `phone_verify_form` for displaying error message
+  // when failed to send SMS code.
+  Error _sendSMSCodeError;
+
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
+    print('DEBUG trigger _handleVerify');
+    BlocProvider.of<MobileVerifyBloc>(context).add(VerifyMobile(
+      uuid: form.uuid,
+      prefix: form.prefix,
+      suffix: form.suffix,
+    ));
+  }
+
+  void _handleResendSMS(
+      BuildContext context, models.PhoneVerifyFormModel form) {
+    // trigger send SMS again
+    print('DEBUG trigger _handleResendSMS');
+    BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
+      countryCode: form.countryCode,
+      mobileNumber: form.mobileNumber,
+      uuid: form.uuid,
+    ));
+  }
+
+  /// Emit event to send SMS verify code.
+  void _handleSendSMS(BuildContext context, models.PhoneVerifyFormModel form) {
     BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
       countryCode: form.countryCode,
       mobileNumber: form.mobileNumber,
@@ -39,11 +66,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
 
   void _setHasSendSMS(bool show) {
     _hasSendSMS = show;
-  }
-
-  void _setVerifyCodeObject({String prefix, int suffix}) {
-    _verifyCodeObj.prefix = prefix;
-    _verifyCodeObj.suffix = suffix;
   }
 
   @override
@@ -60,40 +82,64 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
               builder: (context, registerState) => Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      BlocConsumer<SendSmsCodeBloc, SendSmsCodeState>(
-                        listener: (context, state) {
-                          // listen to SendSMS state. if sms has been send successfully for the first time,
-                          // show the buttons to send verify code.
-                          if (state.status == SendSMSStatus.sendSuccess) {
-                            setState(() {
-                              _setHasSendSMS(true);
-                              _setVerifyCodeObject(
-                                prefix: state.sendSMS.verifyPrefix,
-                                suffix: state.sendSMS.verifySuffix,
-                              );
-                            });
-                          }
+                      MultiBlocListener(
+                        listeners: [
+                          BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
+                            listener: (context, state) {
+                              // listen to SendSMS state. if sms has been send successfully for the first time,
+                              // show the buttons to send verify code.
+                              if (state.status == SendSMSStatus.sending) {
+                                setState(() {
+                                  _sendSMSCodeError = null;
+                                  _verifyCodeError = null;
+                                });
+                              }
 
-                          // if send SMS failed, we should display error message in PhoneVerifyForm.
-                          if (state.status == SendSMSStatus.sendFailed) {
-                            setState(() {
-                              _verifyCodeError = state.error;
-                            });
-                          }
-                        },
-                        builder: (context, state) {
-                          return PhoneVerifyForm(
-                              hasSendSMS: _hasSendSMS,
-                              verifyCodeObj: _verifyCodeObj,
-                              verifyCodeError: _verifyCodeError,
-                              onSendSMS: () {
-                                print('DEBUG onSendSMS');
-                              },
-                              onVerify: (models.PhoneVerifyFormModel form) {
-                                form.uuid = registerState.user.uuid;
-                                _handleVerify(context, form);
-                              });
-                        },
+                              if (state.status == SendSMSStatus.sendSuccess) {
+                                setState(() {
+                                  print(
+                                      'DEBUG 2 ${state.sendSMS.verifyPrefix}');
+                                  _setHasSendSMS(true);
+                                  _verifyCodePrefix =
+                                      state.sendSMS.verifyPrefix;
+                                });
+                              }
+
+                              // if send SMS failed, we should display error message in PhoneVerifyForm.
+                              if (state.status == SendSMSStatus.sendFailed) {
+                                setState(() {
+                                  _sendSMSCodeError = state.error;
+                                });
+                              }
+                            },
+                          ),
+                          BlocListener<MobileVerifyBloc, MobileVerifyState>(
+                            listener: (context, state) {
+                              if (state.status ==
+                                  MobileVerifyStatus.verifyFailed) {
+                                _verifyCodeError = state.error;
+                              }
+                            },
+                          )
+                        ],
+                        child: PhoneVerifyForm(
+                          hasSendSMS: _hasSendSMS,
+                          verifyCodePrefix: _verifyCodePrefix,
+                          verifyCodeError: _verifyCodeError,
+                          sendSMSError: _sendSMSCodeError,
+                          onSendSMS: (models.PhoneVerifyFormModel form) {
+                            form.uuid = registerState.user.uuid;
+                            _handleSendSMS(context, form);
+                          },
+                          onResendSMS: (models.PhoneVerifyFormModel form) {
+                            form.uuid = registerState.user.uuid;
+                            _handleResendSMS(context, form);
+                          },
+                          onVerify: (models.PhoneVerifyFormModel form) {
+                            form.uuid = registerState.user.uuid;
+                            _handleVerify(context, form);
+                          },
+                        ),
                       ),
                     ],
                   )),

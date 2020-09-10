@@ -6,58 +6,75 @@ import '../models/models.dart' as models;
 /// Data object to store verify code prefix and verify code suffix.
 class VerifyCodeObject {
   String prefix;
-  int suffix;
 
   VerifyCodeObject({
     this.prefix: '',
-    this.suffix,
   });
 }
 
 // @TODOs
-//   - Instruct backend to send verify code via SMS.
-//   - Mobile number value validation.
-//   - Provide a `onVerify` hook from parent widget.
-class PhoneVerifyForm<Error extends Exception> extends StatefulWidget {
+//   - Instruct backend to send verify code via SMS. [ok]
+//   - Mobile number value validation. [ok]
+//   - Provide a `onVerify` hook from parent widget. [ok]
+//   - Display verify code error. [ok]
+//   - Display send SMS error. [ok]
+//   - Implement resend button
+//   - Redirect user to appropriate index page according to gender
+class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
   final Function onSendSMS;
+  final Function onResendSMS;
   final Function onVerify;
   final bool hasSendSMS;
-  final VerifyCodeObject verifyCodeObj;
+  final String verifyCodePrefix;
   final Error verifyCodeError;
+  final Error sendSMSError;
 
   const PhoneVerifyForm({
     @required this.onSendSMS,
+    @required this.onResendSMS,
     @required this.onVerify,
     this.hasSendSMS: false,
-    this.verifyCodeObj,
+    this.verifyCodePrefix,
     this.verifyCodeError,
+    this.sendSMSError,
   });
 
   @override
   _PhoneVerifyFormState createState() => _PhoneVerifyFormState(
         onVerify: onVerify,
-        hasSendSMS: this.hasSendSMS,
+        onSendSMS: onSendSMS,
+        onResendSMS: onResendSMS,
+        hasSendSMS: hasSendSMS,
+        verifyCodeError: verifyCodeError,
+        sendSMSError: sendSMSError,
       );
 }
 
 class _PhoneVerifyFormState<Error extends AppBaseException>
     extends State<PhoneVerifyForm> {
   final Function onVerify;
+  final Function onSendSMS;
+  final Function onResendSMS;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _editController = TextEditingController();
 
   /// @TODO Retrieve list of country code from backend.
   final List<String> _countryCodes = ['+886'];
   final models.PhoneVerifyFormModel _formModel = models.PhoneVerifyFormModel();
 
+  String verifyCodePrefix;
   bool hasSendSMS;
-  VerifyCodeObject verifyCodeObj;
   Error verifyCodeError;
+  Error sendSMSError;
 
   _PhoneVerifyFormState({
     @required this.onVerify,
+    @required this.onSendSMS,
+    @required this.onResendSMS,
     this.hasSendSMS: false,
-    this.verifyCodeObj,
+    this.verifyCodePrefix,
     this.verifyCodeError,
+    this.sendSMSError,
   });
 
   @override
@@ -70,7 +87,11 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   didUpdateWidget(old) {
     if (old.hasSendSMS != widget.hasSendSMS) {
       hasSendSMS = widget.hasSendSMS;
-      verifyCodeObj = widget.verifyCodeObj;
+    }
+
+    if (verifyCodePrefix != widget.verifyCodePrefix) {
+      verifyCodePrefix = widget.verifyCodePrefix;
+      _editController.clear();
     }
 
     if (old.verifyCodeError != widget.verifyCodeError) {
@@ -126,20 +147,27 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   }
 
   Widget _buildSendSMSButtons() {
-    return RaisedButton(
-      child: Text(
-        'Send',
-        style: TextStyle(color: Colors.blue, fontSize: 16),
-      ),
-      onPressed: () {
-        if (!_formKey.currentState.validate()) {
-          return;
-        }
+    return Column(
+      children: [
+        Container(
+          child: sendSMSError != null ? Text(sendSMSError.message) : Text(''),
+        ),
+        RaisedButton(
+          child: Text(
+            'Send',
+            style: TextStyle(color: Colors.blue, fontSize: 16),
+          ),
+          onPressed: () {
+            if (!_formKey.currentState.validate()) {
+              return;
+            }
 
-        _formKey.currentState.save();
+            _formKey.currentState.save();
 
-        onVerify(_formModel);
-      },
+            onSendSMS(_formModel);
+          },
+        ),
+      ],
     );
   }
 
@@ -150,7 +178,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Text(verifyCodeObj.prefix),
+          child: Text(verifyCodePrefix ?? ''),
         ),
         Expanded(
           flex: 1,
@@ -159,6 +187,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
         Expanded(
           flex: 5,
           child: TextFormField(
+            controller: _editController,
             decoration: InputDecoration(hintText: 'verify code'),
             validator: (value) {
               if (value.isEmpty) {
@@ -174,7 +203,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
               return null;
             },
             onSaved: (value) {
-              _formModel.prefix = verifyCodeObj.prefix;
+              _formModel.prefix = verifyCodePrefix;
               _formModel.suffix = int.parse(value);
             },
           ),
@@ -184,46 +213,51 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   }
 
   Widget _buildVerifyCodeButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        RaisedButton(
-          child: Text(
-            'Resend',
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 16,
-            ),
-          ),
-          onPressed: () {
-            print('DEBUG trigger resend');
-          },
-        ),
-        SizedBox(width: 20.0),
+    return Column(
+      children: [
         Container(
           child: verifyCodeError != null
               ? Text(verifyCodeError.message)
               : Text(''),
         ),
-        RaisedButton(
-          child: Text(
-            'Verify',
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 16,
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              child: Text(
+                'Resend',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () {
+                onResendSMS(_formModel);
+              },
             ),
-          ),
-          onPressed: () {
-            if (!_formKey.currentState.validate()) {
-              return;
-            }
+            SizedBox(width: 20.0),
+            RaisedButton(
+              child: Text(
+                'Verify',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () {
+                if (!_formKey.currentState.validate()) {
+                  return;
+                }
 
-            _formKey.currentState.save();
+                _formKey.currentState.save();
 
-            // send verify code API
-            print('DEBUG form key after saved ${_formModel.suffix}');
-          },
-        )
+                // send verify code API
+                onVerify(_formModel);
+              },
+            )
+          ],
+        ),
       ],
     );
   }

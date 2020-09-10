@@ -7,13 +7,15 @@ enum MobileVerifyStatus {
   verified,
 }
 
-class MobileVerifyState extends Equatable {
+class MobileVerifyState<Error extends AppBaseException> extends Equatable {
   final MobileVerifyStatus status;
   final Error error;
+  final String authToken;
 
   const MobileVerifyState._({
     this.status: MobileVerifyStatus.unknown,
     this.error,
+    this.authToken,
   });
 
   const MobileVerifyState.unknown()
@@ -26,8 +28,16 @@ class MobileVerifyState extends Equatable {
           status: MobileVerifyStatus.verifying,
         );
 
-  const MobileVerifyState.verifyFailed()
-      : this._(status: MobileVerifyStatus.verifyFailed);
+  const MobileVerifyState.verifyFailed(Error error)
+      : this._(
+          status: MobileVerifyStatus.verifyFailed,
+          error: error,
+        );
+
+  const MobileVerifyState.verifiedSuccess(String authToken)
+      : this._(
+          authToken: authToken,
+        );
 
   @override
   List<Object> get props => [status, error];

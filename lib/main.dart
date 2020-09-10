@@ -8,7 +8,8 @@ import './screens/register/register.dart' as RegisterScreen;
 import './screens/register/screens/phone_verify/phone_verify.dart';
 import './screens/register/screens/data_provider.dart';
 
-// import './screens/register/screens/bloc/mobile_verify_bloc.dart';
+import './screens/bloc/auth_user_bloc.dart';
+import './screens/register/screens/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/bloc/send_sms_code_bloc.dart';
 
 void main() => runApp(DarkPandaApp());
@@ -16,21 +17,33 @@ void main() => runApp(DarkPandaApp());
 class DarkPandaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => RegisterBloc(RegisterRepository()),
-        child: MaterialApp(
-          initialRoute: '/register',
-          routes: {
-            '/login': (context) => Login(),
-            '/register': (context) => RegisterScreen.Register(),
-            '/register/verify-phone': (context) => BlocProvider(
-                  create: (context) => SendSmsCodeBloc(
-                    dataProvider: PhoneVerifyDataProvider(),
-                  ),
-                  child: RegisterPhoneVerify(),
-                ),
-          },
-        ));
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => RegisterBloc(RegisterRepository())),
+        BlocProvider(create: (context) => AuthUserBloc()),
+      ],
+      child: MaterialApp(
+        initialRoute: '/register',
+        routes: {
+          '/login': (context) => Login(),
+          '/register': (context) => RegisterScreen.Register(),
+          '/register/verify-phone': (context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                      create: (context) => SendSmsCodeBloc(
+                            dataProvider: PhoneVerifyDataProvider(),
+                          )),
+                  BlocProvider(
+                      create: (context) => MobileVerifyBloc(
+                            dataProvider: PhoneVerifyDataProvider(),
+                            authUserBloc:
+                                BlocProvider.of<AuthUserBloc>(context),
+                          )),
+                ],
+                child: RegisterPhoneVerify(),
+              ),
+        },
+      ),
+    );
   }
 }
-// (context) => RegisterPhoneVerify()

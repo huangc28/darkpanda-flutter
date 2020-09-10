@@ -7,14 +7,14 @@ abstract class MobileVerifyEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SendSMSCode extends MobileVerifyEvent {
-  final String countryCode;
-  final String mobileNumber;
+class VerifyMobile extends MobileVerifyEvent {
+  final String prefix;
+  final int suffix;
   final String uuid;
 
-  SendSMSCode({
-    this.countryCode,
-    this.mobileNumber,
+  VerifyMobile({
+    this.prefix,
+    this.suffix,
     this.uuid,
   });
 }

@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/screens/bloc/auth_user_bloc.dart';
 
 import '../data_provider.dart';
 
@@ -10,36 +15,49 @@ part 'mobile_verify_state.dart';
 
 class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
   final PhoneVerifyDataProvider dataProvider;
+  final AuthUserBloc authUserBloc;
 
-  MobileVerifyBloc({this.dataProvider})
+  MobileVerifyBloc({this.dataProvider, this.authUserBloc})
       : assert(dataProvider != null),
+        assert(authUserBloc != null),
         super(MobileVerifyState.unknown());
 
   @override
   Stream<MobileVerifyState> mapEventToState(
     MobileVerifyEvent event,
   ) async* {
-    // if (event is SendSMSCode) {
-    // try {
-    //     yield MobileVerifyState.verifying();
+    if (event is VerifyMobile) {
+      try {
+        // toggles loading
+        yield MobileVerifyState.verifying();
 
-    //     print('DEBUG 998');
+        final verifyCode = '${event.prefix}-${event.suffix}';
 
-    //     final resp = await dataProvider.verifyPhone(
-    //       countryCode: event.countryCode,
-    //       mobileNumber: event.mobileNumber,
-    //       uuid: event.uuid,
-    //     );
+        // send request
+        final resp = await dataProvider.verifyMobile(
+          uuid: event.uuid,
+          verifyCode: verifyCode,
+        );
 
-    //     print('DEBUG 999 ${resp.body}');
+        if (resp.statusCode != HttpStatus.ok) {
+          throw APIException.fromJson(json.decode(resp.body));
+        }
 
-    //     if (resp.statusCode != HttpStatus.ok) {}
+        final parsed = json.decode(resp.body);
 
-    //     //print('DEBUG 87 ${event.countryCode} ${event.uuid}');
-    //     // print('DEBUG 87 gg ${resp.body}');
-    //   } catch (e) {
-    //     print('DEBUG ${e.toString()}');
-    //   }
-    // }
+        // store auth user jwt
+        authUserBloc.add(PatchJwt(jwt: parsed['jwt']));
+
+        yield MobileVerifyState.verifiedSuccess(parsed['jwt']);
+      } on APIException catch (e) {
+        print('DEBUG 2 ${e.message}');
+        yield MobileVerifyState.verifyFailed(e);
+      } catch (e) {
+        print('DEBUG 3 ${e.message}');
+        yield MobileVerifyState.verifyFailed(
+            AppGeneralExeption(message: e.toString()));
+        // print('DEBUG mobile verify error ${e.toString()}');
+      }
+    }
   }
 }

@@ -6,13 +6,24 @@ class PhoneVerifyDataProvider {
     String mobileNumber,
     String uuid,
   }) {
-    print('DEBUG DataProvider $countryCode$mobileNumber');
-    // join count code with mobile
     return http.post(
       'http://localhost:3001/v1/send-verify-code',
       body: {
         'uuid': uuid,
         'mobile': '$countryCode$mobileNumber',
+      },
+    );
+  }
+
+  Future<http.Response> verifyMobile({
+    String uuid,
+    String verifyCode,
+  }) {
+    return http.post(
+      'http://localhost:3001/v1/verify-phone',
+      body: {
+        'uuid': uuid,
+        'verify_code': verifyCode,
       },
     );
   }

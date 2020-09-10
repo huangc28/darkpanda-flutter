@@ -23,7 +23,11 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
           status: SendSMSStatus.initial,
         );
 
-  const SendSmsCodeState.sending() : this._(status: SendSMSStatus.sending);
+  const SendSmsCodeState.sending()
+      : this._(
+          status: SendSMSStatus.sending,
+          error: null,
+        );
 
   const SendSmsCodeState.sendFailed(E error)
       : this._(
