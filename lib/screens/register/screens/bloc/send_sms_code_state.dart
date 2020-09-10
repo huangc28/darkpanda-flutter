@@ -11,16 +11,19 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
   final E error;
   final models.SendSMS sendSMS;
   final SendSMSStatus status;
+  final int numSend;
 
   const SendSmsCodeState._({
     this.status,
     this.error,
     this.sendSMS,
+    this.numSend,
   });
 
   const SendSmsCodeState.initial()
       : this._(
           status: SendSMSStatus.initial,
+          numSend: 0,
         );
 
   const SendSmsCodeState.sending()
@@ -35,10 +38,13 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
           error: error,
         );
 
-  const SendSmsCodeState.sendSuccess(models.SendSMS sms)
-      : this._(
+  const SendSmsCodeState.sendSuccess([
+    models.SendSMS sms,
+    int numSend,
+  ]) : this._(
           status: SendSMSStatus.sendSuccess,
           sendSMS: sms,
+          numSend: numSend,
         );
 
   @override

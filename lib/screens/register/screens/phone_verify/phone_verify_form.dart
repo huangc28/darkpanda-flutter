@@ -18,8 +18,6 @@ class VerifyCodeObject {
 //   - Provide a `onVerify` hook from parent widget. [ok]
 //   - Display verify code error. [ok]
 //   - Display send SMS error. [ok]
-//   - Implement resend button
-//   - Redirect user to appropriate index page according to gender
 class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
   final Function onSendSMS;
   final Function onResendSMS;

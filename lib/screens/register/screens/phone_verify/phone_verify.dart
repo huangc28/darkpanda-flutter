@@ -14,7 +14,14 @@ import '../models/phone_verify_form.dart' as models;
 //   - Create a verify code form field [ok]
 //   - Send verify code via SMS [ok]
 //   - Control the display of `Send`, `ReSend` && `Verify` button of verify form widget
-//     from here.
+//     from here. [ok]
+//   - Implement resend button and functionality [ok]
+//   - set a timer on every resend.
+//     1. User is able to send SMS 4 times.
+//     2. Each resend increases the waiting time by 30 seconds, 30, 60, 90, 120...
+//     3. After the forth resend, the server would lock the user to further sends the SMS. After 24 hours, backend would
+//        unlock the user.
+//   - Redirect user to appropriate index page according to gender
 class RegisterPhoneVerify extends StatefulWidget {
   @override
   _RegisterPhoneVerifyState createState() => _RegisterPhoneVerifyState();
