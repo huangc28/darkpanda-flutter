@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:darkpanda_flutter/screens/pkg/timer.dart';
+import 'package:darkpanda_flutter/pkg/timer.dart';
 
 part 'timer_event.dart';
 part 'timer_state.dart';

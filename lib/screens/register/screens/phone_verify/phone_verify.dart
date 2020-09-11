@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
-import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import './components/phone_verify_form.dart';

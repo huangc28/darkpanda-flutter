@@ -6,8 +6,8 @@ import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
-import 'package:darkpanda_flutter/screens/pkg/fibonacci.dart';
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/pkg/fibonacci.dart';
 
 import '../services/data_provider.dart';
 import '../models/models.dart' as models;
