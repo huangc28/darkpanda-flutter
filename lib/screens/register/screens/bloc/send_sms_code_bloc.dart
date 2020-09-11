@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 
-import '../data_provider.dart';
+import '../services/data_provider.dart';
 import '../models/models.dart' as models;
 
 part 'send_sms_code_event.dart';

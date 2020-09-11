@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './models/models.dart' as models;
-import 'bloc/register_bloc.dart';
+import '../models/models.dart' as models;
+import '../bloc/register_bloc.dart';
 
 enum Gender {
   male,

@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/screens/bloc/auth_user_bloc.dart';
 
-import '../data_provider.dart';
+import '../services/data_provider.dart';
 
 part 'mobile_verify_event.dart';
 part 'mobile_verify_state.dart';

@@ -4,18 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import '../models/models.dart' as models;
+import '../../models/models.dart' as models;
 
 part './verify_buttons.dart';
-
-/// Data object to store verify code prefix and verify code suffix.
-class VerifyCodeObject {
-  String prefix;
-
-  VerifyCodeObject({
-    this.prefix: '',
-  });
-}
+part './send_sms_buttons.dart';
 
 // @TODOs
 //   - Instruct backend to send verify code via SMS. [ok]
@@ -150,29 +142,14 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     );
   }
 
-  Widget _buildSendSMSButtons() {
-    return Column(
-      children: [
-        Container(
-          child: sendSMSError != null ? Text(sendSMSError.message) : Text(''),
-        ),
-        RaisedButton(
-          child: Text(
-            'Send',
-            style: TextStyle(color: Colors.blue, fontSize: 16),
-          ),
-          onPressed: () {
-            if (!_formKey.currentState.validate()) {
-              return;
-            }
+  void _handleSendSMS() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
 
-            _formKey.currentState.save();
+    _formKey.currentState.save();
 
-            onSendSMS(_formModel);
-          },
-        ),
-      ],
-    );
+    onSendSMS(_formModel);
   }
 
   // display preffix and suffix in one row, deliminate it with hyphen.
@@ -216,60 +193,15 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     );
   }
 
-  Widget _buildVerifyCodeButtons() {
-    return BlocConsumer<TimerBloc, TimerState>(
-      listener: (context, state) {
-        // listen to timer, lock resend button accordingly
-        if (state.status == TimerStatus.progressing) {
-          // lock resend button
-        }
-      },
-      builder: (context, state) => Column(
-        children: [
-          Container(
-            child: verifyCodeError != null
-                ? Text(verifyCodeError.message)
-                : Text(''),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                child: Text(
-                  'Resend',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
-                ),
-                onPressed: _enableResend ? () => onResendSMS(_formModel) : null,
-              ),
-              SizedBox(width: 20.0),
-              RaisedButton(
-                child: Text(
-                  'Verify',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
-                ),
-                onPressed: () {
-                  if (!_formKey.currentState.validate()) {
-                    return;
-                  }
+  void _handleVerify() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
 
-                  _formKey.currentState.save();
+    _formKey.currentState.save();
 
-                  // send verify code API
-                  onVerify(_formModel);
-                },
-              )
-            ],
-          ),
-        ],
-      ),
-    );
+    // send verify code API
+    onVerify(_formModel);
   }
 
   @override
@@ -291,7 +223,17 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
                   width: 0,
                 ),
           SizedBox(height: 25.0),
-          hasSendSMS ? _buildVerifyCodeButtons() : _buildSendSMSButtons(),
+          hasSendSMS
+              ? VerifyButtons(
+                  verifyCodeError: verifyCodeError,
+                  enableResend: _enableResend,
+                  onResendSMS: onResendSMS,
+                  onVerify: _handleVerify,
+                )
+              : SendSMSButton(
+                  onPressed: _handleSendSMS,
+                  sendSMSError: sendSMSError,
+                ),
         ],
       ),
     );
