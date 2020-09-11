@@ -6,6 +6,8 @@ import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import '../models/models.dart' as models;
 
+part './verify_buttons.dart';
+
 /// Data object to store verify code prefix and verify code suffix.
 class VerifyCodeObject {
   String prefix;
