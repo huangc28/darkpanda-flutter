@@ -121,7 +121,9 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                             listener: (context, state) {
                               if (state.status ==
                                   MobileVerifyStatus.verifyFailed) {
-                                _verifyCodeError = state.error;
+                                setState(() {
+                                  _verifyCodeError = state.error;
+                                });
                               }
                             },
                           ),

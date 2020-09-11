@@ -7,6 +7,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/screens/pkg/fibonacci.dart';
 
 import '../services/data_provider.dart';
 import '../models/models.dart' as models;
@@ -27,7 +28,6 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
   Stream<SendSmsCodeState> mapEventToState(
     SendSmsCodeEvent event,
   ) async* {
-    print('DEBUG 3');
     if (event is SendSMSCode) {
       try {
         yield SendSmsCodeState.sending();
@@ -42,19 +42,23 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
           throw APIException.fromJson(json.decode(resp.body));
         }
 
+        final currNumSend = state.numSend;
+
         // convert response to model
         yield SendSmsCodeState.sendSuccess(
           models.SendSMS.fromJson(json.decode(resp.body)),
           state.numSend + 1,
         );
 
-        // start resend lock timer
-        timerBloc.add(StartTimer(duration: 1));
+        if (currNumSend > 0) {
+          final nextWaitDuration = Fib.genFib(currNumSend);
+          timerBloc.add(StartTimer(
+            duration: nextWaitDuration * Duration.secondsPerMinute,
+          ));
+        }
       } on APIException catch (e) {
-        print('DEBUG 1 ${e.toString()}');
-        SendSmsCodeState.sendFailed(e);
+        yield SendSmsCodeState.sendFailed(e);
       } catch (e) {
-        print('DEBUG 2 ${e.toString()}');
         yield SendSmsCodeState.sendFailed(
             AppGeneralExeption(message: e.toString()));
       }
