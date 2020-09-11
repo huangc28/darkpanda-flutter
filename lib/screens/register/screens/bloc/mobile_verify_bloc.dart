@@ -50,10 +50,8 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
 
         yield MobileVerifyState.verifiedSuccess(parsed['jwt']);
       } on APIException catch (e) {
-        print('DEBUG 2 ${e.message}');
         yield MobileVerifyState.verifyFailed(e);
       } catch (e) {
-        print('DEBUG 3 ${e.message}');
         yield MobileVerifyState.verifyFailed(
             AppGeneralExeption(message: e.toString()));
         // print('DEBUG mobile verify error ${e.toString()}');

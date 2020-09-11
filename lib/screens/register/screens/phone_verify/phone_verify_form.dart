@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import '../models/models.dart' as models;
@@ -64,6 +67,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   bool hasSendSMS;
   Error verifyCodeError;
   Error sendSMSError;
+  bool _enableResend = true;
 
   _PhoneVerifyFormState({
     @required this.onVerify,
@@ -211,52 +215,58 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   }
 
   Widget _buildVerifyCodeButtons() {
-    return Column(
-      children: [
-        Container(
-          child: verifyCodeError != null
-              ? Text(verifyCodeError.message)
-              : Text(''),
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: Text(
-                'Resend',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
+    return BlocConsumer<TimerBloc, TimerState>(
+      listener: (context, state) {
+        // listen to timer, lock resend button accordingly
+        if (state.status == TimerStatus.progressing) {
+          // lock resend button
+        }
+      },
+      builder: (context, state) => Column(
+        children: [
+          Container(
+            child: verifyCodeError != null
+                ? Text(verifyCodeError.message)
+                : Text(''),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton(
+                child: Text(
+                  'Resend',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
                 ),
+                onPressed: _enableResend ? () => onResendSMS(_formModel) : null,
               ),
-              onPressed: () {
-                onResendSMS(_formModel);
-              },
-            ),
-            SizedBox(width: 20.0),
-            RaisedButton(
-              child: Text(
-                'Verify',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
+              SizedBox(width: 20.0),
+              RaisedButton(
+                child: Text(
+                  'Verify',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              onPressed: () {
-                if (!_formKey.currentState.validate()) {
-                  return;
-                }
+                onPressed: () {
+                  if (!_formKey.currentState.validate()) {
+                    return;
+                  }
 
-                _formKey.currentState.save();
+                  _formKey.currentState.save();
 
-                // send verify code API
-                onVerify(_formModel);
-              },
-            )
-          ],
-        ),
-      ],
+                  // send verify code API
+                  onVerify(_formModel);
+                },
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 

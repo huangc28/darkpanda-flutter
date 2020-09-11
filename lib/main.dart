@@ -11,6 +11,9 @@ import './screens/register/screens/data_provider.dart';
 import './screens/bloc/auth_user_bloc.dart';
 import './screens/register/screens/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/bloc/send_sms_code_bloc.dart';
+import './screens/bloc/timer_bloc.dart';
+
+import './screens/pkg/timer.dart';
 
 void main() => runApp(DarkPandaApp());
 
@@ -21,6 +24,7 @@ class DarkPandaApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => RegisterBloc(RegisterRepository())),
         BlocProvider(create: (context) => AuthUserBloc()),
+        BlocProvider(create: (context) => TimerBloc(ticker: Timer())),
       ],
       child: MaterialApp(
         initialRoute: '/register',
@@ -32,6 +36,7 @@ class DarkPandaApp extends StatelessWidget {
                   BlocProvider(
                       create: (context) => SendSmsCodeBloc(
                             dataProvider: PhoneVerifyDataProvider(),
+                            timerBloc: BlocProvider.of<TimerBloc>(context),
                           )),
                   BlocProvider(
                       create: (context) => MobileVerifyBloc(

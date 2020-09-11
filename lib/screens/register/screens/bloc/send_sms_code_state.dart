@@ -17,13 +17,12 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
     this.status,
     this.error,
     this.sendSMS,
-    this.numSend,
+    this.numSend: 0,
   });
 
   const SendSmsCodeState.initial()
       : this._(
           status: SendSMSStatus.initial,
-          numSend: 0,
         );
 
   const SendSmsCodeState.sending()
@@ -48,5 +47,5 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
         );
 
   @override
-  List<Object> get props => [status, error, sendSMS];
+  List<Object> get props => [status, error, sendSMS, numSend];
 }

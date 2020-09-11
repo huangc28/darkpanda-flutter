@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/screens/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import 'phone_verify_form.dart';
@@ -43,7 +44,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   Error _sendSMSCodeError;
 
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
-    print('DEBUG trigger _handleVerify');
     BlocProvider.of<MobileVerifyBloc>(context).add(VerifyMobile(
       uuid: form.uuid,
       prefix: form.prefix,
@@ -54,7 +54,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   void _handleResendSMS(
       BuildContext context, models.PhoneVerifyFormModel form) {
     // trigger send SMS again
-    print('DEBUG trigger _handleResendSMS');
     BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
       countryCode: form.countryCode,
       mobileNumber: form.mobileNumber,
@@ -104,8 +103,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
 
                               if (state.status == SendSMSStatus.sendSuccess) {
                                 setState(() {
-                                  print(
-                                      'DEBUG 2 ${state.sendSMS.verifyPrefix}');
                                   _setHasSendSMS(true);
                                   _verifyCodePrefix =
                                       state.sendSMS.verifyPrefix;
@@ -127,7 +124,14 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                                 _verifyCodeError = state.error;
                               }
                             },
-                          )
+                          ),
+                          BlocListener<TimerBloc, TimerState>(
+                              listener: (context, state) {
+                            if (state.status == TimerStatus.progressing) {
+                              // lock resend button
+                              print('DEBUG ticking... ${state.duration}');
+                            }
+                          }),
                         ],
                         child: PhoneVerifyForm(
                           hasSendSMS: _hasSendSMS,
