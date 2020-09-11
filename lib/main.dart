@@ -6,13 +6,13 @@ import 'package:darkpanda_flutter/screens/register/services/repository.dart';
 import './screens/login/login.dart';
 import './screens/register/register.dart' as RegisterScreen;
 import './screens/register/screens/phone_verify/phone_verify.dart';
-import './screens/register/screens/services/data_provider.dart';
+import './screens/register/screens/phone_verify/services/data_provider.dart';
 
 import './pkg/timer.dart';
 import './bloc/timer_bloc.dart';
 import './bloc/auth_user_bloc.dart';
-import './screens/register/screens/bloc/mobile_verify_bloc.dart';
-import './screens/register/screens/bloc/send_sms_code_bloc.dart';
+import './screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
+import './screens/register/screens/phone_verify/bloc/send_sms_code_bloc.dart';
 
 void main() => runApp(DarkPandaApp());
 

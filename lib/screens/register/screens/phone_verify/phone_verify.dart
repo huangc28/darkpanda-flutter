@@ -6,9 +6,9 @@ import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import './components/phone_verify_form.dart';
-import '../bloc/send_sms_code_bloc.dart';
-import '../bloc/mobile_verify_bloc.dart';
-import '../models/phone_verify_form.dart' as models;
+import './bloc/send_sms_code_bloc.dart';
+import './bloc/mobile_verify_bloc.dart';
+import './models/phone_verify_form.dart' as models;
 
 // @TODO:
 //   - Create a phone number form field [ok]

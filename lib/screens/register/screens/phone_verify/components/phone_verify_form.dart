@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import '../../models/models.dart' as models;
+import '../models/models.dart' as models;
 
 part './verify_buttons.dart';
 part './send_sms_buttons.dart';
