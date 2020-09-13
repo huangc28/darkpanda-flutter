@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/repository.dart';
+
+import './pkg/secure_store.dart';
+import './providers/secure_store.dart';
 
 import './screens/home/home.dart';
 import './screens/register/register.dart' as RegisterScreen;
@@ -25,28 +29,31 @@ class DarkPandaApp extends StatelessWidget {
         BlocProvider(create: (context) => AuthUserBloc()),
         BlocProvider(create: (context) => TimerBloc(ticker: Timer())),
       ],
-      child: MaterialApp(
-        initialRoute: '/',
-        routes: {
-          '/': (context) => Home(),
-          '/register': (context) => RegisterScreen.Register(),
-          '/register/verify-phone': (context) => MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                      create: (context) => SendSmsCodeBloc(
-                            dataProvider: PhoneVerifyDataProvider(),
-                            timerBloc: BlocProvider.of<TimerBloc>(context),
-                          )),
-                  BlocProvider(
-                      create: (context) => MobileVerifyBloc(
-                            dataProvider: PhoneVerifyDataProvider(),
-                            authUserBloc:
-                                BlocProvider.of<AuthUserBloc>(context),
-                          )),
-                ],
-                child: RegisterPhoneVerify(),
-              ),
-        },
+      child: SecureStoreProvider(
+        secureStorage: SecureStore().fsc,
+        child: MaterialApp(
+          initialRoute: '/',
+          routes: {
+            '/': (context) => Home(),
+            '/register': (context) => RegisterScreen.Register(),
+            '/register/verify-phone': (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                        create: (context) => SendSmsCodeBloc(
+                              dataProvider: PhoneVerifyDataProvider(),
+                              timerBloc: BlocProvider.of<TimerBloc>(context),
+                            )),
+                    BlocProvider(
+                        create: (context) => MobileVerifyBloc(
+                              dataProvider: PhoneVerifyDataProvider(),
+                              authUserBloc:
+                                  BlocProvider.of<AuthUserBloc>(context),
+                            )),
+                  ],
+                  child: RegisterPhoneVerify(),
+                ),
+          },
+        ),
       ),
     );
   }

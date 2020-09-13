@@ -6,13 +6,16 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 ///
 /// final storage = SecureStoreInheritedWidget.of(context)
 /// storage.secureStorage.write(...)
-class SecureStoreInheritedWidget extends InheritedWidget {
+class SecureStoreProvider extends InheritedWidget {
   final FlutterSecureStorage secureStorage;
 
-  SecureStoreInheritedWidget({this.secureStorage, Widget child})
-      : super(child: child);
+  SecureStoreProvider({this.secureStorage, Widget child}) : super(child: child);
+
+  static SecureStoreProvider of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<SecureStoreProvider>();
+  }
 
   @override
-  bool updateShouldNotify(SecureStoreInheritedWidget oldWidget) =>
+  bool updateShouldNotify(SecureStoreProvider oldWidget) =>
       oldWidget.secureStorage != secureStorage;
 }
