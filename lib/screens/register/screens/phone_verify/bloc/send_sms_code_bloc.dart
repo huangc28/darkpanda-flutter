@@ -22,7 +22,7 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
   SendSmsCodeBloc({
     @required this.dataProvider,
     @required this.timerBloc,
-  }) : super(SendSmsCodeState.initial());
+  }) : super(SendSmsCodeState.initial(0));
 
   @override
   Stream<SendSmsCodeState> mapEventToState(
@@ -30,7 +30,9 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
   ) async* {
     if (event is SendSMSCode) {
       try {
-        yield SendSmsCodeState.sending();
+        yield SendSmsCodeState.sending(
+          SendSmsCodeState.copyFrom(state),
+        );
 
         final resp = await dataProvider.sendVerifyCode(
           countryCode: event.countryCode,
@@ -43,24 +45,34 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
         }
 
         final currNumSend = state.numSend;
+        final parsedResp = models.SendSMS.fromJson(json.decode(resp.body));
 
         // convert response to model
-        yield SendSmsCodeState.sendSuccess(
-          models.SendSMS.fromJson(json.decode(resp.body)),
-          state.numSend + 1,
-        );
+        yield SendSmsCodeState.sendSuccess(SendSmsCodeState.copyFrom(
+          state,
+          sendSMS: parsedResp,
+          numSend: state.numSend + 1,
+        ));
 
-        if (currNumSend > 0) {
-          final nextWaitDuration = Fib.genFib(currNumSend);
+        // If user intends to resend for more than 2 times, we start locking
+        // the resend button for a fixed time range.
+        if (currNumSend > 1) {
           timerBloc.add(StartTimer(
-            duration: nextWaitDuration * Duration.secondsPerMinute,
+            duration: Fib.genFib(currNumSend) * Duration.secondsPerMinute,
           ));
         }
       } on APIException catch (e) {
-        yield SendSmsCodeState.sendFailed(e);
+        yield SendSmsCodeState.sendFailed(SendSmsCodeState.copyFrom(
+          state,
+          error: e,
+        ));
       } catch (e) {
         yield SendSmsCodeState.sendFailed(
-            AppGeneralExeption(message: e.toString()));
+          SendSmsCodeState.copyFrom(
+            state,
+            error: AppGeneralExeption(message: e.toString()),
+          ),
+        );
       }
     }
   }

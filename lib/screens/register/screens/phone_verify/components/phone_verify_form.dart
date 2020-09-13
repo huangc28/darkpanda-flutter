@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/models.dart' as models;
 
 part './verify_buttons.dart';
@@ -142,7 +141,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     );
   }
 
-  void _handleSendSMS() {
+  _handleSendSMS() {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -193,7 +192,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     );
   }
 
-  void _handleVerify() {
+  _handleVerify() {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -227,7 +226,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
               ? VerifyButtons(
                   verifyCodeError: verifyCodeError,
                   enableResend: _enableResend,
-                  onResendSMS: onResendSMS,
+                  onResendSMS: () => onResendSMS(_formModel),
                   onVerify: _handleVerify,
                 )
               : SendSMSButton(

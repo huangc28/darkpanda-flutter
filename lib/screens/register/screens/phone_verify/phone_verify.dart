@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
@@ -127,13 +126,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                               }
                             },
                           ),
-                          BlocListener<TimerBloc, TimerState>(
-                              listener: (context, state) {
-                            if (state.status == TimerStatus.progressing) {
-                              // lock resend button
-                              print('DEBUG ticking... ${state.duration}');
-                            }
-                          }),
                         ],
                         child: PhoneVerifyForm(
                           hasSendSMS: _hasSendSMS,
@@ -145,6 +137,7 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                             _handleSendSMS(context, form);
                           },
                           onResendSMS: (models.PhoneVerifyFormModel form) {
+                            print('DEBUG trigger onResendSMS');
                             form.uuid = registerState.user.uuid;
                             _handleResendSMS(context, form);
                           },

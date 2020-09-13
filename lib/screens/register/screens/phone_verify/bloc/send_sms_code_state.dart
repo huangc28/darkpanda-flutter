@@ -17,35 +17,54 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
     this.status,
     this.error,
     this.sendSMS,
-    this.numSend: 0,
+    this.numSend,
   });
 
-  const SendSmsCodeState.initial()
+  SendSmsCodeState.initial(int numSend)
       : this._(
           status: SendSMSStatus.initial,
+          error: null,
+          numSend: numSend,
+          sendSMS: null,
         );
 
-  const SendSmsCodeState.sending()
+  SendSmsCodeState.sending(SendSmsCodeState m)
       : this._(
           status: SendSMSStatus.sending,
-          error: null,
+          error: m.error,
+          numSend: m.numSend,
+          sendSMS: m.sendSMS,
         );
 
-  const SendSmsCodeState.sendFailed(E error)
+  SendSmsCodeState.sendFailed(SendSmsCodeState m)
       : this._(
           status: SendSMSStatus.sendFailed,
-          error: error,
+          error: m.error,
+          numSend: m.numSend,
+          sendSMS: m.sendSMS,
         );
 
-  const SendSmsCodeState.sendSuccess([
-    models.SendSMS sms,
-    int numSend,
-  ]) : this._(
+  SendSmsCodeState.sendSuccess(SendSmsCodeState m)
+      : this._(
           status: SendSMSStatus.sendSuccess,
-          sendSMS: sms,
-          numSend: numSend,
+          error: m.error,
+          sendSMS: m.sendSMS,
+          numSend: m.numSend,
         );
+
+  factory SendSmsCodeState.copyFrom(
+    SendSmsCodeState state, {
+    E error,
+    models.SendSMS sendSMS,
+    int numSend,
+  }) {
+    return SendSmsCodeState._(
+      error: error ?? state.error,
+      sendSMS: sendSMS ?? state.sendSMS,
+      numSend: numSend ?? state.numSend,
+    );
+  }
 
   @override
-  List<Object> get props => [status, error, sendSMS, numSend];
+  List<Object> get props => [numSend, status, error, sendSMS];
 }

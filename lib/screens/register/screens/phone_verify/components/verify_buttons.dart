@@ -16,50 +16,54 @@ class VerifyButtons<Error extends AppBaseException> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TimerBloc, TimerState>(
-      listener: (context, state) {
-        // listen to timer, lock resend button accordingly
-        if (state.status == TimerStatus.progressing) {
-          // lock resend button
-        }
-      },
-      builder: (context, state) => Column(
-        children: [
-          Container(
-            child: verifyCodeError != null
-                ? Text(verifyCodeError.message)
-                : Text(''),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                child: Text(
-                  'Resend',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
+    return Column(
+      children: [
+        Container(
+          child: verifyCodeError != null
+              ? Text(verifyCodeError.message)
+              : Text(''),
+        ),
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            BlocConsumer<TimerBloc, TimerState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  final resendButtonText =
+                      state.status == TimerStatus.progressing
+                          ? '${state.duration}'
+                          : 'Resend';
+
+                  final resendHandler = state.status == TimerStatus.progressing
+                      ? null
+                      : onResendSMS;
+
+                  return RaisedButton(
+                    child: Text(
+                      resendButtonText,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                    ),
+                    onPressed: resendHandler,
+                  );
+                }),
+            SizedBox(width: 20.0),
+            RaisedButton(
+              child: Text(
+                'Verify',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
                 ),
-                onPressed: enableResend ? () => onResendSMS : null,
               ),
-              SizedBox(width: 20.0),
-              RaisedButton(
-                child: Text(
-                  'Verify',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
-                ),
-                onPressed: onVerify,
-              )
-            ],
-          ),
-        ],
-      ),
+              onPressed: onVerify,
+            )
+          ],
+        ),
+      ],
     );
-    ;
   }
 }
