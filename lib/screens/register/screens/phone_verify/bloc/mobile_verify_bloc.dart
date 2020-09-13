@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -48,6 +49,7 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
         // store auth user jwt
         authUserBloc.add(PatchJwt(jwt: parsed['jwt']));
 
+        // store jwt in secure storage
         yield MobileVerifyState.verifiedSuccess(parsed['jwt']);
       } on APIException catch (e) {
         yield MobileVerifyState.verifyFailed(e);

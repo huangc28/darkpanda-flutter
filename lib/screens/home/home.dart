@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/layouts/logo.dart' as LoginLayout;
 
 class Home extends StatelessWidget {
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: Text('my first app'),
-				centerTitle: true,
-				backgroundColor: Colors.red[600],
-			),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LoginLayout.LogoLayout(
+        body: LoginBtnContainer(),
+      ),
+    );
+  }
+}
 
-			body: Center(
-				child: Image(
-					image: NetworkImage('https://images.unsplash.com/photo-1598866910544-f2345ffca21b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'),
-				),
-			),
-
-			floatingActionButton: FloatingActionButton(
-				child: Text('click me'),
-				onPressed: () {},
-				backgroundColor: Colors.red[600],
-			),
-		);
-	}
+class LoginBtnContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        ButtonTheme(
+          minWidth: 200.0,
+          height: 50.0,
+          child: OutlineButton(
+              child: Text('Login'),
+              onPressed: () {
+                print('DEBUG trigger login');
+              },
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0))),
+        ),
+        SizedBox(height: 20),
+        ButtonTheme(
+          minWidth: 200.0,
+          height: 50.0,
+          child: OutlineButton(
+              child: Text('Register'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/register');
+              },
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0))),
+        ),
+      ],
+    );
+  }
 }

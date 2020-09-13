@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/repository.dart';
 
-import './screens/login/login.dart';
+import './screens/home/home.dart';
 import './screens/register/register.dart' as RegisterScreen;
 import './screens/register/screens/phone_verify/phone_verify.dart';
 import './screens/register/screens/phone_verify/services/data_provider.dart';
@@ -26,9 +26,9 @@ class DarkPandaApp extends StatelessWidget {
         BlocProvider(create: (context) => TimerBloc(ticker: Timer())),
       ],
       child: MaterialApp(
-        initialRoute: '/register',
+        initialRoute: '/',
         routes: {
-          '/login': (context) => Login(),
+          '/': (context) => Home(),
           '/register': (context) => RegisterScreen.Register(),
           '/register/verify-phone': (context) => MultiBlocProvider(
                 providers: [
