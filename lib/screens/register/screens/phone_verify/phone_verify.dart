@@ -124,6 +124,8 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                                   _verifyCodeError = state.error;
                                 });
                               }
+
+                              // if verification success, navigate to dedicated index page according to user gender.
                             },
                           ),
                         ],
@@ -137,7 +139,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                             _handleSendSMS(context, form);
                           },
                           onResendSMS: (models.PhoneVerifyFormModel form) {
-                            print('DEBUG trigger onResendSMS');
                             form.uuid = registerState.user.uuid;
                             _handleResendSMS(context, form);
                           },
