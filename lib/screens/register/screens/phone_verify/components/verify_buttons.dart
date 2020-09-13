@@ -1,7 +1,7 @@
 part of './phone_verify_form.dart';
 
 /// Renders partial forms of phone_verify_form. This partial widget includes
-class VerifyButtons<Error extends AppBaseException> extends StatelessWidget {
+class VerifyButtons<Error extends AppBaseException> extends StatefulWidget {
   final Error verifyCodeError;
   final bool enableResend;
   final Function onResendSMS;
@@ -15,41 +15,71 @@ class VerifyButtons<Error extends AppBaseException> extends StatelessWidget {
   });
 
   @override
+  _VerifyButtonsState createState() => _VerifyButtonsState();
+}
+
+class _VerifyButtonsState<Error extends AppBaseException>
+    extends State<VerifyButtons<Error>> {
+  bool _enableResend = true;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          child: verifyCodeError != null
-              ? Text(verifyCodeError.message)
+          child: widget.verifyCodeError != null
+              ? Text(widget.verifyCodeError.message)
               : Text(''),
         ),
         SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            BlocConsumer<TimerBloc, TimerState>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  final resendButtonText =
-                      state.status == TimerStatus.progressing
-                          ? '${state.duration}'
-                          : 'Resend';
+            MultiBlocListener(
+              listeners: [
+                BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
+                  listener: (context, state) {
+                    if (state.status == SendSMSStatus.sending) {
+                      setState(() {
+                        _enableResend = false;
+                      });
+                    }
+                  },
+                ),
+                BlocListener<TimerBloc, TimerState>(
+                  listener: (context, state) {
+                    if (state.status == TimerStatus.ready ||
+                        state.status == TimerStatus.completed) {
+                      setState(() {
+                        _enableResend = true;
+                      });
+                    }
+                  },
+                ),
+              ],
+              child: Container(
+                width: 0,
+                height: 0,
+              ),
+            ),
+            BlocBuilder<TimerBloc, TimerState>(builder: (context, state) {
+              final resendButtonText = state.status == TimerStatus.progressing
+                  ? '${state.duration}'
+                  : 'Resend';
 
-                  final resendHandler = state.status == TimerStatus.progressing
-                      ? null
-                      : onResendSMS;
+              final resendHandler = _enableResend ? widget.onResendSMS : null;
 
-                  return RaisedButton(
-                    child: Text(
-                      resendButtonText,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
-                    ),
-                    onPressed: resendHandler,
-                  );
-                }),
+              return RaisedButton(
+                child: Text(
+                  resendButtonText,
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: resendHandler,
+              );
+            }),
             SizedBox(width: 20.0),
             RaisedButton(
               child: Text(
@@ -59,7 +89,7 @@ class VerifyButtons<Error extends AppBaseException> extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              onPressed: onVerify,
+              onPressed: widget.onVerify,
             )
           ],
         ),

@@ -53,6 +53,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   Stream<TimerState> _mapTimerCompleteToState() async* {
+    _streamSubscription.cancel();
     yield TimerState.complete();
   }
 }
