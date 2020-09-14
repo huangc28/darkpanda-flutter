@@ -29,7 +29,7 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
     if (event is VerifyMobile) {
       try {
         // toggles loading
-        yield MobileVerifyState.verifying();
+        yield MobileVerifyState.verifying(MobileVerifyState.copyFrom(state));
 
         final verifyCode = '${event.prefix}-${event.suffix}';
 
@@ -48,12 +48,20 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
         // store auth user jwt
         authUserBloc.add(PatchJwt(jwt: parsed['jwt']));
 
-        yield MobileVerifyState.verifiedSuccess(parsed['jwt']);
+        yield MobileVerifyState.verifiedSuccess(
+          MobileVerifyState.copyFrom(
+            state,
+            authToken: parsed['jwt'],
+          ),
+        );
       } on APIException catch (e) {
-        yield MobileVerifyState.verifyFailed(e);
+        yield MobileVerifyState.verifyFailed(
+            MobileVerifyState.copyFrom(state, error: e));
       } catch (e) {
         yield MobileVerifyState.verifyFailed(
-            AppGeneralExeption(message: e.toString()));
+          MobileVerifyState.copyFrom(state,
+              error: AppGeneralExeption(message: e.toString())),
+        );
       }
     }
   }

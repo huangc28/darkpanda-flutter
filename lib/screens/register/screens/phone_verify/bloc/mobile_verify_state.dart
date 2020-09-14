@@ -21,24 +21,46 @@ class MobileVerifyState<Error extends AppBaseException> extends Equatable {
   const MobileVerifyState.unknown()
       : this._(
           status: MobileVerifyStatus.unknown,
+          error: null,
+          authToken: null,
         );
 
-  const MobileVerifyState.verifying()
+  MobileVerifyState.verifying(MobileVerifyState m)
       : this._(
           status: MobileVerifyStatus.verifying,
+          error: null,
+          authToken: m.authToken,
         );
 
-  const MobileVerifyState.verifyFailed(Error error)
+  MobileVerifyState.verifyFailed(MobileVerifyState m)
       : this._(
           status: MobileVerifyStatus.verifyFailed,
-          error: error,
+          error: m.error,
+          authToken: m.authToken,
         );
 
-  const MobileVerifyState.verifiedSuccess(String authToken)
+  MobileVerifyState.verifiedSuccess(MobileVerifyState state)
       : this._(
-          authToken: authToken,
+          authToken: state.authToken,
+          error: null,
         );
+
+  factory MobileVerifyState.copyFrom(
+    MobileVerifyState state, {
+    MobileVerifyStatus status,
+    Error error,
+    String authToken,
+  }) {
+    return MobileVerifyState._(
+      error: error ?? state.error,
+      authToken: authToken ?? state.authToken,
+    );
+  }
 
   @override
-  List<Object> get props => [status, error];
+  List<Object> get props => [
+        status,
+        error,
+        authToken,
+      ];
 }

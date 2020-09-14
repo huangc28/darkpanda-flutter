@@ -126,6 +126,9 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                               }
 
                               // if verification success, navigate to dedicated index page according to user gender.
+                              if (state.status == MobileVerifyStatus.verified) {
+                                // Navigator.pushNamed(context, '');
+                              }
                             },
                           ),
                         ],

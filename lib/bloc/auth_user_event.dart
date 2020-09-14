@@ -12,3 +12,5 @@ class PatchJwt extends AuthUserEvent {
 
   PatchJwt({this.jwt});
 }
+
+class FetchUserInfo extends AuthUserEvent {}
