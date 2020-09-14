@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 
 import './components/phone_verify_form.dart';
 import './bloc/send_sms_code_bloc.dart';
@@ -34,13 +35,17 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   /// verify code prefix as of form {preffix-suffix}
   String _verifyCodePrefix;
 
-  // Error object to pass to `phone_verify_form` for displaying error message
-  // when failed to verify mobile.
+  /// Error object to pass to `phone_verify_form` for displaying error message
+  /// when failed to verify mobile.
   Error _verifyCodeError;
 
   /// Error object to pass to `phone_verify_form` for displaying error message
-  // when failed to send SMS code.
+  /// when failed to send SMS code.
   Error _sendSMSCodeError;
+
+  /// Error object to pass to `phone_verify_form` for displaying error message
+  /// when failed to fetch auth user error.
+  Error _fetchAuthUserError;
 
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
     BlocProvider.of<MobileVerifyBloc>(context).add(VerifyMobile(
@@ -123,14 +128,30 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                                 setState(() {
                                   _verifyCodeError = state.error;
                                 });
+
+                                return null;
                               }
 
-                              // if verification success, navigate to dedicated index page according to user gender.
-                              if (state.status == MobileVerifyStatus.verified) {
-                                // Navigator.pushNamed(context, '');
-                              }
+                              setState(() {
+                                _verifyCodeError = null;
+                              });
                             },
                           ),
+                          BlocListener<AuthUserBloc, AuthUserState>(
+                              listener: (context, state) {
+                            // display error if failed to retrieve auth user info
+                            if (state.status == FetchUserStatus.fetchFailed) {
+                              setState(() {
+                                _fetchAuthUserError = state.error;
+                              });
+
+                              return null;
+                            }
+
+                            setState(() {
+                              _fetchAuthUserError = null;
+                            });
+                          }),
                         ],
                         child: PhoneVerifyForm(
                           hasSendSMS: _hasSendSMS,

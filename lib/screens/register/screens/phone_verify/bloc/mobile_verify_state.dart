@@ -39,8 +39,9 @@ class MobileVerifyState<Error extends AppBaseException> extends Equatable {
           authToken: m.authToken,
         );
 
-  MobileVerifyState.verifiedSuccess(MobileVerifyState state)
+  MobileVerifyState.verified(MobileVerifyState state)
       : this._(
+          status: MobileVerifyStatus.verified,
           authToken: state.authToken,
           error: null,
         );

@@ -23,6 +23,7 @@ class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
   final bool hasSendSMS;
   final String verifyCodePrefix;
   final Error verifyCodeError;
+  final Error fetchAuthUserError;
   final Error sendSMSError;
 
   const PhoneVerifyForm({
@@ -32,25 +33,16 @@ class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
     this.hasSendSMS: false,
     this.verifyCodePrefix,
     this.verifyCodeError,
+    this.fetchAuthUserError,
     this.sendSMSError,
   });
 
   @override
-  _PhoneVerifyFormState createState() => _PhoneVerifyFormState(
-        onVerify: onVerify,
-        onSendSMS: onSendSMS,
-        onResendSMS: onResendSMS,
-        hasSendSMS: hasSendSMS,
-        verifyCodeError: verifyCodeError,
-        sendSMSError: sendSMSError,
-      );
+  _PhoneVerifyFormState createState() => _PhoneVerifyFormState();
 }
 
 class _PhoneVerifyFormState<Error extends AppBaseException>
     extends State<PhoneVerifyForm> {
-  final Function onVerify;
-  final Function onSendSMS;
-  final Function onResendSMS;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _editController = TextEditingController();
 
@@ -58,44 +50,14 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
   final List<String> _countryCodes = ['+886'];
   final models.PhoneVerifyFormModel _formModel = models.PhoneVerifyFormModel();
 
-  String verifyCodePrefix;
-  bool hasSendSMS;
-  Error verifyCodeError;
-  Error sendSMSError;
   bool _enableResend = true;
 
-  _PhoneVerifyFormState({
-    @required this.onVerify,
-    @required this.onSendSMS,
-    @required this.onResendSMS,
-    this.hasSendSMS: false,
-    this.verifyCodePrefix,
-    this.verifyCodeError,
-    this.sendSMSError,
-  });
+  _PhoneVerifyFormState();
 
   @override
   initState() {
     _formModel.countryCode = _countryCodes[0];
     super.initState();
-  }
-
-  @override
-  didUpdateWidget(old) {
-    if (old.hasSendSMS != widget.hasSendSMS) {
-      hasSendSMS = widget.hasSendSMS;
-    }
-
-    if (verifyCodePrefix != widget.verifyCodePrefix) {
-      verifyCodePrefix = widget.verifyCodePrefix;
-      _editController.clear();
-    }
-
-    if (old.verifyCodeError != widget.verifyCodeError) {
-      verifyCodeError = widget.verifyCodeError;
-    }
-
-    super.didUpdateWidget(old);
   }
 
   Widget _buildPhoneFormField() {
@@ -150,7 +112,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
 
     _formKey.currentState.save();
 
-    onSendSMS(_formModel);
+    widget.onSendSMS(_formModel);
   }
 
   // display preffix and suffix in one row, deliminate it with hyphen.
@@ -160,7 +122,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: Text(verifyCodePrefix ?? ''),
+          child: Text(widget.verifyCodePrefix ?? ''),
         ),
         Expanded(
           flex: 1,
@@ -185,7 +147,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
               return null;
             },
             onSaved: (value) {
-              _formModel.prefix = verifyCodePrefix;
+              _formModel.prefix = widget.verifyCodePrefix;
               _formModel.suffix = int.parse(value);
             },
           ),
@@ -202,7 +164,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     _formKey.currentState.save();
 
     // send verify code API
-    onVerify(_formModel);
+    widget.onVerify(_formModel);
   }
 
   @override
@@ -217,23 +179,23 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
           ),
           _buildPhoneFormField(),
           SizedBox(height: 25.0),
-          hasSendSMS
+          widget.hasSendSMS
               ? _buildVerifyCodeInput()
               : Container(
                   height: 0,
                   width: 0,
                 ),
           SizedBox(height: 25.0),
-          hasSendSMS
+          widget.hasSendSMS
               ? VerifyButtons(
-                  verifyCodeError: verifyCodeError,
+                  verifyCodeError: widget.verifyCodeError,
                   enableResend: _enableResend,
-                  onResendSMS: () => onResendSMS(_formModel),
+                  onResendSMS: () => widget.onResendSMS(_formModel),
                   onVerify: _handleVerify,
                 )
               : SendSMSButton(
                   onPressed: _handleSendSMS,
-                  sendSMSError: sendSMSError,
+                  sendSMSError: widget.sendSMSError,
                 ),
         ],
       ),

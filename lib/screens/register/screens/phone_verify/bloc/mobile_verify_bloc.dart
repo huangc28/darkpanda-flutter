@@ -48,7 +48,7 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
         // store auth user jwt
         authUserBloc.add(PatchJwt(jwt: parsed['jwt']));
 
-        yield MobileVerifyState.verifiedSuccess(
+        yield MobileVerifyState.verified(
           MobileVerifyState.copyFrom(
             state,
             authToken: parsed['jwt'],

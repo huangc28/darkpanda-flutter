@@ -55,7 +55,7 @@ class DarkPandaApp extends StatelessWidget {
                   ],
                   child: RegisterPhoneVerify(),
                 ),
-            '/female': (context) => InqiuryList(),
+            '/female/inquiry': (context) => InqiuryList(),
           },
         ),
       ),

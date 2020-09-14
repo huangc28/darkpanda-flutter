@@ -60,14 +60,14 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
       // retrieve user info
       final jwt = await SecureStore().fsc.read(key: 'jwt');
 
-      print('DEBUG _mapUserInfoToState 1 $jwt');
-
       dataProvider.jwtToken = jwt;
       final resp = await dataProvider.fetchUser();
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(json.decode(resp.body));
       }
+
+      print('DEBUG _mapUserInfoToState  1 ${json.decode(resp.body)}');
 
       // update auth user info
       yield AuthUserState.fetchSuccess(AuthUserState.copyFrom(
