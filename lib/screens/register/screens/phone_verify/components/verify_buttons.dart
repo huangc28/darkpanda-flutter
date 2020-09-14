@@ -3,6 +3,7 @@ part of './phone_verify_form.dart';
 /// Renders partial forms of phone_verify_form. This partial widget includes
 class VerifyButtons<Error extends AppBaseException> extends StatefulWidget {
   final Error verifyCodeError;
+  final Error fetchAuthUserError;
   final bool enableResend;
   final Function onResendSMS;
   final Function onVerify;
@@ -11,6 +12,7 @@ class VerifyButtons<Error extends AppBaseException> extends StatefulWidget {
     @required this.onResendSMS,
     @required this.onVerify,
     this.verifyCodeError,
+    this.fetchAuthUserError,
     this.enableResend = true,
   });
 
@@ -24,12 +26,12 @@ class _VerifyButtonsState<Error extends AppBaseException>
 
   @override
   Widget build(BuildContext context) {
+    final displayError = widget.verifyCodeError ?? widget.fetchAuthUserError;
+
     return Column(
       children: [
         Container(
-          child: widget.verifyCodeError != null
-              ? Text(widget.verifyCodeError.message)
-              : Text(''),
+          child: displayError == null ? Text('') : Text(displayError.message),
         ),
         SizedBox(height: 20),
         Row(

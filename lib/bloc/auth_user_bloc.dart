@@ -67,8 +67,6 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
         throw APIException.fromJson(json.decode(resp.body));
       }
 
-      print('DEBUG _mapUserInfoToState  1 ${json.decode(resp.body)}');
-
       // update auth user info
       yield AuthUserState.fetchSuccess(AuthUserState.copyFrom(
         state,

@@ -157,6 +157,7 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                           hasSendSMS: _hasSendSMS,
                           verifyCodePrefix: _verifyCodePrefix,
                           verifyCodeError: _verifyCodeError,
+                          fetchAuthUserError: _fetchAuthUserError,
                           sendSMSError: _sendSMSCodeError,
                           onSendSMS: (models.PhoneVerifyFormModel form) {
                             form.uuid = registerState.user.uuid;

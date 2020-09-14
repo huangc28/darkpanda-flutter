@@ -189,6 +189,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
           widget.hasSendSMS
               ? VerifyButtons(
                   verifyCodeError: widget.verifyCodeError,
+                  fetchAuthUserError: widget.fetchAuthUserError,
                   enableResend: _enableResend,
                   onResendSMS: () => widget.onResendSMS(_formModel),
                   onVerify: _handleVerify,
