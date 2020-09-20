@@ -13,6 +13,11 @@ import './screens/register/screens/phone_verify/phone_verify.dart';
 import './screens/register/screens/phone_verify/services/data_provider.dart';
 
 import './screens/female/screens/inquiry_list/inquiry_list.dart';
+import './screens/female/screens/inquiry_list/bloc/inquiries_bloc.dart';
+import './screens/female/screens/inquiry_list/services/api_client.dart'
+    as inquiryApiClient;
+
+import './screens/male/screens/search_inquiry/search_inquiry.dart';
 
 import './pkg/timer.dart';
 import './bloc/timer_bloc.dart';
@@ -35,7 +40,7 @@ class DarkPandaApp extends StatelessWidget {
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
         child: MaterialApp(
-          initialRoute: '/register',
+          initialRoute: '/female/inquiry',
           routes: {
             '/': (context) => Home(),
             '/register': (context) => RegisterScreen.Register(),
@@ -55,7 +60,20 @@ class DarkPandaApp extends StatelessWidget {
                   ],
                   child: RegisterPhoneVerify(),
                 ),
-            '/female/inquiry': (context) => InqiuryList(),
+
+            // Routes of female users.
+            '/female/inquiry': (context) => BlocProvider(
+                  create: (context) => InquiriesBloc(
+                    apiClient: inquiryApiClient.ApiClient(),
+                  ),
+                  child: InqiuryList(
+                    inquiriesBloc: InquiriesBloc(
+                      apiClient: inquiryApiClient.ApiClient(),
+                    ),
+                  ),
+                ),
+            // Routes of male users
+            '/male/search_inquiry': (context) => SearchInqiury(),
           },
         ),
       ),

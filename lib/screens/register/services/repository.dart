@@ -17,10 +17,6 @@ class RegisterRepository {
       },
     );
   }
-
-  Future<http.Response> fetchAlbum() {
-    return http.get('https://jsonplaceholder.typicode.com/albums/1');
-  }
 }
 
 // @TODO API origin should be extract to environment variable

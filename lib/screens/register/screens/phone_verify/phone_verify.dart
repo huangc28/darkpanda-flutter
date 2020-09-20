@@ -9,6 +9,7 @@ import './components/phone_verify_form.dart';
 import './bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 import './models/phone_verify_form.dart' as models;
+import '../../constants.dart';
 
 // @TODO:
 //   - Create a phone number form field [ok]
@@ -146,6 +147,18 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                               });
 
                               return null;
+                            }
+
+                            if (state.status == FetchUserStatus.fetchSuccess) {
+                              // redirect to index page according to gender.
+                              // `/female/inquiry` is the index page for the female users
+                              // `/male/search_inquiry` is the index page for male users
+                              final next =
+                                  state.user.gender == Gender.female.toString()
+                                      ? '/female/inquiry'
+                                      : '/male/search_inquiry';
+
+                              Navigator.pushNamed(context, next);
                             }
 
                             setState(() {
