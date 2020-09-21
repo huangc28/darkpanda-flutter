@@ -65,12 +65,8 @@ class DarkPandaApp extends StatelessWidget {
             '/female/inquiry': (context) => BlocProvider(
                   create: (context) => InquiriesBloc(
                     apiClient: inquiryApiClient.ApiClient(),
-                  ),
-                  child: InqiuryList(
-                    inquiriesBloc: InquiriesBloc(
-                      apiClient: inquiryApiClient.ApiClient(),
-                    ),
-                  ),
+                  )..add(FetchInquiries()),
+                  child: InqiuryList(),
                 ),
             // Routes of male users
             '/male/search_inquiry': (context) => SearchInqiury(),

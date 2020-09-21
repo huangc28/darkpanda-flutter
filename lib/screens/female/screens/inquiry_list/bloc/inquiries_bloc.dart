@@ -32,7 +32,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       // final jwt = await SecureStore().fsc.read(key: 'jwt');
 
       this.apiClient.jwtToken =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMmM4MDhjNDEtYWI5OS00ODE3LWE0MzYtYjI5YzJhNjVmNWVhIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDYyODY5NX0.1moLhvp_MfgxMbwwd2gp0aNo1F0NE8S2B2vUO84lESg";
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMmM4MDhjNDEtYWI5OS00ODE3LWE0MzYtYjI5YzJhNjVmNWVhIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDcxNjg0N30.4KH7vLNLi0TYgDHnSUP_Ob4xzpD6QykTx1g91o2mooM";
       final resp = await apiClient.fetchInquiries(offset: 0);
 
       // if response status is not OK, emit fail event
