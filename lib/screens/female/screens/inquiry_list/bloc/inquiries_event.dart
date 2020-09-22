@@ -14,8 +14,12 @@ class FetchInquiries extends InquiriesEvent {
   final int perPage;
   final int offset;
 
+  /// Specify the number of page to fetch from the API.
+  final int nextPage;
+
   const FetchInquiries({
     this.perPage = 7,
     this.offset = 0,
-  });
+    this.nextPage = 1,
+  }) : assert(nextPage > 0);
 }

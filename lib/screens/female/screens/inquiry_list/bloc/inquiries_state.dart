@@ -10,11 +10,13 @@ enum FetchInquiryStatus {
 class InquiriesState<Error extends AppBaseException> extends Equatable {
   final FetchInquiryStatus status;
   final List<Inquiry> inquiries;
+  final int currentPage;
   final Error error;
 
   const InquiriesState._({
     this.status,
     this.inquiries,
+    this.currentPage,
     this.error,
   });
 
@@ -22,6 +24,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
       : this._(
           status: FetchInquiryStatus.initial,
           inquiries: [],
+          currentPage: 0,
         );
 
   InquiriesState.fetching(InquiriesState state)
@@ -42,9 +45,11 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
   InquiriesState.fetched(
     InquiriesState state, {
     List<Inquiry> inquiries,
+    int currentPage,
   }) : this._(
           status: FetchInquiryStatus.fetched,
           inquiries: inquiries ?? state.inquiries,
+          currentPage: currentPage ?? state.currentPage,
         );
 
   @override

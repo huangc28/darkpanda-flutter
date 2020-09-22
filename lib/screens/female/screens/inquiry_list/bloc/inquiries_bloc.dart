@@ -25,16 +25,21 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     yield* _mapFetchInquiriesToState(event);
   }
 
+  int _calcNextPageOffset(int nextPage, int perPage) =>
+      nextPage < 0 ? 0 : (nextPage - 1) * perPage;
+
   Stream<InquiriesState> _mapFetchInquiriesToState(
       FetchInquiries event) async* {
     try {
-      print('DEBUG trigger _mapFetchInquiriesToState ~');
+      yield InquiriesState.fetching(state);
       // @TODO fix mocked jwt token
       // final jwt = await SecureStore().fsc.read(key: 'jwt');
 
       this.apiClient.jwtToken =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMmM4MDhjNDEtYWI5OS00ODE3LWE0MzYtYjI5YzJhNjVmNWVhIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDc2MDY4Nn0.HrNu_mdvf_avlETupAO9fQj0aMErKFMpNbskUNzBOkI";
-      final resp = await apiClient.fetchInquiries(offset: event.offset);
+      final resp = await apiClient.fetchInquiries(
+        offset: _calcNextPageOffset(event.nextPage, event.perPage),
+      );
 
       // if response status is not OK, emit fail event
       if (resp.statusCode != HttpStatus.ok) {
@@ -51,6 +56,9 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         inquiries: dataMap['inquiries']
             .map<Inquiry>((data) => Inquiry.fromJson(data))
             .toList(),
+
+        /// this event always fetch the first page
+        currentPage: event.nextPage,
       );
     } on APIException catch (e) {
       yield InquiriesState.fetchFailed(

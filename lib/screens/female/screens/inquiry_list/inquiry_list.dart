@@ -12,7 +12,8 @@ import '../../models/inquiry.dart';
 //   - view male inquiry data - [ok]
 //   - accept male inquiry
 //   - tap go straight to the chatroom
-//   - add circular loading icon when fetching inquiries
+//   - add circular loading icon when fetching inquiries - [ok]
+//   - add refresh indicator
 //   - display failed message
 class InqiuryList extends StatefulWidget {
   // List of inquiry
@@ -21,17 +22,14 @@ class InqiuryList extends StatefulWidget {
 }
 
 class _InqiuryListState extends State<InqiuryList> {
+  _InqiuryListState() : super() {
+    _refreshCompleter = new Completer<void>();
+  }
+
   /// The purpose of a completer is to convert callback-based API into
   /// a future based one.
   /// Please refer to [official documentation](https://api.flutter.dev/flutter/dart-async/Completer-class.html)
   Completer<void> _refreshCompleter;
-
-  @override
-  initState() {
-    _refreshCompleter = new Completer<void>();
-
-    super.initState();
-  }
 
   _handleTap({
     BuildContext context,
@@ -50,7 +48,9 @@ class _InqiuryListState extends State<InqiuryList> {
       onRefresh: () {
         // emit event to fetch inquiry list again
         // toggles completer to indicate future
-        BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries());
+        BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries(
+          nextPage: 1,
+        ));
         return _refreshCompleter.future;
       },
       child: ListView.separated(
@@ -77,7 +77,20 @@ class _InqiuryListState extends State<InqiuryList> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocBuilder<InquiriesBloc, InquiriesState>(
+      child: BlocConsumer<InquiriesBloc, InquiriesState>(
+        listener: (context, state) {
+          if (state.status == FetchInquiryStatus.fetched) {
+            _refreshCompleter.complete();
+          }
+
+          if (state.status == FetchInquiryStatus.fetchFailed) {
+            _refreshCompleter.completeError(null);
+          }
+
+          _refreshCompleter = new Completer<void>();
+
+          return null;
+        },
         builder: (context, state) {
           if (state.status == FetchInquiryStatus.fetched) {
             return Scaffold(
