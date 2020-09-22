@@ -70,6 +70,7 @@ class DarkPandaApp extends StatelessWidget {
                 ),
             // Routes of male users
             '/male/search_inquiry': (context) => SearchInqiury(),
+            // '/inquiries/detail' () =>
           },
         ),
       ),

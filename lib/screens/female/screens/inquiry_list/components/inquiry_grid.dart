@@ -4,10 +4,12 @@ import '../../../models/inquiry.dart';
 
 class InquiryGrid extends StatelessWidget {
   final Inquiry inquiry;
+  final Function onTap;
 
   const InquiryGrid({
     Key key,
     this.inquiry,
+    @required this.onTap,
   }) : super(key: key);
 
   Widget _buildAvatar(String url) => CircleAvatar(
@@ -34,8 +36,6 @@ class InquiryGrid extends StatelessWidget {
         ],
       );
 
-  // Widget _buildActionButtons()
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,13 +57,30 @@ class InquiryGrid extends StatelessWidget {
             ),
             Expanded(
               flex: 3,
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: _buildInquiryDetailBar(
-                  serviceType: inquiry.serviceType,
-                  username: inquiry.inquirer.username,
-                  budget: inquiry.budget,
-                ),
+              child: Row(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: _buildInquiryDetailBar(
+                      serviceType: inquiry.serviceType,
+                      username: inquiry.inquirer.username,
+                      budget: inquiry.budget,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 14),
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.chevron_right,
+                          size: 20,
+                        ),
+                        onPressed: onTap,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ],
