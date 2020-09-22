@@ -31,6 +31,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
       : this._(
           status: FetchInquiryStatus.fetching,
           inquiries: state.inquiries,
+          currentPage: state.currentPage,
         );
 
   InquiriesState.fetchFailed(
@@ -39,6 +40,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
   }) : this._(
           status: FetchInquiryStatus.fetchFailed,
           inquiries: state.inquiries,
+          currentPage: state.currentPage,
           error: error ?? state.error,
         );
 

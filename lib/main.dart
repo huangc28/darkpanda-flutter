@@ -14,6 +14,7 @@ import './screens/register/screens/phone_verify/services/data_provider.dart';
 
 import './screens/female/screens/inquiry_list/inquiry_list.dart';
 import './screens/female/screens/inquiry_list/bloc/inquiries_bloc.dart';
+import './screens/female/screens/inquiry_list/bloc/load_more_inquiries_bloc.dart';
 import './screens/female/screens/inquiry_list/services/api_client.dart'
     as inquiryApiClient;
 
@@ -62,14 +63,31 @@ class DarkPandaApp extends StatelessWidget {
                 ),
 
             // Routes of female users.
-            '/female/inquiry': (context) => BlocProvider(
-                  create: (context) => InquiriesBloc(
-                    apiClient: inquiryApiClient.ApiClient(),
-                  )..add(FetchInquiries(
-                      nextPage: 1,
-                    )),
-                  child: InqiuryList(),
-                ),
+            '/female/inquiry': (context) {
+              final _inquiriesBloc = InquiriesBloc(
+                apiClient: inquiryApiClient.ApiClient(),
+              );
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider<InquiriesBloc>(
+                    create: (context) {
+                      _inquiriesBloc.add(FetchInquiries(
+                        nextPage: 1,
+                      ));
+
+                      return _inquiriesBloc;
+                    },
+                  ),
+                  BlocProvider(
+                      create: (context) => LoadMoreInquiriesBloc(
+                            inquiriesBloc: _inquiriesBloc,
+                            apiClient: inquiryApiClient.ApiClient(),
+                          ))
+                ],
+                child: InqiuryList(),
+              );
+            },
             // Routes of male users
             '/male/search_inquiry': (context) => SearchInqiury(),
             // '/inquiries/detail' () =>
