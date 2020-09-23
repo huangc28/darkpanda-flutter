@@ -11,12 +11,16 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
   final FetchInquiryStatus status;
   final List<Inquiry> inquiries;
   final int currentPage;
+
+  /// Indicates that there are more inquires to load for the next page.
+  final bool hasMore;
   final Error error;
 
   const InquiriesState._({
     this.status,
     this.inquiries,
     this.currentPage,
+    this.hasMore,
     this.error,
   });
 
@@ -25,6 +29,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           status: FetchInquiryStatus.initial,
           inquiries: [],
           currentPage: 0,
+          hasMore: true,
         );
 
   InquiriesState.fetching(InquiriesState state)
@@ -32,6 +37,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           status: FetchInquiryStatus.fetching,
           inquiries: state.inquiries,
           currentPage: state.currentPage,
+          hasMore: state.hasMore,
         );
 
   InquiriesState.fetchFailed(
@@ -42,16 +48,19 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           inquiries: state.inquiries,
           currentPage: state.currentPage,
           error: error ?? state.error,
+          hasMore: state.hasMore,
         );
 
   InquiriesState.fetched(
     InquiriesState state, {
     List<Inquiry> inquiries,
     int currentPage,
+    bool hasMore,
   }) : this._(
           status: FetchInquiryStatus.fetched,
           inquiries: inquiries ?? state.inquiries,
           currentPage: currentPage ?? state.currentPage,
+          hasMore: hasMore ?? state.hasMore,
         );
 
   @override

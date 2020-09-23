@@ -22,7 +22,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   InquiriesBloc({
     this.apiClient,
     this.mockedApiToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMmM4MDhjNDEtYWI5OS00ODE3LWE0MzYtYjI5YzJhNjVmNWVhIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDgwNTY1NH0.q6enlJb8Zwr9bHwurIQqK5aW4IPAW8I1WYMEMzqm8no',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYzEyYmNkZmMtOTJiMy00ZDFmLTllZWEtODg3YWRjZjE2MDFkIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDg0OTQ1Mn0.QWIorE3BoL3i2N3J1WuC7to1irzQTB6uFAId7-2cTMI',
   }) : super(InquiriesState.initial());
 
   @override
@@ -33,8 +33,8 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       yield* _mapFetchInquiriesToState(event);
     }
 
-    if (event is AppendInquiries) {
-      yield* _mapAppendInquiriesToState(event);
+    if (event is LoadMoreInquiries) {
+      yield* _mapLoadMoreInquiries(event);
     }
   }
 
@@ -46,11 +46,14 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       // final jwt = await SecureStore().fsc.read(key: 'jwt');
 
       this.apiClient.jwtToken = mockedApiToken;
+
+      final offset = calcNextPageOffset(
+        nextPage: event.nextPage,
+        perPage: event.perPage,
+      );
+
       final resp = await apiClient.fetchInquiries(
-        offset: calcNextPageOffset(
-          nextPage: event.nextPage,
-          perPage: event.perPage,
-        ),
+        offset: offset,
       );
 
       // if response status is not OK, emit fail event
@@ -71,6 +74,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
         /// this event always fetch the first page
         currentPage: event.nextPage,
+        hasMore: dataMap['has_more'],
       );
     } on APIException catch (e) {
       yield InquiriesState.fetchFailed(
@@ -87,18 +91,61 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     }
   }
 
-  Stream<InquiriesState> _mapAppendInquiriesToState(
-      AppendInquiries event) async* {
-    print('DEBUG _mapAppendInquiriesToState ${event.inquiries}');
-    final appended = <Inquiry>[
-      ...state.inquiries,
-      ...?event.inquiries,
-    ].toList();
+  Stream<InquiriesState> _mapLoadMoreInquiries(LoadMoreInquiries event) async* {
+    try {
+      yield InquiriesState.fetching(state);
 
-    // Append fetched inquiry onto existing inquiry.
-    yield InquiriesState.fetched(
-      state,
-      inquiries: appended,
-    );
+      // If there are no more records to load, don't bother to request the API.
+      if (!state.hasMore) {
+        return;
+      }
+
+      this.apiClient.jwtToken = mockedApiToken;
+
+      // Calculate the number to offset to skip when fetching the next page.
+      final resp = await apiClient.fetchInquiries(
+        offset: calcNextPageOffset(
+          nextPage: state.currentPage + 1,
+          perPage: event.perPage,
+        ),
+      );
+
+      // if response status is not OK, emit fail event
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+
+      // Normalize response with inquiry model
+      final dataMap = json.decode(resp.body);
+      final newInquiries = dataMap['inquiries']
+          .map<Inquiry>((data) => Inquiry.fromJson(data))
+          .toList();
+
+      final appended = <Inquiry>[
+        ...state.inquiries,
+        ...?newInquiries,
+      ].toList();
+
+      yield InquiriesState.fetched(
+        state,
+        inquiries: appended,
+        currentPage: state.currentPage + 1,
+        hasMore: dataMap['has_more'],
+      );
+    } on APIException catch (e) {
+      yield InquiriesState.fetchFailed(
+        state,
+        error: e,
+      );
+    } catch (e) {
+      yield InquiriesState.fetchFailed(
+        state,
+        error: AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
   }
 }

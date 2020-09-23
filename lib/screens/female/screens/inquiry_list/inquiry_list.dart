@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/inquiries_bloc.dart';
-import './bloc/load_more_inquiries_bloc.dart';
+// import './bloc/load_more_inquiries_bloc.dart';
 import './components/inquiry_grid.dart';
 import '../../models/inquiry.dart';
 
@@ -24,10 +24,6 @@ class InqiuryList extends StatefulWidget {
 }
 
 class _InqiuryListState extends State<InqiuryList> {
-  _InqiuryListState() : super() {
-    _refreshCompleter = new Completer<void>();
-  }
-
   /// The purpose of a completer is to convert callback-based API into
   /// a future based one.
   /// Please refer to [official documentation](https://api.flutter.dev/flutter/dart-async/Completer-class.html)
@@ -38,6 +34,7 @@ class _InqiuryListState extends State<InqiuryList> {
   Timer _loadMoreDebounce;
   @override
   initState() {
+    _refreshCompleter = Completer();
     _scrollController = new ScrollController()..addListener(_scrollListener);
     super.initState();
   }
@@ -63,13 +60,9 @@ class _InqiuryListState extends State<InqiuryList> {
       _loadMoreDebounce = Timer(
           const Duration(milliseconds: 500),
           () => new Future.delayed(Duration.zero, () {
-                BlocProvider.of<LoadMoreInquiriesBloc>(context)
-                    .add(LoadMoreInquiries(
-                  nextPage: BlocProvider.of<InquiriesBloc>(context)
-                          .state
-                          .currentPage +
-                      1,
-                ));
+                print('DEBUG trigger loadmore');
+                BlocProvider.of<InquiriesBloc>(context)
+                    .add(LoadMoreInquiries());
               }));
     }
   }
@@ -94,6 +87,7 @@ class _InqiuryListState extends State<InqiuryList> {
         BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries(
           nextPage: 1,
         ));
+
         return _refreshCompleter.future;
       },
       child: ListView.separated(
@@ -126,32 +120,33 @@ class _InqiuryListState extends State<InqiuryList> {
           listener: (context, state) {
             if (state.status == FetchInquiryStatus.fetched) {
               _refreshCompleter.complete();
+              _refreshCompleter = Completer();
             }
 
             if (state.status == FetchInquiryStatus.fetchFailed) {
               _refreshCompleter.completeError(null);
+              _refreshCompleter = Completer();
             }
-
-            _refreshCompleter = new Completer<void>();
 
             return null;
           },
           builder: (context, state) {
-            if (state.status == FetchInquiryStatus.fetched) {
-              return _buildInquiryList(state.inquiries);
-            }
-
-            if (state.status == FetchInquiryStatus.fetchFailed) {
+            if (state.status == FetchInquiryStatus.initial) {
               return Center(
-                child: Text(state.error.message),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[200]),
+                ),
               );
             }
 
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[200]),
-              ),
-            );
+            // Display snackbar if fetch failed
+            // if (state.status == FetchInquiryStatus.fetchFailed) {
+            //   return Center(
+            //     child: Text(state.error.message),
+            //   );
+            // }
+
+            return _buildInquiryList(state.inquiries);
           },
         ),
       ),

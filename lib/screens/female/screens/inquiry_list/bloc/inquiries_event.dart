@@ -22,6 +22,12 @@ class FetchInquiries extends InquiriesEvent {
   }) : assert(nextPage > 0);
 }
 
+class LoadMoreInquiries extends InquiriesEvent {
+  final int perPage;
+
+  const LoadMoreInquiries({this.perPage = 7});
+}
+
 class AppendInquiries extends InquiriesEvent {
   final List<Inquiry> inquiries;
 
