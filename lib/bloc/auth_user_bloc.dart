@@ -41,13 +41,13 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
           value: event.jwt,
         );
 
-    yield AuthUserState.patchUser(AuthUserState.copyFrom(
+    yield AuthUserState.patchUser(
       state,
       user: AuthUser.copyFrom(
         state.user,
         jwt: event.jwt,
       ),
-    ));
+    );
 
     add(FetchUserInfo());
   }
@@ -68,10 +68,12 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
       }
 
       // update auth user info
-      yield AuthUserState.fetchSuccess(AuthUserState.copyFrom(
+      yield AuthUserState.fetchSuccess(
         state,
-        user: AuthUser.fromJson(json.decode(resp.body)),
-      ));
+        authUser: AuthUser.fromJson(
+          json.decode(resp.body),
+        ),
+      );
     } on APIException catch (e) {
       // yield AuthUserState
       yield AuthUserState.fetchFailed(AuthUserState.copyFrom(state, error: e));

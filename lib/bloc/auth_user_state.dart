@@ -21,34 +21,35 @@ class AuthUserState<Error extends AppBaseException> extends Equatable {
   AuthUserState.initial()
       : this._(
           status: FetchUserStatus.initial,
-          user: AuthUser(),
         );
 
   AuthUserState.fetching(AuthUserState m)
       : this._(
           status: FetchUserStatus.fetching,
-          user: m.user,
           error: null,
         );
 
   AuthUserState.fetchFailed(AuthUserState m)
       : this._(
           status: FetchUserStatus.fetchFailed,
-          user: m.user,
           error: m.error,
         );
 
-  AuthUserState.fetchSuccess(AuthUserState m)
-      : this._(
+  AuthUserState.fetchSuccess(
+    AuthUserState m, {
+    AuthUser authUser,
+  }) : this._(
           status: FetchUserStatus.fetchSuccess,
-          user: m.user,
+          user: authUser ?? m.user,
           error: null,
         );
 
-  AuthUserState.patchUser(AuthUserState m)
-      : this._(
-          user: m.user,
-          error: m.error,
+  AuthUserState.patchUser(
+    AuthUserState m, {
+    AuthUser user,
+  }) : this._(
+          status: m.status,
+          user: user ?? m.user,
         );
 
   factory AuthUserState.copyFrom(

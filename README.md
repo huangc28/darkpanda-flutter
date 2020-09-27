@@ -31,4 +31,9 @@ samples, guidance on mobile development, and a full API reference.
      }
  }
  ```
+ 
+ **status**: done
 
+2. Implement app bottom bar
+
+3. Login / Logout function

@@ -22,13 +22,14 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   InquiriesBloc({
     this.apiClient,
     this.mockedApiToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYzEyYmNkZmMtOTJiMy00ZDFmLTllZWEtODg3YWRjZjE2MDFkIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDg0OTQ1Mn0.QWIorE3BoL3i2N3J1WuC7to1irzQTB6uFAId7-2cTMI',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYzEyYmNkZmMtOTJiMy00ZDFmLTllZWEtODg3YWRjZjE2MDFkIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDkzNTYwMn0.Nv7jp3VBHKZ7Y1K_28w-K8TEKsE7554vyg7XUZxGEh8',
   }) : super(InquiriesState.initial());
 
   @override
   Stream<InquiriesState> mapEventToState(
     InquiriesEvent event,
   ) async* {
+    print('DEBUG iq 1');
     if (event is FetchInquiries) {
       yield* _mapFetchInquiriesToState(event);
     }
@@ -77,11 +78,13 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         hasMore: dataMap['has_more'],
       );
     } on APIException catch (e) {
+      print('DEBUG iq 2 ${e.message}');
       yield InquiriesState.fetchFailed(
         state,
         error: e,
       );
     } catch (e) {
+      print('DEBUG iq 3 ${e}');
       yield InquiriesState.fetchFailed(
         state,
         error: AppGeneralExeption(

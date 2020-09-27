@@ -32,6 +32,7 @@ class _InqiuryListState extends State<InqiuryList> {
   ScrollController _scrollController;
 
   Timer _loadMoreDebounce;
+
   @override
   initState() {
     _refreshCompleter = Completer();
@@ -60,7 +61,6 @@ class _InqiuryListState extends State<InqiuryList> {
       _loadMoreDebounce = Timer(
           const Duration(milliseconds: 500),
           () => new Future.delayed(Duration.zero, () {
-                print('DEBUG trigger loadmore');
                 BlocProvider.of<InquiriesBloc>(context)
                     .add(LoadMoreInquiries());
               }));
@@ -124,7 +124,7 @@ class _InqiuryListState extends State<InqiuryList> {
             }
 
             if (state.status == FetchInquiryStatus.fetchFailed) {
-              _refreshCompleter.completeError(null);
+              _refreshCompleter.completeError(state.error);
               _refreshCompleter = Completer();
             }
 
