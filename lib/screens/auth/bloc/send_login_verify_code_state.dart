@@ -9,12 +9,16 @@ enum SendLoginVerifyCodeStatus {
 
 class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
   final SendLoginVerifyCodeStatus status;
-  final String jwt;
+
+  /// Verify code prefix
+  final String verifyChar;
+  final String uuid;
   final E error;
 
   const SendLoginVerifyCodeState._({
     this.status,
-    this.jwt,
+    this.verifyChar,
+    this.uuid,
     this.error,
   });
 
@@ -37,12 +41,14 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
 
   const SendLoginVerifyCodeState.sendSuccess(
     SendLoginVerifyCodeState state, {
-    @required String jwt,
+    @required String verifyChar,
+    @required String uuid,
   }) : this._(
           status: SendLoginVerifyCodeStatus.sendSuccess,
-          jwt: jwt,
+          verifyChar: verifyChar,
+          uuid: uuid,
         );
 
   @override
-  List<Object> get props => [status, jwt];
+  List<Object> get props => [status, verifyChar, uuid];
 }

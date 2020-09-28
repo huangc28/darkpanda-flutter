@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:storyboard/storyboard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
@@ -14,6 +13,7 @@ import './app.dart';
 
 import './screens/auth/auth.dart';
 import './screens/auth/bloc/send_login_verify_code_bloc.dart';
+import './screens/auth/services/auth_api_client.dart';
 // import './screens/register/register.dart' as RegisterScreen;
 // import './screens/register/screens/phone_verify/phone_verify.dart';
 // import './screens/register/screens/phone_verify/services/data_provider.dart';
@@ -53,7 +53,9 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => SendLoginVerifyCodeBloc(),
+          create: (context) => SendLoginVerifyCodeBloc(
+            authApiClient: AuthAPIClient(),
+          ),
         ),
       ],
       child: SecureStoreProvider(

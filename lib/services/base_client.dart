@@ -27,17 +27,18 @@ abstract class BaseClient extends http.BaseClient {
     );
   }
 
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    // check if jwtToken is null before sending.
+  withAuthHeader(http.BaseRequest request) {
     if (jwtToken == null) {
-      return Future.error(
-          AppGeneralExeption(message: 'Jwt token can not be null.'));
+      throw AppGeneralExeption(
+        message: 'jwt token can not be null.',
+      );
     }
 
     request.headers['Authorization'] = 'Bearer $jwtToken';
-
-    return http.Client().send(request);
   }
+
+  Future<http.StreamedResponse> send(http.BaseRequest request) =>
+      http.Client().send(request);
 
   // Sends request and return [http.Response] object as the result. It converts
   // [http.StreamResponse] to [http.Response]

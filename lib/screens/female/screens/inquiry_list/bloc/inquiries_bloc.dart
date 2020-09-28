@@ -29,7 +29,6 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   Stream<InquiriesState> mapEventToState(
     InquiriesEvent event,
   ) async* {
-    print('DEBUG iq 1');
     if (event is FetchInquiries) {
       yield* _mapFetchInquiriesToState(event);
     }
@@ -78,13 +77,11 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         hasMore: dataMap['has_more'],
       );
     } on APIException catch (e) {
-      print('DEBUG iq 2 ${e.message}');
       yield InquiriesState.fetchFailed(
         state,
         error: e,
       );
     } catch (e) {
-      print('DEBUG iq 3 ${e}');
       yield InquiriesState.fetchFailed(
         state,
         error: AppGeneralExeption(

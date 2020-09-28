@@ -46,17 +46,34 @@ class _AuthState extends State<Auth> {
         elevation: 0.0,
         backgroundColor: Colors.white,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-                child: LoginForm(
-                  onSendVerifyCode: _handleSendVerifyCode,
-                ),
+      body: BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
+        listener: (context, state) {
+          // Display snack bar if error occured.
+          if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error.message),
               ),
-            ],
+            );
+          }
+
+          // Redirect to verify code page, if verify code is send successfully.
+          if (state.status == SendLoginVerifyCodeStatus.sendSuccess) {
+            print('DEBUG bl 2 ${state.verifyChar} ${state.uuid}');
+          }
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                  child: LoginForm(
+                    onSendVerifyCode: _handleSendVerifyCode,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
