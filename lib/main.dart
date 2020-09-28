@@ -11,9 +11,11 @@ import './providers/secure_store.dart';
 
 import './app.dart';
 
-import './screens/auth/auth.dart';
-import './screens/auth/bloc/send_login_verify_code_bloc.dart';
-import './screens/auth/services/auth_api_client.dart';
+import './screens/auth/auth_navigator.dart';
+
+// import './screens/auth/auth.dart';
+// import './screens/auth/bloc/send_login_verify_code_bloc.dart';
+// import './screens/auth/services/auth_api_client.dart';
 // import './screens/register/register.dart' as RegisterScreen;
 // import './screens/register/screens/phone_verify/phone_verify.dart';
 // import './screens/register/screens/phone_verify/services/data_provider.dart';
@@ -52,11 +54,11 @@ class DarkPandaApp extends StatelessWidget {
             ticker: Timer(),
           ),
         ),
-        BlocProvider(
-          create: (context) => SendLoginVerifyCodeBloc(
-            authApiClient: AuthAPIClient(),
-          ),
-        ),
+        // BlocProvider(
+        //   create: (context) => SendLoginVerifyCodeBloc(
+        //     authApiClient: AuthAPIClient(),
+        //   ),
+        // ),
       ],
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
@@ -64,7 +66,7 @@ class DarkPandaApp extends StatelessWidget {
           theme: ThemeManager.getTheme(),
           initialRoute: '/',
           routes: {
-            '/': (context) => Auth(),
+            '/': (context) => AuthNavigator(),
             '/app': (context) => App(),
             //   '/': (context) => Home(),
             // '/register': (context) => RegisterScreen.Register(),

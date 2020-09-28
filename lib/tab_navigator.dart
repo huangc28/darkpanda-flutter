@@ -44,7 +44,7 @@ class TabNavigator extends StatelessWidget {
     }
 
     return {
-      '/': (context) => Center(child: Text('route builder not exists')),
+      '/': (context) => Center(child: Text('route builder not exists yet')),
     };
   }
 

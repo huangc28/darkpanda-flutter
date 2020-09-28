@@ -10,6 +10,10 @@ import '../../bloc/auth_user_bloc.dart';
 // If user has already logged in, navigate to `/app` route.
 // If not, prompt user to `login` / `register`.
 class Auth extends StatefulWidget {
+  Auth({this.onPush});
+
+  final ValueChanged<String> onPush;
+
   @override
   _AuthState createState() => _AuthState();
 }
@@ -59,7 +63,14 @@ class _AuthState extends State<Auth> {
 
           // Redirect to verify code page, if verify code is send successfully.
           if (state.status == SendLoginVerifyCodeStatus.sendSuccess) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('success'),
+              ),
+            );
+
             print('DEBUG bl 2 ${state.verifyChar} ${state.uuid}');
+            widget.onPush('/verify-login-code');
           }
         },
         child: SafeArea(
