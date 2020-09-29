@@ -54,6 +54,7 @@ class SendLoginVerifyCodeBloc
         state,
         verifyChar: authMap['verify_prefix'],
         uuid: authMap['uuid'],
+        mobile: authMap['mobile'],
       );
     } on APIException catch (e) {
       print('DEBUG APIException 1 ${e.message}');

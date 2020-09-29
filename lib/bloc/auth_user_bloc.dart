@@ -32,14 +32,15 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
     if (event is FetchUserInfo) {
       yield* _mapUserInfoToState(event);
     }
+
+    if (event is PutUser) {
+      yield* _mapPutUserToState(event);
+    }
   }
 
   Stream<AuthUserState> _mapPatchJwtToState(PatchJwt event) async* {
     // store jwt to security store.
-    await SecureStore().fsc.write(
-          key: 'jwt',
-          value: event.jwt,
-        );
+    await SecureStore().writeJwtToken(event.jwt);
 
     yield AuthUserState.patchUser(
       state,
@@ -58,7 +59,7 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
   Stream<AuthUserState> _mapUserInfoToState(FetchUserInfo event) async* {
     try {
       // retrieve user info
-      final jwt = await SecureStore().fsc.read(key: 'jwt');
+      final jwt = await SecureStore().readJwtToken();
 
       dataProvider.jwtToken = jwt;
       final resp = await dataProvider.fetchUser();
@@ -85,5 +86,10 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
         ),
       ));
     }
+  }
+
+  Stream<AuthUserState> _mapPutUserToState(PutUser event) async* {
+    print('DEBUG _mapPutUserToState ${event.authUser}');
+    yield AuthUserState.patchUser(state, user: event.authUser);
   }
 }

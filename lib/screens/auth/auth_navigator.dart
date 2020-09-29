@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/services/apis.dart';
 
-import './bloc/send_login_verify_code_bloc.dart';
+import './bloc/verify_login_code_bloc.dart';
 import './services/auth_api_client.dart';
 import './auth.dart';
 import './screens/verify_login_code.dart';
@@ -20,7 +22,7 @@ class AuthNavigator extends StatefulWidget {
 
 class AuthNavigatorState extends State<AuthNavigator> {
   @override
-  String _currentRoute = '/verify-login-code';
+  String _currentRoute = '/';
 
   void _push(BuildContext context, String routeName) {
     Navigator.push(
@@ -32,9 +34,17 @@ class AuthNavigatorState extends State<AuthNavigator> {
 
   Widget _routeBuilder(BuildContext context, String routeName) {
     final routeMap = {
-      '/': (context) =>
-          Auth(onPush: (String routeName) => _push(context, routeName)),
-      '/verify-login-code': (context) => VerifyLoginCode(),
+      '/': (context) => Auth(
+            onPush: (context, String routeName) => _push(context, routeName),
+          ),
+      '/verify-login-code': (context) => BlocProvider(
+            create: (context) => VerifyLoginCodeBloc(
+              authAPIClient: AuthAPIClient(),
+              userApis: UserApis(),
+              authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+            ),
+            child: VerifyLoginCode(),
+          ),
     };
     return routeMap[routeName](context);
   }
@@ -46,15 +56,9 @@ class AuthNavigatorState extends State<AuthNavigator> {
       onGenerateRoute: (settings) {
         // Generate route according to route name
         return MaterialPageRoute(
-            settings: settings,
-            builder: (context) {
-              return BlocProvider(
-                create: (context) => SendLoginVerifyCodeBloc(
-                  authApiClient: AuthAPIClient(),
-                ),
-                child: _routeBuilder(context, settings.name),
-              );
-            });
+          settings: settings,
+          builder: (context) => _routeBuilder(context, settings.name),
+        );
       },
     );
   }

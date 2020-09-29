@@ -14,6 +14,8 @@ class UserApis extends BaseClient {
       buildUri('/v1/users/me'),
     );
 
+    withAuthHeader(request);
+
     final res = await sendWithResponse(request);
 
     return res;

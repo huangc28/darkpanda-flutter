@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
+import '../bloc/verify_login_code_bloc.dart';
+import '../bloc/send_login_verify_code_bloc.dart';
 
 bool isNumeric(String s) {
   if (s == null) {
@@ -10,6 +14,12 @@ bool isNumeric(String s) {
   return double.tryParse(s) != null;
 }
 
+// @TODO
+//   - Assert that all numbers submitted are numeric.
+//   - Redirect to app index page when login success.
+//   - Shake the ping code field and notify error if failed to verify.
+//     Add an bloc listener to subscribe to verify result from the server.
+//     Error shaking behavior would be triggered based on the result.
 class VerifyLoginCode extends StatefulWidget {
   const VerifyLoginCode();
 
@@ -20,33 +30,27 @@ class VerifyLoginCode extends StatefulWidget {
 class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   String _inputVerifyCode;
 
-  final TextEditingController _editController = TextEditingController();
+  StreamController<ErrorAnimationType> errorController;
+
+  bool hasError = false;
 
   @override
   void initState() {
-    _editController.addListener(_onChangePinCode);
-
+    errorController = StreamController<ErrorAnimationType>();
     super.initState();
   }
 
-  void _onChangePinCode() {
-    // if the last character is digit, allow it to append
-    // to the final value of the pin code
-    final lastChar =
-        _editController.text.substring(_editController.text.length - 1);
+  _emitSendVerifyLoginCode(BuildContext context, String verifyDigs) {
+    // Retrieve mobile and verifyChar from `SendLoginVerifyCodeBloc`.
+    final sState = BlocProvider.of<SendLoginVerifyCodeBloc>(context).state;
 
-    if (!isNumeric(lastChar)) {
-      _editController.value = TextEditingValue(
-        text:
-            _editController.text.substring(0, _editController.text.length - 1),
-      );
-    }
-  }
-
-  void dispose() {
-    _editController.dispose();
-
-    super.dispose();
+    // emit verify login code event
+    BlocProvider.of<VerifyLoginCodeBloc>(context).add(SendVerifyLoginCode(
+      mobile: sState.mobile,
+      uuid: sState.uuid,
+      verifyChars: sState.verifyChar,
+      verifyDigs: verifyDigs,
+    ));
   }
 
   @override
@@ -57,17 +61,29 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
       ),
       body: Container(
         child: PinCodeTextField(
-          controller: _editController,
+          errorAnimationController: errorController,
           appContext: context,
           length: 4,
           onChanged: (String value) {
-            print('DEBUG $value');
+            setState(() {
+              _inputVerifyCode = value;
+            });
           },
-          onCompleted: (String value) {},
-          validator: (String value) {
-            print('DEBUG validator $value');
+          onCompleted: (String value) {
+            if (isNumeric(value)) {
+              // emit verify login code event
+              _emitSendVerifyLoginCode(context, value);
 
-            return null;
+              setState(() {
+                hasError = false;
+              });
+            } else {
+              errorController.add(ErrorAnimationType.shake);
+
+              setState(() {
+                hasError = true;
+              });
+            }
           },
           keyboardType: TextInputType.number,
         ),

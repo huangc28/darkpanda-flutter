@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/repository.dart';
 
+import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
+import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
+
 import './theme.dart';
 import './services/apis.dart';
 import './pkg/secure_store.dart';
@@ -54,11 +57,11 @@ class DarkPandaApp extends StatelessWidget {
             ticker: Timer(),
           ),
         ),
-        // BlocProvider(
-        //   create: (context) => SendLoginVerifyCodeBloc(
-        //     authApiClient: AuthAPIClient(),
-        //   ),
-        // ),
+        BlocProvider(
+          create: (context) => SendLoginVerifyCodeBloc(
+            authApiClient: AuthAPIClient(),
+          ),
+        ),
       ],
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,

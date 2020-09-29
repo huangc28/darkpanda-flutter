@@ -16,4 +16,27 @@ class AuthAPIClient extends BaseClient {
 
     return res;
   }
+
+  Future<http.Response> sendVerifyLogigCode({
+    String uuid,
+    String verifyChars,
+    String verifyDigs,
+    String mobile,
+  }) async {
+    final request = http.Request(
+        'POST',
+        buildUri(
+          '/v1/verify-login-code',
+          {
+            'uuid': uuid,
+            'mobile': mobile,
+            'verify_char': verifyChars,
+            'verify_dig': verifyDigs,
+          },
+        ));
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
 }

@@ -13,12 +13,14 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
   /// Verify code prefix
   final String verifyChar;
   final String uuid;
+  final String mobile;
   final E error;
 
   const SendLoginVerifyCodeState._({
     this.status,
     this.verifyChar,
     this.uuid,
+    this.mobile,
     this.error,
   });
 
@@ -43,12 +45,19 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
     SendLoginVerifyCodeState state, {
     @required String verifyChar,
     @required String uuid,
+    @required String mobile,
   }) : this._(
           status: SendLoginVerifyCodeStatus.sendSuccess,
           verifyChar: verifyChar,
           uuid: uuid,
+          mobile: mobile,
         );
 
   @override
-  List<Object> get props => [status, verifyChar, uuid];
+  List<Object> get props => [
+        status,
+        verifyChar,
+        uuid,
+        mobile,
+      ];
 }

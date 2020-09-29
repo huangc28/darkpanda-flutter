@@ -8,9 +8,17 @@ abstract class AuthUserEvent extends Equatable {
 }
 
 class PatchJwt extends AuthUserEvent {
-  final String jwt;
+  const PatchJwt({this.jwt});
 
-  PatchJwt({this.jwt});
+  final String jwt;
 }
 
 class FetchUserInfo extends AuthUserEvent {}
+
+/// Replace the auth user in the current state with the
+/// new auth user.
+class PutUser extends AuthUserEvent {
+  const PutUser({this.authUser});
+
+  final AuthUser authUser;
+}

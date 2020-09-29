@@ -12,7 +12,9 @@ import '../../bloc/auth_user_bloc.dart';
 class Auth extends StatefulWidget {
   Auth({this.onPush});
 
-  final ValueChanged<String> onPush;
+  // final ValueChanged<String> onPush;
+
+  final Function onPush;
 
   @override
   _AuthState createState() => _AuthState();
@@ -70,7 +72,7 @@ class _AuthState extends State<Auth> {
             );
 
             print('DEBUG bl 2 ${state.verifyChar} ${state.uuid}');
-            widget.onPush('/verify-login-code');
+            widget.onPush(context, '/verify-login-code');
           }
         },
         child: SafeArea(
