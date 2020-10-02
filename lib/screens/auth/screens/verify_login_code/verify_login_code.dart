@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../bloc/verify_login_code_bloc.dart';
-import '../bloc/send_login_verify_code_bloc.dart';
+import '../../bloc/verify_login_code_bloc.dart';
+import '../../bloc/send_login_verify_code_bloc.dart';
 
 bool isNumeric(String s) {
   if (s == null) {
@@ -17,7 +17,7 @@ bool isNumeric(String s) {
 // @TODO
 //   - Assert that all numbers submitted are numeric.
 //   - Redirect to app index page when login success.
-//   - Shake the ping code field and notify error if failed to verify.
+//   - Shake the pin code field and notify error if failed to verify.
 //     Add an bloc listener to subscribe to verify result from the server.
 //     Error shaking behavior would be triggered based on the result.
 class VerifyLoginCode extends StatefulWidget {

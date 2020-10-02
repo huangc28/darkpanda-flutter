@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/app.dart';
 
-import './bloc/send_login_verify_code_bloc.dart';
 import './components/login_form.dart';
-import '../../App.dart';
-import '../../bloc/auth_user_bloc.dart';
+import '../../bloc/send_login_verify_code_bloc.dart';
 
-// If user has already logged in, navigate to `/app` route.
-// If not, prompt user to `login` / `register`.
+// TODOs:
+//   - Add a button to redirect user to register page.
 class Auth extends StatefulWidget {
   Auth({this.onPush});
 
-  // final ValueChanged<String> onPush;
-
-  final Function onPush;
+  final ValueChanged<String> onPush;
 
   @override
   _AuthState createState() => _AuthState();
@@ -22,6 +20,9 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
   @override
+
+  /// If user has already logged in, navigate to `/app` route.
+  /// If not,  stay on this page and ask  user to `login` / `register`.
   void initState() {
     final authUser = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -71,8 +72,7 @@ class _AuthState extends State<Auth> {
               ),
             );
 
-            print('DEBUG bl 2 ${state.verifyChar} ${state.uuid}');
-            widget.onPush(context, '/verify-login-code');
+            widget.onPush('/verify-login-code');
           }
         },
         child: SafeArea(
@@ -82,6 +82,7 @@ class _AuthState extends State<Auth> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                   child: LoginForm(
+                    onPressRegister: _handlePressRegister,
                     onSendVerifyCode: _handleSendVerifyCode,
                   ),
                 ),
@@ -98,5 +99,10 @@ class _AuthState extends State<Auth> {
     BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(SendLoginVerifyCode(
       username: username,
     ));
+  }
+
+  void _handlePressRegister() {
+    widget.onPush('/register');
+    print('DEBUG trigger press register');
   }
 }

@@ -1,38 +1,41 @@
-import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import './bloc/register_bloc.dart';
 import './components/register_form.dart';
 import './models/models.dart' as models;
 import './bloc/register_bloc.dart' as registerBloc;
 
 class Register extends StatelessWidget {
-  void _handleRegister(BuildContext context, models.RegisterForm form) {
-    BlocProvider.of<RegisterBloc>(context).add(registerBloc.Register(
-      username: form.username,
-      gender: form.gender,
-      referalcode: form.referalCode,
-    ));
-  }
+  const Register({this.onPush});
+
+  final ValueChanged<String> onPush;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Register'),
+      ),
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 120.0, horizontal: 25.0),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Center(
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                 child: BlocListener<RegisterBloc, RegisterState>(
                   listener: (BuildContext context, state) {
                     if (state.status == RegisterStatus.registered) {
                       // navigate to phone verify page.
                       print('Navigating to /register/verify-phone ...');
-                      Navigator.pushNamed(
-                        context,
-                        '/register/verify-phone',
+                      onPush('/register/verify-phone');
+                    }
+
+                    if (state.status == RegisterStatus.registerFailed) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.error.message),
+                        ),
                       );
                     }
                   },
@@ -46,5 +49,13 @@ class Register extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleRegister(BuildContext context, models.RegisterForm form) {
+    BlocProvider.of<RegisterBloc>(context).add(registerBloc.Register(
+      username: form.username,
+      gender: form.gender,
+      referalcode: form.referalCode,
+    ));
   }
 }

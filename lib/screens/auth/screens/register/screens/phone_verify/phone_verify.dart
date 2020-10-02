@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 
@@ -9,6 +8,7 @@ import './components/phone_verify_form.dart';
 import './bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 import './models/phone_verify_form.dart' as models;
+import '../../bloc/register_bloc.dart';
 import '../../constants.dart';
 
 // @TODO:
@@ -31,8 +31,6 @@ class RegisterPhoneVerify extends StatefulWidget {
 
 class _RegisterPhoneVerifyState<Error extends AppBaseException>
     extends State<RegisterPhoneVerify> {
-  bool _hasSendSMS = false;
-
   /// verify code prefix as of form {preffix-suffix}
   String _verifyCodePrefix;
 
@@ -49,11 +47,15 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   Error _fetchAuthUserError;
 
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
-    BlocProvider.of<MobileVerifyBloc>(context).add(VerifyMobile(
-      uuid: form.uuid,
-      prefix: form.prefix,
-      suffix: form.suffix,
-    ));
+    print('DEBUG mobile number ${form.countryCode} ${form.mobileNumber}');
+    BlocProvider.of<MobileVerifyBloc>(context).add(
+      VerifyMobile(
+        mobileNumber: '${form.countryCode}${form.mobileNumber}',
+        uuid: form.uuid,
+        prefix: form.prefix,
+        suffix: form.suffix,
+      ),
+    );
   }
 
   void _handleResendSMS(
@@ -73,10 +75,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
       mobileNumber: form.mobileNumber,
       uuid: form.uuid,
     ));
-  }
-
-  void _setHasSendSMS(bool show) {
-    _hasSendSMS = show;
   }
 
   @override
@@ -108,7 +106,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
 
                               if (state.status == SendSMSStatus.sendSuccess) {
                                 setState(() {
-                                  _setHasSendSMS(true);
                                   _verifyCodePrefix =
                                       state.sendSMS.verifyPrefix;
                                 });
@@ -130,12 +127,22 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                                   _verifyCodeError = state.error;
                                 });
 
+                                Scaffold.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.error.message),
+                                  ),
+                                );
+
                                 return null;
                               }
 
-                              setState(() {
-                                _verifyCodeError = null;
-                              });
+                              if (state.status == MobileVerifyStatus.verified) {
+                                print('DEBUG redirect to app index page');
+
+                                setState(() {
+                                  _verifyCodeError = null;
+                                });
+                              }
                             },
                           ),
                           BlocListener<AuthUserBloc, AuthUserState>(
@@ -167,7 +174,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                           }),
                         ],
                         child: PhoneVerifyForm(
-                          hasSendSMS: _hasSendSMS,
                           verifyCodePrefix: _verifyCodePrefix,
                           verifyCodeError: _verifyCodeError,
                           fetchAuthUserError: _fetchAuthUserError,

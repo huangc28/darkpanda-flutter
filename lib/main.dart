@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
-import 'package:darkpanda_flutter/screens/register/services/repository.dart';
+import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
 
 import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
@@ -28,8 +28,6 @@ import './screens/auth/auth_navigator.dart';
 import './pkg/timer.dart';
 import './bloc/timer_bloc.dart';
 import './bloc/auth_user_bloc.dart';
-// import './screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
-// import './screens/register/screens/phone_verify/bloc/send_sms_code_bloc.dart';
 
 void main() {
   // runApp(StoryboardApp([]));

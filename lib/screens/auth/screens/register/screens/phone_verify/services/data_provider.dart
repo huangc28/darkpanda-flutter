@@ -16,12 +16,14 @@ class PhoneVerifyDataProvider {
   }
 
   Future<http.Response> verifyMobile({
+    String mobile,
     String uuid,
     String verifyCode,
   }) {
     return http.post(
       'http://localhost:3001/v1/verify-phone',
       body: {
+        'mobile': mobile,
         'uuid': uuid,
         'verify_code': verifyCode,
       },

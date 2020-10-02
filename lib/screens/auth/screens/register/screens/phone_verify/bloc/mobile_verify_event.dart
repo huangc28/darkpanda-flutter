@@ -11,10 +11,12 @@ class VerifyMobile extends MobileVerifyEvent {
   final String prefix;
   final int suffix;
   final String uuid;
+  final String mobileNumber;
 
   VerifyMobile({
     this.prefix,
     this.suffix,
     this.uuid,
+    this.mobileNumber,
   });
 }

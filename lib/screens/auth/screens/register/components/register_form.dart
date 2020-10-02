@@ -123,10 +123,10 @@ class _RegisterFormState extends State<RegisterForm> {
               );
             },
           ),
-          SizedBox(height: 25.0),
-          RaisedButton(
+          SizedBox(height: 16.0),
+          OutlineButton(
               child: Text(
-                'Submit',
+                'Register',
                 style: TextStyle(color: Colors.blue, fontSize: 16),
               ),
               onPressed: () {

@@ -20,7 +20,6 @@ class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
   final Function onSendSMS;
   final Function onResendSMS;
   final Function onVerify;
-  final bool hasSendSMS;
   final String verifyCodePrefix;
   final Error verifyCodeError;
   final Error fetchAuthUserError;
@@ -30,7 +29,6 @@ class PhoneVerifyForm<Error extends AppBaseException> extends StatefulWidget {
     @required this.onSendSMS,
     @required this.onResendSMS,
     @required this.onVerify,
-    this.hasSendSMS: false,
     this.verifyCodePrefix,
     this.verifyCodeError,
     this.fetchAuthUserError,
@@ -115,19 +113,9 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
     widget.onSendSMS(_formModel);
   }
 
-  // display preffix and suffix in one row, deliminate it with hyphen.
-  // show resend and verify button.
   Widget _buildVerifyCodeInput() {
     return Row(
       children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Text(widget.verifyCodePrefix ?? ''),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text('-'),
-        ),
         Expanded(
           flex: 5,
           child: TextFormField(
@@ -179,12 +167,7 @@ class _PhoneVerifyFormState<Error extends AppBaseException>
           ),
           _buildPhoneFormField(),
           SizedBox(height: 25.0),
-          widget.hasSendSMS
-              ? _buildVerifyCodeInput()
-              : Container(
-                  height: 0,
-                  width: 0,
-                ),
+          _buildVerifyCodeInput(),
           SizedBox(height: 25.0),
           widget.hasSendSMS
               ? VerifyButtons(

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class LoginForm extends StatefulWidget {
   const LoginForm({
     @required this.onSendVerifyCode,
+    @required this.onPressRegister,
   });
 
   final ValueChanged<String> onSendVerifyCode;
+  final Function onPressRegister;
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -36,6 +38,15 @@ class _LoginFormState extends State<LoginForm> {
               onSaved: (String value) {
                 _username = value;
               },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FlatButton(
+                  onPressed: widget.onPressRegister,
+                  child: Text('register'),
+                ),
+              ],
             ),
             SizedBox(height: 32.0),
             Row(
