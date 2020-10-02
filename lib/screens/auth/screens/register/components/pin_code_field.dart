@@ -13,14 +13,14 @@ class PinCodeField extends StatelessWidget {
 
   final StreamController<ErrorAnimationType> errorController;
 
-  final ValueChanged<void> onChanged;
+  final Function onChanged;
 
-  final ValueChanged<void> onCompleted;
+  final Function onCompleted;
 
   @override
   Widget build(BuildContext context) {
     return PinCodeTextField(
-      errorAnimationController: errorController,
+      // errorAnimationController: errorController,
       appContext: context,
       length: PinCodeField.PinCodeLength,
       onChanged: onChanged,

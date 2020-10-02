@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 
-import './components/phone_verify_form.dart';
+import 'components/send_phone_verify_code.dart';
 import './bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 import './models/phone_verify_form.dart' as models;
@@ -25,6 +25,10 @@ import '../../constants.dart';
 //        unlock the user.
 //   - Redirect user to appropriate index page according to gender
 class RegisterPhoneVerify extends StatefulWidget {
+  const RegisterPhoneVerify({this.onPush});
+
+  final ValueChanged<String> onPush;
+
   @override
   _RegisterPhoneVerifyState createState() => _RegisterPhoneVerifyState();
 }
@@ -36,7 +40,7 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
 
   /// Error object to pass to `phone_verify_form` for displaying error message
   /// when failed to verify mobile.
-  Error _verifyCodeError;
+  // Error _verifyCodeError;
 
   /// Error object to pass to `phone_verify_form` for displaying error message
   /// when failed to send SMS code.
@@ -46,8 +50,12 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   /// when failed to fetch auth user error.
   Error _fetchAuthUserError;
 
+  /// A flag to indicate which of the `resend` or `send` to show.
+  bool _hasSend = false;
+
+  String _phoneVerifyCode;
+
   void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
-    print('DEBUG mobile number ${form.countryCode} ${form.mobileNumber}');
     BlocProvider.of<MobileVerifyBloc>(context).add(
       VerifyMobile(
         mobileNumber: '${form.countryCode}${form.mobileNumber}',
@@ -61,15 +69,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
   void _handleResendSMS(
       BuildContext context, models.PhoneVerifyFormModel form) {
     // trigger send SMS again
-    BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
-      countryCode: form.countryCode,
-      mobileNumber: form.mobileNumber,
-      uuid: form.uuid,
-    ));
-  }
-
-  /// Emit event to send SMS verify code.
-  void _handleSendSMS(BuildContext context, models.PhoneVerifyFormModel form) {
     BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
       countryCode: form.countryCode,
       mobileNumber: form.mobileNumber,
@@ -98,24 +97,28 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                               // listen to SendSMS state. if sms has been send successfully for the first time,
                               // show the buttons to send verify code.
                               if (state.status == SendSMSStatus.sending) {
-                                setState(() {
-                                  _sendSMSCodeError = null;
-                                  _verifyCodeError = null;
-                                });
+                                // setState(() {
+                                //   _sendSMSCodeError = null;
+                                // });
                               }
 
                               if (state.status == SendSMSStatus.sendSuccess) {
-                                setState(() {
-                                  _verifyCodePrefix =
-                                      state.sendSMS.verifyPrefix;
-                                });
+                                // setState(() {
+                                //   _hasSend = true;
+                                //   _verifyCodePrefix =
+                                //       state.sendSMS.verifyPrefix;
+                                // });
+                                // redirect to next page to verify phone.
+                                widget.onPush('/register/verify-register-code');
                               }
 
                               // if send SMS failed, we should display error message in PhoneVerifyForm.
                               if (state.status == SendSMSStatus.sendFailed) {
-                                setState(() {
-                                  _sendSMSCodeError = state.error;
-                                });
+                                Scaffold.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.error.message),
+                                  ),
+                                );
                               }
                             },
                           ),
@@ -123,10 +126,6 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                             listener: (context, state) {
                               if (state.status ==
                                   MobileVerifyStatus.verifyFailed) {
-                                setState(() {
-                                  _verifyCodeError = state.error;
-                                });
-
                                 Scaffold.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.error.message),
@@ -136,22 +135,19 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
                                 return null;
                               }
 
-                              if (state.status == MobileVerifyStatus.verified) {
-                                print('DEBUG redirect to app index page');
-
-                                setState(() {
-                                  _verifyCodeError = null;
-                                });
-                              }
+                              if (state.status ==
+                                  MobileVerifyStatus.verified) {}
                             },
                           ),
                           BlocListener<AuthUserBloc, AuthUserState>(
                               listener: (context, state) {
                             // display error if failed to retrieve auth user info
                             if (state.status == FetchUserStatus.fetchFailed) {
-                              setState(() {
-                                _fetchAuthUserError = state.error;
-                              });
+                              Scaffold.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.error.message),
+                                ),
+                              );
 
                               return null;
                             }
@@ -167,29 +163,30 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
 
                               Navigator.pushNamed(context, next);
                             }
-
-                            setState(() {
-                              _fetchAuthUserError = null;
-                            });
                           }),
                         ],
-                        child: PhoneVerifyForm(
-                          verifyCodePrefix: _verifyCodePrefix,
-                          verifyCodeError: _verifyCodeError,
-                          fetchAuthUserError: _fetchAuthUserError,
-                          sendSMSError: _sendSMSCodeError,
-                          onSendSMS: (models.PhoneVerifyFormModel form) {
+                        child: SendPhoneVerifyCode(
+                          onSend: (models.PhoneVerifyFormModel form) {
                             form.uuid = registerState.user.uuid;
-                            _handleSendSMS(context, form);
+                            _handleSendSMS(form);
                           },
-                          onResendSMS: (models.PhoneVerifyFormModel form) {
-                            form.uuid = registerState.user.uuid;
-                            _handleResendSMS(context, form);
-                          },
-                          onVerify: (models.PhoneVerifyFormModel form) {
-                            form.uuid = registerState.user.uuid;
-                            _handleVerify(context, form);
-                          },
+                          // hasSend: _hasSend,
+                          // verifyCodePrefix: _verifyCodePrefix,
+                          // // verifyCodeError: _verifyCodeError,
+                          // fetchAuthUserError: _fetchAuthUserError,
+                          // sendSMSError: _sendSMSCodeError,
+                          // onSendSMS: (models.PhoneVerifyFormModel form) {
+                          //   form.uuid = registerState.user.uuid;
+                          //   _handleSendSMS(context, form);
+                          // },
+                          // onResendSMS: (models.PhoneVerifyFormModel form) {
+                          //   form.uuid = registerState.user.uuid;
+                          //   _handleResendSMS(context, form);
+                          // },
+                          // onVerify: (models.PhoneVerifyFormModel form) {
+                          //   form.uuid = registerState.user.uuid;
+                          //   _handleVerify(context, form);
+                          // },
                         ),
                       ),
                     ],
@@ -198,4 +195,21 @@ class _RegisterPhoneVerifyState<Error extends AppBaseException>
       ),
     );
   }
+
+  /// Emit event to send SMS verify code.
+  void _handleSendSMS(models.PhoneVerifyFormModel form) {
+    BlocProvider.of<SendSmsCodeBloc>(context).add(
+      SendSMSCode(
+        countryCode: form.countryCode,
+        mobileNumber: form.mobileNumber,
+        uuid: form.uuid,
+      ),
+    );
+  }
+
+  // _handleChangePinCode(String value) {
+  //   setState(() {
+  //     _phoneVerifyCode = value;
+  //   });
+  // }
 }

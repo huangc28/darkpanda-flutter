@@ -1,4 +1,4 @@
-part of './phone_verify_form.dart';
+part of './send_phone_verify_code.dart';
 
 /// Renders partial forms of phone_verify_form. This partial widget includes
 class VerifyButtons<Error extends AppBaseException> extends StatefulWidget {

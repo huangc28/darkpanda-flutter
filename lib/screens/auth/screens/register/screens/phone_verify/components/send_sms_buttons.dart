@@ -1,4 +1,4 @@
-part of './phone_verify_form.dart';
+part of './send_phone_verify_code.dart';
 
 class SendSMSButton<Error extends AppBaseException> extends StatelessWidget {
   final Error sendSMSError;

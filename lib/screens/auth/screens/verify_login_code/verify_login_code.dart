@@ -70,9 +70,9 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
             });
           },
           onCompleted: (String value) {
-            if (isNumeric(value)) {
+            if (isNumeric(_inputVerifyCode)) {
               // emit verify login code event
-              _emitSendVerifyLoginCode(context, value);
+              _emitSendVerifyLoginCode(context, _inputVerifyCode);
 
               setState(() {
                 hasError = false;

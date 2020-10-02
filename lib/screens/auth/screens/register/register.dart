@@ -28,7 +28,7 @@ class Register extends StatelessWidget {
                     if (state.status == RegisterStatus.registered) {
                       // navigate to phone verify page.
                       print('Navigating to /register/verify-phone ...');
-                      onPush('/register/verify-phone');
+                      onPush('/register/send-verify-code');
                     }
 
                     if (state.status == RegisterStatus.registerFailed) {

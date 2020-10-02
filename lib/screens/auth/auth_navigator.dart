@@ -11,6 +11,7 @@ import './screens/verify_login_code/verify_login_code.dart';
 import './screens/send_login_code/auth.dart';
 import './screens/register/register.dart';
 import './screens/register/screens/phone_verify/phone_verify.dart';
+import './screens/register/screens/verify_register_code/verify_register_code.dart';
 
 // import '../../screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
 // import '../screens/auth/screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
@@ -23,7 +24,8 @@ Map<String, GlobalKey<NavigatorState>> authNavKeyMap = {
   '/': GlobalKey<NavigatorState>(),
   '/verify-login-code': GlobalKey<NavigatorState>(),
   '/register': GlobalKey<NavigatorState>(),
-  '/register/verify-phone': GlobalKey<NavigatorState>(),
+  '/register/send-verify-code': GlobalKey<NavigatorState>(),
+  '/register/verify-register-code': GlobalKey<NavigatorState>(),
 };
 
 class AuthNavigator extends StatefulWidget {
@@ -66,7 +68,7 @@ class AuthNavigatorState extends State<AuthNavigator> {
       '/register': (context) => Register(
             onPush: (String routeName) => _push(context, routeName),
           ),
-      '/register/verify-phone': (context) => MultiBlocProvider(
+      '/register/send-verify-code': (context) => MultiBlocProvider(
             providers: [
               BlocProvider(
                 create: (context) => MobileVerifyBloc(
@@ -84,8 +86,11 @@ class AuthNavigatorState extends State<AuthNavigator> {
                 ),
               ),
             ],
-            child: RegisterPhoneVerify(),
+            child: RegisterPhoneVerify(
+              onPush: (String routeName) => _push(context, routeName),
+            ),
           ),
+      '/register/verify-register-code': (context) => VerifyRegisterCode(),
     };
 
     return routeMap[routeName](context);

@@ -57,8 +57,6 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       }
 
       // If mobile is verified, fetch auth user information.
-      // print('DEBUG verify sms code ${resp.body}');
-
       final respMap = json.decode(resp.body);
 
       userApis.jwtToken = respMap['jwt'];
