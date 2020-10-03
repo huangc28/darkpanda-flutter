@@ -8,14 +8,14 @@ abstract class MobileVerifyEvent extends Equatable {
 }
 
 class VerifyMobile extends MobileVerifyEvent {
-  final String prefix;
-  final int suffix;
+  final String verifyChars;
+  final String verifyDigs;
   final String uuid;
   final String mobileNumber;
 
   VerifyMobile({
-    this.prefix,
-    this.suffix,
+    this.verifyChars,
+    this.verifyDigs,
     this.uuid,
     this.mobileNumber,
   });

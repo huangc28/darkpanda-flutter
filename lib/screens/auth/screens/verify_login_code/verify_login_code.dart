@@ -5,14 +5,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../bloc/verify_login_code_bloc.dart';
 import '../../bloc/send_login_verify_code_bloc.dart';
-
-bool isNumeric(String s) {
-  if (s == null) {
-    return false;
-  }
-
-  return double.tryParse(s) != null;
-}
+import '../../services/util.dart';
 
 // @TODO
 //   - Assert that all numbers submitted are numeric.
@@ -70,7 +63,7 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
             });
           },
           onCompleted: (String value) {
-            if (isNumeric(_inputVerifyCode)) {
+            if (Util.isNumeric(_inputVerifyCode)) {
               // emit verify login code event
               _emitSendVerifyLoginCode(context, _inputVerifyCode);
 

@@ -10,7 +10,7 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 
-import '../services/data_provider.dart';
+import '../services/apis.dart';
 
 part 'mobile_verify_event.dart';
 part 'mobile_verify_state.dart';
@@ -25,7 +25,7 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
         assert(authUserBloc != null),
         super(MobileVerifyState.unknown());
 
-  final PhoneVerifyDataProvider dataProvider;
+  final VerifyRegisterCodeAPIs dataProvider;
   final AuthUserBloc authUserBloc;
   final UserApis userApis;
 
@@ -43,13 +43,12 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       // toggles loading
       yield MobileVerifyState.verifying(MobileVerifyState.copyFrom(state));
 
-      final verifyCode = '${event.prefix}-${event.suffix}';
-
+      print('DEBUG v1 ${event.verifyChars}-${event.verifyDigs}');
       // send request
-      final resp = await dataProvider.verifyMobile(
+      final resp = await dataProvider.verifyRegisterCode(
         mobile: event.mobileNumber,
         uuid: event.uuid,
-        verifyCode: verifyCode,
+        verifyCode: '${event.verifyChars}-${event.verifyDigs}',
       );
 
       if (resp.statusCode != HttpStatus.ok) {

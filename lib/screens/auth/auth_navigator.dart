@@ -10,23 +10,17 @@ import './services/auth_api_client.dart';
 import './screens/verify_login_code/verify_login_code.dart';
 import './screens/send_login_code/auth.dart';
 import './screens/register/register.dart';
-import './screens/register/screens/phone_verify/phone_verify.dart';
+import './screens/register/screens/phone_verify/send_register_verify_code.dart';
 import './screens/register/screens/verify_register_code/verify_register_code.dart';
 
-// import '../../screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
+import './screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
+import './screens/register/screens/verify_register_code/services/apis.dart';
+import './screens/register/screens/verify_register_code/models/verify_register_code_args.dart';
+
 // import '../screens/auth/screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/phone_verify/bloc/send_sms_code_bloc.dart';
-import './screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
+import 'screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/phone_verify/services/data_provider.dart';
-
-// Each auth route should have it's own navigator unique key
-Map<String, GlobalKey<NavigatorState>> authNavKeyMap = {
-  '/': GlobalKey<NavigatorState>(),
-  '/verify-login-code': GlobalKey<NavigatorState>(),
-  '/register': GlobalKey<NavigatorState>(),
-  '/register/send-verify-code': GlobalKey<NavigatorState>(),
-  '/register/verify-register-code': GlobalKey<NavigatorState>(),
-};
 
 class AuthNavigator extends StatefulWidget {
   AuthNavigator();
@@ -35,15 +29,24 @@ class AuthNavigator extends StatefulWidget {
   AuthNavigatorState createState() => AuthNavigatorState();
 }
 
+class SomeArgs {
+  SomeArgs(this.name);
+
+  final String name;
+}
+
 class AuthNavigatorState extends State<AuthNavigator> {
   @override
   String _currentRoute = '/register';
 
-  void _push(BuildContext context, String routeName) {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  void _push(BuildContext context, String routeName,
+      [Map<String, dynamic> args]) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => _routeBuilder(context, routeName),
+        builder: (context) => _routeBuilder(args)[routeName](context),
       ),
     );
 
@@ -52,8 +55,8 @@ class AuthNavigatorState extends State<AuthNavigator> {
     });
   }
 
-  Widget _routeBuilder(BuildContext context, String routeName) {
-    final routeMap = {
+  Map<String, WidgetBuilder> _routeBuilder([Map<String, dynamic> args]) {
+    return {
       '/': (context) => Auth(
             onPush: (String routeName) => _push(context, routeName),
           ),
@@ -68,48 +71,48 @@ class AuthNavigatorState extends State<AuthNavigator> {
       '/register': (context) => Register(
             onPush: (String routeName) => _push(context, routeName),
           ),
-      '/register/send-verify-code': (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => MobileVerifyBloc(
-                  dataProvider: PhoneVerifyDataProvider(),
-                  userApis: UserApis(),
-                  authUserBloc: BlocProvider.of<AuthUserBloc>(context),
-                ),
+      '/register/send-verify-code': (context) => BlocProvider(
+            create: (context) => SendSmsCodeBloc(
+              dataProvider: PhoneVerifyDataProvider(),
+              timerBloc: TimerBloc(
+                ticker: Timer(),
               ),
-              BlocProvider(
-                create: (context) => SendSmsCodeBloc(
-                  timerBloc: TimerBloc(
-                    ticker: Timer(),
-                  ),
-                  dataProvider: PhoneVerifyDataProvider(),
-                ),
-              ),
-            ],
-            child: RegisterPhoneVerify(
-              onPush: (String routeName) => _push(context, routeName),
+            ),
+            child: SendRegisterVerifyCode(
+              onPush: (String routeName, [Map<String, dynamic> args]) =>
+                  _push(context, routeName, args),
             ),
           ),
-      '/register/verify-register-code': (context) => VerifyRegisterCode(),
+      '/register/verify-register-code': (context) => BlocProvider(
+            create: (context) => MobileVerifyBloc(
+              dataProvider: VerifyRegisterCodeAPIs(),
+              authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+              userApis: UserApis(),
+            ),
+            child: VerifyRegisterCode(
+              countryCode: args['country_code'],
+              mobile: args['mobile'],
+              verifyChars: args['verify_chars'],
+              uuid: args['uuid'],
+            ),
+          ),
     };
-
-    return routeMap[routeName](context);
   }
 
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async =>
-            !await authNavKeyMap[_currentRoute].currentState.maybePop(),
+        onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
         child: Navigator(
-          key: authNavKeyMap[_currentRoute],
+          key: _navigatorKey,
           initialRoute: _currentRoute,
           onGenerateRoute: (settings) {
             // Generate route according to route name
             return MaterialPageRoute(
               settings: settings,
-              builder: (context) => _routeBuilder(context, settings.name),
+              builder: (context) => _routeBuilder()[settings.name](context),
             );
           },
         ));
+    ;
   }
 }
