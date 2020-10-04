@@ -9,8 +9,8 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/pkg/fibonacci.dart';
 
-import '../services/data_provider.dart';
-import '../models/models.dart' as models;
+import '../screens/send_register_verify_code/services/data_provider.dart';
+import '../screens/send_register_verify_code/models/models.dart' as models;
 
 part 'send_sms_code_event.dart';
 part 'send_sms_code_state.dart';

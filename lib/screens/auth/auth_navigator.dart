@@ -16,7 +16,7 @@ import './screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.
 import './screens/register/screens/verify_register_code/services/apis.dart';
 
 import './screens/register/screens/send_register_verify_code/send_register_verify_code.dart';
-import './screens/register/screens/send_register_verify_code/bloc/send_sms_code_bloc.dart';
+import 'screens/register/bloc/send_sms_code_bloc.dart';
 import './screens/register/screens/send_register_verify_code/services/data_provider.dart';
 
 class AuthNavigator extends StatefulWidget {

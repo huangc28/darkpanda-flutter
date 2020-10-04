@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import 'components/send_phone_verify_code.dart';
-import 'bloc/send_sms_code_bloc.dart';
+import '../../bloc/send_sms_code_bloc.dart';
 import 'models/phone_verify_form.dart' as models;
 import '../../bloc/register_bloc.dart';
 

@@ -5,7 +5,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
-import '../send_register_verify_code/bloc/send_sms_code_bloc.dart';
+import '../../bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 
 class VerifyRegisterCode extends StatefulWidget {
