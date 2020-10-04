@@ -64,54 +64,6 @@ class DarkPandaApp extends StatelessWidget {
           routes: {
             '/': (context) => AuthNavigator(),
             '/app': (context) => App(),
-            //   '/': (context) => Home(),
-            // '/register': (context) => RegisterScreen.Register(),
-            //   '/register/verify-phone': (context) => MultiBlocProvider(
-            //         providers: [
-            //           BlocProvider(
-            //               create: (context) => SendSmsCodeBloc(
-            //                     dataProvider: PhoneVerifyDataProvider(),
-            //                     timerBloc: BlocProvider.of<TimerBloc>(context),
-            //                   )),
-            //           BlocProvider(
-            //               create: (context) => MobileVerifyBloc(
-            //                     dataProvider: PhoneVerifyDataProvider(),
-            //                     authUserBloc:
-            //                         BlocProvider.of<AuthUserBloc>(context),
-            //                   )),
-            //         ],
-            //         child: RegisterPhoneVerify(),
-            //       ),
-
-            //   // Routes of female users.
-            //   '/female/inquiry': (context) {
-            //     final _inquiriesBloc = InquiriesBloc(
-            //       apiClient: inquiryApiClient.ApiClient(),
-            //     );
-
-            //     return MultiBlocProvider(
-            //       providers: [
-            //         BlocProvider<InquiriesBloc>(
-            //           create: (context) {
-            //             _inquiriesBloc.add(FetchInquiries(
-            //               nextPage: 1,
-            //             ));
-
-            //             return _inquiriesBloc;
-            //           },
-            //         ),
-            //         BlocProvider(
-            //             create: (context) => LoadMoreInquiriesBloc(
-            //                   inquiriesBloc: _inquiriesBloc,
-            //                   apiClient: inquiryApiClient.ApiClient(),
-            //                 ))
-            //       ],
-            //       child: InqiuryList(),
-            //     );
-            //   },
-            //   // Routes of male users
-            //   '/male/search_inquiry': (context) => SearchInqiury(),
-            //   // '/inquiries/detail' () =>
           },
         ),
       ),

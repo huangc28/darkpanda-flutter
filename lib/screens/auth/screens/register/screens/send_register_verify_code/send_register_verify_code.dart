@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 
 import 'components/send_phone_verify_code.dart';
 import 'bloc/send_sms_code_bloc.dart';
-// import '../verify_register_code/mobile_verify_bloc.dart';
 import 'models/phone_verify_form.dart' as models;
 import '../../bloc/register_bloc.dart';
-import '../../constants.dart';
 
 // @TODO:
 //   - Create a phone number form field [ok]
@@ -35,50 +32,9 @@ class SendRegisterVerifyCode extends StatefulWidget {
 
 class _SendRegisterVerifyCodeState<Error extends AppBaseException>
     extends State<SendRegisterVerifyCode> {
-  /// verify code prefix as of form {preffix-suffix}
-  String _verifyCodePrefix;
-
-  /// Error object to pass to `phone_verify_form` for displaying error message
-  /// when failed to verify mobile.
-  // Error _verifyCodeError;
-
-  /// Error object to pass to `phone_verify_form` for displaying error message
-  /// when failed to send SMS code.
-  Error _sendSMSCodeError;
-
-  /// Error object to pass to `phone_verify_form` for displaying error message
-  /// when failed to fetch auth user error.
-  Error _fetchAuthUserError;
-
-  /// A flag to indicate which of the `resend` or `send` to show.
-  bool _hasSend = false;
-
-  String _phoneVerifyCode;
-
   String _mobileNumber;
 
   String _countryCode;
-
-  // void _handleVerify(BuildContext context, models.PhoneVerifyFormModel form) {
-  //   BlocProvider.of<MobileVerifyBloc>(context).add(
-  //     VerifyMobile(
-  //       mobileNumber: '${form.countryCode}${form.mobileNumber}',
-  //       uuid: form.uuid,
-  //       prefix: form.prefix,
-  //       suffix: form.suffix,
-  //     ),
-  //   );
-  // }
-
-  // void _handleResendSMS(
-  //     BuildContext context, models.PhoneVerifyFormModel form) {
-  //   // trigger send SMS again
-  //   BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
-  //     countryCode: form.countryCode,
-  //     mobileNumber: form.mobileNumber,
-  //     uuid: form.uuid,
-  //   ));
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -123,48 +79,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                               }
                             },
                           ),
-                          // BlocListener<MobileVerifyBloc, MobileVerifyState>(
-                          //   listener: (context, state) {
-                          //     if (state.status ==
-                          //         MobileVerifyStatus.verifyFailed) {
-                          //       Scaffold.of(context).showSnackBar(
-                          //         SnackBar(
-                          //           content: Text(state.error.message),
-                          //         ),
-                          //       );
-
-                          //       return null;
-                          //     }
-
-                          //     if (state.status ==
-                          //         MobileVerifyStatus.verified) {}
-                          //   },
-                          // ),
-                          // BlocListener<AuthUserBloc, AuthUserState>(
-                          //     listener: (context, state) {
-                          //   // display error if failed to retrieve auth user info
-                          //   if (state.status == FetchUserStatus.fetchFailed) {
-                          //     Scaffold.of(context).showSnackBar(
-                          //       SnackBar(
-                          //         content: Text(state.error.message),
-                          //       ),
-                          //     );
-
-                          //     return null;
-                          //   }
-
-                          //   if (state.status == FetchUserStatus.fetchSuccess) {
-                          //     // redirect to index page according to gender.
-                          //     // `/female/inquiry` is the index page for the female users
-                          //     // `/male/search_inquiry` is the index page for male users
-                          //     final next =
-                          //         state.user.gender == Gender.female.toString()
-                          //             ? '/female/inquiry'
-                          //             : '/male/search_inquiry';
-
-                          //     Navigator.pushNamed(context, next);
-                          //   }
-                          // }),
                         ],
                         child: SendPhoneVerifyCode(
                           onSend: (models.PhoneVerifyFormModel form) {
