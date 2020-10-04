@@ -10,17 +10,14 @@ import './services/auth_api_client.dart';
 import './screens/verify_login_code/verify_login_code.dart';
 import './screens/send_login_code/auth.dart';
 import './screens/register/register.dart';
-import './screens/register/screens/phone_verify/send_register_verify_code.dart';
-import './screens/register/screens/verify_register_code/verify_register_code.dart';
 
+import './screens/register/screens/verify_register_code/verify_register_code.dart';
 import './screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/verify_register_code/services/apis.dart';
-import './screens/register/screens/verify_register_code/models/verify_register_code_args.dart';
 
-// import '../screens/auth/screens/register/screens/phone_verify/bloc/mobile_verify_bloc.dart';
-import './screens/register/screens/phone_verify/bloc/send_sms_code_bloc.dart';
-import 'screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
-import './screens/register/screens/phone_verify/services/data_provider.dart';
+import './screens/register/screens/send_register_verify_code/send_register_verify_code.dart';
+import './screens/register/screens/send_register_verify_code/bloc/send_sms_code_bloc.dart';
+import './screens/register/screens/send_register_verify_code/services/data_provider.dart';
 
 class AuthNavigator extends StatefulWidget {
   AuthNavigator();
