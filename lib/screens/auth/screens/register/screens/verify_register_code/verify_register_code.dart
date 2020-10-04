@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
+import '../phone_verify/bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 
-// @TODOs
-//  clear content in pin code text field if error happened - [ok]
-//  clear content in pin code text field if success happened - [ok]
-//  add resend button
-//  display resend timer tick
-//  display error animation
 class VerifyRegisterCode extends StatefulWidget {
   const VerifyRegisterCode({
     this.countryCode,
@@ -66,72 +62,83 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('verify register code')),
-        body: BlocListener<MobileVerifyBloc, MobileVerifyState>(
-          listener: (BuildContext context, state) {
-            // if verify success, redirect to app index page.
-            if (state.status == MobileVerifyStatus.verified) {
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).pushNamed(
-                '/app',
-              );
-            }
+      appBar: AppBar(title: Text('verify register code')),
+      body: BlocListener<MobileVerifyBloc, MobileVerifyState>(
+        listener: (BuildContext context, state) {
+          // if verify success, redirect to app index page.
+          if (state.status == MobileVerifyStatus.verified) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamed(
+              '/app',
+            );
+          }
 
-            if (state.status == MobileVerifyStatus.verifyFailed) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error.message),
-                ),
-              );
-            }
-          },
-          child: Column(
-            children: [
-              Text('Sending to: ${widget.countryCode}${widget.mobile}'),
-              SizedBox(height: 16),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 10.0),
-                  child: Column(
-                    children: [
-                      PinCodeTextField(
-                        controller: _textEditingController,
-                        keyboardType: TextInputType.number,
-                        errorAnimationController: _errorController,
-                        appContext: context,
-                        length: 4,
-                        onChanged: (String value) {
-                          _verifyDigs = value;
-                        },
-                        onCompleted: _handleVerify,
-                      ),
-                      _buildResendButton(),
-                    ],
-                  )),
-            ],
-          ),
-        ));
+          if (state.status == MobileVerifyStatus.verifyFailed) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error.message),
+              ),
+            );
+          }
+        },
+        child: Column(
+          children: [
+            Text('Sending to: ${widget.countryCode}${widget.mobile}'),
+            SizedBox(height: 16),
+            Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 10.0),
+                child: Column(
+                  children: [
+                    PinCodeTextField(
+                      controller: _textEditingController,
+                      keyboardType: TextInputType.number,
+                      errorAnimationController: _errorController,
+                      appContext: context,
+                      length: 4,
+                      onChanged: (String value) {
+                        _verifyDigs = value;
+                      },
+                      onCompleted: _handleVerify,
+                    ),
+                    _buildResendButton(),
+                  ],
+                )),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _buildResendButton() => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FlatButton(
-            child: Text('Resend'),
-            onPressed: _handleResend,
-          ),
-        ],
-      );
+  /// Render resend button widget. Disable button if timer is ticking.
+  Widget _buildResendButton() => BlocBuilder<TimerBloc, TimerState>(
+          builder: (BuildContext context, state) {
+        final ResendButtonText = state.status == TimerStatus.progressing
+            ? Text('Resend(${state.duration})')
+            : Text('Resend');
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FlatButton(
+              child: ResendButtonText,
+              onPressed: state.status == TimerStatus.progressing
+                  ? null
+                  : _handleResend,
+            ),
+          ],
+        );
+      });
 
   void _handleResend() {
-    // trigger resend verify code
-    // trigger send SMS again
-    //   BlocProvider.of<SendSmsCodeBloc>(context).add(SendSMSCode(
-    //     countryCode: form.countryCode,
-    //     mobileNumber: form.mobileNumber,
-    //     uuid: form.uuid,
-    //   ));
+    BlocProvider.of<SendSmsCodeBloc>(context).add(
+      SendSMSCode(
+        countryCode: widget.countryCode,
+        mobileNumber: widget.mobile,
+        uuid: widget.uuid,
+      ),
+    );
   }
 
   void _handleVerify(String value) {

@@ -36,13 +36,16 @@ class SomeArgs {
 }
 
 class AuthNavigatorState extends State<AuthNavigator> {
-  @override
   String _currentRoute = '/register';
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   void _push(BuildContext context, String routeName,
       [Map<String, dynamic> args]) {
+    if (routeName == _currentRoute) {
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -71,17 +74,9 @@ class AuthNavigatorState extends State<AuthNavigator> {
       '/register': (context) => Register(
             onPush: (String routeName) => _push(context, routeName),
           ),
-      '/register/send-verify-code': (context) => BlocProvider(
-            create: (context) => SendSmsCodeBloc(
-              dataProvider: PhoneVerifyDataProvider(),
-              timerBloc: TimerBloc(
-                ticker: Timer(),
-              ),
-            ),
-            child: SendRegisterVerifyCode(
-              onPush: (String routeName, [Map<String, dynamic> args]) =>
-                  _push(context, routeName, args),
-            ),
+      '/register/send-verify-code': (context) => SendRegisterVerifyCode(
+            onPush: (String routeName, [Map<String, dynamic> args]) =>
+                _push(context, routeName, args),
           ),
       '/register/verify-register-code': (context) => BlocProvider(
             create: (context) => MobileVerifyBloc(
@@ -100,19 +95,32 @@ class AuthNavigatorState extends State<AuthNavigator> {
   }
 
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TimerBloc(
+            ticker: Timer(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => SendSmsCodeBloc(
+            dataProvider: PhoneVerifyDataProvider(),
+            timerBloc: BlocProvider.of<TimerBloc>(context),
+          ),
+        ),
+      ],
+      child: WillPopScope(
         onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
         child: Navigator(
-          key: _navigatorKey,
-          initialRoute: _currentRoute,
-          onGenerateRoute: (settings) {
-            // Generate route according to route name
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) => _routeBuilder()[settings.name](context),
-            );
-          },
-        ));
-    ;
+            key: _navigatorKey,
+            initialRoute: _currentRoute,
+
+            /// Generate route according to route name
+            onGenerateRoute: (settings) => MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => _routeBuilder()[settings.name](context),
+                )),
+      ),
+    );
   }
 }

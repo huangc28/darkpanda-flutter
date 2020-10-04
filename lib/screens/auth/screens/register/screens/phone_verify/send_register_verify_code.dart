@@ -101,11 +101,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                               if (state.status == SendSMSStatus.sending) {}
 
                               if (state.status == SendSMSStatus.sendSuccess) {
-                                print(
-                                    'DEBUG arguments 1 ${_countryCode} ${_mobileNumber}');
-
-                                print(
-                                    'DEBUG arguments 2 ${state.sendSMS.verifyPrefix} ${state.sendSMS.uuid}');
                                 // redirect to next page to verify phone.
                                 widget.onPush(
                                   '/register/verify-register-code',
@@ -176,23 +171,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                             form.uuid = registerState.user.uuid;
                             _handleSendSMS(form);
                           },
-                          // hasSend: _hasSend,
-                          // verifyCodePrefix: _verifyCodePrefix,
-                          // // verifyCodeError: _verifyCodeError,
-                          // fetchAuthUserError: _fetchAuthUserError,
-                          // sendSMSError: _sendSMSCodeError,
-                          // onSendSMS: (models.PhoneVerifyFormModel form) {
-                          //   form.uuid = registerState.user.uuid;
-                          //   _handleSendSMS(context, form);
-                          // },
-                          // onResendSMS: (models.PhoneVerifyFormModel form) {
-                          //   form.uuid = registerState.user.uuid;
-                          //   _handleResendSMS(context, form);
-                          // },
-                          // onVerify: (models.PhoneVerifyFormModel form) {
-                          //   form.uuid = registerState.user.uuid;
-                          //   _handleVerify(context, form);
-                          // },
                         ),
                       ),
                     ],

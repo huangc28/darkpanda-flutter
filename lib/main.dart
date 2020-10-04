@@ -51,11 +51,6 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => TimerBloc(
-            ticker: Timer(),
-          ),
-        ),
-        BlocProvider(
           create: (context) => SendLoginVerifyCodeBloc(
             authApiClient: AuthAPIClient(),
           ),
