@@ -11,6 +11,8 @@ class ApiClient extends BaseClient {
       }),
     );
 
+    withAuthHeader(request);
+
     final res = await sendWithResponse(request);
 
     return res;

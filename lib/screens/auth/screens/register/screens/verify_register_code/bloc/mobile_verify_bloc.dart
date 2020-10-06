@@ -59,7 +59,7 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       final respMap = json.decode(resp.body);
 
       userApis.jwtToken = respMap['jwt'];
-      final authUserInfo = await userApis.fetchUser();
+      final authUserInfo = await userApis.fetchMe();
 
       authUserBloc.add(
         PutUser(

@@ -2,6 +2,10 @@
 // Each navigation tab holds it's own [Navigator] class. It holds the navigation history
 // of that tab.
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import './bloc/load_user_bloc.dart';
+import './services/apis.dart';
 
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
@@ -17,22 +21,30 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
+// @TODO
+// We need to check if user has logged in or not.
+// If user has not logged in, we need to navigate user
+// to perform login / registration process before proceeding
 class _AppState extends State<App> {
   TabItem _currentTab = TabItem.inquiries;
 
-  // We need to check if user has logged in or not.
-  // If user has not logged in, we need to navigate user
-  // to perform login / registration process before proceeding
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async =>
-          !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
-      child: Scaffold(
-        body: _buildBody(),
-        bottomNavigationBar: BottomNavigation(
-          currentTab: _currentTab,
-          onSelectTab: _handleSelectTab,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoadUserBloc(userApis: UserApis()),
+        ),
+      ],
+      child: WillPopScope(
+        onWillPop: () async =>
+            !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
+        child: Scaffold(
+          body: _buildBody(),
+          bottomNavigationBar: BottomNavigation(
+            currentTab: _currentTab,
+            onSelectTab: _handleSelectTab,
+          ),
         ),
       ),
     );

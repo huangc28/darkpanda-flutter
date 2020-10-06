@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
 import '../util/util.dart';
 import '../services/api_client.dart';
@@ -16,13 +17,8 @@ part 'inquiries_state.dart';
 class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   final ApiClient apiClient;
 
-  /// @TODO mocked api token, should be removed.
-  final String mockedApiToken;
-
   InquiriesBloc({
     this.apiClient,
-    this.mockedApiToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYzEyYmNkZmMtOTJiMy00ZDFmLTllZWEtODg3YWRjZjE2MDFkIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMDkzNTYwMn0.Nv7jp3VBHKZ7Y1K_28w-K8TEKsE7554vyg7XUZxGEh8',
   }) : super(InquiriesState.initial());
 
   @override
@@ -42,10 +38,9 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       FetchInquiries event) async* {
     try {
       yield InquiriesState.fetching(state);
-      // @TODO fix mocked jwt token
-      // final jwt = await SecureStore().fsc.read(key: 'jwt');
+      final jwt = await SecureStore().fsc.read(key: 'jwt');
 
-      this.apiClient.jwtToken = mockedApiToken;
+      this.apiClient.jwtToken = jwt;
 
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,
@@ -71,8 +66,6 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         inquiries: dataMap['inquiries']
             .map<Inquiry>((data) => Inquiry.fromJson(data))
             .toList(),
-
-        /// this event always fetch the first page
         currentPage: event.nextPage,
         hasMore: dataMap['has_more'],
       );
@@ -100,7 +93,9 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         return;
       }
 
-      this.apiClient.jwtToken = mockedApiToken;
+      final jwt = await SecureStore().fsc.read(key: 'jwt');
+
+      this.apiClient.jwtToken = jwt;
 
       // Calculate the number to offset to skip when fetching the next page.
       final resp = await apiClient.fetchInquiries(

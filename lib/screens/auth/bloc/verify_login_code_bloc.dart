@@ -61,7 +61,7 @@ class VerifyLoginCodeBloc
 
       // fetch auth user info
       userApis.jwtToken = responseMap['jwt'];
-      final fetchUserResp = await userApis.fetchUser();
+      final fetchUserResp = await userApis.fetchMe();
 
       if (fetchUserResp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

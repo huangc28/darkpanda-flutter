@@ -62,7 +62,7 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
       final jwt = await SecureStore().readJwtToken();
 
       dataProvider.jwtToken = jwt;
-      final resp = await dataProvider.fetchUser();
+      final resp = await dataProvider.fetchMe();
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(json.decode(resp.body));

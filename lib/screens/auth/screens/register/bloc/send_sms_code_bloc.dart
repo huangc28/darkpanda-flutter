@@ -29,7 +29,6 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
     SendSmsCodeEvent event,
   ) async* {
     if (event is SendSMSCode) {
-      // print('DEBUG trigger SendSMSCode');
       yield* _mapSendSMSCodeToState(event);
     }
   }

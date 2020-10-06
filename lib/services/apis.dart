@@ -8,10 +8,23 @@ class UserApis extends BaseClient {
   // Thus, jwt token can also be passed in from the jwt setter.
   UserApis({String jwtToken}) : super(jwtToken: jwtToken);
 
-  Future<http.Response> fetchUser() async {
+  Future<http.Response> fetchMe() async {
     final request = http.Request(
       'GET',
       buildUri('/v1/users/me'),
+    );
+
+    withAuthHeader(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
+
+  Future<http.Response> fetchUser(String uuid) async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/users/$uuid'),
     );
 
     withAuthHeader(request);

@@ -1,24 +1,18 @@
 // Each tag keeps it's own navigator instance to track navigation history.
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bottom_navigation.dart';
-import './screens/female/screens/inquiry_list/inquiry_list.dart';
-import './screens/female/screens/service_list/services_list.dart';
-import './screens/female/screens/inquiry_list/bloc/inquiries_bloc.dart';
-import './screens/female/screens/inquiry_list/services/api_client.dart';
 
-class TabInquiriesNavigatorRoutes {
-  static const String root = '/';
-}
+import './screens/female/screens/inquiry_list/routes.dart';
+import './screens/female/screens/service_list/routes.dart';
 
 class TabServicesNavigatorRoutes {
   static const String root = '/';
 }
 
 final Map<TabItem, String> initialRouteMap = {
-  TabItem.inquiries: TabInquiriesNavigatorRoutes.root,
-  TabItem.services: TabServicesNavigatorRoutes.root,
+  TabItem.inquiries: InquiriesRoutes.root,
+  TabItem.services: ServiceRoutes.root,
 };
 
 class TabNavigator extends StatelessWidget {
@@ -31,54 +25,37 @@ class TabNavigator extends StatelessWidget {
 
   final TabItem tabItem;
 
-  final InquiriesBloc inquiriesBloc = InquiriesBloc(apiClient: ApiClient());
+  final InquiriesRoutes _inquiriesRoutes = InquiriesRoutes();
+
+  final ServiceRoutes _servicesRoutes = ServiceRoutes();
 
   // Retrieve route builders by current tab item.
-  Map<String, WidgetBuilder> _getRouteBuildersByTab(TabItem tabItem) {
+  Map<String, WidgetBuilder> _getRouteBuildersByTab(context, TabItem tabItem) {
     if (tabItem == TabItem.inquiries) {
-      return _inquiriesRouteBuilders();
+      return _inquiriesRoutes.routeBuilder(context);
     }
 
     if (tabItem == TabItem.services) {
-      return _servicesRouteBuilders();
+      return _servicesRoutes.routeBuilder();
     }
 
     return {
-      '/': (context) => Center(child: Text('route builder not exists yet')),
-    };
-  }
-
-  Map<String, WidgetBuilder> _inquiriesRouteBuilders() {
-    return {
-      TabInquiriesNavigatorRoutes.root: (context) => InqiuryList(),
-    };
-  }
-
-  Map<String, WidgetBuilder> _servicesRouteBuilders() {
-    return {
-      TabServicesNavigatorRoutes.root: (context) => ServiceList(),
+      '/': (context) =>
+          Center(child: Text('route builder doesn\'t  exists yet')),
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    final routeBuilders = _getRouteBuildersByTab(tabItem);
+    final routeBuilders = _getRouteBuildersByTab(context, tabItem);
 
     return Navigator(
       key: navigatorKey,
       initialRoute: initialRouteMap[tabItem],
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (context) {
-            return BlocProvider(
-              create: (context) => InquiriesBloc(apiClient: ApiClient())
-                ..add(FetchInquiries(nextPage: 1)),
-              child: routeBuilders[settings.name](context),
-            );
-          },
-        );
-      },
+      onGenerateRoute: (settings) => MaterialPageRoute(
+        settings: settings,
+        builder: (context) => routeBuilders[settings.name](context),
+      ),
     );
   }
 }

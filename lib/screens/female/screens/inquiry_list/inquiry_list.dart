@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/components/dialogs.dart';
+
+import './routes.dart';
 import './bloc/inquiries_bloc.dart';
-// import './bloc/load_more_inquiries_bloc.dart';
 import './components/inquiry_grid.dart';
-import '../../models/inquiry.dart';
+import './components/inquiry_list.dart';
 
 // Render list of inquires emitted by the male users.
 // @TODOs
@@ -17,7 +19,17 @@ import '../../models/inquiry.dart';
 //   - add refresh indicator - [ok]
 //   - display failed message - [ok]
 //   - add loadmore listener
+
+// typedef InquiryItemBuilder = Widget Function(
+// BuildContext context, Inquiry inquiry, int index);
+typedef OnPushInquiryDetail = void Function(
+    String routeName, Map<String, dynamic> args);
+
 class InqiuryList extends StatefulWidget {
+  const InqiuryList({this.onPush});
+
+  final OnPushInquiryDetail onPush;
+
   // List of inquiry
   @override
   _InqiuryListState createState() => _InqiuryListState();
@@ -29,87 +41,12 @@ class _InqiuryListState extends State<InqiuryList> {
   /// Please refer to [official documentation](https://api.flutter.dev/flutter/dart-async/Completer-class.html)
   Completer<void> _refreshCompleter;
 
-  ScrollController _scrollController;
-
-  Timer _loadMoreDebounce;
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   initState() {
     _refreshCompleter = Completer();
-    _scrollController = new ScrollController()..addListener(_scrollListener);
     super.initState();
-  }
-
-  @override
-  dispose() {
-    _scrollController.removeListener(_scrollListener);
-    super.dispose();
-  }
-
-  /// @TODO extract this part of the logic to `loadMoreDebouncer` widget
-  /// to be reusable.
-  _scrollListener() {
-    // We need to add debounce mechanism, to prevent large invocations,
-    final offsetFromScrollExtent = 10;
-
-    if (_scrollController.position.pixels >
-        _scrollController.position.maxScrollExtent - offsetFromScrollExtent) {
-      if (_loadMoreDebounce != null) {
-        _loadMoreDebounce.cancel();
-      }
-
-      _loadMoreDebounce = Timer(
-          const Duration(milliseconds: 500),
-          () => new Future.delayed(Duration.zero, () {
-                BlocProvider.of<InquiriesBloc>(context)
-                    .add(LoadMoreInquiries());
-              }));
-    }
-  }
-
-  _handleTap({
-    BuildContext context,
-
-    /// inquiry uuid necessary to load inquiry detail
-    String uuid,
-  }) {
-    // proceed to inquiry detail page
-
-    Navigator.pushNamed(context, '/register');
-    print('DEBUG trigger on tap');
-  }
-
-  Widget _buildInquiryList(List<Inquiry> inquiries) {
-    return RefreshIndicator(
-      onRefresh: () {
-        // emit event to fetch inquiry list again
-        // toggles completer to indicate future
-        BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries(
-          nextPage: 1,
-        ));
-
-        return _refreshCompleter.future;
-      },
-      child: ListView.separated(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: inquiries.length,
-        itemBuilder: (BuildContext context, int idx) {
-          return InquiryGrid(
-            inquiry: inquiries[idx],
-            onTap: ({String uuid}) => _handleTap(
-              context: context,
-              uuid: uuid,
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(
-          height: 1,
-        ),
-      ),
-    );
   }
 
   @override
@@ -118,38 +55,67 @@ class _InqiuryListState extends State<InqiuryList> {
       child: Scaffold(
         body: BlocConsumer<InquiriesBloc, InquiriesState>(
           listener: (context, state) {
+            if (state.status == FetchInquiryStatus.initial ||
+                state.status == FetchInquiryStatus.fetching) {
+              Dialogs.showLoadingDialog(context, _keyLoader);
+            }
+
             if (state.status == FetchInquiryStatus.fetched) {
               _refreshCompleter.complete();
               _refreshCompleter = Completer();
+              Dialogs.closeLoadingDialog(_keyLoader.currentContext);
             }
 
             if (state.status == FetchInquiryStatus.fetchFailed) {
               _refreshCompleter.completeError(state.error);
               _refreshCompleter = Completer();
+
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error.message),
+                ),
+              );
+
+              Dialogs.closeLoadingDialog(_keyLoader.currentContext);
             }
 
             return null;
           },
-          builder: (context, state) {
-            if (state.status == FetchInquiryStatus.initial) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[200]),
-                ),
-              );
-            }
+          builder: (context, state) => InquiryList(
+            onLoadMore: () {
+              print('DEBUG trigger load more');
+            },
+            onRefresh: () {
+              BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries(
+                nextPage: 1,
+              ));
 
-            // Display snackbar if fetch failed
-            // if (state.status == FetchInquiryStatus.fetchFailed) {
-            //   return Center(
-            //     child: Text(state.error.message),
-            //   );
-            // }
-
-            return _buildInquiryList(state.inquiries);
-          },
+              return _refreshCompleter.future;
+            },
+            inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
+              inquiry: inquiry,
+              onTapAvatar: (String uuid) {
+                widget.onPush(
+                  InquiriesRoutes.inquirerProfile,
+                  {
+                    'uuid': uuid,
+                  },
+                );
+              },
+              onTapPickup: () {
+                print('DEBUG on tap ');
+              },
+            ),
+            inquiries: state.inquiries,
+          ),
         ),
       ),
     );
   }
+
+  // _closeLoadingDialog() {
+  //   Navigator.of(
+  //     _keyLoader.currentContext,
+  //   ).pop();
+  // }
 }

@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../models/inquiry.dart';
 
 class InquiryGrid extends StatelessWidget {
-  final Inquiry inquiry;
-  final Function onTap;
-
   const InquiryGrid({
     Key key,
+    @required this.onTapAvatar,
+    @required this.onTapPickup,
     this.inquiry,
-    @required this.onTap,
   }) : super(key: key);
+
+  final Inquiry inquiry;
+  final ValueChanged<String> onTapAvatar;
+  final Function onTapPickup;
 
   Widget _buildAvatar(String url) => CircleAvatar(
         radius: 28,
@@ -46,10 +48,13 @@ class InquiryGrid extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child: Container(
-                padding: const EdgeInsets.only(left: 12),
-                alignment: Alignment.topCenter,
-                child: _buildAvatar(inquiry.inquirer.avatarURL),
+              child: GestureDetector(
+                onTap: () => onTapAvatar(inquiry.inquirer.uuid),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 12),
+                  alignment: Alignment.topCenter,
+                  child: _buildAvatar(inquiry.inquirer.avatarURL),
+                ),
               ),
             ),
             SizedBox(
@@ -76,7 +81,7 @@ class InquiryGrid extends StatelessWidget {
                           Icons.chevron_right,
                           size: 20,
                         ),
-                        onPressed: onTap,
+                        onPressed: onTapPickup,
                       ),
                     ),
                   )
