@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/services/apis.dart';
 
 import './inquiry_list.dart';
 import './bloc/inquiries_bloc.dart';
+import '../inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
 import './services/api_client.dart';
-import 'screens/inquirer_profile.dart';
+import 'screens/inquirer_profile/inquirer_profile.dart';
 
 class InquiriesRoutes {
   static const root = '/';
@@ -34,10 +36,16 @@ class InquiriesRoutes {
                   this._push(context, routeName, args),
             ),
           ),
-      InquiriesRoutes.inquirerProfile: (context) => InquirerProfile(
-            loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
-            uuid: args['uuid'],
-          ),
+      InquiriesRoutes.inquirerProfile: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                  create: (context) => LoadUserImagesBloc(userApi: UserApis())),
+            ],
+            child: InquirerProfile(
+              loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+              uuid: args['uuid'],
+            ),
+          )
     };
   }
 }

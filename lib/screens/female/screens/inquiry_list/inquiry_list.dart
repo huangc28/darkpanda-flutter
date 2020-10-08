@@ -9,19 +9,6 @@ import './bloc/inquiries_bloc.dart';
 import './components/inquiry_grid.dart';
 import './components/inquiry_list.dart';
 
-// Render list of inquires emitted by the male users.
-// @TODOs
-//   - seed male sample data - [ok]
-//   - view male inquiry data - [ok]
-//   - accept male inquiry
-//   - tap go straight to the chatroom
-//   - add circular loading icon when fetching inquiries - [ok]
-//   - add refresh indicator - [ok]
-//   - display failed message - [ok]
-//   - add loadmore listener
-
-// typedef InquiryItemBuilder = Widget Function(
-// BuildContext context, Inquiry inquiry, int index);
 typedef OnPushInquiryDetail = void Function(
     String routeName, Map<String, dynamic> args);
 
@@ -63,7 +50,7 @@ class _InqiuryListState extends State<InqiuryList> {
             if (state.status == FetchInquiryStatus.fetched) {
               _refreshCompleter.complete();
               _refreshCompleter = Completer();
-              Dialogs.closeLoadingDialog(_keyLoader.currentContext);
+              Navigator.of(context, rootNavigator: true).pop();
             }
 
             if (state.status == FetchInquiryStatus.fetchFailed) {
@@ -76,7 +63,7 @@ class _InqiuryListState extends State<InqiuryList> {
                 ),
               );
 
-              Dialogs.closeLoadingDialog(_keyLoader.currentContext);
+              Navigator.of(context, rootNavigator: true).pop();
             }
 
             return null;

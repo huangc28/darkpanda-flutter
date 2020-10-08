@@ -8,6 +8,7 @@ class Dialogs {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       builder: (BuildContext context) => new WillPopScope(
         onWillPop: () async => false,
         child: SimpleDialog(
