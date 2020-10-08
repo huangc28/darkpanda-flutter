@@ -56,30 +56,30 @@ class InquirerProfileStatusBar extends StatelessWidget {
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: labels.map((label) => _buildLabel(label)).toList(),
     );
   }
 
   Widget _buildLabel(BaseLabel label) {
     return Expanded(
-        flex: 1,
         child: Column(
-          children: [
-            Text(
-              label.label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-            Text(
-              label.val != null ? '${label.val}' : 'unknown',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ],
-        ));
+      children: [
+        Text(
+          label.label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+        Text(
+          label.val != null ? '${label.val}' : 'unknown',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.8,
+          ),
+        ),
+      ],
+    ));
   }
 }
