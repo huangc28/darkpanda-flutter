@@ -129,7 +129,6 @@ class _InquirerProfileState extends State<InquirerProfile>
                 child: BlocBuilder<LoadUserImagesBloc, LoadUserImagesState>(
                   builder: (context, state) {
                     if (state.status == LoadUserImagesStatus.loaded) {
-                      // print('DEBUG images ${state.userImages}');
                       return InquirerProfileTabBarView(
                         tabController: _tabController,
                         userImages: state.userImages,
@@ -171,7 +170,7 @@ class _InquirerProfileState extends State<InquirerProfile>
             Container(
               child: CircleAvatar(
                 radius: 38,
-                backgroundColor: Color(0xffFDCF09),
+                backgroundColor: Colors.black,
                 child: CircleAvatar(
                   radius: 38,
                   backgroundImage: NetworkImage(userProfile.avatarUrl),
@@ -211,7 +210,7 @@ class _InquirerProfileState extends State<InquirerProfile>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              'some description',
+              description,
               style: TextStyle(
                 fontSize: 14,
               ),
