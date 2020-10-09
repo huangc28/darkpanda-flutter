@@ -99,10 +99,4 @@ class _InqiuryListState extends State<InqiuryList> {
       ),
     );
   }
-
-  // _closeLoadingDialog() {
-  //   Navigator.of(
-  //     _keyLoader.currentContext,
-  //   ).pop();
-  // }
 }

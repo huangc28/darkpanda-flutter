@@ -55,33 +55,6 @@ class InquirerProfileTabsState extends State<InquirerProfileTabs>
               tabs: profileTabs,
             ),
           ),
-          // Expanded(
-          //   child: TabBarView(
-          //     controller: _tabController,
-          //     children: [
-          //       Container(
-          //         //   child: GridView.builder(
-          //         //     itemCount: ,
-
-          //         //   ),
-          //         child: GridView.count(
-          //             scrollDirection: Axis.vertical,
-          //             crossAxisCount: 3,
-          //             children: List.generate(100, (index) {
-          //               return Center(
-          //                 child: Text(
-          //                   'Item $index',
-          //                   style: Theme.of(context).textTheme.headline5,
-          //                 ),
-          //               );
-          //             })),
-          //       ),
-          //       Container(
-          //         child: Text('spot 2'),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
