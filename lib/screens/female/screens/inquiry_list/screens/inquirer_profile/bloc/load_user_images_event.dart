@@ -9,6 +9,10 @@ abstract class LoadUserImagesEvent extends Equatable {
 
 class LoadUserImages extends LoadUserImagesEvent {
   final String uuid;
+  final int pageNum;
 
-  const LoadUserImages({this.uuid});
+  const LoadUserImages({
+    this.uuid,
+    this.pageNum = 0,
+  });
 }

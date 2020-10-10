@@ -6,9 +6,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 
 import '../../../models/inquiry.dart';
-import '../util/util.dart';
 import '../services/api_client.dart';
 import './inquiries_bloc.dart';
 

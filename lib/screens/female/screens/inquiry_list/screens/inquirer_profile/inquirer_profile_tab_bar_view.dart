@@ -4,10 +4,12 @@ class InquirerProfileTabBarView extends StatelessWidget {
   const InquirerProfileTabBarView({
     this.userImages,
     this.tabController,
+    this.onLoadMoreImages,
   });
 
   final List<UserImage> userImages;
   final TabController tabController;
+  final void Function() onLoadMoreImages;
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +38,28 @@ class InquirerProfileTabBarView extends StatelessWidget {
 
   Widget _buildScrollableImageTabBarView(List<UserImage> userImages) {
     return Container(
-      child: GridView.builder(
-        itemCount: userImages.length,
-        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-        ),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-              ),
+      child: LoadMoreScrollable(
+        onLoadMore: onLoadMoreImages,
+        builder: (context, scrollController) {
+          return GridView.builder(
+            controller: scrollController,
+            itemCount: userImages.length,
+            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
             ),
-            child: Image(
-              fit: BoxFit.fill,
-              image: NetworkImage(userImages[index].url),
-            ),
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Image(
+                  fit: BoxFit.fill,
+                  image: NetworkImage(userImages[index].url),
+                ),
+              );
+            },
           );
         },
       ),

@@ -34,14 +34,11 @@ class UserApis extends BaseClient {
     return res;
   }
 
-  // @TODO
-  //   - add pagingatin parameters
-  Future<http.Response> fetchUserImages(String uuid) async {
+  Future<http.Response> fetchUserImages(String uuid, int offset) async {
     final request = http.Request(
       'GET',
       buildUri('/v1/users/$uuid/images', {
-        'perpage': '9',
-        'offset': '0',
+        'offset': '$offset',
       }),
     );
 

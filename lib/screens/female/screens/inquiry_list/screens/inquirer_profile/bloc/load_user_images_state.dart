@@ -11,33 +11,42 @@ class LoadUserImagesState<E extends AppBaseException> extends Equatable {
   final LoadUserImagesStatus status;
   final E error;
   final List<UserImage> userImages;
+  final int currentPage;
 
   const LoadUserImagesState._({
     this.status,
     this.error,
     this.userImages,
+    this.currentPage,
   });
 
-  const LoadUserImagesState.initial()
+  LoadUserImagesState.initial()
       : this._(
           status: LoadUserImagesStatus.initial,
+          currentPage: 0,
+          userImages: <UserImage>[],
         );
 
-  const LoadUserImagesState.loading()
+  LoadUserImagesState.loading(LoadUserImagesState state)
       : this._(
           status: LoadUserImagesStatus.loading,
+          userImages: state.userImages,
+          currentPage: state.currentPage,
         );
 
-  const LoadUserImagesState.loadFailed(E error)
+  LoadUserImagesState.loadFailed(LoadUserImagesState state, {E error})
       : this._(
           status: LoadUserImagesStatus.loadFailed,
-          error: error,
+          error: error ?? state.error,
+          userImages: state.userImages,
+          currentPage: state.currentPage,
         );
 
-  const LoadUserImagesState.loaded(List<UserImage> images)
+  const LoadUserImagesState.loaded(List<UserImage> images, int currentPage)
       : this._(
           status: LoadUserImagesStatus.loaded,
           userImages: images,
+          currentPage: currentPage,
         );
 
   @override

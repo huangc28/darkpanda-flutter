@@ -5,6 +5,7 @@ import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/components/dialogs.dart';
+import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 
 import './bloc/load_user_images_bloc.dart';
 
@@ -128,14 +129,11 @@ class _InquirerProfileState extends State<InquirerProfile>
               Expanded(
                 child: BlocBuilder<LoadUserImagesBloc, LoadUserImagesState>(
                   builder: (context, state) {
-                    if (state.status == LoadUserImagesStatus.loaded) {
-                      return InquirerProfileTabBarView(
-                        tabController: _tabController,
-                        userImages: state.userImages,
-                      );
-                    }
-
-                    return Container(width: 0, height: 0);
+                    return InquirerProfileTabBarView(
+                      tabController: _tabController,
+                      userImages: state.userImages,
+                      onLoadMoreImages: _handleOnLoadMoreImages,
+                    );
                   },
                 ),
               ),
@@ -146,13 +144,27 @@ class _InquirerProfileState extends State<InquirerProfile>
     );
   }
 
+  _handleOnLoadMoreImages() {
+    // get current profile image page number
+    final bloc = BlocProvider.of<LoadUserImagesBloc>(context);
+    final currentPage = bloc.state.currentPage;
+    bloc.add(
+      LoadUserImages(
+        uuid: widget.uuid,
+        pageNum: currentPage + 1,
+      ),
+    );
+  }
+
   _handleOnTab(ValueKey tab) {
     if (tab == ProfileTabKey[ProfileTabs.images]) {
       // load user images bloc
       final imgBloc = BlocProvider.of<LoadUserImagesBloc>(context);
-      imgBloc.add(LoadUserImages(
-        uuid: widget.uuid,
-      ));
+      imgBloc.add(
+        LoadUserImages(
+          uuid: widget.uuid,
+        ),
+      );
     }
 
     if (tab == ProfileTabKey[ProfileTabs.transactions]) {
@@ -221,7 +233,10 @@ class _InquirerProfileState extends State<InquirerProfile>
 
   Widget _buildSendMessageRow() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      padding: EdgeInsets.symmetric(
+        vertical: 6,
+        horizontal: 10,
+      ),
       child: Row(
         children: [
           Expanded(

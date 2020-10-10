@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 
 part 'load_user_images_event.dart';
 part 'load_user_images_state.dart';
@@ -33,12 +34,20 @@ class LoadUserImagesBloc
   Stream<LoadUserImagesState> _mapLoadUserImagesToState(
       LoadUserImages event) async* {
     try {
-      yield LoadUserImagesState.loading();
+      yield LoadUserImagesState.loading(state);
 
       final jwt = await SecureStore().readJwtToken();
+      final offset = calcNextPageOffset(
+        nextPage: event.pageNum,
+        perPage: 9,
+      );
 
       userApi.jwtToken = jwt;
-      final resp = await userApi.fetchUserImages(event.uuid);
+      final resp = await userApi.fetchUserImages(
+        event.uuid,
+        offset,
+      );
+
       final respMap = json.decode(resp.body);
 
       if (resp.statusCode != HttpStatus.ok) {
@@ -51,14 +60,30 @@ class LoadUserImagesBloc
           .map<UserImage>((image) => UserImage(url: image['url']))
           .toList();
 
-      // print('DEBUG userImages ${userImages[0].url}');
-      yield LoadUserImagesState.loaded(userImages);
+      final appended = <UserImage>[
+        ...state.userImages,
+        ...?userImages,
+      ].toList();
+
+      final pageNum =
+          userImages.length == 0 ? state.currentPage : event.pageNum;
+
+      yield LoadUserImagesState.loaded(
+        appended,
+        pageNum,
+      );
     } on APIException catch (err) {
-      yield LoadUserImagesState.loadFailed(err);
+      yield LoadUserImagesState.loadFailed(
+        state,
+        error: err,
+      );
     } catch (err) {
-      print('DEBUG 7 ${err.toString()}');
-      // yield LoadUserImagesState.loadFailed(
-      //     AppGeneralExeption(message: err.message));
+      yield LoadUserImagesState.loadFailed(
+        state,
+        error: AppGeneralExeption(
+          message: err.toString(),
+        ),
+      );
     }
   }
 }
