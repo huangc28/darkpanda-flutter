@@ -23,8 +23,7 @@ void main() async {
 
 class DarkPandaApp extends StatelessWidget {
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYWI4YmUwOTktZTBlZS00ZTg1LTljYTUtZmI2MDVlNmYwMjJmIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMjQxNzMxOH0.KvfsFuD-9JifDM4ZEJBDOpWp3Nj2unR_P1rSzBHbrm0';
-
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTc4ZGVkZGEtNzM3ZS00NzZjLTgyNWQtOTdkM2QyMWEyMmU3IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMjc2NjY3N30.aDHNbF6NBoNyvK29ioG4kfm2yWnpuzK4ZYHGHOdD7hU';
   Future<void> _writeMockJwtToken() async {
     if (!kReleaseMode) {
       await SecureStore().writeJwtToken(mockedJwtToken);

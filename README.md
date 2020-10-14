@@ -18,7 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ## TODOs 
 
-1. Catch system exception like `json.decode(...)`
+- Catch system exception like `json.decode(...)` --- [ok]
  
  ```
  class SomeModel {
@@ -32,8 +32,7 @@ samples, guidance on mobile development, and a full API reference.
  }
  ```
  
- **status**: done
 
-2. Implement app bottom bar
-
-3. Login / Logout function
+- Implement app bottom bar --- [ok]
+- Login / Logout function
+- Handle error when API request failed

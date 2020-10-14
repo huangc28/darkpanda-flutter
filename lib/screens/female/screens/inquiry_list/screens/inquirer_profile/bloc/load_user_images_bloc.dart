@@ -25,7 +25,6 @@ class LoadUserImagesBloc
   Stream<LoadUserImagesState> mapEventToState(
     LoadUserImagesEvent event,
   ) async* {
-    print('DEBUG trigger LoadUserImagesBloc');
     if (event is LoadUserImages) {
       yield* _mapLoadUserImagesToState(event);
     }

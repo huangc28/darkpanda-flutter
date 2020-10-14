@@ -48,4 +48,20 @@ class UserApis extends BaseClient {
 
     return res;
   }
+
+  Future<http.Response> fetchUserHistoricalServices(String uuid,
+      [int offset = 0]) async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/users/$uuid/services', {
+        'offset': '$offset',
+      }),
+    );
+
+    withAuthHeader(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
 }

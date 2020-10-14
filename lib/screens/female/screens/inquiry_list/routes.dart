@@ -6,9 +6,10 @@ import 'package:darkpanda_flutter/services/apis.dart';
 
 import './inquiry_list.dart';
 import './bloc/inquiries_bloc.dart';
-import '../inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
 import './services/api_client.dart';
-import 'screens/inquirer_profile/inquirer_profile.dart';
+import './screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import './screens/inquirer_profile/inquirer_profile.dart';
+import '../inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
 
 class InquiriesRoutes {
   static const root = '/';
@@ -39,7 +40,15 @@ class InquiriesRoutes {
       InquiriesRoutes.inquirerProfile: (context) => MultiBlocProvider(
             providers: [
               BlocProvider(
-                  create: (context) => LoadUserImagesBloc(userApi: UserApis())),
+                create: (context) => LoadUserImagesBloc(
+                  userApi: UserApis(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => LoadHistoricalServicesBloc(
+                  userApi: UserApis(),
+                ),
+              )
             ],
             child: InquirerProfile(
               loadUserBloc: BlocProvider.of<LoadUserBloc>(context),

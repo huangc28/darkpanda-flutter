@@ -6,12 +6,16 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/components/dialogs.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/components/image_gallery.dart';
 
+import './models/historical_service.dart';
 import './bloc/load_user_images_bloc.dart';
+import './bloc/load_historical_services_bloc.dart';
 
 part 'inquirer_profile_status_bar.dart';
 part 'inquirer_profile_tabs.dart';
-part 'inquirer_profile_tab_bar_view.dart';
+part 'inquirer_profile_images.dart';
+part 'inquirer_profile_services.dart';
 
 enum ProfileTabs {
   images,
@@ -127,19 +131,43 @@ class _InquirerProfileState extends State<InquirerProfile>
                 onTab: _handleOnTab,
               ),
               Expanded(
-                child: BlocBuilder<LoadUserImagesBloc, LoadUserImagesState>(
-                  builder: (context, state) {
-                    return InquirerProfileTabBarView(
-                      tabController: _tabController,
-                      userImages: state.userImages,
-                      onLoadMoreImages: _handleOnLoadMoreImages,
-                    );
-                  },
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    BlocBuilder<LoadUserImagesBloc, LoadUserImagesState>(
+                      builder: (context, state) => InquirerProfileImages(
+                        images: state.userImages,
+                        onLoadMoreImages: _handleOnLoadMoreImages,
+                        onTapImage: (int index) =>
+                            _handleTapImage(index, state.userImages),
+                      ),
+                    ),
+                    BlocBuilder<LoadHistoricalServicesBloc,
+                        LoadHistoricalServicesState>(
+                      builder: (context, state) => InquirerProfileServices(
+                        services: state.historicalServices,
+                      ),
+                    )
+                  ],
                 ),
               ),
             ],
           );
         },
+      ),
+    );
+  }
+
+  _handleTapImage(int index, List<UserImage> userImages) {
+    Navigator.of(context).push(
+      new MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return ImageGallery(
+            userImages: userImages,
+            initialPage: index,
+          );
+        },
+        fullscreenDialog: true,
       ),
     );
   }
@@ -159,8 +187,7 @@ class _InquirerProfileState extends State<InquirerProfile>
   _handleOnTab(ValueKey tab) {
     if (tab == ProfileTabKey[ProfileTabs.images]) {
       // load user images bloc
-      final imgBloc = BlocProvider.of<LoadUserImagesBloc>(context);
-      imgBloc.add(
+      BlocProvider.of<LoadUserImagesBloc>(context).add(
         LoadUserImages(
           uuid: widget.uuid,
         ),
@@ -168,7 +195,11 @@ class _InquirerProfileState extends State<InquirerProfile>
     }
 
     if (tab == ProfileTabKey[ProfileTabs.transactions]) {
-      print('DEBUG trigger load transaction tab');
+      BlocProvider.of<LoadHistoricalServicesBloc>(context).add(
+        LoadHistoricalServices(
+          uuid: widget.uuid,
+        ),
+      );
     }
   }
 
