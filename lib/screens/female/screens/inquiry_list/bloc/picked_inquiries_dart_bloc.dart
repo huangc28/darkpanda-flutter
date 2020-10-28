@@ -32,9 +32,9 @@ class PickedInquiriesDartBloc
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
 
-      final data = await users.doc('jY0zxQDel9uAsg0aRnP1').get();
+      final data = await users.doc('me').get();
 
-      print('DEBUG trigger 5 PickedInquiriesDartBloc $data');
+      print('DEBUG trigger 5 PickedInquiriesDartBloc ${data.data()}');
 
       // Subscribe to channel uuid provided by the backend
       // final subscription = await DarkPubNub().pubnub.subscribe(
@@ -52,7 +52,7 @@ class PickedInquiriesDartBloc
 
       // print('DEBUG trigger 2 PickedInquiriesDartBloc ${DarkPubNub().pubnub}');
       yield null;
-    } on Error catch (err) {
+    } catch (err) {
       print('DEBUG trigger 3 PickedInquiriesDartBloc ${err.toString()}');
     }
   }

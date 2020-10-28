@@ -1,0 +1,7 @@
+{
+    "pubnub": {
+        "publish_key": "pub-c-9aebac50-6c5e-4226-a191-b01b9c10d5a2",
+        "subscribe_key" : "sub-c-d8b2aeca-1373-11eb-bc34-ce6fd967af95",
+        "secret_key": "sec-c-NzYzODIxYTQtODYwZi00MjcxLWFlNTAtNDlhMTViMjNjOGVj"
+    }
+}

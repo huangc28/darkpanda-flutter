@@ -32,6 +32,7 @@ dependencies:
   carousel_slider: ^2.3.1
   enum_to_string: ^1.0.13
   firebase_core: "0.5.0+1"
+  firebase_analytics: ^5.0.2
   cloud_firestore: "^0.14.1+3"
   
 

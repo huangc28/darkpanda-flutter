@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
 
@@ -26,6 +28,12 @@ void main() async {
 
   FirebaseApp app = await Firebase.initializeApp();
   assert(app != null);
+
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  // final data = await users.doc('me').get();
+
+  // print('~~@@ ${data.data()}');
 
   final config = await AppConfig.forEnvironment('dev');
 
