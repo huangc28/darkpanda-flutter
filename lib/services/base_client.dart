@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:http/http.dart' as http;
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
@@ -29,10 +30,22 @@ abstract class BaseClient extends http.BaseClient {
 
   withAuthHeader(http.BaseRequest request) {
     if (jwtToken == null) {
-      throw AppGeneralExeption(
-        message: 'jwt token can not be null.',
+      throw Exception(
+        'jwt token can not be null.',
       );
     }
+
+    request.headers['Authorization'] = 'Bearer $jwtToken';
+  }
+
+  withTokenFromSecureStore(http.BaseRequest request) async {
+    final jwt = await SecureStore().readJwtToken();
+
+    if (jwt == null) {
+      throw Exception('jwt token can not be null.');
+    }
+
+    jwtToken = jwt;
 
     request.headers['Authorization'] = 'Bearer $jwtToken';
   }

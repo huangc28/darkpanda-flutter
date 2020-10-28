@@ -36,3 +36,4 @@ samples, guidance on mobile development, and a full API reference.
 - Implement app bottom bar --- [ok]
 - Login / Logout function
 - Handle error when API request failed
+- Initialize pubnub SDK at the start of the app

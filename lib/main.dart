@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
@@ -8,6 +9,9 @@ import 'package:darkpanda_flutter/screens/auth/screens/register/services/reposit
 import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/bloc/picked_inquiries_dart_bloc.dart';
+
+import './config.dart';
 import './theme.dart';
 import './services/apis.dart';
 import './pkg/secure_store.dart';
@@ -18,12 +22,26 @@ import './bloc/auth_user_bloc.dart';
 
 // When is in debugging environment, write mocked jwt token
 void main() async {
-  runApp(DarkPandaApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  FirebaseApp app = await Firebase.initializeApp();
+  assert(app != null);
+
+  final config = await AppConfig.forEnvironment('dev');
+
+  runApp(DarkPandaApp(
+    appConfig: config,
+  ));
 }
 
 class DarkPandaApp extends StatelessWidget {
+  DarkPandaApp({
+    this.appConfig,
+  });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTc4ZGVkZGEtNzM3ZS00NzZjLTgyNWQtOTdkM2QyMWEyMmU3IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMjc2NjY3N30.aDHNbF6NBoNyvK29ioG4kfm2yWnpuzK4ZYHGHOdD7hU';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYjczZjExYzctYTUzYy00NDBmLWFiODAtNzZmMGJlYzA1NzljIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMzk3MzYzMH0.gANgf7ikhWj51SBP_lewyBuvnZGaKphN9ufcHy5CykA';
+  final AppConfig appConfig;
+
   Future<void> _writeMockJwtToken() async {
     if (!kReleaseMode) {
       await SecureStore().writeJwtToken(mockedJwtToken);
@@ -35,13 +53,16 @@ class DarkPandaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait([
-        _writeMockJwtToken(),
-      ]),
+      future: Future.wait(
+        [
+          _writeMockJwtToken(),
+        ],
+        eagerError: true,
+      ),
       builder: (context, AsyncSnapshot<void> snapshot) {
         if (snapshot.hasError) {
-          return Text(
-              'unable to write mocked jwt token in secure storage: ${snapshot.error}');
+          print('DEBUG initialize App ${snapshot.error}');
+          return Text('Error occur when initialize App: ${snapshot.error}');
         }
 
         return MultiBlocProvider(
@@ -61,6 +82,7 @@ class DarkPandaApp extends StatelessWidget {
                 authApiClient: AuthAPIClient(),
               ),
             ),
+            BlocProvider(create: (context) => PickedInquiriesDartBloc()),
           ],
           child: SecureStoreProvider(
             secureStorage: SecureStore().fsc,

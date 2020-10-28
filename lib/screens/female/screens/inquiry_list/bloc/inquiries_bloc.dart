@@ -38,10 +38,6 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       FetchInquiries event) async* {
     try {
       yield InquiriesState.fetching(state);
-      final jwt = await SecureStore().fsc.read(key: 'jwt');
-
-      this.apiClient.jwtToken = jwt;
-
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,
         perPage: event.perPage,
@@ -74,11 +70,11 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         state,
         error: e,
       );
-    } catch (e) {
+    } on AppGeneralExeption catch (e) {
       yield InquiriesState.fetchFailed(
         state,
         error: AppGeneralExeption(
-          message: e.toString(),
+          message: e.message,
         ),
       );
     }

@@ -5,6 +5,7 @@ class SecureStore {
 
   static final SecureStore _secureStore =
       new SecureStore._internal(fsc: new FlutterSecureStorage());
+
   FlutterSecureStorage fsc;
 
   factory SecureStore() {

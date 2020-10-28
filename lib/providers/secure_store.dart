@@ -9,7 +9,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecureStoreProvider extends InheritedWidget {
   final FlutterSecureStorage secureStorage;
 
-  SecureStoreProvider({this.secureStorage, Widget child}) : super(child: child);
+  SecureStoreProvider({
+    this.secureStorage,
+    Widget child,
+  }) : super(child: child);
 
   static SecureStoreProvider of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<SecureStoreProvider>();

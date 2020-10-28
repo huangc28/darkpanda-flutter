@@ -49,7 +49,6 @@ class LoadMoreInquiriesBloc
   Stream<LoadMoreInquiriesState> _mapLoadMoreInquiriesToState(
       LoadMoreInquiries event) async* {
     try {
-      // print('DEBUG lm1 ${event.nextPage}');
       // toggle fetching event
       yield LoadMoreInquiriesState.loading();
 

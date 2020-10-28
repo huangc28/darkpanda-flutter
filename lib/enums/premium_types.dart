@@ -1,0 +1,4 @@
+enum PremiumTypes {
+  normal,
+  paid,
+}

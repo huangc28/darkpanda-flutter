@@ -6,6 +6,8 @@ import 'package:darkpanda_flutter/services/apis.dart';
 
 import './inquiry_list.dart';
 import './bloc/inquiries_bloc.dart';
+import './bloc/pickup_inquiry_bloc.dart';
+import './bloc/picked_inquiries_dart_bloc.dart';
 import './services/api_client.dart';
 import './screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
 import './screens/inquirer_profile/inquirer_profile.dart';
@@ -28,10 +30,21 @@ class InquiriesRoutes {
   Map<String, WidgetBuilder> routeBuilder(BuildContext context,
       [Map<String, dynamic> args]) {
     return {
-      InquiriesRoutes.root: (context) => BlocProvider(
-            create: (context) => InquiriesBloc(
-              apiClient: ApiClient(),
-            )..add(FetchInquiries(nextPage: 1)),
+      InquiriesRoutes.root: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => InquiriesBloc(
+                  apiClient: ApiClient(),
+                )..add(FetchInquiries(nextPage: 1)),
+              ),
+              BlocProvider(
+                create: (context) => PickupInquiryBloc(
+                  apiClient: ApiClient(),
+                  pickedInquiriesBloc:
+                      BlocProvider.of<PickedInquiriesDartBloc>(context),
+                ),
+              ),
+            ],
             child: InqiuryList(
               onPush: (String routeName, args) =>
                   this._push(context, routeName, args),
@@ -48,7 +61,7 @@ class InquiriesRoutes {
                 create: (context) => LoadHistoricalServicesBloc(
                   userApi: UserApis(),
                 ),
-              )
+              ),
             ],
             child: InquirerProfile(
               loadUserBloc: BlocProvider.of<LoadUserBloc>(context),

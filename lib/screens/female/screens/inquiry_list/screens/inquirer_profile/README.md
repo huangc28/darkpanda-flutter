@@ -9,4 +9,5 @@
 - Show loading indicator when is loading for more user images
 - Click on one of the image would open a full screen image viewer,
   Image gallery - [ok].
-- Display list of user's historical service records in transactint tabs .
+- Display list of user's historical service records in transactint tabs - [ok].
+- Able to load more historical services (pagination).

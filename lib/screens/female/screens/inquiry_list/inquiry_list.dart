@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/components/dialogs.dart';
 
 import './routes.dart';
 import './bloc/inquiries_bloc.dart';
+import './bloc/pickup_inquiry_bloc.dart';
 import './components/inquiry_grid.dart';
 import './components/inquiry_list.dart';
 
@@ -89,14 +90,17 @@ class _InqiuryListState extends State<InqiuryList> {
                   },
                 );
               },
-              onTapPickup: () {
-                print('DEBUG on tap ');
-              },
+              onTapPickup: _handleTapPickup,
             ),
             inquiries: state.inquiries,
           ),
         ),
       ),
     );
+  }
+
+  _handleTapPickup(String uuid) {
+    // print('DEBUG _handleTapPickup');
+    BlocProvider.of<PickupInquiryBloc>(context).add(PickupInquiry(uuid: uuid));
   }
 }

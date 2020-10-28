@@ -12,7 +12,7 @@ class InquiryGrid extends StatelessWidget {
 
   final Inquiry inquiry;
   final ValueChanged<String> onTapAvatar;
-  final Function onTapPickup;
+  final ValueChanged<String> onTapPickup;
 
   Widget _buildAvatar(String url) => CircleAvatar(
         radius: 28,
@@ -81,7 +81,7 @@ class InquiryGrid extends StatelessWidget {
                           Icons.chevron_right,
                           size: 20,
                         ),
-                        onPressed: onTapPickup,
+                        onPressed: _handleTapPickup,
                       ),
                     ),
                   )
@@ -92,5 +92,9 @@ class InquiryGrid extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleTapPickup() {
+    onTapPickup(inquiry.uuid);
   }
 }
