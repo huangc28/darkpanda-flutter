@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 enum TabItem {
   inquiries,
+  inquiryChat,
   services,
   profile,
 }

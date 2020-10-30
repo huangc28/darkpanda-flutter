@@ -12,6 +12,7 @@ import './tab_navigator.dart';
 
 Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
   TabItem.inquiries: GlobalKey<NavigatorState>(),
+  TabItem.inquiryChat: GlobalKey<NavigatorState>(),
   TabItem.services: GlobalKey<NavigatorState>(),
   TabItem.profile: GlobalKey<NavigatorState>(),
 };
