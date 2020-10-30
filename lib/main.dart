@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkpanda_flutter/bloc/private_chats_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
@@ -29,12 +29,6 @@ void main() async {
   FirebaseApp app = await Firebase.initializeApp();
   assert(app != null);
 
-  // CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  // final data = await users.doc('me').get();
-
-  // print('~~@@ ${data.data()}');
-
   final config = await AppConfig.forEnvironment('dev');
 
   runApp(DarkPandaApp(
@@ -47,7 +41,7 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYjczZjExYzctYTUzYy00NDBmLWFiODAtNzZmMGJlYzA1NzljIiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwMzk3MzYzMH0.gANgf7ikhWj51SBP_lewyBuvnZGaKphN9ufcHy5CykA';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDhhMTYzZjgtNjZlNy00ZjhkLWIyYTItMjA3OTY4YzFiZTA5IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDEzOTg4N30.FVLUmxTleR-adhplRTcoadj7M9UAyqY7Eq_VXlCGbjs';
   final AppConfig appConfig;
 
   Future<void> _writeMockJwtToken() async {
@@ -61,15 +55,9 @@ class DarkPandaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.wait(
-        [
-          _writeMockJwtToken(),
-        ],
-        eagerError: true,
-      ),
+      future: _writeMockJwtToken(),
       builder: (context, AsyncSnapshot<void> snapshot) {
         if (snapshot.hasError) {
-          print('DEBUG initialize App ${snapshot.error}');
           return Text('Error occur when initialize App: ${snapshot.error}');
         }
 
@@ -90,7 +78,12 @@ class DarkPandaApp extends StatelessWidget {
                 authApiClient: AuthAPIClient(),
               ),
             ),
-            BlocProvider(create: (context) => PickedInquiriesDartBloc()),
+            BlocProvider(create: (context) => PrivateChatsBloc()),
+            BlocProvider(
+              create: (context) => PickedInquiriesDartBloc(
+                privateChatsBloc: BlocProvider.of<PrivateChatsBloc>(context),
+              ),
+            ),
           ],
           child: SecureStoreProvider(
             secureStorage: SecureStore().fsc,

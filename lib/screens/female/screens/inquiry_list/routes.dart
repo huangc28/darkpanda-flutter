@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/private_chats_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 
 import './inquiry_list.dart';

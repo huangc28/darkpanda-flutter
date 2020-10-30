@@ -9,6 +9,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import '../services/api_client.dart';
 import '../bloc/picked_inquiries_dart_bloc.dart';
+
 import '../../../models/picked_inquiry.dart';
 
 part 'pickup_inquiry_event.dart';

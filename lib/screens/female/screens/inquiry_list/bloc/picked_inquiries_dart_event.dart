@@ -14,3 +14,12 @@ class AddPickedInqiury extends PickedInquiriesDartEvent {
     this.pickedInquiry,
   });
 }
+
+// Event to unsubscribe private chat stream
+class CancelStream extends PickedInquiriesDartEvent {
+  final String channelUUID;
+
+  const CancelStream(
+    this.channelUUID,
+  );
+}

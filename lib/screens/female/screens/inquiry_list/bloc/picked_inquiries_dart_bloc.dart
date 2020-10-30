@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:darkpanda_flutter/bloc/private_chats_bloc.dart';
+import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 import '../../../models/picked_inquiry.dart';
 
@@ -12,53 +16,87 @@ part 'picked_inquiries_dart_state.dart';
 
 class PickedInquiriesDartBloc
     extends Bloc<PickedInquiriesDartEvent, PickedInquiriesDartState> {
-  PickedInquiriesDartBloc() : super(PickedInquiriesDartState.init());
+  PickedInquiriesDartBloc({
+    this.privateChatsBloc,
+  })  : assert(privateChatsBloc != null),
+        super(PickedInquiriesDartState.init());
+
+  final PrivateChatsBloc privateChatsBloc;
 
   @override
   Stream<PickedInquiriesDartState> mapEventToState(
     PickedInquiriesDartEvent event,
   ) async* {
     if (event is AddPickedInqiury) {
-      yield* _mapAddPickedInquiry(event);
+      yield* _mapAddPickedInquiryToState(event);
+    } else if (event is CancelStream) {
+      yield* _mapCancelStreamToState(event);
     }
   }
 
-  Stream<PickedInquiriesDartState> _mapAddPickedInquiry(
+  Stream<PickedInquiriesDartState> _mapAddPickedInquiryToState(
       AddPickedInqiury event) async* {
     try {
-      print(
-          'DEBUG trigger 4 PickedInquiriesDartBloc ${event.pickedInquiry.channelUUID}');
       // Test the adding a sample user to collection in firestore
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
+      StreamSubscription<QuerySnapshot> streamSub = FirebaseFirestore.instance
+          .collection('private_chats')
+          .doc(event.pickedInquiry.channelUUID)
+          .collection('messages')
+          .snapshots()
+          .listen(
+            (QuerySnapshot snapshot) => _handlePrivateChatEvent(
+                event.pickedInquiry.channelUUID, snapshot),
+          );
 
-      final data = await users.doc('me').get();
+      // Store stream to later cancel the subscription
+      state.privateChatStreamMap[event.pickedInquiry.channelUUID] = streamSub;
 
-      print('DEBUG trigger 5 PickedInquiriesDartBloc ${data.data()}');
-
-      // Subscribe to channel uuid provided by the backend
-      // final subscription = await DarkPubNub().pubnub.subscribe(
-      //   channels: {event.pickedInquiry.channelUUID},
-      //   withPresence: true,
-      // );
-
-      // // Store subscription in a key map
-      // print('DEBUG trigger 1 PickedInquiriesDartBloc $subscription');
-
-      // // subscription.messages.listen(_messageListener);
-      // subscription.messages.listen((event) {
-      //   print('DEBUG trigger 4 PickedInquiriesDartBloc ${event.payload}');
-      // });
-
-      // print('DEBUG trigger 2 PickedInquiriesDartBloc ${DarkPubNub().pubnub}');
-      yield null;
+      yield PickedInquiriesDartState.updatePrivateChatStreamMap(
+        state,
+        state.privateChatStreamMap,
+      );
     } catch (err) {
-      print('DEBUG trigger 3 PickedInquiriesDartBloc ${err.toString()}');
+      yield PickedInquiriesDartState.failed(
+        state,
+        AppGeneralExeption(
+          message: err.toString(),
+        ),
+      );
     }
   }
 
-  // _messageListener(pn.Envelope event) {
-  //   // event.
-  //   print('DEBUG trigger 2 PickedInquiriesDartBloc ${event.payload}');
-  // }
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+    developer.log('handle private chat on channel ID: $channelUUID');
+
+    privateChatsBloc.add(
+      DispatchMessage(
+        chatroomUUID: channelUUID,
+        message: Message.fromMap(event.docChanges.first.doc.data()),
+      ),
+    );
+  }
+
+  Stream<PickedInquiriesDartState> _mapCancelStreamToState(
+      CancelStream event) async* {
+    // Unsubscribe specified private chat stream.
+    if (state.privateChatStreamMap.containsKey(event.channelUUID)) {
+      final stream = state.privateChatStreamMap[event.channelUUID];
+
+      stream.cancel();
+
+      state.privateChatStreamMap.remove(event.channelUUID);
+
+      // Remove chatroom in the app alone with it's messages.
+      privateChatsBloc.add(
+        RemovePrivateChatRoom(chatroomUUID: event.channelUUID),
+      );
+    } else {
+      developer.log(
+        'Stream intends to unsubscribe is\'t exist for the given  channel UUID',
+        name: 'private_chat:unsubscribe_stream',
+      );
+    }
+
+    yield null;
+  }
 }
