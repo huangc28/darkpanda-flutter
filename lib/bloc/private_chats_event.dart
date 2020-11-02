@@ -24,3 +24,5 @@ class RemovePrivateChatRoom extends PrivateChatsEvent {
     this.chatroomUUID,
   });
 }
+
+class FetchChatRooms extends PrivateChatsEvent {}

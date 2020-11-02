@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:darkpanda_flutter/bloc/private_chats_bloc.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/services/apis.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
@@ -15,7 +17,6 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/bloc/picke
 
 import './config.dart';
 import './theme.dart';
-import './services/apis.dart';
 import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
 import './app.dart';
@@ -41,7 +42,7 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDhhMTYzZjgtNjZlNy00ZjhkLWIyYTItMjA3OTY4YzFiZTA5IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDEzOTg4N30.FVLUmxTleR-adhplRTcoadj7M9UAyqY7Eq_VXlCGbjs';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDhhMTYzZjgtNjZlNy00ZjhkLWIyYTItMjA3OTY4YzFiZTA5IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDM4ODQ2MX0.hZWJBsWMOly-bSD5NW3qosv8OA_-gp2qBWLMEaRe8Ao';
   final AppConfig appConfig;
 
   Future<void> _writeMockJwtToken() async {
@@ -83,6 +84,9 @@ class DarkPandaApp extends StatelessWidget {
               create: (context) => PickedInquiriesDartBloc(
                 privateChatsBloc: BlocProvider.of<PrivateChatsBloc>(context),
               ),
+            ),
+            BlocProvider(
+              create: (context) => LoadUserBloc(userApis: UserApis()),
             ),
           ],
           child: SecureStoreProvider(

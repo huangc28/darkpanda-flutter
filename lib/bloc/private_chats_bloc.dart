@@ -19,6 +19,8 @@ class PrivateChatsBloc extends Bloc<PrivateChatsEvent, PrivateChatsState> {
       yield* _mapDispatchMessageToState(event);
     } else if (event is RemovePrivateChatRoom) {
       yield* _mapRemovePrivateChatRoomToState(event);
+    } else if (event is FetchChatRooms) {
+      yield* _mapFetchChatRoomsToState(event);
     }
   }
 
@@ -52,5 +54,20 @@ class PrivateChatsBloc extends Bloc<PrivateChatsEvent, PrivateChatsState> {
     }
 
     yield null;
+  }
+
+  Stream<PrivateChatsState> _mapFetchChatRoomsToState(
+      FetchChatRooms event) async* {
+    //   try {
+    //     yield FetchChatsState.loading();
+
+    //     final resp = await inquiryChatsApis.fetchChats();
+
+    //     print('DEBUG *&^ ${resp.body}');
+
+    //     yield null;
+    //   } on Error catch (e) {
+    //     print('DEBUG trigger _mapFetchChatsToState 2 ${e.toString()}');
+    //   }
   }
 }

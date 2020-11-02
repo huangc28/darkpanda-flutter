@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 enum TabItem {
   inquiries,
-  inquiryChat,
+  inquiryChats,
   services,
   profile,
 }
 
 Map<TabItem, String> TabLabelMap = {
   TabItem.inquiries: 'inquiries',
+  TabItem.inquiryChats: 'inquiry chats',
   TabItem.services: 'services',
   TabItem.profile: 'profile',
 };
@@ -34,6 +35,7 @@ class BottomNavigation extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       items: <BottomNavigationBarItem>[
         _buildBarItem(item: TabItem.inquiries),
+        _buildBarItem(item: TabItem.inquiryChats),
         _buildBarItem(item: TabItem.services),
         _buildBarItem(item: TabItem.profile),
       ],
