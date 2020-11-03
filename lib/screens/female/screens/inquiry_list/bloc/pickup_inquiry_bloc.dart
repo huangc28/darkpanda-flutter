@@ -6,9 +6,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/models/chatroom.dart';
 
 import '../services/api_client.dart';
-import '../bloc/picked_inquiries_dart_bloc.dart';
 
 import '../../../models/picked_inquiry.dart';
 
@@ -18,13 +19,13 @@ part 'pickup_inquiry_state.dart';
 class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
   PickupInquiryBloc({
     this.apiClient,
-    this.pickedInquiriesBloc,
+    this.inquiryChatroomsBloc,
   })  : assert(apiClient != null),
-        assert(pickedInquiriesBloc != null),
+        assert(inquiryChatroomsBloc != null),
         super(PickupInquiryState.init());
 
   final ApiClient apiClient;
-  final PickedInquiriesDartBloc pickedInquiriesBloc;
+  final InquiryChatroomsBloc inquiryChatroomsBloc;
 
   @override
   Stream<PickupInquiryState> mapEventToState(
@@ -48,16 +49,11 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
         );
       }
 
-      final pi = PickedInquiry.fromMap(
-        json.decode(
-          res.body,
-        ),
-      );
-
-      // Picked inquiry should be placed in PickedInquiries Bloc.
-      pickedInquiriesBloc.add(
-        AddPickedInqiury(
-          pickedInquiry: pi,
+      inquiryChatroomsBloc.add(
+        AddChatroom(
+          Chatroom.fromMap(
+            json.decode(res.body),
+          ),
         ),
       );
     } on APIException catch (err) {

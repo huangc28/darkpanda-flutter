@@ -1,22 +1,27 @@
-class InquiryChats {
+class Chatroom {
   final String serviceType;
+  final String inquiryStatus;
+  final String inquirerUUID;
   final String username;
   final String avatarURL;
   final String channelUUID;
   final DateTime expiredAt;
   final DateTime createdAt;
 
-  const InquiryChats({
+  const Chatroom({
     this.serviceType,
+    this.inquiryStatus,
     this.username,
+    this.inquirerUUID,
     this.avatarURL,
     this.channelUUID,
     this.expiredAt,
     this.createdAt,
   });
 
-  factory InquiryChats.fromMap(Map<String, dynamic> data) => InquiryChats(
+  factory Chatroom.fromMap(Map<String, dynamic> data) => Chatroom(
         serviceType: data['service_type'] ?? '',
+        inquiryStatus: data['inquiry_status'] ?? '',
         username: data['username'] ?? '',
         avatarURL: data['avatar_url'] ?? '',
         channelUUID: data['channel_uuid'] ?? '',

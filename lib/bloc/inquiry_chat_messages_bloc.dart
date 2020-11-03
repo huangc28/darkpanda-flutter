@@ -5,22 +5,21 @@ import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/models/message.dart';
 
-part 'private_chats_event.dart';
-part 'private_chats_state.dart';
+part 'inquiry_chat_messages_event.dart';
+part 'inquiry_chat_messages_state.dart';
 
-class PrivateChatsBloc extends Bloc<PrivateChatsEvent, PrivateChatsState> {
-  PrivateChatsBloc() : super(PrivateChatsState.init());
+class InquiryChatMessagesBloc
+    extends Bloc<InquiryChatMessagesEvent, PrivateChatsState> {
+  InquiryChatMessagesBloc() : super(PrivateChatsState.init());
 
   @override
   Stream<PrivateChatsState> mapEventToState(
-    PrivateChatsEvent event,
+    InquiryChatMessagesEvent event,
   ) async* {
     if (event is DispatchMessage) {
       yield* _mapDispatchMessageToState(event);
     } else if (event is RemovePrivateChatRoom) {
       yield* _mapRemovePrivateChatRoomToState(event);
-    } else if (event is FetchChatRooms) {
-      yield* _mapFetchChatRoomsToState(event);
     }
   }
 
@@ -56,18 +55,16 @@ class PrivateChatsBloc extends Bloc<PrivateChatsEvent, PrivateChatsState> {
     yield null;
   }
 
-  Stream<PrivateChatsState> _mapFetchChatRoomsToState(
-      FetchChatRooms event) async* {
-    //   try {
-    //     yield FetchChatsState.loading();
+  @override
+  void onChange(Change<PrivateChatsState> change) {
+    developer.log(
+      'Current message state: ${change.currentState.chatroomMessages}',
+    );
 
-    //     final resp = await inquiryChatsApis.fetchChats();
+    developer.log(
+      'Next message state: ${change.nextState.chatroomMessages}',
+    );
 
-    //     print('DEBUG *&^ ${resp.body}');
-
-    //     yield null;
-    //   } on Error catch (e) {
-    //     print('DEBUG trigger _mapFetchChatsToState 2 ${e.toString()}');
-    //   }
+    super.onChange(change);
   }
 }

@@ -25,7 +25,6 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   Stream<InquiriesState> mapEventToState(
     InquiriesEvent event,
   ) async* {
-    print('DEBUG trigger InquiriesBloc');
     if (event is FetchInquiries) {
       yield* _mapFetchInquiriesToState(event);
     }

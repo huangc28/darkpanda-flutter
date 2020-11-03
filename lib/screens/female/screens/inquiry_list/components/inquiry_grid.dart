@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+
 import '../../../models/inquiry.dart';
 
 class InquiryGrid extends StatelessWidget {
@@ -13,12 +15,6 @@ class InquiryGrid extends StatelessWidget {
   final Inquiry inquiry;
   final ValueChanged<String> onTapAvatar;
   final ValueChanged<String> onTapPickup;
-
-  Widget _buildAvatar(String url) => CircleAvatar(
-        radius: 28,
-        backgroundImage: NetworkImage(inquiry.inquirer.avatarURL),
-        backgroundColor: Colors.brown.shade800,
-      );
 
   Widget _buildInquiryDetailBar(
           {String serviceType, String username, double budget}) =>
@@ -53,7 +49,7 @@ class InquiryGrid extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.only(left: 12),
                   alignment: Alignment.topCenter,
-                  child: _buildAvatar(inquiry.inquirer.avatarURL),
+                  child: UserAvatar(inquiry.inquirer.avatarURL),
                 ),
               ),
             ),

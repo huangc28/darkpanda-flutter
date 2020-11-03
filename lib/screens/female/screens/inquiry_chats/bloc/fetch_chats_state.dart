@@ -7,12 +7,14 @@ enum FetchChatsStatus {
   loaded,
 }
 
-class FetchChatsState extends Equatable {
+class FetchChatsState<E extends AppBaseException> extends Equatable {
   const FetchChatsState._({
     this.status,
+    this.error,
   });
 
   final FetchChatsStatus status;
+  final E error;
 
   FetchChatsState.init()
       : this._(
@@ -24,9 +26,10 @@ class FetchChatsState extends Equatable {
           status: FetchChatsStatus.loading,
         );
 
-  FetchChatsState.loadFailed()
+  FetchChatsState.loadFailed(E err)
       : this._(
           status: FetchChatsStatus.loadFailed,
+          error: err,
         );
 
   FetchChatsState.loaded()

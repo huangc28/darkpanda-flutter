@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:darkpanda_flutter/bloc/private_chats_bloc.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 
@@ -13,7 +13,7 @@ import 'package:darkpanda_flutter/screens/auth/screens/register/services/reposit
 import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/bloc/picked_inquiries_dart_bloc.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 
 import './config.dart';
 import './theme.dart';
@@ -79,10 +79,11 @@ class DarkPandaApp extends StatelessWidget {
                 authApiClient: AuthAPIClient(),
               ),
             ),
-            BlocProvider(create: (context) => PrivateChatsBloc()),
+            BlocProvider(create: (context) => InquiryChatMessagesBloc()),
             BlocProvider(
-              create: (context) => PickedInquiriesDartBloc(
-                privateChatsBloc: BlocProvider.of<PrivateChatsBloc>(context),
+              create: (context) => InquiryChatroomsBloc(
+                inquiryChatMesssagesBloc:
+                    BlocProvider.of<InquiryChatMessagesBloc>(context),
               ),
             ),
             BlocProvider(

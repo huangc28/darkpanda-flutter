@@ -38,3 +38,4 @@ samples, guidance on mobile development, and a full API reference.
 - Handle error when API request failed.
 - Initialize firestore instance at the start of the application. --- [ok]
 - Female app should add inquiry chats tap.
+- All API classes should rethrow errors so that blocs can catch and display API errors.

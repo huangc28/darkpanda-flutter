@@ -1,4 +1,6 @@
-part of 'private_chats_bloc.dart';
+part of 'inquiry_chat_messages_bloc.dart';
+
+typedef LastMessageGetter = Message Function(String channelUUID);
 
 class PrivateChatsState extends Equatable {
   const PrivateChatsState._({
@@ -17,6 +19,19 @@ class PrivateChatsState extends Equatable {
         );
 
   final Map<String, List<Message>> chatroomMessages;
+
+  LastMessageGetter get lastMessage {
+    return (String channelUUID) {
+      if (!chatroomMessages.containsKey(channelUUID)) {
+        developer.log(
+          'Trying to access last message from an non-existed chatroom',
+        );
+        return Message(content: '');
+      }
+
+      return chatroomMessages[channelUUID].first;
+    };
+  }
 
   @override
   List<Object> get props => [

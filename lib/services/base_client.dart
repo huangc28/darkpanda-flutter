@@ -56,8 +56,12 @@ abstract class BaseClient extends http.BaseClient {
   // Sends request and return [http.Response] object as the result. It converts
   // [http.StreamResponse] to [http.Response]
   Future<http.Response> sendWithResponse(http.BaseRequest request) async {
-    final streamResp = await this.send(request);
+    try {
+      final streamResp = await this.send(request);
 
-    return http.Response.fromStream(streamResp);
+      return http.Response.fromStream(streamResp);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

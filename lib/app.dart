@@ -52,7 +52,6 @@ class _AppState extends State<App> {
   }
 
   Widget _buildOffstageNavigator(TabItem tabItem) {
-    print('DEBUG tab item ${_currentTab}');
     return Offstage(
       offstage: _currentTab != tabItem,
       child: TabNavigator(

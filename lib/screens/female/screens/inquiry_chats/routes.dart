@@ -3,8 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 
-import './chatroom_list.dart';
+import './chatrooms.dart';
 import './bloc/fetch_chats_bloc.dart';
 import './services/inquiry_chats_apis.dart';
 
@@ -22,12 +23,14 @@ class InquiryChatsRoutes extends BaseRoutes {
             providers: [
               BlocProvider(
                 lazy: false,
-                create: (context) =>
-                    FetchChatsBloc(inquiryChatsApis: InquiryChatsApis())
-                      ..add(FetchChats()),
+                create: (context) => FetchChatsBloc(
+                  inquiryChatsApis: InquiryChatsApis(),
+                  inquiryChatroomBloc:
+                      BlocProvider.of<InquiryChatroomsBloc>(context),
+                )..add(FetchChats()),
               )
             ],
-            child: ChatRoomList(),
+            child: ChatRooms(),
           )
     };
   }

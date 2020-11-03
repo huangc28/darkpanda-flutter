@@ -1,13 +1,13 @@
-part of 'private_chats_bloc.dart';
+part of 'inquiry_chat_messages_bloc.dart';
 
-class PrivateChatsEvent extends Equatable {
-  const PrivateChatsEvent();
+class InquiryChatMessagesEvent extends Equatable {
+  const InquiryChatMessagesEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class DispatchMessage extends PrivateChatsEvent {
+class DispatchMessage extends InquiryChatMessagesEvent {
   final String chatroomUUID;
   final Message message;
 
@@ -17,12 +17,10 @@ class DispatchMessage extends PrivateChatsEvent {
   });
 }
 
-class RemovePrivateChatRoom extends PrivateChatsEvent {
+class RemovePrivateChatRoom extends InquiryChatMessagesEvent {
   final String chatroomUUID;
 
   const RemovePrivateChatRoom({
     this.chatroomUUID,
   });
 }
-
-class FetchChatRooms extends PrivateChatsEvent {}
