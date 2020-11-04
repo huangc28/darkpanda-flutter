@@ -15,7 +15,9 @@ typedef OnPushInquiryDetail = void Function(
     String routeName, Map<String, dynamic> args);
 
 class InqiuryList extends StatefulWidget {
-  const InqiuryList({this.onPush});
+  const InqiuryList({
+    this.onPush,
+  });
 
   final OnPushInquiryDetail onPush;
 

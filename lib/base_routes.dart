@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+typedef OnPush = void Function(String routeName, Map<String, dynamic> args);
+
 abstract class BaseRoutes {
   static const root = '/';
 

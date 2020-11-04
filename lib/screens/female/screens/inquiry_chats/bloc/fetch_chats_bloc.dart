@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -35,13 +36,10 @@ class FetchChatsBloc extends Bloc<FetchChatsEvent, FetchChatsState> {
   }
 
   Stream<FetchChatsState> _mapFetchChatsToState(FetchChats event) async* {
-    print('DEBUG _mapFetchChatsToState');
     try {
       yield FetchChatsState.loading();
 
       final resp = await inquiryChatsApis.fetchChats();
-
-      print('DEBUG _mapFetchChatsToState 1 $resp');
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -54,18 +52,29 @@ class FetchChatsBloc extends Bloc<FetchChatsEvent, FetchChatsState> {
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      print('DEBUG inquiryChatroomBloc ${chatrooms}');
-
       inquiryChatroomBloc.add(
         AddChatrooms(chatrooms),
       );
 
       yield FetchChatsState.loaded();
     } on APIException catch (e) {
+      developer.log(
+        e.toString(),
+        name: "APIException: fetch_chats_bloc",
+      );
       yield FetchChatsState.loadFailed(e);
     } on AppGeneralExeption catch (e) {
+      developer.log(
+        e.toString(),
+        name: "AppGeneralExeption: fetch_chats_bloc",
+      );
       yield FetchChatsState.loadFailed(e);
     } catch (e) {
+      developer.log(
+        e.toString(),
+        name: "Exception: fetch_chats_bloc",
+      );
+
       yield FetchChatsState.loadFailed(
         AppGeneralExeption(
           message: e.toString(),

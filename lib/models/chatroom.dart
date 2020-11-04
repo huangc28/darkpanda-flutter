@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/models/message.dart';
+
 class Chatroom {
   final String serviceType;
   final String inquiryStatus;
@@ -7,6 +9,7 @@ class Chatroom {
   final String channelUUID;
   final DateTime expiredAt;
   final DateTime createdAt;
+  final Message latestMessage;
 
   const Chatroom({
     this.serviceType,
@@ -17,6 +20,7 @@ class Chatroom {
     this.channelUUID,
     this.expiredAt,
     this.createdAt,
+    this.latestMessage,
   });
 
   factory Chatroom.fromMap(Map<String, dynamic> data) => Chatroom(
@@ -27,5 +31,8 @@ class Chatroom {
         channelUUID: data['channel_uuid'] ?? '',
         expiredAt: DateTime.parse(data['expired_at']),
         createdAt: DateTime.parse(data['created_at']),
+        latestMessage: data.containsKey('latest_message')
+            ? Message.fromMap(data['latest_message'])
+            : null,
       );
 }

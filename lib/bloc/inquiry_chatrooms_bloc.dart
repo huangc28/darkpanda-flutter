@@ -101,6 +101,15 @@ class InquiryChatroomsBloc
       state,
       state.privateChatStreamMap,
     );
+
+    for (final chatroom in event.chatrooms) {
+      inquiryChatMesssagesBloc.add(
+        DispatchMessage(
+          chatroomUUID: chatroom.channelUUID,
+          message: chatroom.latestMessage,
+        ),
+      );
+    }
   }
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {

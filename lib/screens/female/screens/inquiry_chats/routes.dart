@@ -30,7 +30,13 @@ class InquiryChatsRoutes extends BaseRoutes {
                 )..add(FetchChats()),
               )
             ],
-            child: ChatRooms(),
+            child: ChatRooms(
+              onPush: (String routeName, Map<String, dynamic> args) => push(
+                context,
+                routeName,
+                args,
+              ),
+            ),
           )
     };
   }

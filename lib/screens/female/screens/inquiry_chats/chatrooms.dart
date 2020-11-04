@@ -3,14 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
-import 'package:darkpanda_flutter/models/message.dart';
-import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/base_routes.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
 
 class ChatRooms extends StatelessWidget {
-  const ChatRooms();
+  const ChatRooms({
+    this.onPush,
+  });
+
+  final OnPush onPush;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +21,6 @@ class ChatRooms extends StatelessWidget {
       child: Scaffold(
         body: BlocBuilder<InquiryChatroomsBloc, InquiryChatroomsState>(
           builder: (context, state) {
-            print('DEBUG state ${state.chatrooms}');
-
             return ChatroomList(
               chatrooms: state.chatrooms,
               onRefresh: () {
@@ -29,7 +30,6 @@ class ChatRooms extends StatelessWidget {
                 print('DEBUG trigger onLoadMore');
               },
               chatroomBuilder: (context, chatroom, ___) {
-                // _getChatroomLastMessage(context, chatroom);
                 final lastMsg =
                     BlocProvider.of<InquiryChatMessagesBloc>(context)
                         .state
@@ -49,6 +49,8 @@ class ChatRooms extends StatelessWidget {
   }
 
   void _onEnterChat() {
+    // Redirect to chatroom.
+
     print('DEBUG enterChat');
   }
 }
