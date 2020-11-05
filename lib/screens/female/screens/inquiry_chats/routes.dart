@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 
 import './chatrooms.dart';
+import './screens/chatroom.dart';
 import './bloc/fetch_chats_bloc.dart';
 import './services/inquiry_chats_apis.dart';
 
@@ -31,13 +32,14 @@ class InquiryChatsRoutes extends BaseRoutes {
               )
             ],
             child: ChatRooms(
-              onPush: (String routeName, Map<String, dynamic> args) => push(
+              onPush: (String routeName, [Map<String, dynamic> args]) => push(
                 context,
                 routeName,
                 args,
               ),
             ),
-          )
+          ),
+      InquiryChatsRoutes.chatroom: (context) => Chatroom(),
     };
   }
 }

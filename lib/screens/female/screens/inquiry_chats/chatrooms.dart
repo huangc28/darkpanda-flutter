@@ -7,6 +7,7 @@ import 'package:darkpanda_flutter/base_routes.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
+import './routes.dart';
 
 class ChatRooms extends StatelessWidget {
   const ChatRooms({
@@ -36,7 +37,8 @@ class ChatRooms extends StatelessWidget {
                         .lastMessage(chatroom.channelUUID);
 
                 return ChatroomGrid(
-                  onEnterChat: _onEnterChat,
+                  onEnterChat: (String channelUUID) =>
+                      _onEnterChat(context, channelUUID),
                   chatroom: chatroom,
                   lastMessage: lastMsg.content,
                 );
@@ -48,9 +50,13 @@ class ChatRooms extends StatelessWidget {
     );
   }
 
-  void _onEnterChat() {
-    // Redirect to chatroom.
-
-    print('DEBUG enterChat');
+  void _onEnterChat(BuildContext context, String channelUUID) {
+    // Displatch fetch chatroom messages
+    // After messages are fetched, redirect to chatroom.
+    // BlocProvider.of<InquiryChatMessagesBloc>(context).add(
+    //   FetchHist(
+    //     channelUUID: channelUUID,
+    //   ),
+    // );
   }
 }

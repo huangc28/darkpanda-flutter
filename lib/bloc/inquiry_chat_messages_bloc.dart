@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 part 'inquiry_chat_messages_event.dart';
 part 'inquiry_chat_messages_state.dart';
@@ -20,6 +21,8 @@ class InquiryChatMessagesBloc
       yield* _mapDispatchMessageToState(event);
     } else if (event is RemovePrivateChatRoom) {
       yield* _mapRemovePrivateChatRoomToState(event);
+    } else if (event is FetchHistoricalMessages) {
+      yield* _mapFetchMessagesToState(event);
     }
   }
 
@@ -52,6 +55,11 @@ class InquiryChatMessagesBloc
       state.chatroomMessages.remove(event.chatroomUUID);
     }
 
+    yield null;
+  }
+
+  Stream<PrivateChatsState> _mapFetchMessagesToState(
+      FetchHistoricalMessages event) async* {
     yield null;
   }
 

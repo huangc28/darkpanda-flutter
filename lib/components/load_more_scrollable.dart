@@ -27,7 +27,6 @@ class _LoadMoreScrollableState extends State<LoadMoreScrollable> {
   }
 
   void _scrollListener() {
-    // We need to add debounce mechanism, to prevent large invocations,
     final offsetFromScrollExtent = 10;
 
     if (_scrollController.position.pixels >

@@ -9,7 +9,6 @@ import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
-import '../screens/female/models/picked_inquiry.dart';
 import '../models/chatroom.dart';
 
 part 'inquiry_chatrooms_event.dart';

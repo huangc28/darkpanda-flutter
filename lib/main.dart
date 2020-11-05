@@ -42,7 +42,7 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDhhMTYzZjgtNjZlNy00ZjhkLWIyYTItMjA3OTY4YzFiZTA5IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDUyMzE2Mn0.GeeMG_PYzn6ul7tYKdufExE7NVgUIuAhgyediQnPV3I';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDYxMDUyOX0.ajth169VpnaOTxgthg7JzYOV6bk4TD_lVA_Jmgjnqck';
   final AppConfig appConfig;
 
   Future<void> _writeMockJwtToken() async {

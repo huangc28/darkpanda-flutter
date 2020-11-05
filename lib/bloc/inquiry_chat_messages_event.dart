@@ -17,6 +17,14 @@ class DispatchMessage extends InquiryChatMessagesEvent {
   });
 }
 
+class FetchHistoricalMessages extends InquiryChatMessagesEvent {
+  final String channelUUID;
+
+  const FetchHistoricalMessages({
+    this.channelUUID,
+  });
+}
+
 class RemovePrivateChatRoom extends InquiryChatMessagesEvent {
   final String chatroomUUID;
 

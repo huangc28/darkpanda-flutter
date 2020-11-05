@@ -7,15 +7,6 @@ abstract class InquiryChatroomsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-/// @TODO change this event to addChatRoom
-class AddPickedInqiury extends InquiryChatroomsEvent {
-  final PickedInquiry pickedInquiry;
-
-  const AddPickedInqiury({
-    this.pickedInquiry,
-  });
-}
-
 class AddChatroom extends InquiryChatroomsEvent {
   final Chatroom chatroom;
 
