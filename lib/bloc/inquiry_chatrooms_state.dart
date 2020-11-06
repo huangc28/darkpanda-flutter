@@ -1,5 +1,12 @@
 part of 'inquiry_chatrooms_bloc.dart';
 
+enum FetchInquiryChatroomStatus {
+  initial,
+  loading,
+  loadFailed,
+  loaded,
+}
+
 class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   final List<Chatroom> chatrooms;
   final E error;
@@ -7,41 +14,48 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   // Map of channel UUID and stream.
   final Map<String, StreamSubscription> privateChatStreamMap;
 
+  final FetchInquiryChatroomStatus status;
+
   const InquiryChatroomsState._({
     this.chatrooms,
     this.privateChatStreamMap,
     this.error,
+    this.status,
   });
 
   InquiryChatroomsState.init()
       : this._(
           chatrooms: [],
           privateChatStreamMap: {},
+          status: FetchInquiryChatroomStatus.initial,
         );
 
-  InquiryChatroomsState.updateChatrooms(
-      InquiryChatroomsState state, List<Chatroom> chatrooms)
+  InquiryChatroomsState.loading(InquiryChatroomsState state)
       : this._(
-          chatrooms: chatrooms,
-          privateChatStreamMap: state.privateChatStreamMap,
-        );
-
-  InquiryChatroomsState.updatePrivateChatStreamMap(
-    InquiryChatroomsState state,
-    Map<String, StreamSubscription> map,
-  ) : this._(
           chatrooms: state.chatrooms,
-          privateChatStreamMap: map,
+          privateChatStreamMap: state.privateChatStreamMap,
+          status: FetchInquiryChatroomStatus.loading,
         );
 
-  InquiryChatroomsState.failed(InquiryChatroomsState state, E error)
+  InquiryChatroomsState.loadFailed(InquiryChatroomsState state, E err)
+      : this._(
+          chatrooms: state.chatrooms,
+          privateChatStreamMap: state.privateChatStreamMap,
+          status: FetchInquiryChatroomStatus.loadFailed,
+        );
+
+  InquiryChatroomsState.updateChatrooms(InquiryChatroomsState state)
       : this._(
           privateChatStreamMap: state.privateChatStreamMap,
-          error: error,
+          chatrooms: state.chatrooms,
+          status: FetchInquiryChatroomStatus.loaded,
         );
 
   @override
   List<Object> get props => [
+        status,
+        chatrooms,
         privateChatStreamMap,
+        error,
       ];
 }

@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
@@ -42,7 +43,8 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDYxMDUyOX0.ajth169VpnaOTxgthg7JzYOV6bk4TD_lVA_Jmgjnqck';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDgwODU0MX0.xtUoz3DX0S3aB7UeYUtjzIZBkCBgSpnVk_haydmf4dU';
+
   final AppConfig appConfig;
 
   Future<void> _writeMockJwtToken() async {
@@ -84,6 +86,7 @@ class DarkPandaApp extends StatelessWidget {
               create: (context) => InquiryChatroomsBloc(
                 inquiryChatMesssagesBloc:
                     BlocProvider.of<InquiryChatMessagesBloc>(context),
+                inquiryChatroomApis: InquiryChatroomApis(),
               ),
             ),
             BlocProvider(

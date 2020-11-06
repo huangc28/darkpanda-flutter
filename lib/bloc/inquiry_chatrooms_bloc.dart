@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
@@ -8,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
 
 import '../models/chatroom.dart';
 
@@ -18,10 +21,13 @@ class InquiryChatroomsBloc
     extends Bloc<InquiryChatroomsEvent, InquiryChatroomsState> {
   InquiryChatroomsBloc({
     this.inquiryChatMesssagesBloc,
+    this.inquiryChatroomApis,
   })  : assert(inquiryChatMesssagesBloc != null),
+        assert(inquiryChatroomApis != null),
         super(InquiryChatroomsState.init());
 
   final InquiryChatMessagesBloc inquiryChatMesssagesBloc;
+  final InquiryChatroomApis inquiryChatroomApis;
 
   @override
   Stream<InquiryChatroomsState> mapEventToState(
@@ -33,6 +39,8 @@ class InquiryChatroomsBloc
       yield* _mapAddChatroomToState(event);
     } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
+    } else if (event is FetchChatrooms) {
+      yield* _mapFetchChatroomToState(event);
     }
   }
 
@@ -59,12 +67,9 @@ class InquiryChatroomsBloc
       // Store stream to later cancel the subscription
       state.privateChatStreamMap[event.chatroom.channelUUID] = streamSub;
 
-      yield InquiryChatroomsState.updatePrivateChatStreamMap(
-        state,
-        state.privateChatStreamMap,
-      );
+      yield InquiryChatroomsState.updateChatrooms(state);
     } catch (err) {
-      yield InquiryChatroomsState.failed(
+      yield InquiryChatroomsState.loadFailed(
         state,
         AppGeneralExeption(
           message: err.toString(),
@@ -91,15 +96,7 @@ class InquiryChatroomsBloc
       state.chatrooms.insert(0, chatroom);
     }
 
-    yield InquiryChatroomsState.updateChatrooms(
-      state,
-      state.chatrooms,
-    );
-
-    yield InquiryChatroomsState.updatePrivateChatStreamMap(
-      state,
-      state.privateChatStreamMap,
-    );
+    yield InquiryChatroomsState.updateChatrooms(state);
 
     for (final chatroom in event.chatrooms) {
       inquiryChatMesssagesBloc.add(
@@ -132,19 +129,11 @@ class InquiryChatroomsBloc
 
       state.privateChatStreamMap.remove(event.channelUUID);
 
-      yield InquiryChatroomsState.updatePrivateChatStreamMap(
-        state,
-        state.privateChatStreamMap,
-      );
-
       state.chatrooms
           .where((chatroom) => chatroom.channelUUID != event.channelUUID)
           .toList();
 
-      yield InquiryChatroomsState.updateChatrooms(
-        state,
-        state.chatrooms,
-      );
+      yield InquiryChatroomsState.updateChatrooms(state);
 
       // Remove chatroom in the app alone with it's messages.
       inquiryChatMesssagesBloc.add(
@@ -158,5 +147,50 @@ class InquiryChatroomsBloc
     }
 
     yield null;
+  }
+
+  Stream<InquiryChatroomsState> _mapFetchChatroomToState(
+      FetchChatrooms event) async* {
+    try {
+      yield InquiryChatroomsState.loading(state);
+      final resp = await inquiryChatroomApis.fetchInquiryChatrooms();
+
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+
+      final Map<String, dynamic> respMap = json.decode(resp.body);
+
+      if (respMap['chats'].isEmpty) {
+        return;
+      }
+
+      final chatrooms = respMap['chats']
+          .map<Chatroom>((chat) => Chatroom.fromMap(chat))
+          .toList();
+
+      add(AddChatrooms(chatrooms));
+    } on APIException catch (err) {
+      developer.log(
+        err.toString(),
+        name: "APIException: fetch_chats_bloc",
+      );
+
+      yield InquiryChatroomsState.loadFailed(state, err);
+    } on AppGeneralExeption catch (e) {
+      developer.log(
+        e.toString(),
+        name: "AppGeneralExeption: fetch_chats_bloc",
+      );
+
+      yield InquiryChatroomsState.loadFailed(
+        state,
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
   }
 }

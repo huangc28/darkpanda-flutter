@@ -9,12 +9,24 @@ import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
 import './routes.dart';
 
-class ChatRooms extends StatelessWidget {
+class ChatRooms extends StatefulWidget {
   const ChatRooms({
     this.onPush,
   });
 
   final OnPush onPush;
+
+  @override
+  _ChatRoomsState createState() => _ChatRoomsState();
+}
+
+class _ChatRoomsState extends State<ChatRooms> {
+  @override
+  void initState() {
+    BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
