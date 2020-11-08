@@ -51,9 +51,6 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('DEBUG tab navigator 1 ${tabItem}');
-    // print('DEBUG tab navigator 2 ${currentTab}');
-
     if (tabItem == currentTab) {
       final routeBuilders = _getRouteBuildersByTab(context, tabItem);
 
@@ -62,12 +59,7 @@ class TabNavigator extends StatelessWidget {
         initialRoute: initialRouteMap[tabItem],
         onGenerateRoute: (settings) => MaterialPageRoute(
           settings: settings,
-          // builder: (context) => routeBuilders[settings.name](context),
-          builder: (context) {
-            print('DEBUG Navigator ${settings.name}');
-
-            return routeBuilders[settings.name](context);
-          },
+          builder: (context) => routeBuilders[settings.name](context),
         ),
       );
     }

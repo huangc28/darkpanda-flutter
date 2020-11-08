@@ -63,12 +63,8 @@ class _ChatRoomsState extends State<ChatRooms> {
   }
 
   void _onEnterChat(BuildContext context, String channelUUID) {
-    // Displatch fetch chatroom messages
+    // Dispatch fetch chatroom messages
     // After messages are fetched, redirect to chatroom.
-    // BlocProvider.of<InquiryChatMessagesBloc>(context).add(
-    //   FetchHist(
-    //     channelUUID: channelUUID,
-    //   ),
-    // );
+    widget.onPush(InquiryChatsRoutes.chatroom, {'channel_uuid': channelUUID});
   }
 }

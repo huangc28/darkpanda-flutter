@@ -17,4 +17,20 @@ class InquiryChatroomApis extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> fetchInquiryHistoricalMessages(
+      String channelUUID) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/chat/${channelUUID}'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

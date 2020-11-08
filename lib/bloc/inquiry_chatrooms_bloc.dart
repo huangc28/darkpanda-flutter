@@ -109,12 +109,19 @@ class InquiryChatroomsBloc
   }
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+    print(
+        'DEBUG _handlePrivateChatEvent 1${event.docChanges.first.doc.data()}');
+    print(
+        'DEBUG _handlePrivateChatEvent 2 ${event.docChanges.first.doc.data()['created_at']?.toDate()}');
+
     developer.log('handle private chat on channel ID: $channelUUID');
 
     inquiryChatMesssagesBloc.add(
       DispatchMessage(
         chatroomUUID: channelUUID,
-        message: Message.fromMap(event.docChanges.first.doc.data()),
+        message: Message.fromMap(
+          event.docChanges.first.doc.data(),
+        ),
       ),
     );
   }

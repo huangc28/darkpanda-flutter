@@ -21,8 +21,6 @@ class InquiryChatMessagesBloc
       yield* _mapDispatchMessageToState(event);
     } else if (event is RemovePrivateChatRoom) {
       yield* _mapRemovePrivateChatRoomToState(event);
-    } else if (event is FetchHistoricalMessages) {
-      yield* _mapFetchMessagesToState(event);
     }
   }
 
@@ -55,11 +53,6 @@ class InquiryChatMessagesBloc
       state.chatroomMessages.remove(event.chatroomUUID);
     }
 
-    yield null;
-  }
-
-  Stream<PrivateChatsState> _mapFetchMessagesToState(
-      FetchHistoricalMessages event) async* {
     yield null;
   }
 
