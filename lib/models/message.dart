@@ -9,7 +9,6 @@ class Message {
   const Message({this.content, this.from, this.to, this.createdAt});
 
   factory Message.fromMap(Map<String, dynamic> data) {
-    print('DEBUG *~ 1 ${data['created_at'].runtimeType}');
     DateTime createdAt;
 
     if (data['created_at'] is firestore.Timestamp) {

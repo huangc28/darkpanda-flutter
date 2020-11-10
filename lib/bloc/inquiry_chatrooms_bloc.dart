@@ -109,11 +109,6 @@ class InquiryChatroomsBloc
   }
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
-    print(
-        'DEBUG _handlePrivateChatEvent 1${event.docChanges.first.doc.data()}');
-    print(
-        'DEBUG _handlePrivateChatEvent 2 ${event.docChanges.first.doc.data()['created_at']?.toDate()}');
-
     developer.log('handle private chat on channel ID: $channelUUID');
 
     inquiryChatMesssagesBloc.add(
@@ -169,10 +164,6 @@ class InquiryChatroomsBloc
       }
 
       final Map<String, dynamic> respMap = json.decode(resp.body);
-
-      if (respMap['chats'].isEmpty) {
-        return;
-      }
 
       final chatrooms = respMap['chats']
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))

@@ -59,9 +59,6 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
   Stream<AuthUserState> _mapUserInfoToState(FetchUserInfo event) async* {
     try {
       // retrieve user info
-      final jwt = await SecureStore().readJwtToken();
-
-      dataProvider.jwtToken = jwt;
       final resp = await dataProvider.fetchMe();
 
       if (resp.statusCode != HttpStatus.ok) {
@@ -77,7 +74,9 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
       );
     } on APIException catch (e) {
       // yield AuthUserState
-      yield AuthUserState.fetchFailed(AuthUserState.copyFrom(state, error: e));
+      yield AuthUserState.fetchFailed(
+        AuthUserState.copyFrom(state, error: e),
+      );
     } catch (e) {
       yield AuthUserState.fetchFailed(AuthUserState.copyFrom(
         state,
@@ -89,7 +88,9 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
   }
 
   Stream<AuthUserState> _mapPutUserToState(PutUser event) async* {
-    print('DEBUG _mapPutUserToState ${event.authUser}');
-    yield AuthUserState.patchUser(state, user: event.authUser);
+    yield AuthUserState.patchUser(
+      state,
+      user: event.authUser,
+    );
   }
 }

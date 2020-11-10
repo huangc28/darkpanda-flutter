@@ -4,10 +4,12 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -16,18 +18,63 @@ class CurrentChatroomBloc
     extends Bloc<CurrentChatroomEvent, CurrentChatroomState> {
   CurrentChatroomBloc({
     this.inquiryChatroomApis,
+    this.inquiryChatroomsBloc,
   })  : assert(inquiryChatroomApis != null),
+        assert(inquiryChatroomsBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
+  final InquiryChatroomsBloc inquiryChatroomsBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
     CurrentChatroomEvent event,
   ) async* {
-    if (event is FetchHistoricalMessages) {
+    if (event is InitCurrentChatroom) {
+      yield* _mapInitCurrentChatroomToState(event);
+    } else if (event is FetchHistoricalMessages) {
       yield* _mapFetchHistoricalMessages(event);
+    } else if (event is DispatchNewMessage) {
+      yield* _mapDispatchNewMessageToState(event);
     }
+  }
+
+  Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
+      DispatchNewMessage event) async* {
+    final messages = List<Message>.from(state.currentMessages)
+      ..insert(0, event.message);
+
+    yield CurrentChatroomState.updateCurrentMessage(
+      state,
+      messages,
+    );
+  }
+
+  Stream<CurrentChatroomState> _mapInitCurrentChatroomToState(
+      InitCurrentChatroom event) async* {
+    // Fetch historical messages
+    add(FetchHistoricalMessages(channelUUID: event.channelUUID));
+
+    // Grab chatroom subscription and listen to incoming messages. Push new message to
+    // current message array.
+    final subStream =
+        inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
+
+    subStream.onData(_handleCurrentMessage);
+  }
+
+  _handleCurrentMessage(data) {
+    final QuerySnapshot msgSnapShot = data;
+    final msg = Message.fromMap(
+      msgSnapShot.docChanges.first.doc.data(),
+    );
+
+    // Dispatch new message to current chat array
+    add(
+      DispatchNewMessage(
+        message: msg,
+      ),
+    );
   }
 
   Stream<CurrentChatroomState> _mapFetchHistoricalMessages(
@@ -47,7 +94,6 @@ class CurrentChatroomBloc
 
       // Convert response data to list of messages and store them to
       // historical messages.
-      // {"messages":[{"content":"Welcome! %s has picked up your inquiry.","from":"f5045f5d-1727-4f97-a97e-7e62e080a198","to":"31a6b0dc-2857-4bad-b18e-76caab794dee","created_at":"2020-11-04T15:09:20.767463Z"}]}
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
       if (respMap['messages'].isEmpty) {
@@ -58,17 +104,13 @@ class CurrentChatroomBloc
           .map<Message>((data) => Message.fromMap(data))
           .toList();
 
-      print('DEBUG spot 2 ${historicalMessages[0].content}');
-
-      yield CurrentChatroomState.loaded(historicalMessages);
+      yield CurrentChatroomState.loaded(state, historicalMessages);
     } on APIException catch (e) {
-      print('DEBUG spot 1 ${e.message}');
       yield CurrentChatroomState.loadFailed(
         state,
         e,
       );
     } on Exception catch (e) {
-      print('DEBUG spot 2 ${e.toString()}');
       yield CurrentChatroomState.loadFailed(
         state,
         AppGeneralExeption(

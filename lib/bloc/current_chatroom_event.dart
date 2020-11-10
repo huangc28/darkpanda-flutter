@@ -14,3 +14,22 @@ class FetchHistoricalMessages extends CurrentChatroomEvent {
     this.channelUUID,
   });
 }
+
+class InitCurrentChatroom extends CurrentChatroomEvent {
+  final String channelUUID;
+
+  const InitCurrentChatroom({
+    this.channelUUID,
+  });
+}
+
+class DispatchNewMessage extends CurrentChatroomEvent {
+  final Message message;
+
+  const DispatchNewMessage({
+    this.message,
+  });
+
+  @override
+  List<Object> get props => [message];
+}

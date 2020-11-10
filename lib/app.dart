@@ -39,7 +39,6 @@ class _AppState extends State<App> {
           currentTab: _currentTab,
           onSelectTab: _handleSelectTab,
         ),
-        // bottomNavigationBar: null,
       ),
     );
   }

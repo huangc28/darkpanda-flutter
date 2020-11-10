@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
+import 'package:darkpanda_flutter/routes.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
-import './routes.dart';
 
 class ChatRooms extends StatefulWidget {
   const ChatRooms({
@@ -65,6 +66,11 @@ class _ChatRoomsState extends State<ChatRooms> {
   void _onEnterChat(BuildContext context, String channelUUID) {
     // Dispatch fetch chatroom messages
     // After messages are fetched, redirect to chatroom.
-    widget.onPush(InquiryChatsRoutes.chatroom, {'channel_uuid': channelUUID});
+    Navigator.of(context, rootNavigator: true).pushNamed(
+      MainRoutes.chatroom,
+      arguments: ChatroomScreenArguments(
+        channelUUID: channelUUID,
+      ),
+    );
   }
 }

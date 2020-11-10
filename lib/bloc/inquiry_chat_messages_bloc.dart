@@ -9,6 +9,9 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 part 'inquiry_chat_messages_event.dart';
 part 'inquiry_chat_messages_state.dart';
 
+/// This bloc stores the messages to be displayed on the inquiry chatroom list.
+/// The widget would grab the latest message to display.
+/// @TODO rename this bloc to `chatroom_face_message` to clearify it's purpose.
 class InquiryChatMessagesBloc
     extends Bloc<InquiryChatMessagesEvent, PrivateChatsState> {
   InquiryChatMessagesBloc() : super(PrivateChatsState.init());

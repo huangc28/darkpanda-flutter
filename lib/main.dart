@@ -15,13 +15,14 @@ import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.
 import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 
+import './routes.dart';
 import './config.dart';
 import './theme.dart';
 import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
-import './app.dart';
-import './screens/auth/auth_navigator.dart';
 import './bloc/auth_user_bloc.dart';
 
 // When is in debugging environment, write mocked jwt token
@@ -43,9 +44,9 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNDkyMDM3NX0.cprDDPglIVKkcKgcpBCEW6WHMJWSPtU9NMQvZd6kJhY';
-
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNTAzOTMwNn0.SqYz0NafrVMnVmb7WN2Emh5FPmzEzKuPNlKje6_hNlk';
   final AppConfig appConfig;
+  final mainRoutes = MainRoutes();
 
   Future<void> _writeMockJwtToken() async {
     if (!kReleaseMode) {
@@ -81,7 +82,11 @@ class DarkPandaApp extends StatelessWidget {
                 authApiClient: AuthAPIClient(),
               ),
             ),
-            BlocProvider(create: (context) => InquiryChatMessagesBloc()),
+
+            // Inquiry chatroom related blocs
+            BlocProvider(
+              create: (context) => InquiryChatMessagesBloc(),
+            ),
             BlocProvider(
               create: (context) => InquiryChatroomsBloc(
                 inquiryChatMesssagesBloc:
@@ -92,15 +97,42 @@ class DarkPandaApp extends StatelessWidget {
             BlocProvider(
               create: (context) => LoadUserBloc(userApis: UserApis()),
             ),
+
+            // Current chatroom related blocs
+            BlocProvider(
+              create: (context) => CurrentChatroomBloc(
+                inquiryChatroomApis: InquiryChatroomApis(),
+                inquiryChatroomsBloc:
+                    BlocProvider.of<InquiryChatroomsBloc>(context),
+              ),
+            ),
+
+            BlocProvider(
+              create: (context) => SendMessageBloc(
+                inquiryChatroomApis: InquiryChatroomApis(),
+              ),
+            ),
           ],
           child: SecureStoreProvider(
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
               theme: ThemeManager.getTheme(),
-              initialRoute: '/app',
-              routes: {
-                '/': (context) => AuthNavigator(),
-                '/app': (context) => App(),
+              initialRoute: MainRoutes.app,
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    if (settings.name == MainRoutes.chatroom) {
+                      final routeBuilder =
+                          mainRoutes.routeBuilder(context, settings.arguments);
+
+                      return routeBuilder[settings.name](context);
+                    }
+
+                    return mainRoutes
+                        .routeBuilder(context)[settings.name](context);
+                  },
+                );
               },
             ),
           ),

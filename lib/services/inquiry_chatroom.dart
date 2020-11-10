@@ -33,4 +33,23 @@ class InquiryChatroomApis extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> sendChatroomTextMessage(
+      String channelUUID, String content) async {
+    try {
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/emit-text-message', {
+          'channel_uuid': channelUUID,
+          'content': content,
+        }),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

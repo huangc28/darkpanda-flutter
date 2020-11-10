@@ -26,7 +26,6 @@ class _ChatroomState extends State<Chatroom> {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG height ${MediaQuery.of(context).size.height}');
     return BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
       return Scaffold(
@@ -34,7 +33,7 @@ class _ChatroomState extends State<Chatroom> {
         child: Column(
           children: [
             Container(
-              color: Colors.grey,
+              // color: Colors.grey,
               height: MediaQuery.of(context).size.height,
               child: Center(
                 child: Text('hello world'),
