@@ -7,7 +7,9 @@ class InquiryChatroomApis extends BaseClient {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/chat/inquiry-chatrooms'),
+        buildUri('/v1/chat', {
+          'chatroom_type': 'inquiry',
+        }),
       );
 
       await withTokenFromSecureStore(request);
@@ -23,7 +25,7 @@ class InquiryChatroomApis extends BaseClient {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/chat/${channelUUID}'),
+        buildUri('/v1/chat/${channelUUID}/messages'),
       );
 
       await withTokenFromSecureStore(request);

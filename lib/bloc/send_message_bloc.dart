@@ -44,11 +44,14 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       }
 
       yield SendMessageState.loaded();
-      yield null;
     } on APIException catch (e) {
-      print('DEBUG spot 3 ${e.message}');
-    } catch (e) {
-      print('DEBUG spot 4 ${e.toString()}');
+      yield SendMessageState.loadFailed(e);
+    } on Exception catch (e) {
+      yield SendMessageState.loadFailed(
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
     }
   }
 }

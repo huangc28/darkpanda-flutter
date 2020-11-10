@@ -13,9 +13,11 @@ import './chatroom_window.dart';
 part 'chatroom_screen_arguments.dart';
 
 // @TOODs:
-//   - scroll list view to bottom when new message is appended to list.
-//   - clear text field after new message is emitted successfully.
-//   - load more historical messages.
+//   - Scroll list view to bottom when new message is appended to list - [ok].
+//   - Clear text field after new message is emitted successfully - [ok].
+//   - Load more historical messages - [].
+//   - Display error when fetch historical message / send message failed.
+//   - Make a service booking panel. Service provider should be able to tailor the service detail.
 class Chatroom extends StatefulWidget {
   const Chatroom({
     this.args,
@@ -29,7 +31,6 @@ class Chatroom extends StatefulWidget {
 
 class _ChatroomState extends State<Chatroom> {
   final _editMessageController = TextEditingController();
-  final _chatWindowScrollController = ScrollController();
 
   String _message;
 
@@ -53,7 +54,6 @@ class _ChatroomState extends State<Chatroom> {
   @override
   void dispose() {
     _editMessageController.dispose();
-    _chatWindowScrollController.dispose();
     super.dispose();
   }
 
@@ -81,24 +81,29 @@ class _ChatroomState extends State<Chatroom> {
                       );
                     }),
               ),
-              SendMessageBar(
-                editMessageController: _editMessageController,
-                onSend: () {
-                  // Emit message if the value of _message is not empty
-                  if (_message.isEmpty) {
-                    return;
+              BlocListener<SendMessageBloc, SendMessageState>(
+                listener: (context, state) {
+                  if (state.status == SendMessageStatus.loaded) {
+                    _editMessageController.clear();
                   }
-
-                  BlocProvider.of<SendMessageBloc>(context).add(
-                    SendMessageEvent(
-                      content: _message,
-                      channelUUID: widget.args.channelUUID,
-                    ),
-                  );
-                  // Send chat message
-                  // print('DEBUG send # 1 ${_message}');
                 },
-              ),
+                child: SendMessageBar(
+                  editMessageController: _editMessageController,
+                  onSend: () {
+                    // Emit message if the value of _message is not empty
+                    if (_message.isEmpty) {
+                      return;
+                    }
+
+                    BlocProvider.of<SendMessageBloc>(context).add(
+                      SendMessageEvent(
+                        content: _message,
+                        channelUUID: widget.args.channelUUID,
+                      ),
+                    );
+                  },
+                ),
+              )
             ],
           ),
         );

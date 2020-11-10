@@ -7,12 +7,14 @@ enum SendMessageStatus {
   loaded,
 }
 
-class SendMessageState extends Equatable {
+class SendMessageState<E extends AppBaseException> extends Equatable {
   const SendMessageState._({
     this.status,
+    this.error,
   });
 
   final SendMessageStatus status;
+  final E error;
 
   SendMessageState.init()
       : this._(
@@ -24,9 +26,10 @@ class SendMessageState extends Equatable {
           status: SendMessageStatus.loading,
         );
 
-  SendMessageState.loadFailed()
+  SendMessageState.loadFailed(E error)
       : this._(
           status: SendMessageStatus.loadFailed,
+          error: error,
         );
 
   SendMessageState.loaded()

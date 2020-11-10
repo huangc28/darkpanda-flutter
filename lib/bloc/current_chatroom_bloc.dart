@@ -33,10 +33,17 @@ class CurrentChatroomBloc
     if (event is InitCurrentChatroom) {
       yield* _mapInitCurrentChatroomToState(event);
     } else if (event is FetchHistoricalMessages) {
-      yield* _mapFetchHistoricalMessages(event);
+      yield* _mapFetchHistoricalMessagesToState(event);
     } else if (event is DispatchNewMessage) {
       yield* _mapDispatchNewMessageToState(event);
+    } else if (event is FetchMoreHistoricalMessages) {
+      yield* _mapFetchMoreHistoricalMessagesToState(event);
     }
+  }
+
+  Stream<CurrentChatroomState> _mapFetchMoreHistoricalMessagesToState(
+      FetchMoreHistoricalMessages event) async* {
+    yield null;
   }
 
   Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
@@ -77,7 +84,7 @@ class CurrentChatroomBloc
     );
   }
 
-  Stream<CurrentChatroomState> _mapFetchHistoricalMessages(
+  Stream<CurrentChatroomState> _mapFetchHistoricalMessagesToState(
       FetchHistoricalMessages event) async* {
     try {
       // Toggle loading state
