@@ -5,10 +5,12 @@ class LoadMoreScrollable extends StatefulWidget {
   LoadMoreScrollable({
     @required this.builder,
     @required this.onLoadMore,
+    this.reverse = false,
   });
 
   final Widget Function(BuildContext, ScrollController) builder;
   final Function onLoadMore;
+  final bool reverse;
 
   @override
   _LoadMoreScrollableState createState() => _LoadMoreScrollableState();
@@ -18,15 +20,32 @@ class _LoadMoreScrollableState extends State<LoadMoreScrollable> {
   Timer _loadMoreDebounce;
 
   ScrollController _scrollController;
+  Function _scrollListener;
 
   @override
   void initState() {
     super.initState();
 
+    _scrollListener =
+        widget.reverse ? _detectTopScrollListener : _detectBottomScrollListener;
+
     _scrollController = new ScrollController()..addListener(_scrollListener);
   }
 
-  void _scrollListener() {
+  void _detectTopScrollListener() {
+    final offsetFromScrollTop = 10;
+
+    if (_scrollController.position.pixels < 0.0 + offsetFromScrollTop) {
+      if (_loadMoreDebounce != null) {
+        _loadMoreDebounce.cancel();
+      }
+
+      _loadMoreDebounce = Timer(const Duration(milliseconds: 500),
+          () => new Future.delayed(Duration.zero, widget.onLoadMore));
+    }
+  }
+
+  void _detectBottomScrollListener() {
     final offsetFromScrollExtent = 10;
 
     if (_scrollController.position.pixels >

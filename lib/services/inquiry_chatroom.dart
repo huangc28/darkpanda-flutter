@@ -20,12 +20,17 @@ class InquiryChatroomApis extends BaseClient {
     }
   }
 
-  Future<http.Response> fetchInquiryHistoricalMessages(
-      String channelUUID) async {
+  // PerPage int `form:"perpage,default=10"`
+  // Page    int `form:"page,default=0"`
+  Future<http.Response> fetchInquiryHistoricalMessages(String channelUUID,
+      [int perPage = 10, page = 1]) async {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/chat/${channelUUID}/messages'),
+        buildUri('/v1/chat/${channelUUID}/messages', {
+          'perpage': '$perPage',
+          'page': '$page',
+        }),
       );
 
       await withTokenFromSecureStore(request);

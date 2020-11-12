@@ -43,7 +43,46 @@ class CurrentChatroomBloc
 
   Stream<CurrentChatroomState> _mapFetchMoreHistoricalMessagesToState(
       FetchMoreHistoricalMessages event) async* {
-    yield null;
+    try {
+      await CurrentChatroomState.loading(state);
+
+      // Fetching historical messages.
+      final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
+        event.channelUUID,
+        event.perPage,
+        state.page + 1,
+      );
+
+      if (resp == HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(
+            resp.body,
+          ),
+        );
+      }
+
+      print('DEBUG spot 1 ${resp.body}');
+      final Map<String, dynamic> respMap = json.decode(resp.body);
+
+      final prevPageMessage = respMap['messages']
+          .map<Message>((data) => Message.fromMap(data))
+          .toList();
+
+      final newMessages = List<Message>.from(state.historicalMessages)
+        ..addAll(prevPageMessage);
+
+      print('DEBUG spot 2 FetchMoreHistoricalMessages $newMessages');
+      yield CurrentChatroomState.loaded(state, newMessages, state.page + 1);
+    } on APIException catch (e) {
+      yield CurrentChatroomState.loadFailed(state, e);
+    } on Exception catch (e) {
+      yield CurrentChatroomState.loadFailed(
+        state,
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
   }
 
   Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
@@ -111,7 +150,7 @@ class CurrentChatroomBloc
           .map<Message>((data) => Message.fromMap(data))
           .toList();
 
-      yield CurrentChatroomState.loaded(state, historicalMessages);
+      yield CurrentChatroomState.loaded(state, historicalMessages, state.page);
     } on APIException catch (e) {
       yield CurrentChatroomState.loadFailed(
         state,

@@ -6,6 +6,7 @@ typedef BubbleBuilder = Widget Function(BuildContext, Message);
 
 class ChatroomWindow extends StatefulWidget {
   const ChatroomWindow({
+    this.scrollController,
     this.historicalMessages,
     this.currentMessages,
     this.builder,
@@ -14,13 +15,21 @@ class ChatroomWindow extends StatefulWidget {
   final List<Message> historicalMessages;
   final List<Message> currentMessages;
   final BubbleBuilder builder;
+  final ScrollController scrollController;
 
   @override
   _ChatroomWindowState createState() => _ChatroomWindowState();
 }
 
 class _ChatroomWindowState extends State<ChatroomWindow> {
-  final _chatWindowScrollController = ScrollController();
+  ScrollController _chatWindowScrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _chatWindowScrollController = widget.scrollController ?? ScrollController();
+  }
 
   @override
   void didUpdateWidget(ChatroomWindow oldWidget) {

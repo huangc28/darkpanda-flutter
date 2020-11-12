@@ -11,17 +11,20 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
   const CurrentChatroomState._({
     this.status,
     this.historicalMessages,
+    this.page,
     this.currentMessages,
     this.error,
   });
 
   final FetchHistoricalMessageStatus status;
   final List<Message> historicalMessages;
+  final int page;
   final List<Message> currentMessages;
   final E error;
 
   CurrentChatroomState.init()
       : this._(
+          page: 1,
           status: FetchHistoricalMessageStatus.initial,
           historicalMessages: [],
           currentMessages: [],
@@ -29,6 +32,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
 
   CurrentChatroomState.loading(CurrentChatroomState state)
       : this._(
+          page: state.page,
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
           status: FetchHistoricalMessageStatus.loading,
@@ -43,10 +47,11 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
         );
 
   CurrentChatroomState.loaded(
-      CurrentChatroomState state, List<Message> historicalMessages)
+      CurrentChatroomState state, List<Message> historicalMessages, int page)
       : this._(
           status: FetchHistoricalMessageStatus.loaded,
           historicalMessages: historicalMessages,
+          page: page,
           currentMessages: state.currentMessages,
         );
 

@@ -5,6 +5,7 @@ import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 
 import './chat_bubble.dart';
 import './send_message_bar.dart';
@@ -70,17 +71,30 @@ class _ChatroomState extends State<Chatroom> {
           body: Column(
             children: [
               Expanded(
-                child: ChatroomWindow(
-                    historicalMessages: state.historicalMessages,
-                    currentMessages: state.currentMessages,
-                    builder: (BuildContext context, Message message) {
-                      return ChatBubble(
-                        // isMe: message.to == senderUUID,
-                        isMe: true,
-                        message: message,
-                      );
-                    }),
-              ),
+                  child: LoadMoreScrollable(
+                      onLoadMore: () {
+                        print('DEBUG trigger onLoadMore');
+
+                        BlocProvider.of<CurrentChatroomBloc>(context).add(
+                          FetchMoreHistoricalMessages(
+                            channelUUID: widget.args.channelUUID,
+                          ),
+                        );
+                      },
+                      reverse: true,
+                      builder: (context, scrollController) {
+                        return ChatroomWindow(
+                            scrollController: scrollController,
+                            historicalMessages: state.historicalMessages,
+                            currentMessages: state.currentMessages,
+                            builder: (BuildContext context, Message message) {
+                              return ChatBubble(
+                                // isMe: message.to == senderUUID,
+                                isMe: true,
+                                message: message,
+                              );
+                            });
+                      })),
               BlocListener<SendMessageBloc, SendMessageState>(
                 listener: (context, state) {
                   if (state.status == SendMessageStatus.loaded) {

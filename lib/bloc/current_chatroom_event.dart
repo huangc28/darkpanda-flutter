@@ -17,12 +17,10 @@ class FetchHistoricalMessages extends CurrentChatroomEvent {
 
 class FetchMoreHistoricalMessages extends CurrentChatroomEvent {
   final String channelUUID;
-  final int page;
   final int perPage;
 
   const FetchMoreHistoricalMessages({
     this.channelUUID,
-    this.page = 0,
     this.perPage = 10,
   });
 }
