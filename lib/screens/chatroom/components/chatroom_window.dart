@@ -53,12 +53,16 @@ class _ChatroomWindowState extends State<ChatroomWindow> {
     final messages = List<Message>.from(widget.currentMessages)
       ..addAll(widget.historicalMessages);
 
-    return ListView.builder(
-        reverse: true,
-        controller: _chatWindowScrollController,
-        padding: EdgeInsets.all(20),
-        itemCount: messages.length,
-        itemBuilder: (context, int index) =>
-            widget.builder(context, messages[index]));
+    return Scrollbar(
+      child: ListView.builder(
+          reverse: true,
+          controller: _chatWindowScrollController,
+          padding: EdgeInsets.all(20),
+          itemCount: messages.length,
+          itemBuilder: (context, int index) =>
+              widget.builder(context, messages[index])),
+      isAlwaysShown: true,
+      controller: _chatWindowScrollController,
+    );
   }
 }

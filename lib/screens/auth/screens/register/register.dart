@@ -32,7 +32,7 @@ class Register extends StatelessWidget {
                     }
 
                     if (state.status == RegisterStatus.registerFailed) {
-                      Scaffold.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(state.error.message),
                         ),

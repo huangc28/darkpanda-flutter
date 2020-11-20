@@ -6,11 +6,13 @@ class LoadMoreScrollable extends StatefulWidget {
     @required this.builder,
     @required this.onLoadMore,
     this.reverse = false,
+    this.scrollController,
   });
 
   final Widget Function(BuildContext, ScrollController) builder;
   final Function onLoadMore;
   final bool reverse;
+  final ScrollController scrollController;
 
   @override
   _LoadMoreScrollableState createState() => _LoadMoreScrollableState();
@@ -29,7 +31,9 @@ class _LoadMoreScrollableState extends State<LoadMoreScrollable> {
     _scrollListener =
         widget.reverse ? _detectTopScrollListener : _detectBottomScrollListener;
 
-    _scrollController = new ScrollController()..addListener(_scrollListener);
+    _scrollController = widget.scrollController ?? new ScrollController();
+
+    _scrollController.addListener(_scrollListener);
   }
 
   void _detectTopScrollListener() {

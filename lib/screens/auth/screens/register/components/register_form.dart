@@ -38,7 +38,9 @@ class _RegisterFormState extends State<RegisterForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final models.RegisterForm _registerFromModel = models.RegisterForm();
 
-  _RegisterFormState({this.onRegister});
+  _RegisterFormState({
+    this.onRegister,
+  });
 
   Widget _buildUsername() {
     return TextFormField(
@@ -127,7 +129,10 @@ class _RegisterFormState extends State<RegisterForm> {
           OutlineButton(
               child: Text(
                 'Register',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
               ),
               onPressed: () {
                 if (!_formKey.currentState.validate()) {

@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 class ThemeManager {
   static ThemeData getTheme() => ThemeData(
         brightness: Brightness.light,
-        accentColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
-        textSelectionHandleColor: Colors.black,
-        textSelectionColor: Colors.black12,
-        cursorColor: Colors.black,
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         toggleableActiveColor: Colors.black,
         inputDecorationTheme: InputDecorationTheme(
           border: const OutlineInputBorder(

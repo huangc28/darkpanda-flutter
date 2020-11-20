@@ -40,6 +40,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
 
   CurrentChatroomState.loadFailed(CurrentChatroomState state, E error)
       : this._(
+          page: state.page,
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
           error: error,
@@ -58,6 +59,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
   CurrentChatroomState.updateCurrentMessage(
       CurrentChatroomState state, List<Message> currentMessages)
       : this._(
+          page: state.page,
           status: state.status,
           historicalMessages: state.historicalMessages,
           currentMessages: currentMessages,

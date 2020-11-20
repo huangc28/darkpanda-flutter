@@ -43,3 +43,7 @@ class DispatchNewMessage extends CurrentChatroomEvent {
   @override
   List<Object> get props => [message];
 }
+
+class LeaveCurrentChatroom extends CurrentChatroomEvent {
+  const LeaveCurrentChatroom();
+}

@@ -13,15 +13,22 @@ class SendMessageBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8),
-      height: 70,
+      height: 60,
       color: Colors.white,
       child: Row(
         children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.photo),
-            iconSize: 25,
-            color: Theme.of(context).primaryColor,
-            onPressed: () {},
+          Container(
+            padding: EdgeInsets.all(0.0),
+            width: 30,
+            child: IconButton(
+              icon: Icon(Icons.photo),
+              iconSize: 25,
+              color: Theme.of(context).primaryColor,
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(
+            width: 15,
           ),
           Expanded(
             child: TextField(

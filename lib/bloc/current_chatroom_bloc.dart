@@ -38,12 +38,19 @@ class CurrentChatroomBloc
       yield* _mapDispatchNewMessageToState(event);
     } else if (event is FetchMoreHistoricalMessages) {
       yield* _mapFetchMoreHistoricalMessagesToState(event);
+    } else if (event is LeaveCurrentChatroom) {
+      yield* _mapLeaveCurrentChatroomToState(event);
     }
   }
 
   Stream<CurrentChatroomState> _mapFetchMoreHistoricalMessagesToState(
       FetchMoreHistoricalMessages event) async* {
     try {
+      print(
+          'DEBUG spot 1 _mapFetchMoreHistoricalMessagesToState ${event.perPage}');
+      print(
+          'DEBUG spot 2 _mapFetchMoreHistoricalMessagesToState ${state.page}');
+
       await CurrentChatroomState.loading(state);
 
       // Fetching historical messages.
@@ -61,7 +68,6 @@ class CurrentChatroomBloc
         );
       }
 
-      print('DEBUG spot 1 ${resp.body}');
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
       final prevPageMessage = respMap['messages']
@@ -71,7 +77,6 @@ class CurrentChatroomBloc
       final newMessages = List<Message>.from(state.historicalMessages)
         ..addAll(prevPageMessage);
 
-      print('DEBUG spot 2 FetchMoreHistoricalMessages $newMessages');
       yield CurrentChatroomState.loaded(state, newMessages, state.page + 1);
     } on APIException catch (e) {
       yield CurrentChatroomState.loadFailed(state, e);
@@ -164,5 +169,13 @@ class CurrentChatroomBloc
         ),
       );
     }
+  }
+
+  Stream<CurrentChatroomState> _mapLeaveCurrentChatroomToState(
+      LeaveCurrentChatroom event) async* {
+    // Reset current chatroom messages.
+    // Reset current chatroom historical messages.
+    // Reset page number.
+    yield CurrentChatroomState.init();
   }
 }

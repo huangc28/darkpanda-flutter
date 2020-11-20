@@ -44,7 +44,8 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNTIxNzUwMH0.AL2seCEiWqA7gSd0p2mygaUb5vCBK5VoVevdeDWPIKI';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNTk2MDg1MX0.K31uN35tJcseVxhPLsTr0zhJZnc5ES2UDRxsv334_aA';
+
   final AppConfig appConfig;
   final mainRoutes = MainRoutes();
 

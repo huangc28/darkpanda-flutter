@@ -28,8 +28,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG trigger app rebuild');
-
     return WillPopScope(
       onWillPop: () async =>
           !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
