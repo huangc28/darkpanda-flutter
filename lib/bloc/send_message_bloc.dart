@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/models/service_settings.dart';
 
 part 'send_message_event.dart';
 part 'send_message_state.dart';
@@ -22,13 +24,15 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
   Stream<SendMessageState> mapEventToState(
     SendMessageEvent event,
   ) async* {
-    if (event is SendMessageEvent) {
+    if (event is SendTextMessage) {
       yield* _mapSendMessageToState(event);
+    } else if (event is SendServiceDetailConfirmMessage) {
+      yield* _mapSendServiceDetailConfirmMessage(event);
     }
   }
 
   Stream<SendMessageState> _mapSendMessageToState(
-      SendMessageEvent event) async* {
+      SendTextMessage event) async* {
     try {
       yield SendMessageState.loading();
 
@@ -53,5 +57,37 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
         ),
       );
     }
+  }
+
+  Stream<SendMessageState> _mapSendServiceDetailConfirmMessage(
+      SendServiceDetailConfirmMessage event) async* {
+    yield SendMessageState.loading();
+
+    final serviceSettings = event.serviceSettings;
+
+    print('DEBUG *** 2 ${serviceSettings.serviceType}');
+
+    final resp = await inquiryChatroomApis.sendChatroomServiceSettingMessage(
+      channelUUID: event.channelUUID,
+      inquiryUUID: event.inquiryUUID,
+      serviceTime: new DateTime(
+        serviceSettings.serviceDate.year,
+        serviceSettings.serviceDate.month,
+        serviceSettings.serviceDate.day,
+        serviceSettings.serviceTime.hour,
+        serviceSettings.serviceTime.minute,
+      ),
+      serviceDuration: serviceSettings.duration.inMinutes,
+      price: serviceSettings.price,
+      serviceType: serviceSettings.serviceType,
+    );
+
+    developer.log(
+      'Service  detail message emitted ${resp.body}',
+      time: DateTime.now(),
+      name: 'service detail',
+    );
+
+    yield SendMessageState.loaded();
   }
 }

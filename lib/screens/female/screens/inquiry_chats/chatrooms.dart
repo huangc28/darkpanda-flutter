@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
 import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
@@ -50,8 +51,13 @@ class _ChatRoomsState extends State<ChatRooms> {
                         .lastMessage(chatroom.channelUUID);
 
                 return ChatroomGrid(
-                  onEnterChat: (String channelUUID) =>
-                      _onEnterChat(context, channelUUID),
+                  onEnterChat: (chatroomModel.Chatroom chatroom) =>
+                      _onEnterChat(
+                    context,
+                    chatroom.channelUUID,
+                    chatroom.inquiryUUID,
+                    chatroom.serviceType,
+                  ),
                   chatroom: chatroom,
                   lastMessage: lastMsg.content,
                 );
@@ -63,13 +69,20 @@ class _ChatRoomsState extends State<ChatRooms> {
     );
   }
 
-  void _onEnterChat(BuildContext context, String channelUUID) {
+  void _onEnterChat(
+    BuildContext context,
+    String channelUUID,
+    String inquiryUUID,
+    String serviceType,
+  ) {
     // Dispatch fetch chatroom messages
     // After messages are fetched, redirect to chatroom.
     Navigator.of(context, rootNavigator: true).pushNamed(
       MainRoutes.chatroom,
       arguments: ChatroomScreenArguments(
         channelUUID: channelUUID,
+        inquiryUUID: inquiryUUID,
+        serviceType: serviceType,
       ),
     );
   }

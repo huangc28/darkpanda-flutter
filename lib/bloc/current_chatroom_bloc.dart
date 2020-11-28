@@ -7,9 +7,11 @@ import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/enums/message_types.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -46,11 +48,6 @@ class CurrentChatroomBloc
   Stream<CurrentChatroomState> _mapFetchMoreHistoricalMessagesToState(
       FetchMoreHistoricalMessages event) async* {
     try {
-      print(
-          'DEBUG spot 1 _mapFetchMoreHistoricalMessagesToState ${event.perPage}');
-      print(
-          'DEBUG spot 2 _mapFetchMoreHistoricalMessagesToState ${state.page}');
-
       await CurrentChatroomState.loading(state);
 
       // Fetching historical messages.
@@ -60,7 +57,7 @@ class CurrentChatroomBloc
         state.page + 1,
       );
 
-      if (resp == HttpStatus.ok) {
+      if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(
             resp.body,
@@ -116,16 +113,33 @@ class CurrentChatroomBloc
 
   _handleCurrentMessage(data) {
     final QuerySnapshot msgSnapShot = data;
-    final msg = Message.fromMap(
-      msgSnapShot.docChanges.first.doc.data(),
-    );
+    final rawMsg = msgSnapShot.docChanges.first.doc.data();
 
+    print('DEBUG  isServiceDetailMsg spot 2 ${rawMsg}');
+
+    final isServiceDetailMsg =
+        (String type) => type == MessageType.service_detail.name;
+    final isTextMsg = (String type) => type == MessageType.text.name;
+
+    // Transform to different message object according to type.
     // Dispatch new message to current chat array
-    add(
-      DispatchNewMessage(
-        message: msg,
-      ),
-    );
+    if (isServiceDetailMsg(rawMsg['type'])) {
+      final msg = ServiceDetailMessage.fromMap(rawMsg);
+
+      add(
+        DispatchNewMessage(
+          message: msg,
+        ),
+      );
+    } else if (isTextMsg(rawMsg['type'])) {
+      final msg = Message.fromMap(rawMsg);
+
+      add(
+        DispatchNewMessage(
+          message: msg,
+        ),
+      );
+    }
   }
 
   Stream<CurrentChatroomState> _mapFetchHistoricalMessagesToState(

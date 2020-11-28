@@ -59,4 +59,33 @@ class InquiryChatroomApis extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> sendChatroomServiceSettingMessage({
+    String channelUUID,
+    String inquiryUUID,
+    DateTime serviceTime,
+    int serviceDuration,
+    double price,
+    String serviceType,
+  }) async {
+    try {
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/emit-service-message', {
+          'channel_uuid': channelUUID,
+          'inquiry_uuid': inquiryUUID,
+          'service_time': serviceTime.toUtc().toIso8601String(),
+          'service_duration': '$serviceDuration',
+          'price': '$price',
+          'service_type': serviceType,
+        }),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

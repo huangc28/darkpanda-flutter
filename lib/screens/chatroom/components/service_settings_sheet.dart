@@ -3,7 +3,7 @@ import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 
-import '../models/service_settings.dart';
+import '../../../models/service_settings.dart';
 
 part 'service_setting_field.dart';
 
@@ -15,14 +15,19 @@ part 'service_setting_field.dart';
 //   - Meet up time - [ok]
 //   - Service duration - [ok]
 //   - Location
-//   - Time picker and Date picker fields have the same style.
-//   - Save button
-//   - Cancel button
-//     Reuse the style.
+//   - Time picker and Date picker fields have the same style - [ok]
+//   - Save button - [ok]
+//   - Cancel button - [ok]
+//   - Replace the service settings with default values
+//   - Add service type field
 // @reference: https://medium.com/flutterdevs/date-and-time-picker-in-flutter-72141e7531c
 // @reference: https://stackoverflow.com/questions/51908187/how-to-make-a-full-screen-dialog-in-flutter
 class ServiceSettingsSheet extends StatefulWidget {
-  const ServiceSettingsSheet();
+  const ServiceSettingsSheet({
+    this.serviceSettings,
+  });
+
+  final ServiceSettings serviceSettings;
 
   @override
   _ServiceSettingsSheetState createState() => _ServiceSettingsSheetState();
@@ -40,24 +45,38 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _durationController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
 
   @override
   void initState() {
+    _initDefaultServiceSettings();
+
     _dateController.text = DateFormat.yMd().format(_serviceSetting.serviceDate);
     _timeController.text = formatDate(
       DateTime(
         _serviceSetting.serviceDate.year,
         _serviceSetting.serviceDate.month,
         _serviceSetting.serviceDate.day,
-        0,
-        0,
+        _serviceSetting.serviceDate.hour,
+        _serviceSetting.serviceDate.minute,
         0,
       ),
       [hh, ':', nn, " ", am],
     ).toString();
-
     _durationController.text = _formatDuration(_serviceSetting.duration);
+
+    _priceController.text =
+        _serviceSetting.price != null ? '${_serviceSetting.price}' : null;
+
+    _serviceSetting.serviceType = _serviceSetting.serviceType;
+
     super.initState();
+  }
+
+  _initDefaultServiceSettings() {
+    if (widget.serviceSettings == null) return;
+
+    _serviceSetting = widget.serviceSettings;
   }
 
   String _formatDuration(Duration duration) {
@@ -101,50 +120,31 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
             Expanded(
               child: Form(
                 key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    _buildPriceField(),
-                    SizedBox(
-                      height: 25.0,
-                    ),
-                    _buildServiceDatePicker(),
-                    SizedBox(
-                      height: 25.0,
-                    ),
-                    _buildServiceTimePicker(),
-                    SizedBox(
-                      height: 25.0,
-                    ),
-                    _buildDurationPicker(),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 20.0, 0, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _buildPriceField(),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      _buildServiceDatePicker(),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      _buildServiceTimePicker(),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      _buildDurationPicker(),
+                      ButtonBar(
                         children: [
-                          OutlineButton(
-                            child: Text(
-                              'Save',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 16,
-                              ),
-                            ),
-                            onPressed: () {
-                              print('DEBUG trigger onPressed');
-                              if (!_formKey.currentState.validate()) {
-                                return;
-                              }
-
-                              _formKey.currentState.save();
-
-                              Navigator.of(context).pop(_serviceSetting);
-                            },
-                          ),
+                          _buildSaveButton(),
+                          _buildCancelButton(),
                         ],
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -153,6 +153,35 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       ),
     );
   }
+
+  Widget _buildSaveButton() => OutlineButton(
+        child: Text(
+          'Save',
+          style: TextStyle(
+            color: Colors.blue,
+            fontSize: 16,
+          ),
+        ),
+        onPressed: () {
+          if (!_formKey.currentState.validate()) {
+            return;
+          }
+
+          _formKey.currentState.save();
+
+          Navigator.of(context).pop(_serviceSetting);
+        },
+      );
+
+  Widget _buildCancelButton() => ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.red[300],
+        ),
+        child: Text('Cancel'),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      );
 
   Widget _buildDurationPicker() {
     return ServiceSettingField(
@@ -220,6 +249,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     return ServiceSettingField(
       serviceLabel: Text('What is the price for this service'),
       builder: (BuildContext context) => TextFormField(
+        controller: _priceController,
         onSaved: (String v) {
           _serviceSetting.price = double.tryParse(v);
         },

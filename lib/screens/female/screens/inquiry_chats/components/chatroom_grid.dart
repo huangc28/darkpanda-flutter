@@ -10,7 +10,7 @@ class ChatroomGrid extends StatelessWidget {
   });
 
   final Chatroom chatroom;
-  final ValueChanged<String> onEnterChat;
+  final Function(Chatroom) onEnterChat;
   final String lastMessage;
 
   @override
@@ -19,7 +19,7 @@ class ChatroomGrid extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: GestureDetector(
-          onTap: () => onEnterChat(chatroom.channelUUID),
+          onTap: () => onEnterChat(chatroom),
           child: Row(
             children: [
               Expanded(

@@ -4,6 +4,7 @@ class Chatroom {
   final String serviceType;
   final String inquiryStatus;
   final String inquirerUUID;
+  final String inquiryUUID;
   final String username;
   final String avatarURL;
   final String channelUUID;
@@ -14,8 +15,9 @@ class Chatroom {
   const Chatroom({
     this.serviceType,
     this.inquiryStatus,
-    this.username,
     this.inquirerUUID,
+    this.inquiryUUID,
+    this.username,
     this.avatarURL,
     this.channelUUID,
     this.expiredAt,
@@ -26,6 +28,7 @@ class Chatroom {
   factory Chatroom.fromMap(Map<String, dynamic> data) => Chatroom(
         serviceType: data['service_type'] ?? '',
         inquiryStatus: data['inquiry_status'] ?? '',
+        inquiryUUID: data['inquiry_uuid'] ?? '',
         username: data['username'] ?? '',
         avatarURL: data['avatar_url'] ?? '',
         channelUUID: data['channel_uuid'] ?? '',

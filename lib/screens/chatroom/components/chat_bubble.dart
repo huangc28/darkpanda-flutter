@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/message.dart';
 
+/// @TODOs:
+///   [ChatBubble] should accept custom text widget. If [Text] widget is not
+///   provided, use default [Text] widget instead.
 class ChatBubble extends StatelessWidget {
   const ChatBubble({
-    this.message,
+    @required this.message,
     this.isMe = false,
+    this.richText,
   });
 
   final Message message;
   final bool isMe;
+  final RichText richText;
 
   Widget _buildMineBubble(BuildContext context) {
     return Column(
@@ -33,12 +38,7 @@ class ChatBubble extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
-              message.content,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
+            child: richText ?? _buildDefaultText(message.content),
           ),
         ),
       ],
@@ -67,15 +67,19 @@ class ChatBubble extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
-              message.content,
-              style: TextStyle(
-                color: Colors.black54,
-              ),
-            ),
+            child: _buildDefaultText(message.content),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDefaultText(String content) {
+    return Text(
+      message.content,
+      style: TextStyle(
+        color: Colors.white,
+      ),
     );
   }
 

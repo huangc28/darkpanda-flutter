@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 
 import '../models/chatroom.dart';
 

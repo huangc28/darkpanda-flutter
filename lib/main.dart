@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
-import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
-import 'package:darkpanda_flutter/services/inquiry_chatroom.dart';
+import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
@@ -14,6 +12,8 @@ import 'package:darkpanda_flutter/screens/auth/screens/register/services/reposit
 import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 
+import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
@@ -44,8 +44,7 @@ class DarkPandaApp extends StatelessWidget {
     this.appConfig,
   });
   final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNTk2MDg1MX0.K31uN35tJcseVxhPLsTr0zhJZnc5ES2UDRxsv334_aA';
-
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNjY3MTQ1NH0.D00xVrNXiFoyrTg2Mznnc-qvNktkDv5YKKJbP0rXWfA';
   final AppConfig appConfig;
   final mainRoutes = MainRoutes();
 
