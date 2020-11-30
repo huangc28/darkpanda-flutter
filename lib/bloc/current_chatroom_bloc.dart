@@ -11,6 +11,7 @@ import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/enums/message_types.dart';
 
 part 'current_chatroom_event.dart';
@@ -21,12 +22,15 @@ class CurrentChatroomBloc
   CurrentChatroomBloc({
     this.inquiryChatroomApis,
     this.inquiryChatroomsBloc,
+    this.currentServiceBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(inquiryChatroomsBloc != null),
+        assert(currentServiceBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
   final InquiryChatroomsBloc inquiryChatroomsBloc;
+  final CurrentServiceBloc currentServiceBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
@@ -115,25 +119,26 @@ class CurrentChatroomBloc
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data();
 
-    print('DEBUG  isServiceDetailMsg spot 2 ${rawMsg}');
-
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;
-    final isTextMsg = (String type) => type == MessageType.text.name;
+    // final isConfirmedServiceMsg = (String type) => type ==
 
     // Transform to different message object according to type.
-    // Dispatch new message to current chat array
+    // Dispatch new message to current chat message array.
     if (isServiceDetailMsg(rawMsg['type'])) {
       final msg = ServiceDetailMessage.fromMap(rawMsg);
 
       add(
-        DispatchNewMessage(
-          message: msg,
+        DispatchNewMessage(message: msg),
+      );
+
+      currentServiceBloc.add(
+        UpdateCurrentServiceByMessage(
+          messasge: msg,
         ),
       );
-    } else if (isTextMsg(rawMsg['type'])) {
+    } else {
       final msg = Message.fromMap(rawMsg);
-
       add(
         DispatchNewMessage(
           message: msg,
@@ -165,9 +170,13 @@ class CurrentChatroomBloc
         return;
       }
 
-      final historicalMessages = respMap['messages']
-          .map<Message>((data) => Message.fromMap(data))
-          .toList();
+      final historicalMessages = respMap['messages'].map<Message>((data) {
+        if (data['type'] == MessageType.service_detail.name) {
+          return ServiceDetailMessage.fromMap(data);
+        }
+
+        return Message.fromMap(data);
+      }).toList();
 
       yield CurrentChatroomState.loaded(state, historicalMessages, state.page);
     } on APIException catch (e) {

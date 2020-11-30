@@ -5,18 +5,19 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
+import 'package:darkpanda_flutter/services/service_apis.dart';
 
+import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
 
-import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
-
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 
 import './routes.dart';
 import './config.dart';
@@ -25,7 +26,6 @@ import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
-// When is in debugging environment, write mocked jwt token
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,27 +43,27 @@ class DarkPandaApp extends StatelessWidget {
   DarkPandaApp({
     this.appConfig,
   });
-  final mockedJwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNjY3MTQ1NH0.D00xVrNXiFoyrTg2Mznnc-qvNktkDv5YKKJbP0rXWfA';
   final AppConfig appConfig;
   final mainRoutes = MainRoutes();
 
-  Future<void> _writeMockJwtToken() async {
-    if (!kReleaseMode) {
-      await SecureStore().writeJwtToken(mockedJwtToken);
-    }
-
-    return;
-  }
+  Future<void> _writeMockJwtToken() =>
+      SecureStore().writeJwtToken(appConfig.token);
 
   @override
   Widget build(BuildContext context) {
+    final List<Future> futures = [];
+
+    if (!kReleaseMode) {
+      futures.addAll([
+        _writeMockJwtToken(),
+      ]);
+    }
+
     return FutureBuilder(
-      future: _writeMockJwtToken(),
-      builder: (context, AsyncSnapshot<void> snapshot) {
-        if (snapshot.hasError) {
+      future: Future.wait(futures),
+      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.hasError)
           return Text('Error occur when initialize App: ${snapshot.error}');
-        }
 
         return MultiBlocProvider(
           providers: [
@@ -100,10 +100,18 @@ class DarkPandaApp extends StatelessWidget {
 
             // Current chatroom related blocs
             BlocProvider(
+              create: (context) => CurrentServiceBloc(
+                serviceApis: ServiceAPIs(),
+              ),
+            ),
+
+            BlocProvider(
               create: (context) => CurrentChatroomBloc(
                 inquiryChatroomApis: InquiryChatroomApis(),
                 inquiryChatroomsBloc:
                     BlocProvider.of<InquiryChatroomsBloc>(context),
+                currentServiceBloc:
+                    BlocProvider.of<CurrentServiceBloc>(context),
               ),
             ),
 

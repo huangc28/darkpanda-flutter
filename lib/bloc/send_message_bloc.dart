@@ -65,8 +65,6 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
     final serviceSettings = event.serviceSettings;
 
-    print('DEBUG *** 2 ${serviceSettings.serviceType}');
-
     final resp = await inquiryChatroomApis.sendChatroomServiceSettingMessage(
       channelUUID: event.channelUUID,
       inquiryUUID: event.inquiryUUID,

@@ -1,7 +1,7 @@
 import './message.dart';
 
-class ServiceDetailMessage extends Message {
-  ServiceDetailMessage({
+class ConfirmedServiceMessage extends Message {
+  ConfirmedServiceMessage({
     String content,
     String from,
     String to,
@@ -22,8 +22,8 @@ class ServiceDetailMessage extends Message {
   final DateTime serviceTime;
   final String serviceType;
 
-  factory ServiceDetailMessage.fromMap(Map<String, dynamic> data) {
-    return ServiceDetailMessage(
+  factory ConfirmedServiceMessage.fromMap(Map<String, dynamic> data) {
+    return ConfirmedServiceMessage(
       serviceType: data['service_type'],
       content: data['content'],
       from: data['from'],

@@ -1,6 +1,7 @@
 enum MessageType {
   service_detail,
   text,
+  confirmed_service,
 }
 
 extension MessageTypeExtension on MessageType {
@@ -10,6 +11,8 @@ extension MessageTypeExtension on MessageType {
         return 'service_detail';
       case MessageType.text:
         return 'text';
+      case MessageType.confirmed_service:
+        return 'confirmed_service';
       default:
         return null;
     }

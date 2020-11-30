@@ -7,12 +7,13 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/models/service_detail_message.dart';
 
-part 'get_service_event.dart';
-part 'get_service_state.dart';
+part 'current_service_event.dart';
+part 'current_service_state.dart';
 
-class GetServiceBloc extends Bloc<GetServiceEvent, GetServiceState> {
-  GetServiceBloc({
+class CurrentServiceBloc extends Bloc<GetServiceEvent, GetServiceState> {
+  CurrentServiceBloc({
     this.serviceApis,
   })  : assert(serviceApis != null),
         super(GetServiceState.init());
@@ -23,12 +24,32 @@ class GetServiceBloc extends Bloc<GetServiceEvent, GetServiceState> {
   Stream<GetServiceState> mapEventToState(
     GetServiceEvent event,
   ) async* {
-    if (event is GetService) {
+    if (event is GetCurrentService) {
       yield* _mapGetServiceToState(event);
+    } else if (event is UpdateCurrentServiceByMessage) {
+      yield* _mapUpdateCurrentServiceToState(event);
     }
   }
 
-  Stream<GetServiceState> _mapGetServiceToState(GetService event) async* {
+  Stream<GetServiceState> _mapUpdateCurrentServiceToState(
+      UpdateCurrentServiceByMessage event) async* {
+    try {
+      yield GetServiceState.loading(state);
+
+      final ServiceSettings serviceSettings =
+          ServiceSettings.fromServiceDetailMessage(event.messasge);
+
+      yield GetServiceState.loaded(serviceSettings);
+    } on Exception catch (e) {
+      yield GetServiceState.loadFailed(
+        state,
+        AppGeneralExeption(message: e.toString()),
+      );
+    }
+  }
+
+  Stream<GetServiceState> _mapGetServiceToState(
+      GetCurrentService event) async* {
     try {
       yield GetServiceState.loading(state);
 

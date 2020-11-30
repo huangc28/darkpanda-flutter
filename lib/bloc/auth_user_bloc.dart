@@ -16,9 +16,16 @@ part 'auth_user_event.dart';
 part 'auth_user_state.dart';
 
 class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
-  final UserApis dataProvider;
+  AuthUserBloc({
+    AuthUser authUser,
+    this.dataProvider,
+  }) : super(
+          AuthUserState.initial(
+            authUser: authUser,
+          ),
+        );
 
-  AuthUserBloc({this.dataProvider}) : super(AuthUserState.initial());
+  final UserApis dataProvider;
 
   @override
   Stream<AuthUserState> mapEventToState(
@@ -30,7 +37,7 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
     }
 
     if (event is FetchUserInfo) {
-      yield* _mapUserInfoToState(event);
+      yield* _mapFetchUserInfoToState(event);
     }
 
     if (event is PutUser) {
@@ -53,10 +60,7 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
     add(FetchUserInfo());
   }
 
-  // TODOs
-  //  - update user information
-  //  - handle error
-  Stream<AuthUserState> _mapUserInfoToState(FetchUserInfo event) async* {
+  Stream<AuthUserState> _mapFetchUserInfoToState(FetchUserInfo event) async* {
     try {
       // retrieve user info
       final resp = await dataProvider.fetchMe();
@@ -78,12 +82,14 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
         AuthUserState.copyFrom(state, error: e),
       );
     } catch (e) {
-      yield AuthUserState.fetchFailed(AuthUserState.copyFrom(
-        state,
-        error: AppGeneralExeption(
-          message: e.toString(),
+      yield AuthUserState.fetchFailed(
+        AuthUserState.copyFrom(
+          state,
+          error: AppGeneralExeption(
+            message: e.toString(),
+          ),
         ),
-      ));
+      );
     }
   }
 

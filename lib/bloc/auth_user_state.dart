@@ -18,9 +18,11 @@ class AuthUserState<Error extends AppBaseException> extends Equatable {
     this.user,
   });
 
-  AuthUserState.initial()
-      : this._(
+  AuthUserState.initial({
+    AuthUser authUser,
+  }) : this._(
           status: FetchUserStatus.initial,
+          user: authUser,
         );
 
   AuthUserState.fetching(AuthUserState m)

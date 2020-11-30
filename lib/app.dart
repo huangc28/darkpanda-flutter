@@ -2,6 +2,10 @@
 // Each navigation tab holds it's own [Navigator] class. It holds the navigation history
 // of that tab.
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
@@ -18,26 +22,51 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-// @TODO
-// We need to check if user has logged in or not.
-// If user has not logged in, we need to navigate user
-// to perform login / registration process before proceeding
+// @TODO:
+//   - We need to check if user has logged in or not.
+//   - If user has not logged in, we need to navigate user
+//   - To perform login / registration process before proceeding
 class _AppState extends State<App> {
   TabItem _currentTab = TabItem.inquiryChats;
   // TabItem _currentTab = TabItem.inquiries;
 
   @override
+  initState() {
+    // If we are in development environment, dispatch `fetchMe` event with predefined
+    // test token.
+    if (!kReleaseMode) {
+      BlocProvider.of<AuthUserBloc>(context).add(
+        FetchUserInfo(),
+      );
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async =>
-          !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
-      child: Scaffold(
-        body: _buildBody(),
-        bottomNavigationBar: BottomNavigation(
-          currentTab: _currentTab,
-          onSelectTab: _handleSelectTab,
-        ),
-      ),
+    return BlocBuilder<AuthUserBloc, AuthUserState>(
+      builder: (context, state) {
+        if (state.status == FetchUserStatus.fetchFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
+        return WillPopScope(
+          onWillPop: () async =>
+              !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
+          child: Scaffold(
+            body: _buildBody(),
+            bottomNavigationBar: BottomNavigation(
+              currentTab: _currentTab,
+              onSelectTab: _handleSelectTab,
+            ),
+          ),
+        );
+      },
     );
   }
 

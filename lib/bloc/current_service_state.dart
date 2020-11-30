@@ -1,4 +1,4 @@
-part of 'get_service_bloc.dart';
+part of 'current_service_bloc.dart';
 
 enum GetServiceStatus {
   initial,

@@ -23,9 +23,11 @@ class PubNubConfig {
 
 class AppConfig {
   final PubNubConfig pubnubConfig;
+  final String token;
 
   const AppConfig({
     this.pubnubConfig,
+    this.token,
   });
 
   static Future<AppConfig> forEnvironment(String env) async {
@@ -38,6 +40,7 @@ class AppConfig {
     final json = jsonDecode(content);
 
     return AppConfig(
+      token: json['token'] ?? '',
       pubnubConfig: PubNubConfig.fromMap(json['pubnub']),
     );
   }

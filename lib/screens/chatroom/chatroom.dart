@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/bloc/get_service_bloc.dart';
-import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 
@@ -19,15 +18,6 @@ import '../../models/service_settings.dart';
 
 part 'chatroom_screen_arguments.dart';
 
-/// @TOODs:
-///   - Scroll list view to bottom when new message is appended to list - [ok].
-///   - Clear text field after new message is emitted successfully - [ok].
-///   - Load more historical messages - [ok].
-///   - Display error when fetching historical message / send message failed - [ok].
-///   - Display loading icon when fetching historical messages.
-///   - [ServiceSettingsSheet]. Service provider should be able to tailor the service detail - [ok].
-///   - There should be a default value passing into [ServiceSettingsSheet].
-///   - Remove historical messages and current messages when leaving the chatroom - [ok].
 class Chatroom extends StatefulWidget {
   const Chatroom({
     this.args,
@@ -50,8 +40,8 @@ class _ChatroomState extends State<Chatroom> {
     super.initState();
 
     // Fetch inquiry related service if exists
-    BlocProvider.of<GetServiceBloc>(context).add(
-      GetService(
+    BlocProvider.of<CurrentServiceBloc>(context).add(
+      GetCurrentService(
         inquiryUUID: widget.args.inquiryUUID,
       ),
     );
@@ -103,8 +93,16 @@ class _ChatroomState extends State<Chatroom> {
           appBar: AppBar(
             title: Text('Chatroom'),
             actions: [
-              BlocBuilder<GetServiceBloc, GetServiceState>(
+              BlocBuilder<CurrentServiceBloc, GetServiceState>(
                   builder: (context, state) {
+                if (state.status == GetServiceStatus.loadFailed) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
                 if (state.status == GetServiceStatus.loaded) {
                   return IconButton(
                     icon: Icon(Icons.assignment),
@@ -125,37 +123,38 @@ class _ChatroomState extends State<Chatroom> {
           body: Column(
             children: [
               Expanded(
-                  child: LoadMoreScrollable(
-                      scrollController: _scrollController,
-                      onLoadMore: () {
-                        BlocProvider.of<CurrentChatroomBloc>(context).add(
-                          FetchMoreHistoricalMessages(
-                            channelUUID: widget.args.channelUUID,
-                          ),
-                        );
-                      },
-                      builder: (context, scrollController) {
-                        return ChatroomWindow(
-                            scrollController: scrollController,
-                            historicalMessages: state.historicalMessages,
-                            currentMessages: state.currentMessages,
-                            builder: (BuildContext context, Message message) {
-                              // Render different chat bubble based on message type.
-                              if (message is ServiceDetailMessage) {
-                                return ServiceDetailBubble(
-                                  isMe: true,
-                                  message: message,
-                                  onTapMessage: _handleTapServiceSettingMessage,
-                                );
-                              }
+                child: LoadMoreScrollable(
+                  scrollController: _scrollController,
+                  onLoadMore: () {
+                    BlocProvider.of<CurrentChatroomBloc>(context).add(
+                      FetchMoreHistoricalMessages(
+                        channelUUID: widget.args.channelUUID,
+                      ),
+                    );
+                  },
+                  builder: (context, scrollController) {
+                    return ChatroomWindow(
+                        scrollController: scrollController,
+                        historicalMessages: state.historicalMessages,
+                        currentMessages: state.currentMessages,
+                        builder: (BuildContext context, message) {
+                          // Render different chat bubble based on message type.
+                          if (message is ServiceDetailMessage) {
+                            return ServiceDetailBubble(
+                              isMe: sender.uuid == message.from,
+                              message: message,
+                              onTapMessage: _handleTapServiceSettingMessage,
+                            );
+                          }
 
-                              return ChatBubble(
-                                // isMe: message.to == senderUUID,
-                                isMe: true,
-                                message: message,
-                              );
-                            });
-                      })),
+                          return ChatBubble(
+                            isMe: message.from == sender.uuid,
+                            message: message,
+                          );
+                        });
+                  },
+                ),
+              ),
               BlocListener<SendMessageBloc, SendMessageState>(
                 listener: (context, state) {
                   if (state.status == SendMessageStatus.loaded) {
@@ -187,9 +186,6 @@ class _ChatroomState extends State<Chatroom> {
   }
 
   _handleTapServiceSettingMessage(ServiceDetailMessage message) async {
-    print(
-        'DEBUG spot 1 _handleTapServiceSettingMessage ${message.serviceTime.day}');
-
     final ServiceSettings serviceSettings = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => ServiceSettingsSheet(
@@ -213,9 +209,6 @@ class _ChatroomState extends State<Chatroom> {
   }
 
   _handleTapServiceSetting(ServiceSettings ss) async {
-    print('DEBUG *** 1 ${ss.serviceDate.hour}');
-    print('DEBUG *** 2 ${ss.serviceDate.minute}');
-
     final ServiceSettings updatedss = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => ServiceSettingsSheet(

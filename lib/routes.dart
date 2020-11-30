@@ -1,9 +1,5 @@
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:darkpanda_flutter/bloc/get_service_bloc.dart';
-import 'package:darkpanda_flutter/services/service_apis.dart';
 
 import './screens/auth/auth_navigator.dart';
 import './screens/chatroom/chatroom.dart';
@@ -21,12 +17,7 @@ class MainRoutes extends BaseRoutes {
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 
-        return BlocProvider(
-          create: (context) => GetServiceBloc(
-            serviceApis: ServiceAPIs(),
-          ),
-          child: Chatroom(args: chatroomArgs),
-        );
+        return Chatroom(args: chatroomArgs);
       }
     };
   }
