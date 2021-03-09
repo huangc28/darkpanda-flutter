@@ -4,10 +4,12 @@ class SendMessageBar extends StatelessWidget {
   const SendMessageBar({
     this.onSend,
     this.editMessageController,
+    this.disable = false,
   });
 
   final VoidCallback onSend;
   final TextEditingController editMessageController;
+  final bool disable;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class SendMessageBar extends StatelessWidget {
             icon: Icon(Icons.send),
             iconSize: 25,
             color: Theme.of(context).primaryColor,
-            onPressed: onSend,
+            onPressed: disable ? null : onSend,
           ),
         ],
       ),

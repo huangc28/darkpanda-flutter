@@ -26,12 +26,6 @@ class AuthNavigator extends StatefulWidget {
   AuthNavigatorState createState() => AuthNavigatorState();
 }
 
-class SomeArgs {
-  SomeArgs(this.name);
-
-  final String name;
-}
-
 class AuthNavigatorState extends State<AuthNavigator> {
   String _currentRoute = '/register';
 

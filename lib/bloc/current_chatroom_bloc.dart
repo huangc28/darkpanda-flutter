@@ -10,9 +10,11 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
+import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
+import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
-import 'package:darkpanda_flutter/enums/message_types.dart';
+import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -23,14 +25,17 @@ class CurrentChatroomBloc
     this.inquiryChatroomApis,
     this.inquiryChatroomsBloc,
     this.currentServiceBloc,
+    this.notifyServiceConfirmedBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
+        assert(notifyServiceConfirmedBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
   final InquiryChatroomsBloc inquiryChatroomsBloc;
   final CurrentServiceBloc currentServiceBloc;
+  final NotifyServiceConfirmedBloc notifyServiceConfirmedBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
@@ -112,39 +117,44 @@ class CurrentChatroomBloc
     final subStream =
         inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
 
-    subStream.onData(_handleCurrentMessage);
+    subStream.onData((data) => _handleCurrentMessage(data, event.channelUUID));
   }
 
-  _handleCurrentMessage(data) {
+  _handleCurrentMessage(data, String channelUUID) {
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data();
 
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;
-    // final isConfirmedServiceMsg = (String type) => type ==
+    final isConfirmedServiceMsg =
+        (String type) => type == MessageType.confirmed_service.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
-    if (isServiceDetailMsg(rawMsg['type'])) {
-      final msg = ServiceDetailMessage.fromMap(rawMsg);
+    Message msg;
 
-      add(
-        DispatchNewMessage(message: msg),
-      );
+    if (isServiceDetailMsg(rawMsg['type'])) {
+      msg = ServiceDetailMessage.fromMap(rawMsg);
 
       currentServiceBloc.add(
         UpdateCurrentServiceByMessage(
           messasge: msg,
         ),
       );
-    } else {
-      final msg = Message.fromMap(rawMsg);
-      add(
-        DispatchNewMessage(
-          message: msg,
+    } else if (isConfirmedServiceMsg(rawMsg['type'])) {
+      msg = ServiceConfirmedMessage.fromMap(rawMsg);
+
+      // Emit event to disable current chatroom since the inquiry has become a service.
+      notifyServiceConfirmedBloc.add(
+        NotifyServiceConfirmed(
+          channelUUID: channelUUID,
         ),
       );
+    } else {
+      msg = Message.fromMap(rawMsg);
     }
+
+    add(DispatchNewMessage(message: msg));
   }
 
   Stream<CurrentChatroomState> _mapFetchHistoricalMessagesToState(
@@ -173,9 +183,11 @@ class CurrentChatroomBloc
       final historicalMessages = respMap['messages'].map<Message>((data) {
         if (data['type'] == MessageType.service_detail.name) {
           return ServiceDetailMessage.fromMap(data);
+        } else if (data['type'] == MessageType.confirmed_service.name) {
+          return ServiceConfirmedMessage.fromMap(data);
+        } else {
+          return Message.fromMap(data);
         }
-
-        return Message.fromMap(data);
       }).toList();
 
       yield CurrentChatroomState.loaded(state, historicalMessages, state.page);

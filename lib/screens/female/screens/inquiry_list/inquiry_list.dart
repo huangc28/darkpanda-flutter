@@ -103,7 +103,6 @@ class _InqiuryListState extends State<InqiuryList> {
   }
 
   _handleTapPickup(String uuid) {
-    // print('DEBUG _handleTapPickup');
     BlocProvider.of<PickupInquiryBloc>(context).add(PickupInquiry(uuid: uuid));
   }
 }

@@ -11,7 +11,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   final List<Chatroom> chatrooms;
   final E error;
 
-  // Map of channel UUID and stream.
+  /// Key value map of `channel UUID` and corresponding message [StreamSubscription].
   final Map<String, StreamSubscription> privateChatStreamMap;
 
   final FetchInquiryChatroomStatus status;

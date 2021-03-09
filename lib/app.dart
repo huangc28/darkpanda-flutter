@@ -3,6 +3,7 @@
 // of that tab.
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -48,9 +49,14 @@ class _AppState extends State<App> {
     return BlocBuilder<AuthUserBloc, AuthUserState>(
       builder: (context, state) {
         if (state.status == FetchUserStatus.fetchFailed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error.message),
+          developer.log(
+            state.error.message,
+            name: 'Failed to load auth user for DEV mode.',
+          );
+
+          return Container(
+            child: Center(
+              child: Text(state.error.message),
             ),
           );
         }

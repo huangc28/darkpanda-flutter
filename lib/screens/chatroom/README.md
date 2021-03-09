@@ -14,4 +14,8 @@ https://medium.com/flutterdevs/date-and-time-picker-in-flutter-72141e7531c
 - [ok] Remove historical messages and current messages when leaving the chatroom.
 - [x] Display an error message when failed to load service settings.
 - [x] Display an error message when failed to load historical messages. 
-- [] When male user approves the agreement by pressing OK, Female user should receive a system message saying that the male user agreed on the service detail. A modal should be displayed on Female user's chatroom. Female user has to hit agree to create the service.
+- [] When male user approves the agreement by pressing OK, chatroom should be disabled due to that the service has been created.
+- [] Create a countdown timer to notify female user that she will quit the chatroom after timer countdown.
+- [] Female user should be able to see the profile of the inquirer.
+
+

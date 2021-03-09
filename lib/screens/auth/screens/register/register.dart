@@ -7,7 +7,9 @@ import './models/models.dart' as models;
 import './bloc/register_bloc.dart' as registerBloc;
 
 class Register extends StatelessWidget {
-  const Register({this.onPush});
+  const Register({
+    this.onPush,
+  });
 
   final ValueChanged<String> onPush;
 

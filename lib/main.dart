@@ -18,6 +18,7 @@ import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
+import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 
 import './routes.dart';
 import './config.dart';
@@ -106,12 +107,18 @@ class DarkPandaApp extends StatelessWidget {
             ),
 
             BlocProvider(
+              create: (context) => NotifyServiceConfirmedBloc(),
+            ),
+
+            BlocProvider(
               create: (context) => CurrentChatroomBloc(
                 inquiryChatroomApis: InquiryChatroomApis(),
                 inquiryChatroomsBloc:
                     BlocProvider.of<InquiryChatroomsBloc>(context),
                 currentServiceBloc:
                     BlocProvider.of<CurrentServiceBloc>(context),
+                notifyServiceConfirmedBloc:
+                    BlocProvider.of<NotifyServiceConfirmedBloc>(context),
               ),
             ),
 
@@ -125,7 +132,7 @@ class DarkPandaApp extends StatelessWidget {
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
               theme: ThemeManager.getTheme(),
-              initialRoute: MainRoutes.app,
+              initialRoute: MainRoutes.login,
               onGenerateRoute: (settings) {
                 return MaterialPageRoute(
                   settings: settings,

@@ -1,6 +1,5 @@
 {
-
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNjc3NTE1MX0.xQrykr0vSZoaXwU0osttKtG0jo9Xc-ICUY2v6NqBqvk",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZjUwNDVmNWQtMTcyNy00Zjk3LWE5N2UtN2U2MmUwODBhMTk4IiwiYXV0aG9yaXplZCI6ZmFsc2UsImV4cCI6MTYwNzI4NzAxOX0.Ydww2k4JyZ9eQCA7gfrjJ9htfLIK-25TApUdbYTLnC",
     "pubnub": {
         "publish_key": "pub-c-9aebac50-6c5e-4226-a191-b01b9c10d5a2",
         "subscribe_key" : "sub-c-d8b2aeca-1373-11eb-bc34-ce6fd967af95",

@@ -5,10 +5,13 @@ import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
+import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
+import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 
 import 'components/chat_bubble.dart';
+import 'components/confirmed_service_bubble.dart';
 import 'components/service_detail_bubble.dart';
 import 'components/send_message_bar.dart';
 import 'components/chatroom_window.dart';
@@ -34,6 +37,7 @@ class _ChatroomState extends State<Chatroom> {
   final ScrollController _scrollController = ScrollController();
 
   String _message;
+  bool serviceConfirmed = false;
 
   @override
   void initState() {
@@ -108,8 +112,9 @@ class _ChatroomState extends State<Chatroom> {
                     icon: Icon(Icons.assignment),
                     iconSize: 25,
                     color: Colors.white,
-                    onPressed: () =>
-                        _handleTapServiceSetting(state.serviceSettings),
+                    onPressed: () => serviceConfirmed
+                        ? null
+                        : _handleTapServiceSetting(state.serviceSettings),
                   );
                 }
 
@@ -133,7 +138,18 @@ class _ChatroomState extends State<Chatroom> {
                     );
                   },
                   builder: (context, scrollController) {
-                    return ChatroomWindow(
+                    return BlocListener<NotifyServiceConfirmedBloc,
+                        NotifyServiceConfirmedState>(
+                      listener: (context, state) {
+                        if (state.confirmed) {
+                          // Lock the message sending button
+                          // Lock the detail setting panel
+                          setState(() {
+                            serviceConfirmed = true;
+                          });
+                        }
+                      },
+                      child: ChatroomWindow(
                         scrollController: scrollController,
                         historicalMessages: state.historicalMessages,
                         currentMessages: state.currentMessages,
@@ -145,13 +161,20 @@ class _ChatroomState extends State<Chatroom> {
                               message: message,
                               onTapMessage: _handleTapServiceSettingMessage,
                             );
+                          } else if (message is ServiceConfirmedMessage) {
+                            return ConfirmedServiceBubble(
+                              isMe: sender.uuid == message.from,
+                              message: message,
+                            );
+                          } else {
+                            return ChatBubble(
+                              isMe: sender.uuid == message.from,
+                              message: message,
+                            );
                           }
-
-                          return ChatBubble(
-                            isMe: message.from == sender.uuid,
-                            message: message,
-                          );
-                        });
+                        },
+                      ),
+                    );
                   },
                 ),
               ),
@@ -162,6 +185,7 @@ class _ChatroomState extends State<Chatroom> {
                   }
                 },
                 child: SendMessageBar(
+                  disable: serviceConfirmed,
                   editMessageController: _editMessageController,
                   onSend: () {
                     // Emit message if the value of _message is not empty

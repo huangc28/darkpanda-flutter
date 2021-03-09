@@ -75,6 +75,8 @@ class _ChatRoomsState extends State<ChatRooms> {
     String inquiryUUID,
     String serviceType,
   ) {
+    // Retrieve inquirer information here
+
     // Dispatch fetch chatroom messages
     // After messages are fetched, redirect to chatroom.
     Navigator.of(context, rootNavigator: true).pushNamed(

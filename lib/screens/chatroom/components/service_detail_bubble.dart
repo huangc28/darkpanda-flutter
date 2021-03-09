@@ -37,34 +37,39 @@ class ServiceDetailBubble extends StatelessWidget {
       isMe: isMe,
       message: message,
       richText: RichText(
-        text: TextSpan(children: [
-          TextSpan(
-            style: TextStyle(
-              height: 1.3,
+        text: TextSpan(
+          style: TextStyle(
+            color: isMe ? Colors.white : Colors.black,
+          ),
+          children: [
+            TextSpan(
+              style: TextStyle(
+                height: 1.3,
+              ),
             ),
-          ),
-          TextSpan(
-            text: '${message.serviceType} \n',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
+            TextSpan(
+              text: '${message.serviceType} \n',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
             ),
-          ),
-          TextSpan(
-            text: 'Price: ${message.price} \n',
-          ),
-          TextSpan(
-            text:
-                'Service date: ${message.serviceTime.year} / ${message.serviceTime.month} / ${message.serviceTime.day} \n',
-          ),
-          TextSpan(
-            text:
-                'Service time: ${message.serviceTime.hour}:${message.serviceTime.minute}\n',
-          ),
-          TextSpan(
-            text: 'duration: ${message.duration} minutes',
-          ),
-        ]),
+            TextSpan(
+              text: 'Price: ${message.price} \n',
+            ),
+            TextSpan(
+              text:
+                  'Service date: ${message.serviceTime.year} / ${message.serviceTime.month} / ${message.serviceTime.day} \n',
+            ),
+            TextSpan(
+              text:
+                  'Service time: ${message.serviceTime.hour}:${message.serviceTime.minute}\n',
+            ),
+            TextSpan(
+              text: 'duration: ${message.duration} minutes',
+            ),
+          ],
+        ),
       ),
     );
   }
