@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm({Key key}) : super(key: key);
+  LoginForm({
+    Key key,
+    @required this.onLogin,
+  }) : super(key: key);
+
+  final ValueChanged<String> onLogin;
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -11,6 +16,7 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _username;
 
   Widget _buildForm() {
     return Form(
@@ -19,6 +25,17 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            validator: (String v) {
+              // Username can not be empty
+              if (v.trim().isEmpty) {
+                return 'username is required';
+              }
+
+              return null;
+            },
+            onSaved: (String v) {
+              _username = v;
+            },
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28.0)),
@@ -35,7 +52,6 @@ class _LoginFormState extends State<LoginForm> {
             height: 26,
           ),
           DPTextButton(
-            backgroundColor: Color.fromRGBO(255, 64, 138, 1),
             child: Text(
               '登錄',
               textAlign: TextAlign.center,
@@ -44,9 +60,7 @@ class _LoginFormState extends State<LoginForm> {
                 color: Colors.white,
               ),
             ),
-            onPress: () {
-              print('login');
-            },
+            onPress: _submit,
           )
         ],
       ),
@@ -78,5 +92,15 @@ class _LoginFormState extends State<LoginForm> {
         _buildForm(),
       ],
     );
+  }
+
+  void _submit() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
+
+    widget.onLogin(_username);
   }
 }

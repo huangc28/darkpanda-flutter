@@ -42,6 +42,8 @@ class SendLoginVerifyCodeBloc
       // log the error.
       final resp = await authApiClient.sendLoginVerifyCode(event.username);
 
+      print('resp ${resp.body}');
+
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(resp.body),
@@ -49,6 +51,8 @@ class SendLoginVerifyCodeBloc
       }
 
       final authMap = json.decode(resp.body);
+
+      print('send login verify code ${authMap}');
 
       yield SendLoginVerifyCodeState.sendSuccess(
         state,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+// import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
@@ -30,34 +30,34 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
 
   String _verifyDigs;
 
-  StreamController<ErrorAnimationType> _errorController;
-  @override
-  void initState() {
-    super.initState();
+  // StreamController<ErrorAnimationType> _errorController;
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    initErrorAnimationController();
-  }
+  // initErrorAnimationController();
+  // }
 
-  @override
-  void didUpdateWidget(VerifyRegisterCode oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  // @override
+  // void didUpdateWidget(VerifyRegisterCode oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
 
-    initErrorAnimationController();
-  }
+  // initErrorAnimationController();
+  // }
 
-  @override
-  void dispose() {
-    _errorController.close();
+  // @override
+  // void dispose() {
+  //   // _errorController.close();
 
-    super.dispose();
-  }
+  //   super.dispose();
+  // }
 
   /// Guards multiple instantiation of stream from flutter hot reload.
-  void initErrorAnimationController() {
-    if (_errorController == null || _errorController.isClosed) {
-      _errorController = StreamController<ErrorAnimationType>();
-    }
-  }
+  // void initErrorAnimationController() {
+  //   if (_errorController == null || _errorController.isClosed) {
+  //     _errorController = StreamController<ErrorAnimationType>();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,18 +91,18 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                 padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 10.0),
                 child: Column(
                   children: [
-                    PinCodeTextField(
-                      controller: _textEditingController,
-                      keyboardType: TextInputType.number,
-                      errorAnimationController: _errorController,
-                      appContext: context,
-                      length: 4,
-                      onChanged: (String value) {
-                        _verifyDigs = value;
-                      },
-                      onCompleted: _handleVerify,
-                    ),
-                    _buildResendButton(),
+                    // PinCodeTextField(
+                    //   controller: _textEditingController,
+                    //   keyboardType: TextInputType.number,
+                    //   errorAnimationController: _errorController,
+                    //   appContext: context,
+                    //   length: 4,
+                    //   onChanged: (String value) {
+                    //     _verifyDigs = value;
+                    //   },
+                    //   onCompleted: _handleVerify,
+                    // ),
+                    // _buildResendButton(),
                   ],
                 )),
           ],
@@ -154,7 +154,7 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
 
       _textEditingController.clear();
     } else {
-      _errorController.add(ErrorAnimationType.shake);
+      // _errorController.add(ErrorAnimationType.shake);
       _textEditingController.clear();
     }
   }

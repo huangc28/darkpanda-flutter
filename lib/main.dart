@@ -132,7 +132,7 @@ class DarkPandaApp extends StatelessWidget {
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
               theme: ThemeManager.getTheme(),
-              initialRoute: MainRoutes.login,
+              initialRoute: MainRoutes.auth,
               onGenerateRoute: (settings) {
                 return MaterialPageRoute(
                   settings: settings,

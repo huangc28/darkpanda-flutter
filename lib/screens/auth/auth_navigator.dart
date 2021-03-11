@@ -8,7 +8,8 @@ import 'package:darkpanda_flutter/pkg/timer.dart';
 import './bloc/verify_login_code_bloc.dart';
 import './services/auth_api_client.dart';
 import './screens/verify_login_code/verify_login_code.dart';
-import './screens/send_login_code/auth.dart';
+// import './screens/send_login_code/auth.dart';
+import './screens/login/login.dart';
 import './screens/register/register.dart';
 
 import './screens/register/screens/verify_register_code/verify_register_code.dart';
@@ -27,31 +28,21 @@ class AuthNavigator extends StatefulWidget {
 }
 
 class AuthNavigatorState extends State<AuthNavigator> {
-  String _currentRoute = '/register';
-
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   void _push(BuildContext context, String routeName,
       [Map<String, dynamic> args]) {
-    if (routeName == _currentRoute) {
-      return;
-    }
-
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => _routeBuilder(args)[routeName](context),
       ),
     );
-
-    setState(() {
-      _currentRoute = routeName;
-    });
   }
 
   Map<String, WidgetBuilder> _routeBuilder([Map<String, dynamic> args]) {
     return {
-      '/': (context) => Auth(
+      '/': (context) => Login(
             onPush: (String routeName) => _push(context, routeName),
           ),
       '/verify-login-code': (context) => BlocProvider(
@@ -101,16 +92,23 @@ class AuthNavigatorState extends State<AuthNavigator> {
         ),
       ],
       child: WillPopScope(
-        onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
-        child: Navigator(
-            key: _navigatorKey,
-            initialRoute: _currentRoute,
+        // onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
+        onWillPop: () async {
+          print('CURRENT STATE !! ${_navigatorKey.currentState}');
 
-            /// Generate route according to route name
-            onGenerateRoute: (settings) => MaterialPageRoute(
-                  settings: settings,
-                  builder: (context) => _routeBuilder()[settings.name](context),
-                )),
+          return !await _navigatorKey.currentState.maybePop();
+        },
+        child: Navigator(
+          key: _navigatorKey,
+          // initialRoute: _currentRoute,
+          initialRoute: '/',
+
+          /// Generate route according to route name
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            settings: settings,
+            builder: (context) => _routeBuilder()[settings.name](context),
+          ),
+        ),
       ),
     );
   }

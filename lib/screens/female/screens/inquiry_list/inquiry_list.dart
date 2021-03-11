@@ -61,7 +61,7 @@ class _InqiuryListState extends State<InqiuryList> {
               _refreshCompleter.completeError(state.error);
               _refreshCompleter = Completer();
 
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.error.message),
                 ),

@@ -22,7 +22,7 @@ class _AuthState extends State<Auth> {
   @override
 
   /// If user has already logged in, navigate to `/app` route.
-  /// If not,  stay on this page and ask  user to `login` / `register`.
+  /// If not,  stay on this page and ask  user to `login/register`.
   void initState() {
     final authUser = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -45,10 +45,12 @@ class _AuthState extends State<Auth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login',
-            style: TextStyle(
-              color: Colors.black,
-            )),
+        title: const Text(
+          'Login',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Colors.white,
@@ -57,7 +59,7 @@ class _AuthState extends State<Auth> {
         listener: (context, state) {
           // Display snack bar if error occured.
           if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.error.message),
               ),
@@ -66,7 +68,7 @@ class _AuthState extends State<Auth> {
 
           // Redirect to verify code page, if verify code is send successfully.
           if (state.status == SendLoginVerifyCodeStatus.sendSuccess) {
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('success'),
               ),

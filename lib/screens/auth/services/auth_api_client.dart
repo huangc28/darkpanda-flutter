@@ -7,13 +7,14 @@ class AuthAPIClient extends BaseClient {
   Future<http.Response> sendLoginVerifyCode(String username) async {
     try {
       final request = http.Request(
-          'POST',
-          buildUri(
-            '/v1/send-login-verify-code',
-            {
-              'username': username,
-            },
-          ));
+        'POST',
+        buildUri(
+          '/v1/auth/send-verify-code',
+          {
+            'username': username,
+          },
+        ),
+      );
 
       final res = await sendWithResponse(request);
 

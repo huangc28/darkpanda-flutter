@@ -1,7 +1,6 @@
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:flutter/widgets.dart';
 
-import './screens/login/login.dart';
 import './screens/auth/auth_navigator.dart';
 import './screens/chatroom/chatroom.dart';
 import './app.dart';
@@ -14,7 +13,6 @@ class MainRoutes extends BaseRoutes {
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
-      MainRoutes.login: (context) => Login(),
       MainRoutes.auth: (context) => AuthNavigator(),
       MainRoutes.app: (context) => App(),
       MainRoutes.chatroom: (context) {

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
 import 'components/login_form.dart';
 
+import '../../bloc/send_login_verify_code_bloc.dart';
+
 // @ref SystemUiOverlayStyle setting is referenced from:
 //   - https://api.flutter.dev/flutter/services/SystemChrome/setSystemUIOverlayStyle.html
 //   - https://www.youtube.com/watch?v=PqZgkU_SZAE&ab_channel=LirsTechTips
 class Login extends StatelessWidget {
-  const Login();
+  const Login({
+    this.onPush,
+  });
+
+  final ValueChanged<String> onPush;
 
   Widget _buildLogoImage() {
     return Row(
@@ -55,14 +62,26 @@ class Login extends StatelessWidget {
               SizedBox(height: 26),
               _buildTitleText(),
               SizedBox(height: 60),
-              LoginForm(),
+              BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
+                listener: (context, state) {
+                  print('SendLoginVerifyCodeState ${state.status}');
+                },
+                child: LoginForm(
+                  onLogin: (String username) {
+                    // send login verify code
+                    BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
+                      SendLoginVerifyCode(username: username),
+                    );
+                  },
+                ),
+              ),
 
               /// Use [Expanded] to fill up the rest of the column space
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: DPTextButton(
-                    backgroundColor: Color.fromRGBO(119, 81, 255, 1),
+                    theme: DPTextButtonThemes.purple,
                     onPress: () {
                       print('onRegister');
                     },
