@@ -17,7 +17,10 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Image.asset(
+          'assets/horizontal_logo_banner.png',
+          fit: BoxFit.cover,
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

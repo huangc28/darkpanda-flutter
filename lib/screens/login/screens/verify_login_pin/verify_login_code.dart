@@ -1,15 +1,11 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 
 import 'package:darkpanda_flutter/app.dart';
-
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
 
-import '../../bloc/verify_login_code_bloc.dart';
 import '../../bloc/send_login_verify_code_bloc.dart';
-import '../../services/util.dart';
 
 // @TODO
 //   - Assert that all numbers submitted are numeric.
@@ -119,7 +115,7 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   ),
                   submittedFieldDecoration: pinputDecoration,
                   selectedFieldDecoration: pinputDecoration,
-                  followingFieldDecoration: pinputDecoration.copyWith(),
+                  followingFieldDecoration: pinputDecoration,
                   eachFieldWidth: 50,
                   eachFieldHeight: 57,
                 ),

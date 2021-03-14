@@ -8,15 +8,15 @@ enum FetchUserStatus {
 }
 
 class AuthUserState<Error extends AppBaseException> extends Equatable {
-  final FetchUserStatus status;
-  final Error error;
-  final AuthUser user;
-
   const AuthUserState._({
     this.status,
     this.error,
     this.user,
   });
+
+  final FetchUserStatus status;
+  final Error error;
+  final AuthUser user;
 
   AuthUserState.initial({
     AuthUser authUser,

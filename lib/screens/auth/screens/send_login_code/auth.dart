@@ -5,7 +5,7 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/app.dart';
 
 import './components/login_form.dart';
-import '../../bloc/send_login_verify_code_bloc.dart';
+// import '../../bloc/send_login_verify_code_bloc.dart';
 
 // TODOs:
 //   - Add a button to redirect user to register page.
@@ -55,52 +55,55 @@ class _AuthState extends State<Auth> {
         elevation: 0.0,
         backgroundColor: Colors.white,
       ),
-      body: BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
-        listener: (context, state) {
-          // Display snack bar if error occured.
-          if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error.message),
-              ),
-            );
-          }
-
-          // Redirect to verify code page, if verify code is send successfully.
-          if (state.status == SendLoginVerifyCodeStatus.sendSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('success'),
-              ),
-            );
-
-            widget.onPush('/verify-login-code');
-          }
-        },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-                  child: LoginForm(
-                    onPressRegister: _handlePressRegister,
-                    onSendVerifyCode: _handleSendVerifyCode,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      body: Container(
+        child: Text('auth'),
       ),
+      // body: BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
+      //   listener: (context, state) {
+      //     // Display snack bar if error occured.
+      //     if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         SnackBar(
+      //           content: Text(state.error.message),
+      //         ),
+      //       );
+      //     }
+
+      //     // Redirect to verify code page, if verify code is send successfully.
+      //     if (state.status == SendLoginVerifyCodeStatus.sendSuccess) {
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         SnackBar(
+      //           content: Text('success'),
+      //         ),
+      //       );
+
+      //       widget.onPush('/verify-login-code');
+      //     }
+      //   },
+      //   child: SafeArea(
+      //     child: SingleChildScrollView(
+      //       child: Column(
+      //         children: [
+      //           Padding(
+      //             padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+      //             child: LoginForm(
+      //               onPressRegister: _handlePressRegister,
+      //               onSendVerifyCode: _handleSendVerifyCode,
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 
   void _handleSendVerifyCode(String username) {
     // emit send login verify code event.
-    BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(SendLoginVerifyCode(
-      username: username,
-    ));
+    // BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(SendLoginVerifyCode(
+    //   username: username,
+    // ));
   }
 
   void _handlePressRegister() {

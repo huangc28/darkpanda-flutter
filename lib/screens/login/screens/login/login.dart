@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/auth/auth_navigator.dart';
 
 import 'components/login_form.dart';
 
@@ -23,7 +24,7 @@ class Login extends StatelessWidget {
       children: [
         Container(
           child: Image(
-            image: AssetImage('assets/auth/logo.png'),
+            image: AssetImage('assets/logo.png'),
           ),
         )
       ],
@@ -64,7 +65,9 @@ class Login extends StatelessWidget {
               SizedBox(height: 60),
               BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
                 listener: (context, state) {
-                  print('SendLoginVerifyCodeState ${state.status}');
+                  if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
+                    print('send failed ${state.error.message}');
+                  }
                 },
                 child: LoginForm(
                   onLogin: (String username) {
@@ -83,7 +86,14 @@ class Login extends StatelessWidget {
                   child: DPTextButton(
                     theme: DPTextButtonThemes.purple,
                     onPress: () {
-                      print('onRegister');
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).push(
+                        MaterialPageRoute(
+                          builder: (context) => AuthNavigator(),
+                        ),
+                      );
                     },
                     child: Text(
                       '註冊',
@@ -102,7 +112,7 @@ class Login extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/auth/login_background.png'),
+              image: AssetImage('assets/login_background.png'),
               fit: BoxFit.cover,
             ),
           ),

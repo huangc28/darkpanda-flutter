@@ -7,12 +7,10 @@ import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
 
-import 'package:darkpanda_flutter/screens/auth/services/auth_api_client.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/bloc/send_login_verify_code_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
@@ -78,12 +76,6 @@ class DarkPandaApp extends StatelessWidget {
                 dataProvider: UserApis(),
               ),
             ),
-            BlocProvider(
-              create: (context) => SendLoginVerifyCodeBloc(
-                authApiClient: AuthAPIClient(),
-              ),
-            ),
-
             // Inquiry chatroom related blocs
             BlocProvider(
               create: (context) => InquiryChatMessagesBloc(),
@@ -132,7 +124,7 @@ class DarkPandaApp extends StatelessWidget {
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
               theme: ThemeManager.getTheme(),
-              initialRoute: MainRoutes.auth,
+              initialRoute: MainRoutes.login,
               onGenerateRoute: (settings) {
                 return MaterialPageRoute(
                   settings: settings,

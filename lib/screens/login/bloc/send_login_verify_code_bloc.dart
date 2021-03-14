@@ -6,9 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
-import '../services/auth_api_client.dart';
+import '../services/login_api_client.dart';
 
 part 'send_login_verify_code_events.dart';
 part 'send_login_verify_code_state.dart';
@@ -19,7 +18,7 @@ class SendLoginVerifyCodeBloc
       : assert(authApiClient != null),
         super(SendLoginVerifyCodeState.initial());
 
-  final AuthAPIClient authApiClient;
+  final LoginAPIClient authApiClient;
 
   @override
   Stream<SendLoginVerifyCodeState> mapEventToState(

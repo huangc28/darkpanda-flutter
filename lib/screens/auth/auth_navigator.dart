@@ -5,20 +5,18 @@ import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/pkg/timer.dart';
 
-import './bloc/verify_login_code_bloc.dart';
-import './services/auth_api_client.dart';
-import './screens/verify_login_code/verify_login_code.dart';
-// import './screens/send_login_code/auth.dart';
-import './screens/login/login.dart';
 import './screens/register/register.dart';
-
 import './screens/register/screens/verify_register_code/verify_register_code.dart';
 import './screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/verify_register_code/services/apis.dart';
-
 import './screens/register/screens/send_register_verify_code/send_register_verify_code.dart';
-import 'screens/register/bloc/send_sms_code_bloc.dart';
 import './screens/register/screens/send_register_verify_code/services/data_provider.dart';
+import './screens/terms/terms.dart';
+import './screens/choose_gender/choose_gender.dart';
+import './screens/verify_referral_code/verify_referral_code.dart';
+import './screens/verify_referral_code/bloc/verify_referral_code_bloc.dart';
+
+import './screens/register/bloc/send_sms_code_bloc.dart';
 
 class AuthNavigator extends StatefulWidget {
   AuthNavigator();
@@ -42,16 +40,17 @@ class AuthNavigatorState extends State<AuthNavigator> {
 
   Map<String, WidgetBuilder> _routeBuilder([Map<String, dynamic> args]) {
     return {
-      '/': (context) => Login(
+      '/': (context) => Terms(
             onPush: (String routeName) => _push(context, routeName),
           ),
-      '/verify-login-code': (context) => BlocProvider(
-            create: (context) => VerifyLoginCodeBloc(
-              authAPIClient: AuthAPIClient(),
-              userApis: UserApis(),
-              authUserBloc: BlocProvider.of<AuthUserBloc>(context),
-            ),
-            child: VerifyLoginCode(),
+      '/register/choose-gender': (context) => ChooseGender(
+            onPush: (String routeName) => _push(context, routeName),
+          ),
+      '/register/verify-referral-code': (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => VerifyReferralCodeBloc()),
+            ],
+            child: VerifyReferralCode(),
           ),
       '/register': (context) => Register(
             onPush: (String routeName) => _push(context, routeName),
@@ -92,15 +91,9 @@ class AuthNavigatorState extends State<AuthNavigator> {
         ),
       ],
       child: WillPopScope(
-        // onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
-        onWillPop: () async {
-          print('CURRENT STATE !! ${_navigatorKey.currentState}');
-
-          return !await _navigatorKey.currentState.maybePop();
-        },
+        onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
         child: Navigator(
           key: _navigatorKey,
-          // initialRoute: _currentRoute,
           initialRoute: '/',
 
           /// Generate route according to route name
