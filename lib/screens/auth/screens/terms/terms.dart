@@ -166,7 +166,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                 alignment: Alignment.bottomCenter,
                 child: DPTextButton(
                   theme: DPTextButtonThemes.purple,
-                  onPress: () {
+                  onPressed: () {
                     widget.onPush('/register/choose-gender');
                   },
                   child: Text(

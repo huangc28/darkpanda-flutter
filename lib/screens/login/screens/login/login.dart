@@ -85,7 +85,7 @@ class Login extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: DPTextButton(
                     theme: DPTextButtonThemes.purple,
-                    onPress: () {
+                    onPressed: () {
                       Navigator.of(
                         context,
                         rootNavigator: true,
@@ -95,14 +95,7 @@ class Login extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Text(
-                      '註冊',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
+                    text: '註冊',
                   ),
                 ),
               ),

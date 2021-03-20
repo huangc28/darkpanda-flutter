@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import './bloc/verify_referral_code_bloc.dart';
@@ -10,7 +11,12 @@ import './bloc/verify_referral_code_bloc.dart';
 import '../../components/step_bar_image.dart';
 
 class VerifyReferralCode extends StatefulWidget {
-  const VerifyReferralCode({Key key}) : super(key: key);
+  const VerifyReferralCode({
+    Key key,
+    this.onPush,
+  }) : super(key: key);
+
+  final ValueChanged<String> onPush;
 
   @override
   _VerifyReferralCodeState createState() => _VerifyReferralCodeState();
@@ -96,7 +102,8 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                               return 'please complete verify code';
                             }
 
-                            if (!_verifyRefCodeErrStr.isEmpty) {
+                            if (_verifyRefCodeErrStr != null &&
+                                !_verifyRefCodeErrStr.isEmpty) {
                               return _verifyRefCodeErrStr;
                             }
 
@@ -127,7 +134,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                         SizedBox(height: 26),
 
                         // Username input
-                        TextFormField(
+                        DPTextFormField(
                           controller: _usernameControler,
                           onSaved: (String v) {
                             _username = v;
@@ -137,28 +144,15 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                               return 'username can not be empty';
                             }
 
+                            // If username does not pass async validation,
+                            // display error message
+                            if (_verifyUsernameErrStr != null &&
+                                !_verifyUsernameErrStr.isEmpty) {
+                              return _verifyUsernameErrStr;
+                            }
+
                             return null;
                           },
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            letterSpacing: .36,
-                          ),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white.withOpacity(0.1),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(26),
-                              ),
-                            ),
-                            errorStyle: TextStyle(
-                              fontSize: 15,
-                              letterSpacing: 0.47,
-                            ),
-                            focusedErrorBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                          ),
                         ),
                       ],
                     ),
@@ -187,6 +181,9 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                       });
 
                       _formKey.currentState.save();
+
+                      // Let's redirect to phone verify page
+                      widget.onPush('/register/send-verify-code');
                     }
                   }),
                 ],
@@ -195,33 +192,26 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                     alignment: Alignment.bottomCenter,
                     child: DPTextButton(
                       theme: DPTextButtonThemes.purple,
-                      onPress: () {
+                      onPressed: () {
                         /// verify pin code input and username synchronously
                         if (!_formKey.currentState.validate()) {
                           return null;
                         }
 
+                        _formKey.currentState.save();
+
                         /// verify pin code and username validity asynchornously
                         BlocProvider.of<VerifyReferralCodeBloc>(context).add(
                           VerifyReferralCodeEvent(
                             referralCode: _referralCode,
+                            username: _username,
                           ),
                         );
 
                         /// The rest of the form operations `_formKey.save()`, `_formKey.validate()`
                         /// will be performed in bloc listeners
-
-                        // widget.onPush('/register/verify-referral-code');
-                        print('next step');
                       },
-                      child: Text(
-                        '下一步',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
+                      text: '下一步',
                     ),
                   ),
                 ),

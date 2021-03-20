@@ -52,15 +52,8 @@ class _LoginFormState extends State<LoginForm> {
             height: 26,
           ),
           DPTextButton(
-            child: Text(
-              '登錄',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            onPress: _submit,
+            text: '登錄',
+            onPressed: _submit,
           )
         ],
       ),

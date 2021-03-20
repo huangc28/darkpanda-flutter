@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/screens/auth/components/step_bar_image.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
 
 import 'components/send_phone_verify_code.dart';
-import '../../bloc/send_sms_code_bloc.dart';
 import 'models/phone_verify_form.dart' as models;
+
+import '../../bloc/send_sms_code_bloc.dart';
 import '../../bloc/register_bloc.dart';
 
 // @TODO:
@@ -32,63 +36,97 @@ class SendRegisterVerifyCode extends StatefulWidget {
 
 class _SendRegisterVerifyCodeState<Error extends AppBaseException>
     extends State<SendRegisterVerifyCode> {
-  String _mobileNumber;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  String _mobileNumber;
   String _countryCode;
+  bool _disableSend = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('註冊'),
+      ),
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(
-            vertical: 120.0,
-            horizontal: 25.0,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 0,
           ),
           child: BlocBuilder<RegisterBloc, RegisterState>(
-              cubit: BlocProvider.of<RegisterBloc>(context),
-              builder: (context, registerState) => Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      MultiBlocListener(
-                        listeners: [
-                          BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
-                            listener: (context, state) {
-                              if (state.status == SendSMSStatus.sending) {}
-
-                              if (state.status == SendSMSStatus.sendSuccess) {
-                                // redirect to next page to verify phone.
-                                widget.onPush(
-                                  '/register/verify-register-code',
-                                  {
-                                    'country_code': _countryCode,
-                                    'mobile': _mobileNumber,
-                                    'verify_chars': state.sendSMS.verifyPrefix,
-                                    'uuid': state.sendSMS.uuid,
-                                  },
-                                );
-                              }
-
-                              // if send SMS failed, we should display error message in PhoneVerifyForm.
-                              if (state.status == SendSMSStatus.sendFailed) {
-                                Scaffold.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(state.error.message),
-                                  ),
-                                );
-                              }
-                            },
+            cubit: BlocProvider.of<RegisterBloc>(context),
+            builder: (context, registerState) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                StepBarImage(
+                  step: RegisterStep.StepThree,
+                ),
+                SizedBox(
+                  height: 48,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '輸入你的電話號碼',
+                          style: TextStyle(
+                            fontSize: 16,
+                            letterSpacing: 0.5,
+                            color: Colors.white,
                           ),
-                        ],
-                        child: SendPhoneVerifyCode(
-                          onSend: (models.PhoneVerifyFormModel form) {
-                            form.uuid = registerState.user.uuid;
-                            _handleSendSMS(form);
+                        ),
+                        SizedBox(height: 11),
+                        Text(
+                          '驗證碼會寄至您的手機',
+                          style: TextStyle(
+                            fontSize: 15,
+                            letterSpacing: 0.47,
+                            color: Color.fromRGBO(106, 109, 137, 1),
+                          ),
+                        ),
+
+                        SizedBox(height: 26),
+
+                        // Mobile number text input
+                        DPTextFormField(
+                          hintText: '輸入電話號碼',
+                          onChanged: (String v) {
+                            // Enable send button when input field is not an empty string
+                            if (v != null && v.isNotEmpty) {
+                              setState(() {
+                                _disableSend = false;
+                              });
+                            } else {
+                              setState(() {
+                                _disableSend = true;
+                              });
+                            }
                           },
                         ),
-                      ),
-                    ],
-                  )),
+
+                        SizedBox(
+                          height: 46,
+                        ),
+
+                        DPTextButton(
+                          disabled: _disableSend,
+                          text: '寄驗證碼',
+                          onPressed: () {
+                            print('DEBUG trigger send');
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

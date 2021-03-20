@@ -104,18 +104,10 @@ class _ChooseGenderState extends State<ChooseGender> {
                   alignment: Alignment.bottomCenter,
                   child: DPTextButton(
                     theme: DPTextButtonThemes.purple,
-                    onPress: () {
+                    onPressed: () {
                       widget.onPush('/register/verify-referral-code');
-                      // print('next step');
                     },
-                    child: Text(
-                      '下一步',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
+                    text: '下一步',
                   ),
                 ),
               ),

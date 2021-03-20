@@ -50,14 +50,16 @@ class AuthNavigatorState extends State<AuthNavigator> {
             providers: [
               BlocProvider(create: (context) => VerifyReferralCodeBloc()),
             ],
-            child: VerifyReferralCode(),
-          ),
-      '/register': (context) => Register(
-            onPush: (String routeName) => _push(context, routeName),
+            child: VerifyReferralCode(
+              onPush: (String routeName) => _push(context, routeName),
+            ),
           ),
       '/register/send-verify-code': (context) => SendRegisterVerifyCode(
             onPush: (String routeName, [Map<String, dynamic> args]) =>
                 _push(context, routeName, args),
+          ),
+      '/register': (context) => Register(
+            onPush: (String routeName) => _push(context, routeName),
           ),
       '/register/verify-register-code': (context) => BlocProvider(
             create: (context) => MobileVerifyBloc(
@@ -94,7 +96,7 @@ class AuthNavigatorState extends State<AuthNavigator> {
         onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
         child: Navigator(
           key: _navigatorKey,
-          initialRoute: '/',
+          initialRoute: '/register/verify-referral-code',
 
           /// Generate route according to route name
           onGenerateRoute: (settings) => MaterialPageRoute(
