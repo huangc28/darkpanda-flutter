@@ -20,6 +20,8 @@ class VerifyReferralCodeState<E extends AppBaseException> extends Equatable {
   VerifyReferralCodeState.loading()
       : this._(
           status: AsyncLoadingStatus.loading,
+          verifyRefCodeError: null,
+          verifyUsernameError: null,
         );
 
   VerifyReferralCodeState.done()

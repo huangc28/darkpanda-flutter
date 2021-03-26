@@ -1,6 +1,5 @@
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:http/http.dart' as http;
-import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 // Any API client requesting darkpanda service should extend this base client.
 // It parses the given backend service origin to [Uri] object and builds correct

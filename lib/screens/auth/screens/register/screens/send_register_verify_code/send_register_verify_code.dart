@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/screens/auth/components/step_bar_image.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/auth/services/util.dart';
+import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'components/send_phone_verify_code.dart';
 import 'models/phone_verify_form.dart' as models;
@@ -26,20 +30,26 @@ import '../../bloc/register_bloc.dart';
 //        unlock the user.
 //   - Redirect user to appropriate index page according to gender
 class SendRegisterVerifyCode extends StatefulWidget {
-  const SendRegisterVerifyCode({this.onPush});
+  const SendRegisterVerifyCode({
+    this.onPush,
+    this.args,
+  });
 
-  final Function onPush;
+  final Function(String, [VerifyRegisterCodeArguments]) onPush;
+  final SendRegisterVerifyCodeArguments args;
 
   @override
   _SendRegisterVerifyCodeState createState() => _SendRegisterVerifyCodeState();
 }
 
+// @TODO apply best practice on mobile number input masking.
 class _SendRegisterVerifyCodeState<Error extends AppBaseException>
     extends State<SendRegisterVerifyCode> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _mobileNumController = TextEditingController();
 
   String _mobileNumber;
-  String _countryCode;
+  String _dialCode = '+886';
   bool _disableSend = true;
 
   @override
@@ -55,7 +65,7 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
             vertical: 0,
           ),
           child: BlocBuilder<RegisterBloc, RegisterState>(
-            cubit: BlocProvider.of<RegisterBloc>(context),
+            bloc: BlocProvider.of<RegisterBloc>(context),
             builder: (context, registerState) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -89,37 +99,105 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                             color: Color.fromRGBO(106, 109, 137, 1),
                           ),
                         ),
-
                         SizedBox(height: 26),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            CountryCodePicker(
+                              onChanged: (CountryCode code) {
+                                setState(() {
+                                  _dialCode = code.dialCode;
+                                });
+                              },
+                              initialSelection: 'TW',
+                              favorite: ['+886', 'TW'],
+                              countryFilter: ['TW'],
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              showCountryOnly: true,
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
 
-                        // Mobile number text input
-                        DPTextFormField(
-                          hintText: '輸入電話號碼',
-                          onChanged: (String v) {
-                            // Enable send button when input field is not an empty string
-                            if (v != null && v.isNotEmpty) {
-                              setState(() {
-                                _disableSend = false;
-                              });
-                            } else {
-                              setState(() {
-                                _disableSend = true;
-                              });
-                            }
-                          },
+                            SizedBox(width: 2),
+
+                            // Mobile number text input
+                            Expanded(
+                              child: DPTextFormField(
+                                keyboardType: TextInputType.phone,
+                                hintText: '輸入電話號碼',
+                                controller: _mobileNumController,
+                                validator: (String v) {
+                                  // Makesure the phone number input is are all number
+                                  if (!Util.isNumeric(v)) {
+                                    return '電話號碼必須是數字';
+                                  }
+
+                                  return null;
+                                },
+                                onChanged: (String v) {
+                                  // Enable send button when input field is not an empty string
+                                  if (v != null && v.isNotEmpty) {
+                                    setState(() {
+                                      _disableSend = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      _disableSend = true;
+                                    });
+                                  }
+                                },
+                                onSaved: (String v) {
+                                  _mobileNumber = v;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-
                         SizedBox(
                           height: 46,
                         ),
+                        BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
+                          listener: (context, state) {
+                            if (state.status == AsyncLoadingStatus.done) {
+                              // Redirect to phone verify page
+                              widget.onPush(
+                                '/register/verify-register-code',
+                                VerifyRegisterCodeArguments(
+                                  dialCode: _dialCode,
+                                  mobile: _mobileNumber,
+                                  verifyChars: state.sendSMS.verifyPrefix,
+                                  uuid: widget.args.userUuid,
+                                ),
+                              );
+                            }
 
-                        DPTextButton(
-                          disabled: _disableSend,
-                          text: '寄驗證碼',
-                          onPressed: () {
-                            print('DEBUG trigger send');
+                            if (state.status == AsyncLoadingStatus.error) {
+                              print('sending sms error');
+
+                              // Display error
+                            }
                           },
-                        )
+                          child: DPTextButton(
+                            disabled: _disableSend,
+                            text: '寄驗證碼',
+                            onPressed: () {
+                              if (!_formKey.currentState.validate()) {
+                                return;
+                              }
+
+                              _formKey.currentState.save();
+
+                              BlocProvider.of<SendSmsCodeBloc>(context).add(
+                                SendSMSCode(
+                                  dialCode: _dialCode,
+                                  mobileNumber: _mobileNumber,
+                                  uuid: widget.args.userUuid,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -128,22 +206,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  /// Emit event to send SMS verify code.
-  void _handleSendSMS(models.PhoneVerifyFormModel form) {
-    setState(() {
-      _mobileNumber = form.mobileNumber;
-      _countryCode = form.countryCode;
-    });
-
-    BlocProvider.of<SendSmsCodeBloc>(context).add(
-      SendSMSCode(
-        countryCode: form.countryCode,
-        mobileNumber: form.mobileNumber,
-        uuid: form.uuid,
       ),
     );
   }

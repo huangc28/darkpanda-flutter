@@ -14,8 +14,10 @@ class SecureStore {
 
   SecureStore._internal({this.fsc});
 
-  Future<void> writeJwtToken(String jwtToken) =>
-      fsc.write(key: SecureStore.JwtTokenKey, value: jwtToken);
+  Future<void> writeJwtToken(String jwtToken) => fsc.write(
+        key: SecureStore.JwtTokenKey,
+        value: jwtToken,
+      );
 
   Future<String> readJwtToken() => fsc.read(key: SecureStore.JwtTokenKey);
 }

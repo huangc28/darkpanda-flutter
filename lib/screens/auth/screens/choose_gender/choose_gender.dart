@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
 
+import '../../screen_arguments/args.dart';
 import '../../components/step_bar_image.dart';
 
 class ChooseGender extends StatefulWidget {
   ChooseGender({
     Key key,
     this.onPush,
-  }) : super(key: key);
+  }) : super(
+          key: key,
+        );
 
-  final Function onPush;
+  final Function(String, VerifyReferralCodeArguments) onPush;
 
   @override
   _ChooseGenderState createState() => _ChooseGenderState();
@@ -105,7 +109,16 @@ class _ChooseGenderState extends State<ChooseGender> {
                   child: DPTextButton(
                     theme: DPTextButtonThemes.purple,
                     onPressed: () {
-                      widget.onPush('/register/verify-referral-code');
+                      /// if `_femaleBtnActive` is true, the user has chosen female, if not, the user has chosen male.
+                      // var _gender =
+                      //     _femaleBtnActive ? Gender.female : Gender.male;
+
+                      var _gender = _femaleBtnActive ? 'female' : 'male';
+
+                      widget.onPush(
+                        '/register/verify-referral-code',
+                        VerifyReferralCodeArguments(gender: _gender),
+                      );
                     },
                     text: '下一步',
                   ),

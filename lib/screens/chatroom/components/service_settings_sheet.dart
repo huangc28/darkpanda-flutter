@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_duration_picker/flutter_duration_picker.dart';
+// import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 
 import '../../../models/service_settings.dart';
 
@@ -210,15 +210,15 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
         controller: _durationController,
       ),
       onTap: () async {
-        Duration pickedDuration = await showDurationPicker(
-          context: context,
-          initialTime: _serviceSetting.duration,
-        );
+        // Duration pickedDuration = await showDurationPicker(
+        //   context: context,
+        //   initialTime: _serviceSetting.duration,
+        // );
 
-        if (pickedDuration != null) {
-          _serviceSetting.duration = pickedDuration;
-          _durationController.text = _formatDuration(_serviceSetting.duration);
-        }
+        // if (pickedDuration != null) {
+        //   _serviceSetting.duration = pickedDuration;
+        //   _durationController.text = _formatDuration(_serviceSetting.duration);
+        // }
       },
     );
   }

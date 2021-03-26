@@ -1,110 +1,185 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:pin_code_fields/pin_code_fields.dart';
+
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/auth/components/step_bar_image.dart';
+import 'package:darkpanda_flutter/components/dp_pin_put.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/app.dart';
 
 import '../../bloc/send_sms_code_bloc.dart';
 import './bloc/mobile_verify_bloc.dart';
 
 class VerifyRegisterCode extends StatefulWidget {
-  const VerifyRegisterCode({
-    this.countryCode,
-    this.mobile,
-    this.verifyChars,
-    this.uuid,
-  });
+  const VerifyRegisterCode({this.args});
 
-  final String countryCode;
-  final String mobile;
-  final String verifyChars;
-  final String uuid;
+  final VerifyRegisterCodeArguments args;
 
   @override
   _VerifyRegisterCodeState createState() => _VerifyRegisterCodeState();
 }
 
 class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
-  final TextEditingController _textEditingController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _pinCodeController = TextEditingController();
 
-  String _verifyDigs;
+  String _mobileVerifyErrStr = '';
+  String _mobileVerifyChars = '';
 
-  // StreamController<ErrorAnimationType> _errorController;
-  // @override
-  // void initState() {
-  //   super.initState();
+  @override
+  void initState() {
+    setState(() {
+      _mobileVerifyChars = widget.args.verifyChars;
+    });
 
-  // initErrorAnimationController();
-  // }
-
-  // @override
-  // void didUpdateWidget(VerifyRegisterCode oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-
-  // initErrorAnimationController();
-  // }
-
-  // @override
-  // void dispose() {
-  //   // _errorController.close();
-
-  //   super.dispose();
-  // }
-
-  /// Guards multiple instantiation of stream from flutter hot reload.
-  // void initErrorAnimationController() {
-  //   if (_errorController == null || _errorController.isClosed) {
-  //     _errorController = StreamController<ErrorAnimationType>();
-  //   }
-  // }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('verify register code')),
-      body: BlocListener<MobileVerifyBloc, MobileVerifyState>(
-        listener: (BuildContext context, state) {
-          // if verify success, redirect to app index page.
-          if (state.status == MobileVerifyStatus.verified) {
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamed(
-              '/app',
-            );
-          }
-
-          if (state.status == MobileVerifyStatus.verifyFailed) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error.message),
+      appBar: AppBar(title: Text('註冊')),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              StepBarImage(
+                step: RegisterStep.StepFour,
               ),
-            );
-          }
-        },
-        child: Column(
-          children: [
-            Text('Sending to: ${widget.countryCode}${widget.mobile}'),
-            SizedBox(height: 16),
-            Padding(
-                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 10.0),
-                child: Column(
-                  children: [
-                    // PinCodeTextField(
-                    //   controller: _textEditingController,
-                    //   keyboardType: TextInputType.number,
-                    //   errorAnimationController: _errorController,
-                    //   appContext: context,
-                    //   length: 4,
-                    //   onChanged: (String value) {
-                    //     _verifyDigs = value;
-                    //   },
-                    //   onCompleted: _handleVerify,
-                    // ),
-                    // _buildResendButton(),
-                  ],
-                )),
-          ],
+              SizedBox(
+                height: 48,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '輸入你收到的驗證碼',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: 26),
+
+                      BlocListener<MobileVerifyBloc, MobileVerifyState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            setState(() {
+                              _mobileVerifyErrStr = state.error.message;
+                            });
+
+                            _formKey.currentState.validate();
+                          }
+
+                          if (state.status == AsyncLoadingStatus.done) {
+                            /// Remove mobile verify async error string
+                            _mobileVerifyErrStr = '';
+
+                            /// Redirect to app page.
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).push(MaterialPageRoute(
+                              builder: (context) => App(),
+                            ));
+                          }
+                        },
+                        child: DPPinPut(
+                          controller: _pinCodeController,
+                          fieldsCount: 4,
+                          onSubmit: (String v) {
+                            setState(() {
+                              _mobileVerifyErrStr = '';
+                            });
+
+                            if (!_formKey.currentState.validate()) {
+                              return;
+                            }
+
+                            // Perform async validation on phone verify code.
+                            BlocProvider.of<MobileVerifyBloc>(context)
+                                .add(VerifyMobile(
+                              verifyChars: _mobileVerifyChars,
+                              verifyDigs: v,
+                              uuid: widget.args.uuid,
+                              mobileNumber:
+                                  '${widget.args.dialCode}${widget.args.mobile}',
+                            ));
+                          },
+                          validator: (String v) {
+                            if (v.trim().isEmpty) {
+                              return 'verify code can not be empty';
+                            }
+
+                            if (!Util.isNumeric(v)) {
+                              return 'verify code must be numeric';
+                            }
+
+                            if (!_mobileVerifyErrStr.isEmpty) {
+                              return _mobileVerifyErrStr;
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      SizedBox(
+                        height: 46,
+                      ),
+
+                      /// Resend validation code
+                      BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _mobileVerifyChars = state.sendSMS.verifyPrefix;
+                            });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '沒有收到驗證碼？',
+                              style: TextStyle(
+                                fontSize: 15,
+                                letterSpacing: 0.47,
+                                color: Color.fromRGBO(106, 109, 137, 1),
+                              ),
+                            ),
+                            BlocBuilder<SendSmsCodeBloc, SendSmsCodeState>(
+                                builder: (BuildContext builder, state) {
+                              if (state.status == AsyncLoadingStatus.loading) {
+                                return Text(
+                                  '重寄中',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    letterSpacing: 0.5,
+                                  ),
+                                );
+                              }
+                              return _buildResendButton();
+                            }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -114,15 +189,29 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
   Widget _buildResendButton() => BlocBuilder<TimerBloc, TimerState>(
           builder: (BuildContext context, state) {
         final ResendButtonText = state.status == TimerStatus.progressing
-            ? Text('Resend(${state.duration})')
-            : Text('Resend');
+            ? Text(
+                '重寄請稍等 (${state.duration})',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                ),
+              )
+            : Text(
+                '重寄驗證碼',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                ),
+              );
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FlatButton(
+            GestureDetector(
               child: ResendButtonText,
-              onPressed: state.status == TimerStatus.progressing
+              onTap: state.status == TimerStatus.progressing
                   ? null
                   : _handleResend,
             ),
@@ -133,28 +222,28 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
   void _handleResend() {
     BlocProvider.of<SendSmsCodeBloc>(context).add(
       SendSMSCode(
-        countryCode: widget.countryCode,
-        mobileNumber: widget.mobile,
-        uuid: widget.uuid,
+        dialCode: widget.args.dialCode,
+        mobileNumber: widget.args.mobile,
+        uuid: widget.args.uuid,
       ),
     );
   }
 
-  void _handleVerify(String value) {
-    if (Util.isNumeric(_verifyDigs)) {
-      BlocProvider.of<MobileVerifyBloc>(context).add(
-        VerifyMobile(
-          mobileNumber: '${widget.countryCode}${widget.mobile}',
-          verifyChars: widget.verifyChars,
-          verifyDigs: _verifyDigs,
-          uuid: widget.uuid,
-        ),
-      );
+  // void _handleVerify(String value) {
+  //   if (Util.isNumeric(_verifyDigs)) {
+  //     BlocProvider.of<MobileVerifyBloc>(context).add(
+  //       VerifyMobile(
+  //         mobileNumber: '${widget.args.dialCode}${widget.args.mobile}',
+  //         verifyChars: widget.args.verifyChars,
+  //         verifyDigs: _verifyDigs,
+  //         uuid: widget.args.uuid,
+  //       ),
+  //     );
 
-      _textEditingController.clear();
-    } else {
-      // _errorController.add(ErrorAnimationType.shake);
-      _textEditingController.clear();
-    }
-  }
+  //     _textEditingController.clear();
+  //   } else {
+  //     // _errorController.add(ErrorAnimationType.shake);
+  //     _textEditingController.clear();
+  //   }
+  // }
 }

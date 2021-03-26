@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:country_code_picker/country_localizations.dart';
 
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
 
 import 'package:darkpanda_flutter/screens/auth/screens/register/bloc/register_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/screens/register/services/repository.dart';
+import 'package:darkpanda_flutter/screens/auth/screens/register/services/register_api_client.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
@@ -68,7 +70,7 @@ class DarkPandaApp extends StatelessWidget {
           providers: [
             BlocProvider(
               create: (context) => RegisterBloc(
-                RegisterRepository(),
+                registerAPI: RegisterAPIClient(),
               ),
             ),
             BlocProvider(
@@ -123,6 +125,17 @@ class DarkPandaApp extends StatelessWidget {
           child: SecureStoreProvider(
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
+              supportedLocales: [
+                Locale.fromSubtags(languageCode: 'zh'),
+              ],
+
+              /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
+              localizationsDelegates: [
+                GlobalCupertinoLocalizations.delegate,
+                CountryLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
               theme: ThemeManager.getTheme(),
               initialRoute: MainRoutes.login,
               onGenerateRoute: (settings) {

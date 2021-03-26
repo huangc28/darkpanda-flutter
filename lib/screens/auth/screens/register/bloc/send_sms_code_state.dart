@@ -1,16 +1,9 @@
 part of 'send_sms_code_bloc.dart';
 
-enum SendSMSStatus {
-  initial,
-  sending,
-  sendFailed,
-  sendSuccess,
-}
-
 class SendSmsCodeState<E extends AppBaseException> extends Equatable {
   final E error;
   final models.SendSMS sendSMS;
-  final SendSMSStatus status;
+  final AsyncLoadingStatus status;
   final int numSend;
 
   const SendSmsCodeState._({
@@ -22,7 +15,7 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
 
   SendSmsCodeState.initial(int numSend)
       : this._(
-          status: SendSMSStatus.initial,
+          status: AsyncLoadingStatus.initial,
           error: null,
           numSend: numSend,
           sendSMS: null,
@@ -30,7 +23,7 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
 
   SendSmsCodeState.sending(SendSmsCodeState m)
       : this._(
-          status: SendSMSStatus.sending,
+          status: AsyncLoadingStatus.loading,
           error: m.error,
           numSend: m.numSend,
           sendSMS: m.sendSMS,
@@ -38,7 +31,7 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
 
   SendSmsCodeState.sendFailed(SendSmsCodeState m)
       : this._(
-          status: SendSMSStatus.sendFailed,
+          status: AsyncLoadingStatus.error,
           error: m.error,
           numSend: m.numSend,
           sendSMS: m.sendSMS,
@@ -46,7 +39,7 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
 
   SendSmsCodeState.sendSuccess(SendSmsCodeState m)
       : this._(
-          status: SendSMSStatus.sendSuccess,
+          status: AsyncLoadingStatus.done,
           error: m.error,
           sendSMS: m.sendSMS,
           numSend: m.numSend,

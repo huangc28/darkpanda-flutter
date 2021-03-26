@@ -12,7 +12,11 @@ class TimerState extends Equatable {
 
   const TimerState._({this.duration, this.status});
 
-  const TimerState.ready() : this._(duration: 30, status: TimerStatus.ready);
+  const TimerState.ready()
+      : this._(
+          duration: 30,
+          status: TimerStatus.ready,
+        );
 
   const TimerState.updateTimer({int duration})
       : this._(

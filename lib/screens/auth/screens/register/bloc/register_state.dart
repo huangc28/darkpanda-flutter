@@ -8,7 +8,7 @@ enum RegisterStatus {
 }
 
 class RegisterState<E extends AppBaseException> extends Equatable {
-  final RegisterStatus status;
+  final AsyncLoadingStatus status;
   final E error;
   final RegisteredUser user;
 
@@ -19,28 +19,31 @@ class RegisterState<E extends AppBaseException> extends Equatable {
   });
 
   /// Bloc yields following states
-  const RegisterState.unknown()
+  const RegisterState.initial()
       : this._(
-          status: RegisterStatus.unknown,
+          status: AsyncLoadingStatus.initial,
         );
 
-  const RegisterState.registering()
+  const RegisterState.loading()
       : this._(
-          status: RegisterStatus.registering,
+          status: AsyncLoadingStatus.loading,
         );
 
-  const RegisterState.registerFailed(E err)
+  const RegisterState.error(E err)
       : this._(
-          status: RegisterStatus.registerFailed,
+          status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const RegisterState.registered(RegisteredUser user)
+  const RegisterState.done(RegisteredUser user)
       : this._(
-          status: RegisterStatus.registered,
+          status: AsyncLoadingStatus.done,
           user: user,
         );
 
   @override
-  List<Object> get props => [status, user];
+  List<Object> get props => [
+        status,
+        user,
+      ];
 }

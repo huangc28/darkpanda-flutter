@@ -4,9 +4,12 @@ import 'package:pinput/pin_put/pin_put.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
 
 import './bloc/verify_referral_code_bloc.dart';
+import '../register/bloc/register_bloc.dart';
 
 import '../../components/step_bar_image.dart';
 
@@ -14,9 +17,11 @@ class VerifyReferralCode extends StatefulWidget {
   const VerifyReferralCode({
     Key key,
     this.onPush,
+    this.args,
   }) : super(key: key);
 
-  final ValueChanged<String> onPush;
+  final Function(String, SendRegisterVerifyCodeArguments) onPush;
+  final VerifyReferralCodeArguments args;
 
   @override
   _VerifyReferralCodeState createState() => _VerifyReferralCodeState();
@@ -39,11 +44,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration pinputDecoration = BoxDecoration(
-      color: Color.fromRGBO(255, 255, 255, 0.1),
-      borderRadius: BorderRadius.circular(8),
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: Text('註冊'),
@@ -64,102 +64,104 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
               SizedBox(height: 46),
               // Pin code input field
               Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '輸入你的推薦碼',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(height: 26),
+                      DPPinPut(
+                        onSubmit: (String pin) => handleSubmit(context, pin),
+                        onSaved: (String v) {
+                          _referralCode = v;
+                        },
+                        validator: (String v) {
+                          if (v.trim().isEmpty) {
+                            return 'verify code can not be empty';
+                          }
+
+                          if (v.trim().length < 6) {
+                            return 'please complete verify code';
+                          }
+
+                          if (_verifyRefCodeErrStr != null &&
+                              !_verifyRefCodeErrStr.isEmpty) {
+                            return _verifyRefCodeErrStr;
+                          }
+
+                          return null;
+                        },
+                        controller: _pinCodeController,
+                        fieldsCount: 6,
+                      ),
+                      SizedBox(height: 46),
+                      Text(
+                        '建立你的用戶名',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+
+                      SizedBox(height: 26),
+
+                      // Username input
+                      DPTextFormField(
+                        controller: _usernameControler,
+                        onSaved: (String v) {
+                          _username = v;
+                        },
+                        validator: (String v) {
+                          if (v.trim().isEmpty) {
+                            return 'username can not be empty';
+                          }
+
+                          // If username does not pass async validation,
+                          // display error message
+                          if (_verifyUsernameErrStr != null &&
+                              !_verifyUsernameErrStr.isEmpty) {
+                            return _verifyUsernameErrStr;
+                          }
+
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '輸入你的推薦碼',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 26),
-                        PinPut(
-                          inputDecoration: InputDecoration(
-                            errorStyle: TextStyle(
-                              fontSize: 15,
-                              letterSpacing: 0.47,
-                            ),
-                            focusedErrorBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                          ),
-                          onSubmit: (String pin) => handleSubmit(context, pin),
-                          onSaved: (String v) {
-                            _referralCode = v;
-                          },
-                          validator: (String v) {
-                            if (v.trim().isEmpty) {
-                              return 'verify code can not be empty';
-                            }
-
-                            if (v.trim().length < 6) {
-                              return 'please complete verify code';
-                            }
-
-                            if (_verifyRefCodeErrStr != null &&
-                                !_verifyRefCodeErrStr.isEmpty) {
-                              return _verifyRefCodeErrStr;
-                            }
-
-                            return null;
-                          },
-                          controller: _pinCodeController,
-                          keyboardType: TextInputType.number,
-                          fieldsCount: 6,
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                          ),
-                          submittedFieldDecoration: pinputDecoration,
-                          selectedFieldDecoration: pinputDecoration,
-                          followingFieldDecoration: pinputDecoration,
-                          eachFieldWidth: 50,
-                          eachFieldHeight: 57,
-                        ),
-                        SizedBox(height: 46),
-                        Text(
-                          '建立你的用戶名',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-
-                        SizedBox(height: 26),
-
-                        // Username input
-                        DPTextFormField(
-                          controller: _usernameControler,
-                          onSaved: (String v) {
-                            _username = v;
-                          },
-                          validator: (String v) {
-                            if (v.trim().isEmpty) {
-                              return 'username can not be empty';
-                            }
-
-                            // If username does not pass async validation,
-                            // display error message
-                            if (_verifyUsernameErrStr != null &&
-                                !_verifyUsernameErrStr.isEmpty) {
-                              return _verifyUsernameErrStr;
-                            }
-
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  )),
+                ),
+              ),
 
               MultiBlocListener(
                 listeners: [
+                  BlocListener<RegisterBloc, RegisterState>(
+                    listener: (context, state) {
+                      // If register successfully, we redirect to send register verify code
+                      if (state.status == AsyncLoadingStatus.done) {
+                        // state.user.uuid
+                        widget.onPush(
+                          '/register/send-verify-code',
+                          SendRegisterVerifyCodeArguments(
+                            username: _username,
+                            userUuid: state.user.uuid,
+                          ),
+                        );
+                      }
+
+                      if (state.status == AsyncLoadingStatus.error) {
+                        print('registering error!');
+                      }
+                    },
+                  ),
                   BlocListener<VerifyReferralCodeBloc, VerifyReferralCodeState>(
                       listener: (context, state) {
                     if (state.status == AsyncLoadingStatus.error) {
@@ -182,8 +184,15 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
 
                       _formKey.currentState.save();
 
-                      // Let's redirect to phone verify page
-                      widget.onPush('/register/send-verify-code');
+                      // If verify code and and username are all valid,
+                      // register a new user.
+                      BlocProvider.of<RegisterBloc>(context).add(
+                        Register(
+                          username: _username,
+                          gender: widget.args.gender,
+                          referalcode: _referralCode,
+                        ),
+                      );
                     }
                   }),
                 ],
@@ -193,6 +202,12 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                     child: DPTextButton(
                       theme: DPTextButtonThemes.purple,
                       onPressed: () {
+                        /// Reset async error before performing validation
+                        setState(() {
+                          _verifyRefCodeErrStr = '';
+                          _verifyUsernameErrStr = '';
+                        });
+
                         /// verify pin code input and username synchronously
                         if (!_formKey.currentState.validate()) {
                           return null;

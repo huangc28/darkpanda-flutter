@@ -9,7 +9,7 @@ class VerifyRegisterCodeAPIs extends BaseClient {
   }) async {
     final request = http.Request(
       'POST',
-      buildUri('/v1/verify-phone', {
+      buildUri('/v1/register/verify-mobile', {
         'mobile': mobile,
         'uuid': uuid,
         'verify_code': verifyCode,

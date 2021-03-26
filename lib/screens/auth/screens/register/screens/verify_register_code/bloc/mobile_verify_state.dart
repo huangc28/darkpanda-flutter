@@ -1,54 +1,46 @@
 part of 'mobile_verify_bloc.dart';
 
-enum MobileVerifyStatus {
-  unknown,
-  verifying,
-  verifyFailed,
-  verified,
-}
-
 class MobileVerifyState<Error extends AppBaseException> extends Equatable {
-  final MobileVerifyStatus status;
+  final AsyncLoadingStatus status;
   final Error error;
   final String authToken;
 
   const MobileVerifyState._({
-    this.status: MobileVerifyStatus.unknown,
+    this.status: AsyncLoadingStatus.initial,
     this.error,
     this.authToken,
   });
 
-  const MobileVerifyState.unknown()
+  const MobileVerifyState.initial()
       : this._(
-          status: MobileVerifyStatus.unknown,
+          status: AsyncLoadingStatus.initial,
           error: null,
           authToken: null,
         );
 
-  MobileVerifyState.verifying(MobileVerifyState m)
+  MobileVerifyState.loading(MobileVerifyState m)
       : this._(
-          status: MobileVerifyStatus.verifying,
+          status: AsyncLoadingStatus.loading,
           error: null,
           authToken: m.authToken,
         );
 
-  MobileVerifyState.verifyFailed(MobileVerifyState m)
+  MobileVerifyState.error(MobileVerifyState m)
       : this._(
-          status: MobileVerifyStatus.verifyFailed,
+          status: AsyncLoadingStatus.error,
           error: m.error,
           authToken: m.authToken,
         );
 
-  MobileVerifyState.verified(MobileVerifyState state)
+  MobileVerifyState.done(MobileVerifyState state)
       : this._(
-          status: MobileVerifyStatus.verified,
+          status: AsyncLoadingStatus.done,
           authToken: state.authToken,
           error: null,
         );
 
   factory MobileVerifyState.copyFrom(
     MobileVerifyState state, {
-    MobileVerifyStatus status,
     Error error,
     String authToken,
   }) {

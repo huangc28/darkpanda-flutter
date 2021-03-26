@@ -8,6 +8,7 @@ class DPTextFormField extends StatelessWidget {
     this.onSaved,
     this.onChanged,
     this.validator,
+    this.keyboardType,
   }) : super(key: key);
 
   final String hintText;
@@ -15,6 +16,7 @@ class DPTextFormField extends StatelessWidget {
   final ValueChanged<String> onSaved;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> validator;
+  final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class DPTextFormField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       onSaved: onSaved,
+      keyboardType: keyboardType,
       validator: validator,
       style: TextStyle(
         fontSize: 18,

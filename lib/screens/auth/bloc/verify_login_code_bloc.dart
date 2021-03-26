@@ -44,7 +44,7 @@ class VerifyLoginCodeBloc
     try {
       yield VerifyLoginCodeState.verifying();
 
-      final response = await authAPIClient.sendVerifyLogigCode(
+      final response = await authAPIClient.sendVerifyLoginCode(
         uuid: event.uuid,
         verifyChars: event.verifyChars,
         verifyDigs: event.verifyDigs,

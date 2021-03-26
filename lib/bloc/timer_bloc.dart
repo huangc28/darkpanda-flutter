@@ -42,6 +42,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   void _timerStart(StartTimer event) {
     // cancel timer if pre existed
     _streamSubscription?.cancel();
+
+    add(Tick(duration: event.duration));
     _streamSubscription = ticker.tick(ticks: event.duration).listen((int tick) {
       tick > 0 ? add(Tick(duration: tick)) : add(TimerComplete());
     });

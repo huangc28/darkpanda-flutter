@@ -165,19 +165,11 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: DPTextButton(
-                  theme: DPTextButtonThemes.purple,
-                  onPressed: () {
-                    widget.onPush('/register/choose-gender');
-                  },
-                  child: Text(
-                    '我同意',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                    theme: DPTextButtonThemes.purple,
+                    onPressed: () {
+                      widget.onPush('/register/choose-gender');
+                    },
+                    text: '我同意'),
               ),
             ),
             SizedBox(height: 30),

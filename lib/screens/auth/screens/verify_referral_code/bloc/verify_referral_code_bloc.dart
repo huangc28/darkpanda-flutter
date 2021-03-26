@@ -46,7 +46,7 @@ class VerifyReferralCodeBloc
       }
 
       final verUsernameResp = await apis.verifyUsername(evt.username);
-      print('DEBUG verUsernameResp ${verUsernameResp.body}');
+
       if (verUsernameResp.statusCode != HttpStatus.ok) {
         _errorMap['username_exception'] = APIException.fromJson(
           json.decode(verUsernameResp.body),

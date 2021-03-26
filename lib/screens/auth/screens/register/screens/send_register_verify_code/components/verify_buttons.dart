@@ -41,7 +41,7 @@ class _VerifyButtonsState<Error extends AppBaseException>
               listeners: [
                 BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
                   listener: (context, state) {
-                    if (state.status == SendSMSStatus.sending) {
+                    if (state.status == AsyncLoadingStatus.loading) {
                       setState(() {
                         _enableResend = false;
                       });

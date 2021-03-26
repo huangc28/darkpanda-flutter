@@ -26,7 +26,7 @@ class AuthAPIClient extends BaseClient {
     }
   }
 
-  Future<http.Response> sendVerifyLogigCode({
+  Future<http.Response> sendVerifyLoginCode({
     String uuid,
     String verifyChars,
     String verifyDigs,

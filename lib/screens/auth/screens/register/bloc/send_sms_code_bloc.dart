@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/pkg/fibonacci.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../screens/send_register_verify_code/services/data_provider.dart';
 import '../screens/send_register_verify_code/models/models.dart' as models;
@@ -40,7 +41,7 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
       );
 
       final resp = await dataProvider.sendVerifyCode(
-        countryCode: event.countryCode,
+        countryCode: event.dialCode,
         mobileNumber: event.mobileNumber,
         uuid: event.uuid,
       );
@@ -61,9 +62,11 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
 
       // If user intends to resend for more than 2 times, we start locking
       // the resend button for a fixed time range.
-      timerBloc.add(StartTimer(
-        duration: Fib.genFib(currNumSend) * Duration.secondsPerMinute,
-      ));
+      timerBloc.add(
+        StartTimer(
+          duration: Fib.genFib(currNumSend) * Duration.secondsPerMinute,
+        ),
+      );
     } on APIException catch (e) {
       yield SendSmsCodeState.sendFailed(SendSmsCodeState.copyFrom(
         state,

@@ -8,12 +8,12 @@ abstract class SendSmsCodeEvent extends Equatable {
 }
 
 class SendSMSCode extends SendSmsCodeEvent {
-  final String countryCode;
+  final String dialCode;
   final String mobileNumber;
   final String uuid;
 
   SendSMSCode({
-    this.countryCode,
+    this.dialCode,
     this.mobileNumber,
     this.uuid,
   });

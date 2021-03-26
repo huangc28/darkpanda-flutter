@@ -39,13 +39,11 @@ class DPTextButton extends StatefulWidget {
     this.theme = DPTextButtonThemes.pink,
     this.disabled = false,
     this.text = '',
-    this.child,
     @required this.onPressed,
   }) : super(key: key);
 
   final bool disabled;
   final DPTextButtonThemes theme;
-  final Widget child;
   final Function onPressed;
   final String text;
 
@@ -59,8 +57,6 @@ class _DPTextButtonState extends State<DPTextButton> {
     var chosenTheme = widget.disabled
         ? themes[DPTextButtonThemes.disable]
         : themes[widget.theme];
-
-    print('DEBUG chosenTheme ${chosenTheme.backgroundColor}');
 
     return TextButton(
       onPressed: widget.disabled ? null : widget.onPressed,
