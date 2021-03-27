@@ -9,7 +9,8 @@ import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/app.dart';
 
-import '../../bloc/send_sms_code_bloc.dart';
+import 'package:darkpanda_flutter/screens/auth/bloc/send_sms_code_bloc.dart';
+
 import './bloc/mobile_verify_bloc.dart';
 
 class VerifyRegisterCode extends StatefulWidget {
