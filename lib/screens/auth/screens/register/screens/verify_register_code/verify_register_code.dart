@@ -228,22 +228,4 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
       ),
     );
   }
-
-  // void _handleVerify(String value) {
-  //   if (Util.isNumeric(_verifyDigs)) {
-  //     BlocProvider.of<MobileVerifyBloc>(context).add(
-  //       VerifyMobile(
-  //         mobileNumber: '${widget.args.dialCode}${widget.args.mobile}',
-  //         verifyChars: widget.args.verifyChars,
-  //         verifyDigs: _verifyDigs,
-  //         uuid: widget.args.uuid,
-  //       ),
-  //     );
-
-  //     _textEditingController.clear();
-  //   } else {
-  //     // _errorController.add(ErrorAnimationType.shake);
-  //     _textEditingController.clear();
-  //   }
-  // }
 }

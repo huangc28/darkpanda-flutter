@@ -25,4 +25,33 @@ class LoginAPIClient extends BaseClient {
       );
     }
   }
+
+  Future<http.Response> verifyLoginCode({
+    String uuid,
+    String verifyChars,
+    String verifyDigs,
+    String mobile,
+  }) async {
+    try {
+      final request = http.Request(
+          'POST',
+          buildUri(
+            '/v1/verify-login-code',
+            {
+              'uuid': uuid,
+              'mobile': mobile,
+              'verify_char': verifyChars,
+              'verify_dig': verifyDigs,
+            },
+          ));
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
 }

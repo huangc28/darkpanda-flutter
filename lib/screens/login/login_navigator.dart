@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+
 import './bloc/send_login_verify_code_bloc.dart';
+import './bloc/verify_login_code_bloc.dart';
 import './services/login_api_client.dart';
 import './screens/login/login.dart';
 import './screens/verify_login_pin/verify_login_code.dart';
+import './screen_arguments/args.dart';
 
 class LoginNavigator extends StatefulWidget {
   LoginNavigator({Key key}) : super(key: key);
@@ -16,15 +21,40 @@ class LoginNavigator extends StatefulWidget {
 class LoginNavigatorState extends State<LoginNavigator> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  Map<String, WidgetBuilder> _routeBuilder() {
+  void _push(BuildContext context, String routeName, [Object args]) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => _routeBuilder(args)[routeName](context),
+      ),
+    );
+  }
+
+  Map<String, WidgetBuilder> _routeBuilder([Object args]) {
     return {
       '/': (context) => BlocProvider(
             create: (context) => SendLoginVerifyCodeBloc(
               authApiClient: LoginAPIClient(),
             ),
-            child: Login(),
+            child: Login(
+              onPush: (String routeName, VerifyLoginPinArguments args) =>
+                  _push(context, routeName, args),
+            ),
           ),
-      '/login/verify-login-ping': (context) => VerifyLoginCode(),
+      '/login/verify-login-ping': (context) {
+        final screenArgs = args as VerifyLoginPinArguments;
+
+        return BlocProvider(
+          create: (context) => VerifyLoginCodeBloc(
+            loginAPIClient: LoginAPIClient(),
+            userApis: UserApis(),
+            authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+          ),
+          child: VerifyLoginCode(
+            args: screenArgs,
+          ),
+        );
+      },
     };
   }
 

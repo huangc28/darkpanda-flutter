@@ -10,7 +10,7 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 
-import '../services/auth_api_client.dart';
+import '../services/login_api_client.dart';
 
 part 'verify_login_code_event.dart';
 part 'verify_login_code_state.dart';
@@ -18,15 +18,15 @@ part 'verify_login_code_state.dart';
 class VerifyLoginCodeBloc
     extends Bloc<VerifyLoginCodeEvent, VerifyLoginCodeState> {
   VerifyLoginCodeBloc({
-    this.authAPIClient,
+    this.loginAPIClient,
     this.userApis,
     this.authUserBloc,
-  })  : assert(authAPIClient != null),
+  })  : assert(loginAPIClient != null),
         assert(userApis != null),
         assert(authUserBloc != null),
         super(VerifyLoginCodeState.initial());
 
-  final AuthAPIClient authAPIClient;
+  final LoginAPIClient loginAPIClient;
   final UserApis userApis;
   final AuthUserBloc authUserBloc;
 
@@ -44,12 +44,14 @@ class VerifyLoginCodeBloc
     try {
       yield VerifyLoginCodeState.verifying();
 
-      final response = await authAPIClient.sendVerifyLoginCode(
+      final response = await loginAPIClient.verifyLoginCode(
         uuid: event.uuid,
         verifyChars: event.verifyChars,
         verifyDigs: event.verifyDigs,
         mobile: event.mobile,
       );
+
+      print('DEBUG respMap ${response.body}');
 
       if (response.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 enum DPTextButtonThemes {
   pink,
@@ -39,6 +40,7 @@ class DPTextButton extends StatefulWidget {
     this.theme = DPTextButtonThemes.pink,
     this.disabled = false,
     this.text = '',
+    this.loading = false,
     @required this.onPressed,
   }) : super(key: key);
 
@@ -46,12 +48,34 @@ class DPTextButton extends StatefulWidget {
   final DPTextButtonThemes theme;
   final Function onPressed;
   final String text;
+  final bool loading;
 
   @override
   _DPTextButtonState createState() => _DPTextButtonState();
 }
 
 class _DPTextButtonState extends State<DPTextButton> {
+  Widget _buildText() {
+    return Text(
+      widget.text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 16,
+        color:
+            widget.disabled ? Color.fromRGBO(106, 109, 137, 1) : Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildSpinner() {
+    return Container(
+        height: 30.0,
+        child: SpinKitCircle(
+          color: Colors.white,
+          size: 30,
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     var chosenTheme = widget.disabled
@@ -62,16 +86,7 @@ class _DPTextButtonState extends State<DPTextButton> {
       onPressed: widget.disabled ? null : widget.onPressed,
       child: SizedBox(
         width: double.infinity,
-        child: Text(
-          widget.text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: widget.disabled
-                ? Color.fromRGBO(106, 109, 137, 1)
-                : Colors.white,
-          ),
-        ),
+        child: widget.loading == false ? _buildText() : _buildSpinner(),
       ),
       style: ButtonStyle(
         textStyle: MaterialStateProperty.all<TextStyle>(

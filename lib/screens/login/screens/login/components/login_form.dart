@@ -1,22 +1,34 @@
-import 'package:flutter/material.dart';
-
-import 'package:darkpanda_flutter/components/dp_button.dart';
+part of '../login.dart';
 
 class LoginForm extends StatefulWidget {
   LoginForm({
     Key key,
+    this.formKey,
+    this.loading = false,
     @required this.onLogin,
   }) : super(key: key);
 
   final ValueChanged<String> onLogin;
+  final GlobalKey<FormState> formKey;
+  final bool loading;
 
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _username;
+  String _asyncUsernameErrStr = '';
+
+  @override
+  void initState() {
+    if (widget.formKey != null) {
+      _formKey = widget.formKey;
+    }
+
+    super.initState();
+  }
 
   Widget _buildForm() {
     return Form(
@@ -24,34 +36,42 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextFormField(
-            validator: (String v) {
-              // Username can not be empty
-              if (v.trim().isEmpty) {
-                return 'username is required';
-              }
-
-              return null;
-            },
-            onSaved: (String v) {
-              _username = v;
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(28.0)),
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                ),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-              hintText: '請輸入您的用戶名',
-            ),
-          ),
           SizedBox(
-            height: 26,
-          ),
+              height: 112,
+              child: BlocListener<SendLoginVerifyCodeBloc,
+                  SendLoginVerifyCodeState>(
+                listener: (context, state) {
+                  if (state.status == AsyncLoadingStatus.error) {
+                    setState(() {
+                      _asyncUsernameErrStr = state.error.message;
+                    });
+
+                    _formKey.currentState.validate();
+                  }
+                },
+                child: DPTextFormField(
+                  validator: (String v) {
+                    // Username can not be empty
+                    if (v.trim().isEmpty) {
+                      return 'username is required';
+                    }
+
+                    if (_asyncUsernameErrStr != null &&
+                        _asyncUsernameErrStr.isNotEmpty) {
+                      return _asyncUsernameErrStr;
+                    }
+
+                    return null;
+                  },
+                  onSaved: (String v) {
+                    _username = v;
+                  },
+                  hintText: '請輸入您的用戶名',
+                  theme: DPTextFieldThemes.white,
+                ),
+              )),
           DPTextButton(
+            loading: widget.loading,
             text: '登錄',
             onPressed: _submit,
           )
@@ -88,6 +108,10 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _submit() {
+    setState(() {
+      _asyncUsernameErrStr = '';
+    });
+
     if (!_formKey.currentState.validate()) {
       return;
     }

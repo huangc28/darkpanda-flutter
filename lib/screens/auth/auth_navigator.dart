@@ -109,20 +109,6 @@ class AuthNavigatorState extends State<AuthNavigator> {
               args: screenArgs,
             ));
       },
-
-      // '/register/verify-register-code': (context) => BlocProvider(
-      //       create: (context) => MobileVerifyBloc(
-      //         dataProvider: VerifyRegisterCodeAPIs(),
-      //         authUserBloc: BlocProvider.of<AuthUserBloc>(context),
-      //         userApis: UserApis(),
-      //       ),
-      //       child: VerifyRegisterCode(
-      //         countryCode: args['country_code'],
-      //         mobile: args['mobile'],
-      //         verifyChars: args['verify_chars'],
-      //         uuid: args['uuid'],
-      //       ),
-      //     ),
     };
   }
 

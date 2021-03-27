@@ -3,21 +3,31 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/auth/auth_navigator.dart';
-
-import 'components/login_form.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../../bloc/send_login_verify_code_bloc.dart';
+import '../../screen_arguments/args.dart';
+
+part 'components/login_form.dart';
 
 // @ref SystemUiOverlayStyle setting is referenced from:
 //   - https://api.flutter.dev/flutter/services/SystemChrome/setSystemUIOverlayStyle.html
 //   - https://www.youtube.com/watch?v=PqZgkU_SZAE&ab_channel=LirsTechTips
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({
     this.onPush,
   });
 
-  final ValueChanged<String> onPush;
+  final Function(String, VerifyLoginPinArguments) onPush;
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget _buildLogoImage() {
     return Row(
@@ -65,15 +75,31 @@ class Login extends StatelessWidget {
               SizedBox(height: 60),
               BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
                 listener: (context, state) {
-                  if (state.status == SendLoginVerifyCodeStatus.sendFailed) {
-                    print('send failed ${state.error.message}');
+                  if (state.status == AsyncLoadingStatus.done) {
+                    widget.onPush(
+                      '/login/verify-login-ping',
+                      VerifyLoginPinArguments(
+                        verifyPrefix: state.verifyChar,
+                        uuid: state.uuid,
+                        mobile: state.mobile,
+                      ),
+                    );
                   }
                 },
-                child: LoginForm(
-                  onLogin: (String username) {
-                    // send login verify code
-                    BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
-                      SendLoginVerifyCode(username: username),
+                child: BlocBuilder<SendLoginVerifyCodeBloc,
+                    SendLoginVerifyCodeState>(
+                  builder: (context, state) {
+                    return LoginForm(
+                      loading: state.status == AsyncLoadingStatus.loading,
+                      formKey: _formKey,
+                      onLogin: (String username) {
+                        // send login verify code
+                        BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
+                          SendLoginVerifyCode(
+                            username: username,
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

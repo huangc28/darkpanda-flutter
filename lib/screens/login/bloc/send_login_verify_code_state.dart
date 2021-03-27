@@ -1,14 +1,7 @@
 part of 'send_login_verify_code_bloc.dart';
 
-enum SendLoginVerifyCodeStatus {
-  initial,
-  sending,
-  sendFailed,
-  sendSuccess,
-}
-
 class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
-  final SendLoginVerifyCodeStatus status;
+  final AsyncLoadingStatus status;
 
   /// Verify code prefix
   final String verifyChar;
@@ -26,18 +19,18 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
 
   const SendLoginVerifyCodeState.initial()
       : this._(
-          status: SendLoginVerifyCodeStatus.initial,
+          status: AsyncLoadingStatus.initial,
         );
 
   const SendLoginVerifyCodeState.sending()
       : this._(
-          status: SendLoginVerifyCodeStatus.sending,
+          status: AsyncLoadingStatus.loading,
         );
 
   const SendLoginVerifyCodeState.sendFailed({
     E error,
   }) : this._(
-          status: SendLoginVerifyCodeStatus.sendFailed,
+          status: AsyncLoadingStatus.error,
           error: error,
         );
 
@@ -47,7 +40,7 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
     @required String uuid,
     @required String mobile,
   }) : this._(
-          status: SendLoginVerifyCodeStatus.sendSuccess,
+          status: AsyncLoadingStatus.done,
           verifyChar: verifyChar,
           uuid: uuid,
           mobile: mobile,

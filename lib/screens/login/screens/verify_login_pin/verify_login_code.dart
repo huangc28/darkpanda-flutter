@@ -4,8 +4,10 @@ import 'package:pinput/pin_put/pin_put.dart';
 
 import 'package:darkpanda_flutter/app.dart';
 import 'package:darkpanda_flutter/screens/auth/services/util.dart';
+import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 
-import '../../bloc/send_login_verify_code_bloc.dart';
+import '../../bloc/verify_login_code_bloc.dart';
+import '../../screen_arguments/args.dart';
 
 // @TODO
 //   - Assert that all numbers submitted are numeric.
@@ -14,16 +16,19 @@ import '../../bloc/send_login_verify_code_bloc.dart';
 //     Add an bloc listener to subscribe to verify result from the server.
 //     Error shaking behavior would be triggered based on the result.
 class VerifyLoginCode extends StatefulWidget {
-  const VerifyLoginCode();
+  const VerifyLoginCode({
+    this.args,
+  });
+
+  final VerifyLoginPinArguments args;
 
   @override
   _VerifyLoginCodeState createState() => _VerifyLoginCodeState();
 }
 
 class _VerifyLoginCodeState extends State<VerifyLoginCode> {
-  String _inputVerifyCode;
-
-  // StreamController<ErrorAnimationType> errorController;
+  final TextEditingController _pinCodeController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool hasError = false;
 
@@ -54,17 +59,18 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   }
 
   handleSubmit(BuildContext context, String pin) {
-    // final sState = BlocProvider.of<SendLoginVerifyCodeBloc>(context).state;
+    print(
+        'DEBUG trigger submit ${widget.args.mobile} ${widget.args.uuid} ${widget.args.verifyPrefix} ${pin}');
 
     // emit verify login code event
-    // BlocProvider.of<VerifyLoginCodeBloc>(context).add(
-    //   SendVerifyLoginCode(
-    //     mobile: sState.mobile,
-    //     uuid: sState.uuid,
-    //     verifyChars: sState.verifyChar,
-    //     verifyDigs: pin,
-    //   ),
-    // );
+    BlocProvider.of<VerifyLoginCodeBloc>(context).add(
+      SendVerifyLoginCode(
+        mobile: widget.args.mobile,
+        uuid: widget.args.uuid,
+        verifyChars: widget.args.verifyPrefix,
+        verifyDigs: pin,
+      ),
+    );
 
     // If login success redirect to app.
     // Navigator.of(
@@ -78,11 +84,6 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   }
 
   Widget _buildVerifyCodeForm(BuildContext context) {
-    final BoxDecoration pinputDecoration = BoxDecoration(
-      color: Color.fromRGBO(255, 255, 255, 0.1),
-      borderRadius: BorderRadius.circular(8),
-    );
-
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -102,28 +103,33 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                 ),
               ),
 
-              // verify code input
               Container(
                 margin: EdgeInsets.only(top: 26),
-                child: PinPut(
-                  onSubmit: (String pin) => handleSubmit(context, pin),
-                  keyboardType: TextInputType.number,
-                  fieldsCount: 4,
-                  textStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
+                child: Form(
+                  key: _formKey,
+                  child: DPPinPut(
+                    controller: _pinCodeController,
+                    onSubmit: (String pin) => handleSubmit(context, pin),
+                    fieldsCount: 4,
+                    validator: (String v) {
+                      if (v.isEmpty) {
+                        return 'pin code can not be empty';
+                      }
+
+                      if (!Util.isNumeric(v)) {
+                        return 'pin code must be numeric number';
+                      }
+
+                      return null;
+                    },
                   ),
-                  submittedFieldDecoration: pinputDecoration,
-                  selectedFieldDecoration: pinputDecoration,
-                  followingFieldDecoration: pinputDecoration,
-                  eachFieldWidth: 50,
-                  eachFieldHeight: 57,
                 ),
               ),
+
+              // verify code input
             ],
           ),
         ),
-        // send button
       ],
     );
   }

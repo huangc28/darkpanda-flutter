@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/login_api_client.dart';
 
@@ -41,8 +42,6 @@ class SendLoginVerifyCodeBloc
       // log the error.
       final resp = await authApiClient.sendLoginVerifyCode(event.username);
 
-      print('resp ${resp.body}');
-
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(resp.body),
@@ -51,8 +50,6 @@ class SendLoginVerifyCodeBloc
 
       final authMap = json.decode(resp.body);
 
-      print('send login verify code ${authMap}');
-
       yield SendLoginVerifyCodeState.sendSuccess(
         state,
         verifyChar: authMap['verify_prefix'],
@@ -60,15 +57,11 @@ class SendLoginVerifyCodeBloc
         mobile: authMap['mobile'],
       );
     } on APIException catch (e) {
-      print('DEBUG APIException 1 ${e.message}');
-
       yield SendLoginVerifyCodeState.sendFailed(
         error: e,
       );
-    } on AppGeneralExeption catch (e) {
-      print('DEBUG APIException 2 ~~ ${e.message}');
-    } catch (e) {
-      print('DEBUG APIException 3 ~~ ${e.toString()}');
+    } on Exception catch (e) {
+      yield SendLoginVerifyCodeState.sendFailed(error: e);
     }
   }
 }
