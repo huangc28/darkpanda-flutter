@@ -59,9 +59,6 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   }
 
   handleSubmit(BuildContext context, String pin) {
-    print(
-        'DEBUG trigger submit ${widget.args.mobile} ${widget.args.uuid} ${widget.args.verifyPrefix} ${pin}');
-
     // emit verify login code event
     BlocProvider.of<VerifyLoginCodeBloc>(context).add(
       SendVerifyLoginCode(
