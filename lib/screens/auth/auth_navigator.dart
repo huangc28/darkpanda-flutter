@@ -8,7 +8,9 @@ import 'package:darkpanda_flutter/pkg/timer.dart';
 import './screens/register/screens/verify_register_code/verify_register_code.dart';
 import './screens/register/screens/verify_register_code/bloc/mobile_verify_bloc.dart';
 import './screens/register/screens/verify_register_code/services/apis.dart';
-import './screens/register/screens/send_register_verify_code/send_register_verify_code.dart';
+
+import './screens/send_register_verify_code/send_register_verify_code.dart';
+
 import './screens/register/screens/send_register_verify_code/services/data_provider.dart';
 import './screens/terms/terms.dart';
 import './screens/choose_gender/choose_gender.dart';
