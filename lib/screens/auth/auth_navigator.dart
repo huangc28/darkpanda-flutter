@@ -19,8 +19,8 @@ import './screens/verify_referral_code/verify_referral_code.dart';
 import './screens/verify_referral_code/bloc/verify_referral_code_bloc.dart';
 
 import './bloc/send_sms_code_bloc.dart';
-import './screens/register/bloc/register_bloc.dart';
-import './screens/register/services/register_api_client.dart';
+import './bloc/register_bloc.dart';
+import './services/register_api_client.dart';
 
 import './screen_arguments/args.dart';
 
