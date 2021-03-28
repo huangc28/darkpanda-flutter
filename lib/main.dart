@@ -5,12 +5,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/pkg/timer.dart';
+
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
 
-import 'package:darkpanda_flutter/screens/auth/bloc/register_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/services/register_api_client.dart';
+import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/screens/register/services/register_api_client.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';

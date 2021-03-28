@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/screens/auth/components/step_bar_image.dart';
+import 'package:darkpanda_flutter/screens/register/components/step_bar_image.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/screens/auth/services/util.dart';
-import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/register/services/util.dart';
+import 'package:darkpanda_flutter/screens/register/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
-import 'package:darkpanda_flutter/screens/auth/bloc/send_sms_code_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/screens/register/bloc/send_sms_code_bloc.dart';
+import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 
 // import '../../bloc/send_sms_code_bloc.dart';
 //  import '../../bloc';

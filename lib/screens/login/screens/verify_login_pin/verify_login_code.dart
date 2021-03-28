@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pinput/pin_put/pin_put.dart';
 
 import 'package:darkpanda_flutter/app.dart';
-import 'package:darkpanda_flutter/screens/auth/services/util.dart';
+import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
 import '../../bloc/verify_login_code_bloc.dart';
+import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
 
 // @TODO
@@ -102,23 +104,26 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
 
               Container(
                 margin: EdgeInsets.only(top: 26),
-                child: Form(
-                  key: _formKey,
-                  child: DPPinPut(
-                    controller: _pinCodeController,
-                    onSubmit: (String pin) => handleSubmit(context, pin),
-                    fieldsCount: 4,
-                    validator: (String v) {
-                      if (v.isEmpty) {
-                        return 'pin code can not be empty';
-                      }
+                child: BlocListener<VerifyLoginCodeBloc, VerifyLoginCodeState>(
+                  listener: (context, state) {},
+                  child: Form(
+                    key: _formKey,
+                    child: DPPinPut(
+                      controller: _pinCodeController,
+                      onSubmit: (String pin) => handleSubmit(context, pin),
+                      fieldsCount: 4,
+                      validator: (String v) {
+                        if (v.isEmpty) {
+                          return 'pin code can not be empty';
+                        }
 
-                      if (!Util.isNumeric(v)) {
-                        return 'pin code must be numeric number';
-                      }
+                        if (!Util.isNumeric(v)) {
+                          return 'pin code must be numeric number';
+                        }
 
-                      return null;
-                    },
+                        return null;
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -132,8 +137,34 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   }
 
   handleTriggerResend() {
-    print('trigger resend');
     // Trigger resend token API
+    BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
+      SendLoginVerifyCode(
+        username: widget.args.username,
+      ),
+    );
+  }
+
+  Widget _buildResendButton() {
+    return BlocBuilder<TimerBloc, TimerState>(
+      builder: (BuildContext context, state) {
+        return InkWell(
+          child: Text(
+            state.status == TimerStatus.progressing
+                ? '重寄請稍等 (${state.duration})'
+                : '重寄驗證碼',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              letterSpacing: 0.5,
+            ),
+          ),
+          onTap: state.status == TimerStatus.progressing
+              ? null
+              : handleTriggerResend,
+        );
+      },
+    );
   }
 
   @override
@@ -168,18 +199,47 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   SizedBox(
                     width: 17,
                   ),
-                  InkWell(
-                    child: Text(
-                      '重寄驗證碼',
-                      style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 0.47,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onTap: handleTriggerResend,
+                  BlocBuilder<SendLoginVerifyCodeBloc,
+                      SendLoginVerifyCodeState>(
+                    builder: (BuildContext, state) {
+                      if (state.status == AsyncLoadingStatus.loading) {
+                        return Text(
+                          '重寄中',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            letterSpacing: 0.5,
+                          ),
+                        );
+                      }
+
+                      return _buildResendButton();
+                    },
                   ),
                 ],
+              ),
+
+              SizedBox(
+                height: 16,
+              ),
+
+              // Resend login verify code error message.
+              Expanded(
+                child: BlocBuilder<SendLoginVerifyCodeBloc,
+                    SendLoginVerifyCodeState>(
+                  builder: (context, state) {
+                    if (state.status == AsyncLoadingStatus.error) {
+                      return Text(
+                        state.error.message,
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      );
+                    }
+
+                    return Container();
+                  },
+                ),
               ),
             ],
           ),

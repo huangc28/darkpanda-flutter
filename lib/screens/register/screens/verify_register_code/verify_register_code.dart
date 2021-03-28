@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/screens/auth/services/util.dart';
+import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
-import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
-import 'package:darkpanda_flutter/screens/auth/components/step_bar_image.dart';
+import 'package:darkpanda_flutter/screens/register/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/register/components/step_bar_image.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/app.dart';
 
-import 'package:darkpanda_flutter/screens/auth/bloc/send_sms_code_bloc.dart';
+import 'package:darkpanda_flutter/screens/register/bloc/send_sms_code_bloc.dart';
 
 import './bloc/mobile_verify_bloc.dart';
 

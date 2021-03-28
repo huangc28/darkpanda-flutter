@@ -5,8 +5,8 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/auth/screen_arguments/args.dart';
-import 'package:darkpanda_flutter/screens/auth/bloc/register_bloc.dart';
+import 'package:darkpanda_flutter/screens/register/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 
 import './bloc/verify_referral_code_bloc.dart';
 

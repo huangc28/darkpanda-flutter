@@ -9,6 +9,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
 import '../services/login_api_client.dart';
 
@@ -51,8 +52,6 @@ class VerifyLoginCodeBloc
         mobile: event.mobile,
       );
 
-      print('DEBUG respMap ${response.body}');
-
       if (response.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(response.body),
@@ -62,7 +61,7 @@ class VerifyLoginCodeBloc
       final responseMap = json.decode(response.body);
 
       // fetch auth user info
-      userApis.jwtToken = responseMap['jwt'];
+      await SecureStore().writeJwtToken(responseMap['jwt']);
       final fetchUserResp = await userApis.fetchMe();
 
       if (fetchUserResp.statusCode != HttpStatus.ok) {

@@ -8,6 +8,7 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
   final String uuid;
   final String mobile;
   final E error;
+  final int numSend;
 
   const SendLoginVerifyCodeState._({
     this.status,
@@ -15,36 +16,62 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
     this.uuid,
     this.mobile,
     this.error,
+    this.numSend,
   });
 
-  const SendLoginVerifyCodeState.initial()
+  SendLoginVerifyCodeState.initial(int numSend)
       : this._(
           status: AsyncLoadingStatus.initial,
+          numSend: numSend,
         );
 
-  const SendLoginVerifyCodeState.sending()
+  SendLoginVerifyCodeState.sending(SendLoginVerifyCodeState m)
       : this._(
           status: AsyncLoadingStatus.loading,
+          numSend: m.numSend,
         );
 
-  const SendLoginVerifyCodeState.sendFailed({
-    E error,
-  }) : this._(
+  SendLoginVerifyCodeState.sendFailed(SendLoginVerifyCodeState m)
+      : this._(
           status: AsyncLoadingStatus.error,
-          error: error,
+          error: m.error,
+          numSend: m.numSend,
         );
 
-  const SendLoginVerifyCodeState.sendSuccess(
-    SendLoginVerifyCodeState state, {
-    @required String verifyChar,
-    @required String uuid,
-    @required String mobile,
-  }) : this._(
+  SendLoginVerifyCodeState.sendSuccess(SendLoginVerifyCodeState m)
+      : this._(
           status: AsyncLoadingStatus.done,
-          verifyChar: verifyChar,
-          uuid: uuid,
-          mobile: mobile,
+          verifyChar: m.verifyChar,
+          uuid: m.uuid,
+          mobile: m.mobile,
+          numSend: m.numSend,
         );
+
+  SendLoginVerifyCodeState.resetNumSend(SendLoginVerifyCodeState m)
+      : this._(
+          status: m.status,
+          verifyChar: m.verifyChar,
+          uuid: m.uuid,
+          mobile: m.mobile,
+          numSend: 0,
+        );
+
+  factory SendLoginVerifyCodeState.copyFrom(
+    SendLoginVerifyCodeState state, {
+    String verifyChar,
+    String uuid,
+    String mobile,
+    E error,
+    int numSend,
+  }) {
+    return SendLoginVerifyCodeState._(
+      verifyChar: verifyChar ?? state.verifyChar,
+      uuid: uuid ?? state.uuid,
+      mobile: mobile ?? state.mobile,
+      error: error ?? state.error,
+      numSend: numSend ?? state.numSend,
+    );
+  }
 
   @override
   List<Object> get props => [
@@ -52,5 +79,7 @@ class SendLoginVerifyCodeState<E extends AppBaseException> extends Equatable {
         verifyChar,
         uuid,
         mobile,
+        error,
+        numSend,
       ];
 }

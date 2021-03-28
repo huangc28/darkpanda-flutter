@@ -2,7 +2,7 @@ import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:flutter/widgets.dart';
 
 import './screens/login/login_navigator.dart';
-import './screens/auth/auth_navigator.dart';
+import './screens/register/auth_navigator.dart';
 import './screens/chatroom/chatroom.dart';
 import './app.dart';
 

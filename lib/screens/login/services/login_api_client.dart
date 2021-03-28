@@ -36,7 +36,7 @@ class LoginAPIClient extends BaseClient {
       final request = http.Request(
           'POST',
           buildUri(
-            '/v1/verify-login-code',
+            '/v1/auth/verify-code',
             {
               'uuid': uuid,
               'mobile': mobile,

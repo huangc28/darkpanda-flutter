@@ -54,11 +54,13 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
       final parsedResp = models.SendSMS.fromJson(json.decode(resp.body));
 
       // convert response to model
-      yield SendSmsCodeState.sendSuccess(SendSmsCodeState.copyFrom(
-        state,
-        sendSMS: parsedResp,
-        numSend: state.numSend + 1,
-      ));
+      yield SendSmsCodeState.sendSuccess(
+        SendSmsCodeState.copyFrom(
+          state,
+          sendSMS: parsedResp,
+          numSend: currNumSend + 1,
+        ),
+      );
 
       // If user intends to resend for more than 2 times, we start locking
       // the resend button for a fixed time range.

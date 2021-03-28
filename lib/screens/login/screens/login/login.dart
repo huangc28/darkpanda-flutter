@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
-import 'package:darkpanda_flutter/screens/auth/auth_navigator.dart';
+import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../../bloc/send_login_verify_code_bloc.dart';
@@ -28,6 +28,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _username = '';
 
   Widget _buildLogoImage() {
     return Row(
@@ -75,13 +76,17 @@ class _LoginState extends State<Login> {
               SizedBox(height: 60),
               BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
                 listener: (context, state) {
-                  if (state.status == AsyncLoadingStatus.done) {
+                  // User send his / her first login verify code on login page
+                  // which means the user should have numSend equals 0.
+                  if (state.status == AsyncLoadingStatus.done &&
+                      state.numSend == 1) {
                     widget.onPush(
                       '/login/verify-login-ping',
                       VerifyLoginPinArguments(
                         verifyPrefix: state.verifyChar,
                         uuid: state.uuid,
                         mobile: state.mobile,
+                        username: _username,
                       ),
                     );
                   }
@@ -93,9 +98,13 @@ class _LoginState extends State<Login> {
                       loading: state.status == AsyncLoadingStatus.loading,
                       formKey: _formKey,
                       onLogin: (String username) {
+                        setState(() {
+                          _username = username;
+                        });
+
                         // send login verify code
                         BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
-                          SendLoginVerifyCode(
+                          SendLoginVerifyCodeResetNumSend(
                             username: username,
                           ),
                         );
