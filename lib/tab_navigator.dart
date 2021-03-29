@@ -10,7 +10,7 @@ import './screens/female/screens/service_list/routes.dart';
 final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
   TabItem.inquiryChats: InquiryChatsRoutes.root,
-  TabItem.services: ServiceRoutes.root,
+  TabItem.manage: ServiceRoutes.root,
 };
 
 class TabNavigator extends StatelessWidget {
@@ -38,7 +38,7 @@ class TabNavigator extends StatelessWidget {
       return _inquiriesRoutes.routeBuilder(context);
     } else if (tabItem == TabItem.inquiryChats) {
       return _inquiryChatsRoutes.routeBuilder(context);
-    } else if (tabItem == TabItem.services) {
+    } else if (tabItem == TabItem.manage) {
       return _servicesRoutes.routeBuilder(context);
     }
 

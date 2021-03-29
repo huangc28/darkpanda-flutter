@@ -73,13 +73,14 @@ class SendLoginVerifyCodeBloc
       final currNumSend = state.numSend;
 
       yield SendLoginVerifyCodeState.sendSuccess(
-          SendLoginVerifyCodeState.copyFrom(
-        state,
-        verifyChar: authMap['verify_prefix'],
-        uuid: authMap['uuid'],
-        mobile: authMap['mobile'],
-        numSend: currNumSend + 1,
-      ));
+        SendLoginVerifyCodeState.copyFrom(
+          state,
+          verifyChar: authMap['verify_prefix'],
+          uuid: authMap['uuid'],
+          mobile: authMap['mobile'],
+          numSend: currNumSend + 1,
+        ),
+      );
 
       // If user intends to send login verify code more than 1 times, we generate
       // cooldown countdown to throttle the resend.

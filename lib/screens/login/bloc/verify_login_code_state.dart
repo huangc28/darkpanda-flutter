@@ -8,7 +8,7 @@ enum VerifyLoginCodeStatus {
 }
 
 class VerifyLoginCodeState<E extends AppBaseException> extends Equatable {
-  final VerifyLoginCodeStatus status;
+  final AsyncLoadingStatus status;
   final E error;
 
   const VerifyLoginCodeState._({
@@ -18,23 +18,23 @@ class VerifyLoginCodeState<E extends AppBaseException> extends Equatable {
 
   const VerifyLoginCodeState.initial()
       : this._(
-          status: VerifyLoginCodeStatus.initial,
+          status: AsyncLoadingStatus.initial,
         );
 
   const VerifyLoginCodeState.verifying()
       : this._(
-          status: VerifyLoginCodeStatus.verifying,
+          status: AsyncLoadingStatus.loading,
         );
 
   const VerifyLoginCodeState.verifyFailed({E error})
       : this._(
-          status: VerifyLoginCodeStatus.verifyFailed,
+          status: AsyncLoadingStatus.error,
           error: error,
         );
 
   const VerifyLoginCodeState.verified()
       : this._(
-          status: VerifyLoginCodeStatus.verified,
+          status: AsyncLoadingStatus.done,
         );
 
   @override

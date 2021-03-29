@@ -14,7 +14,7 @@ import './tab_navigator.dart';
 Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
   TabItem.inquiries: GlobalKey<NavigatorState>(),
   TabItem.inquiryChats: GlobalKey<NavigatorState>(),
-  TabItem.services: GlobalKey<NavigatorState>(),
+  TabItem.manage: GlobalKey<NavigatorState>(),
   TabItem.profile: GlobalKey<NavigatorState>(),
 };
 
@@ -28,8 +28,8 @@ class App extends StatefulWidget {
 //   - If user has not logged in, we need to navigate user
 //   - To perform login / registration process before proceeding
 class _AppState extends State<App> {
-  TabItem _currentTab = TabItem.inquiryChats;
-  // TabItem _currentTab = TabItem.inquiries;
+  // TabItem _currentTab = TabItem.inquiryChats;
+  TabItem _currentTab = TabItem.inquiries;
 
   @override
   initState() {
@@ -81,7 +81,7 @@ class _AppState extends State<App> {
       children: [
         _buildOffstageNavigator(TabItem.inquiries),
         _buildOffstageNavigator(TabItem.inquiryChats),
-        _buildOffstageNavigator(TabItem.services),
+        _buildOffstageNavigator(TabItem.manage),
       ],
     );
   }

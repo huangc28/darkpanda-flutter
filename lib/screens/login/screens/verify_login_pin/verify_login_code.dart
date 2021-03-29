@@ -12,7 +12,6 @@ import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
 
 // @TODO
-//   - Assert that all numbers submitted are numeric.
 //   - Redirect to app index page when login success.
 //   - Shake the pin code field and notify error if failed to verify.
 //     Add an bloc listener to subscribe to verify result from the server.
@@ -32,7 +31,14 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   final TextEditingController _pinCodeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool hasError = false;
+  String _verifyPrefix = '';
+
+  @override
+  void initState() {
+    _verifyPrefix = widget.args.verifyPrefix;
+
+    super.initState();
+  }
 
   Widget _buildDescBlock() {
     return Row(
@@ -66,20 +72,10 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
       SendVerifyLoginCode(
         mobile: widget.args.mobile,
         uuid: widget.args.uuid,
-        verifyChars: widget.args.verifyPrefix,
+        verifyChars: _verifyPrefix,
         verifyDigs: pin,
       ),
     );
-
-    // If login success redirect to app.
-    // Navigator.of(
-    //   context,
-    //   rootNavigator: true,
-    // ).push(
-    //   MaterialPageRoute(
-    //     builder: (context) => App(),
-    //   ),
-    // );
   }
 
   Widget _buildVerifyCodeForm(BuildContext context) {
@@ -105,7 +101,20 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
               Container(
                 margin: EdgeInsets.only(top: 26),
                 child: BlocListener<VerifyLoginCodeBloc, VerifyLoginCodeState>(
-                  listener: (context, state) {},
+                  listener: (context, state) {
+                    // If verify success, redirect to application.
+                    if (state.status == AsyncLoadingStatus.done) {
+                      // If login success redirect to app.
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).push(
+                        MaterialPageRoute(
+                          builder: (context) => App(),
+                        ),
+                      );
+                    }
+                  },
                   child: Form(
                     key: _formKey,
                     child: DPPinPut(
@@ -128,7 +137,24 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                 ),
               ),
 
-              // verify code input
+              // Display error message of verifying login code.
+              SizedBox(
+                height: 28,
+                child: BlocBuilder<VerifyLoginCodeBloc, VerifyLoginCodeState>(
+                  builder: (context, state) {
+                    if (state.status == AsyncLoadingStatus.error) {
+                      return Text(
+                        state.error.message,
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      );
+                    }
+
+                    return Container();
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -198,6 +224,19 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   ),
                   SizedBox(
                     width: 17,
+                  ),
+                  BlocListener<SendLoginVerifyCodeBloc,
+                      SendLoginVerifyCodeState>(
+                    listener: (context, state) {
+                      // If login verify code send successfully, update the current verify prefix
+                      // to the newest one.
+                      if (state.status == AsyncLoadingStatus.done) {
+                        setState(() {
+                          _verifyPrefix = state.verifyChar;
+                        });
+                      }
+                    },
+                    child: Container(),
                   ),
                   BlocBuilder<SendLoginVerifyCodeBloc,
                       SendLoginVerifyCodeState>(

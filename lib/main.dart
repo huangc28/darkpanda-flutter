@@ -5,9 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 
-import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
-import 'package:darkpanda_flutter/pkg/timer.dart';
-
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
