@@ -27,9 +27,11 @@ class InquiriesRoutes extends BaseRoutes {
               BlocProvider(
                 create: (context) => InquiriesBloc(
                   apiClient: ApiClient(),
-                )..add(
-                    FetchInquiries(nextPage: 1),
-                  ),
+                ),
+
+                // ..add(
+                //     FetchInquiries(nextPage: 1),
+                //   ),
               ),
               BlocProvider(
                 create: (context) => PickupInquiryBloc(

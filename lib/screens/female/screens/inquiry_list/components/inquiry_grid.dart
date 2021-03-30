@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/bullet.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
 
 import '../../../models/inquiry.dart';
 
@@ -16,103 +17,97 @@ class InquiryGrid extends StatelessWidget {
   final ValueChanged<String> onTapAvatar;
   final ValueChanged<String> onTapPickup;
 
-  Widget _buildInquiryDetailBar(
-          {String serviceType, String username, double budget}) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildInquiryInfo() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 9),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            username,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+          // Inquiry details.
+          Container(
+            padding: EdgeInsets.only(
+              left: 31,
+              right: 25,
+              top: 8,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Inquirer avatar.
+                SizedBox(
+                  height: 64,
+                  width: 64,
+                  child: CircleAvatar(
+                      // backgroundImage: NetworkImage(
+                      //   'https://www.fillmurray.com/640/360',
+                      // ),
+                      ),
+                ),
+
+                SizedBox(
+                  height: 12,
+                ),
+
+                // Inquirer name
+                Text(
+                  'Brat',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 6),
-          Text('$serviceType - \$$budget'),
-        ],
-      );
 
-  Widget _buildInquiryInfo() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Inquiry details.
-        Container(
-          padding: EdgeInsets.only(
-            left: 31,
-            right: 25,
-            bottom: 7,
-          ),
-          child: Column(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Inquirer avatar.
-              SizedBox(
-                height: 59,
-                width: 59,
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    'https://via.placeholder.com/59',
-                  ),
+              Bullet(
+                '預算: 0 ~ 112 DP',
+                style: TextStyle(
+                  height: 1.3,
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
               ),
               SizedBox(height: 6),
-
-              // Inquirer name
-              Text(
-                'Brat',
+              Bullet(
+                '項目: 看電影',
                 style: TextStyle(
                   color: Colors.white,
+                  height: 1.3,
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 6),
+              Bullet(
+                '時間: 12.18 at 00:20 AM',
+                style: TextStyle(
+                  color: Colors.white,
+                  height: 1.3,
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 6),
+              Bullet(
+                '時長: 1 小時',
+                style: TextStyle(
+                  color: Colors.white,
+                  height: 1.3,
                   fontSize: 16,
                 ),
               ),
             ],
           ),
-        ),
-
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Bullet(
-              '預算: 0 ~ 112 DP',
-              style: TextStyle(
-                height: 1.3,
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            Bullet(
-              '項目: 看電影',
-              style: TextStyle(
-                color: Colors.white,
-                height: 1.3,
-                fontSize: 16,
-              ),
-            ),
-            Bullet(
-              '時間: 12.18 at 00:20 AM',
-              style: TextStyle(
-                color: Colors.white,
-                height: 1.3,
-                fontSize: 16,
-              ),
-            ),
-            Bullet(
-              '時長: 12.18 at 00:20 AM',
-              style: TextStyle(
-                color: Colors.white,
-                height: 1.3,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 
+// @Issue: https://stackoverflow.com/questions/58812778/a-borderradius-can-only-be-given-for-uniform-borders
   Widget _buildActionBar() {
     return Container(
       decoration: BoxDecoration(
@@ -123,9 +118,9 @@ class InquiryGrid extends StatelessWidget {
         ),
       ),
       child: Container(
-        padding: EdgeInsets.only(
-          top: 14,
-          left: 31,
+        padding: EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
         ),
         margin: const EdgeInsetsDirectional.only(
           start: 0.5,
@@ -140,12 +135,51 @@ class InquiryGrid extends StatelessWidget {
           ),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Hide button
+            Expanded(
+              child: DPTextButton(
+                theme: DPTextButtonThemes.grey,
+                onPressed: () {
+                  print('DEBUG trigger hide');
+                },
+                text: '隱藏',
+              ),
+            ),
+
+            SizedBox(
+              width: 11,
+            ),
 
             // Check profile button
+            Expanded(
+              child: SizedBox(
+                height: 44,
+                child: DPTextButton(
+                  theme: DPTextButtonThemes.grey,
+                  onPressed: () {
+                    print('DEBUG trigger hide');
+                  },
+                  text: '看他檔案',
+                ),
+              ),
+            ),
+
+            SizedBox(
+              width: 11,
+            ),
 
             // Chat now button
+            Expanded(
+              child: DPTextButton(
+                theme: DPTextButtonThemes.lightGrey,
+                onPressed: () {
+                  print('DEBUG trigger hide');
+                },
+                text: '立即洽談',
+              ),
+            ),
           ],
         ),
       ),
@@ -155,9 +189,9 @@ class InquiryGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(
-        top: 9,
-        bottom: 14,
+        top: 12,
       ),
       decoration: BoxDecoration(
         border: Border.all(
@@ -175,57 +209,6 @@ class InquiryGrid extends StatelessWidget {
         ],
       ),
     );
-
-    // child: Padding(
-    //   padding: const EdgeInsets.symmetric(vertical: 10),
-    //   child: Row(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Expanded(
-    //         flex: 1,
-    //         child: GestureDetector(
-    //           onTap: () => onTapAvatar(inquiry.inquirer.uuid),
-    //           child: Container(
-    //             padding: const EdgeInsets.only(left: 12),
-    //             alignment: Alignment.topCenter,
-    //             child: UserAvatar(inquiry.inquirer.avatarURL),
-    //           ),
-    //         ),
-    //       ),
-    //       SizedBox(
-    //         width: 8,
-    //       ),
-    //       Expanded(
-    //         flex: 3,
-    //         child: Row(
-    //           children: [
-    //             Container(
-    //               alignment: Alignment.topLeft,
-    //               child: _buildInquiryDetailBar(
-    //                 serviceType: inquiry.serviceType,
-    //                 username: inquiry.inquirer.username,
-    //                 budget: inquiry.budget,
-    //               ),
-    //             ),
-    //             Expanded(
-    //               child: Container(
-    //                 padding: const EdgeInsets.only(right: 14),
-    //                 alignment: Alignment.topRight,
-    //                 child: IconButton(
-    //                   icon: Icon(
-    //                     Icons.chevron_right,
-    //                     size: 20,
-    //                   ),
-    //                   onPressed: _handleTapPickup,
-    //                 ),
-    //               ),
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // ),
   }
 
   void _handleTapPickup() {

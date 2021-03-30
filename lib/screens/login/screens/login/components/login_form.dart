@@ -37,44 +37,48 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-              height: 112,
-              child: BlocListener<SendLoginVerifyCodeBloc,
-                  SendLoginVerifyCodeState>(
-                listener: (context, state) {
-                  if (state.status == AsyncLoadingStatus.error) {
-                    setState(() {
-                      _asyncUsernameErrStr = state.error.message;
-                    });
+            height: 112,
+            child:
+                BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  setState(() {
+                    _asyncUsernameErrStr = state.error.message;
+                  });
 
-                    _formKey.currentState.validate();
+                  _formKey.currentState.validate();
+                }
+              },
+              child: DPTextFormField(
+                validator: (String v) {
+                  // Username can not be empty
+                  if (v.trim().isEmpty) {
+                    return 'username is required';
                   }
+
+                  if (_asyncUsernameErrStr != null &&
+                      _asyncUsernameErrStr.isNotEmpty) {
+                    return _asyncUsernameErrStr;
+                  }
+
+                  return null;
                 },
-                child: DPTextFormField(
-                  validator: (String v) {
-                    // Username can not be empty
-                    if (v.trim().isEmpty) {
-                      return 'username is required';
-                    }
-
-                    if (_asyncUsernameErrStr != null &&
-                        _asyncUsernameErrStr.isNotEmpty) {
-                      return _asyncUsernameErrStr;
-                    }
-
-                    return null;
-                  },
-                  onSaved: (String v) {
-                    _username = v;
-                  },
-                  hintText: '請輸入您的用戶名',
-                  theme: DPTextFieldThemes.white,
-                ),
-              )),
-          DPTextButton(
-            loading: widget.loading,
-            text: '登錄',
-            onPressed: _submit,
-          )
+                onSaved: (String v) {
+                  _username = v;
+                },
+                hintText: '請輸入您的用戶名',
+                theme: DPTextFieldThemes.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 44,
+            child: DPTextButton(
+              loading: widget.loading,
+              text: '登入',
+              onPressed: _submit,
+            ),
+          ),
         ],
       ),
     );

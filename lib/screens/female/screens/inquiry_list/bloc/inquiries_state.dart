@@ -27,7 +27,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
   InquiriesState.initial()
       : this._(
           status: FetchInquiryStatus.initial,
-          inquiries: [Inquiry()],
+          inquiries: [Inquiry(), Inquiry()],
           currentPage: 0,
           hasMore: true,
         );

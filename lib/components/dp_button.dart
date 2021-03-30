@@ -4,14 +4,18 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 enum DPTextButtonThemes {
   pink,
   purple,
+  grey,
+  lightGrey,
   disable,
 }
 
 class ThemeConfig {
   final Color backgroundColor;
+  final TextStyle textStyle;
 
   const ThemeConfig._({
     this.backgroundColor,
+    this.textStyle,
   });
 
   const ThemeConfig.setConfig({
@@ -19,18 +23,39 @@ class ThemeConfig {
     TextStyle textStyle,
   }) : this._(
           backgroundColor: backgroundColor,
+          textStyle: textStyle,
         );
 }
+
+final baseButtonTextStyle = TextStyle(
+  fontSize: 15,
+  color: Colors.white,
+);
 
 Map<DPTextButtonThemes, ThemeConfig> themes = {
   DPTextButtonThemes.pink: ThemeConfig.setConfig(
     backgroundColor: Color.fromRGBO(255, 64, 138, 1),
+    textStyle: baseButtonTextStyle,
   ),
   DPTextButtonThemes.purple: ThemeConfig.setConfig(
     backgroundColor: Color.fromRGBO(119, 81, 255, 1),
+    textStyle: baseButtonTextStyle,
+  ),
+  DPTextButtonThemes.lightGrey: ThemeConfig.setConfig(
+    backgroundColor: Color.fromRGBO(203, 205, 214, 1),
+    textStyle: baseButtonTextStyle.copyWith(
+      color: Color.fromRGBO(31, 30, 56, 1),
+    ),
+  ),
+  DPTextButtonThemes.grey: ThemeConfig.setConfig(
+    backgroundColor: Color.fromRGBO(106, 109, 137, 1),
+    textStyle: baseButtonTextStyle,
   ),
   DPTextButtonThemes.disable: ThemeConfig.setConfig(
     backgroundColor: Color.fromRGBO(255, 255, 255, 0.18),
+    textStyle: baseButtonTextStyle.copyWith(
+      color: Color.fromRGBO(106, 109, 137, 1),
+    ),
   )
 };
 
@@ -55,25 +80,22 @@ class DPTextButton extends StatefulWidget {
 }
 
 class _DPTextButtonState extends State<DPTextButton> {
-  Widget _buildText() {
+  Widget _buildText(ThemeConfig themeConf) {
     return Text(
       widget.text,
       textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 16,
-        color:
-            widget.disabled ? Color.fromRGBO(106, 109, 137, 1) : Colors.white,
-      ),
+      style: themeConf.textStyle,
     );
   }
 
   Widget _buildSpinner() {
     return Container(
-        height: 30.0,
-        child: SpinKitCircle(
-          color: Colors.white,
-          size: 30,
-        ));
+      height: 30.0,
+      child: SpinKitCircle(
+        color: Colors.white,
+        size: 30,
+      ),
+    );
   }
 
   @override
@@ -86,13 +108,12 @@ class _DPTextButtonState extends State<DPTextButton> {
       onPressed: widget.disabled ? null : widget.onPressed,
       child: SizedBox(
         width: double.infinity,
-        child: widget.loading == false ? _buildText() : _buildSpinner(),
+        child:
+            widget.loading == false ? _buildText(chosenTheme) : _buildSpinner(),
       ),
       style: ButtonStyle(
         textStyle: MaterialStateProperty.all<TextStyle>(
-          TextStyle(
-            color: Color.fromRGBO(106, 109, 137, 1),
-          ),
+          chosenTheme.textStyle,
         ),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -100,9 +121,6 @@ class _DPTextButtonState extends State<DPTextButton> {
               Radius.circular(28.0),
             ),
           ),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.fromLTRB(0, 15, 0, 15),
         ),
         backgroundColor: MaterialStateProperty.all<Color>(
           chosenTheme.backgroundColor,

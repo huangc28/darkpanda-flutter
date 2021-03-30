@@ -118,19 +118,22 @@ class _LoginState extends State<Login> {
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: DPTextButton(
-                    theme: DPTextButtonThemes.purple,
-                    onPressed: () {
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(
-                        MaterialPageRoute(
-                          builder: (context) => AuthNavigator(),
-                        ),
-                      );
-                    },
-                    text: '註冊',
+                  child: SizedBox(
+                    height: 44,
+                    child: DPTextButton(
+                      theme: DPTextButtonThemes.purple,
+                      onPressed: () {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).push(
+                          MaterialPageRoute(
+                            builder: (context) => AuthNavigator(),
+                          ),
+                        );
+                      },
+                      text: '註冊',
+                    ),
                   ),
                 ),
               ),
