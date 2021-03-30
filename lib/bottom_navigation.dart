@@ -90,7 +90,7 @@ class BottomNavigation extends StatelessWidget {
         canvasColor: Color.fromRGBO(42, 41, 64, 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+        padding: const EdgeInsets.only(top: 16),
         child: BottomNavigationBar(
           unselectedItemColor: Color.fromRGBO(88, 91, 117, 1),
           selectedFontSize: 13,

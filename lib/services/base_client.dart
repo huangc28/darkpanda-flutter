@@ -40,6 +40,8 @@ abstract class BaseClient extends http.BaseClient {
   withTokenFromSecureStore(http.BaseRequest request) async {
     final jwt = await SecureStore().readJwtToken();
 
+    print('DEBUG jwt ${jwt}');
+
     if (jwt == null) {
       throw Exception('jwt token can not be null.');
     }

@@ -65,6 +65,8 @@ class VerifyLoginCodeBloc
       await SecureStore().writeJwtToken(responseMap['jwt']);
       final fetchUserResp = await userApis.fetchMe();
 
+      print('DEBUG fetchUserResp ${fetchUserResp.body}');
+
       if (fetchUserResp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(response.body),

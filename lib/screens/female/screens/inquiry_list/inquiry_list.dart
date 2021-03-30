@@ -21,7 +21,6 @@ class InqiuryList extends StatefulWidget {
 
   final OnPushInquiryDetail onPush;
 
-  // List of inquiry
   @override
   _InqiuryListState createState() => _InqiuryListState();
 }
@@ -40,63 +39,106 @@ class _InqiuryListState extends State<InqiuryList> {
     super.initState();
   }
 
+  Widget _buildHeader() {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 30,
+        right: 16,
+        left: 16,
+      ),
+      child: Row(
+        children: [
+          Image(
+            image: AssetImage('assets/panda_head_logo.png'),
+            width: 31,
+            height: 31,
+          ),
+          SizedBox(width: 8),
+          Text(
+            '需求總覽',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: BlocConsumer<InquiriesBloc, InquiriesState>(
-          listener: (context, state) {
-            if (state.status == FetchInquiryStatus.initial ||
-                state.status == FetchInquiryStatus.fetching) {
-              Dialogs.showLoadingDialog(context, _keyLoader);
-            }
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(),
+            BlocConsumer<InquiriesBloc, InquiriesState>(
+              listener: (context, state) {
+                if (state.status == FetchInquiryStatus.initial ||
+                    state.status == FetchInquiryStatus.fetching) {
+                  Dialogs.showLoadingDialog(context, _keyLoader);
+                }
 
-            if (state.status == FetchInquiryStatus.fetched) {
-              _refreshCompleter.complete();
-              _refreshCompleter = Completer();
-              Navigator.of(context, rootNavigator: true).pop();
-            }
+                if (state.status == FetchInquiryStatus.fetched) {
+                  _refreshCompleter.complete();
+                  _refreshCompleter = Completer();
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
 
-            if (state.status == FetchInquiryStatus.fetchFailed) {
-              _refreshCompleter.completeError(state.error);
-              _refreshCompleter = Completer();
+                if (state.status == FetchInquiryStatus.fetchFailed) {
+                  _refreshCompleter.completeError(state.error);
+                  _refreshCompleter = Completer();
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error.message),
-                ),
-              );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
 
-              Navigator.of(context, rootNavigator: true).pop();
-            }
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
 
-            return null;
-          },
-          builder: (context, state) => InquiryList(
-            onLoadMore: () {
-              print('DEBUG trigger load more');
-            },
-            onRefresh: () {
-              BlocProvider.of<InquiriesBloc>(context).add(FetchInquiries(
-                nextPage: 1,
-              ));
-
-              return _refreshCompleter.future;
-            },
-            inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
-              inquiry: inquiry,
-              onTapAvatar: (String uuid) {
-                widget.onPush(
-                  InquiriesRoutes.inquirerProfile,
-                  {
-                    'uuid': uuid,
-                  },
-                );
+                return null;
               },
-              onTapPickup: _handleTapPickup,
+              builder: (context, state) => Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    top: 25,
+                    bottom: 20,
+                  ),
+                  child: InquiryList(
+                    onLoadMore: () {
+                      print('DEBUG trigger load more');
+                    },
+                    onRefresh: () {
+                      BlocProvider.of<InquiriesBloc>(context).add(
+                        FetchInquiries(
+                          nextPage: 1,
+                        ),
+                      );
+
+                      return _refreshCompleter.future;
+                    },
+                    inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
+                      inquiry: inquiry,
+                      onTapAvatar: (String uuid) {
+                        widget.onPush(
+                          InquiriesRoutes.inquirerProfile,
+                          {
+                            'uuid': uuid,
+                          },
+                        );
+                      },
+                      onTapPickup: _handleTapPickup,
+                    ),
+                    inquiries: state.inquiries,
+                  ),
+                ),
+              ),
             ),
-            inquiries: state.inquiries,
-          ),
+          ],
         ),
       ),
     );
