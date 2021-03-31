@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
 import '../../../models/inquiry.dart';
+
+part 'inquiry_grid_inquiry_detail.dart';
 
 class InquiryGrid extends StatelessWidget {
   const InquiryGrid({
@@ -16,96 +19,6 @@ class InquiryGrid extends StatelessWidget {
   final Inquiry inquiry;
   final ValueChanged<String> onTapAvatar;
   final ValueChanged<String> onTapPickup;
-
-  Widget _buildInquiryInfo() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 9),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Inquiry details.
-          Container(
-            padding: EdgeInsets.only(
-              left: 31,
-              right: 25,
-              top: 8,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Inquirer avatar.
-                SizedBox(
-                  height: 64,
-                  width: 64,
-                  child: CircleAvatar(
-                      // backgroundImage: NetworkImage(
-                      //   'https://www.fillmurray.com/640/360',
-                      // ),
-                      ),
-                ),
-
-                SizedBox(
-                  height: 12,
-                ),
-
-                // Inquirer name
-                Text(
-                  'Brat',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Bullet(
-                '預算: ${inquiry.budget} DP',
-                style: TextStyle(
-                  height: 1.3,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 6),
-              Bullet(
-                '項目: ${inquiry.serviceType}',
-                style: TextStyle(
-                  color: Colors.white,
-                  height: 1.3,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 6),
-              Bullet(
-                '時間: 12.18 at 00:20 AM',
-                style: TextStyle(
-                  color: Colors.white,
-                  height: 1.3,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 6),
-              Bullet(
-                '時長: 1 小時',
-                style: TextStyle(
-                  color: Colors.white,
-                  height: 1.3,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
 // @Issue: https://stackoverflow.com/questions/58812778/a-borderradius-can-only-be-given-for-uniform-borders
   Widget _buildActionBar() {
@@ -188,8 +101,6 @@ class InquiryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG iq ~ ${inquiry.appointmentTime}');
-
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(
@@ -206,7 +117,9 @@ class InquiryGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInquiryInfo(),
+          InquiryDetail(
+            inquiry: inquiry,
+          ),
           _buildActionBar(),
         ],
       ),

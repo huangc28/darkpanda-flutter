@@ -47,6 +47,8 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         offset: offset,
       );
 
+      print('DEBUG resp ${resp.body}');
+
       // if response status is not OK, emit fail event
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
