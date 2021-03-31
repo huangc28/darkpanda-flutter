@@ -45,7 +45,6 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       // toggles loading
       yield MobileVerifyState.loading(MobileVerifyState.copyFrom(state));
 
-      // print('DEBUG v1 ${event.verifyChars}-${event.verifyDigs}');
       // send request
       final resp = await dataProvider.verifyRegisterCode(
         mobile: event.mobileNumber,

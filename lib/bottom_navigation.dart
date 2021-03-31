@@ -89,24 +89,21 @@ class BottomNavigation extends StatelessWidget {
       data: Theme.of(context).copyWith(
         canvasColor: Color.fromRGBO(42, 41, 64, 1),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: BottomNavigationBar(
-          unselectedItemColor: Color.fromRGBO(88, 91, 117, 1),
-          selectedFontSize: 13,
-          unselectedFontSize: 13,
-          fixedColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            _buildBarItem(item: TabItem.inquiries),
-            _buildBarItem(item: TabItem.inquiryChats),
-            _buildBarItem(item: TabItem.manage),
-            _buildBarItem(item: TabItem.settings),
-            _buildBarItem(item: TabItem.profile),
-          ],
-          currentIndex: TabItem.values.indexOf(currentTab),
-          onTap: (index) => onSelectTab(TabItem.values[index]),
-        ),
+      child: BottomNavigationBar(
+        unselectedItemColor: Color.fromRGBO(88, 91, 117, 1),
+        selectedFontSize: 13,
+        unselectedFontSize: 13,
+        fixedColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
+          _buildBarItem(item: TabItem.inquiries),
+          _buildBarItem(item: TabItem.inquiryChats),
+          _buildBarItem(item: TabItem.manage),
+          _buildBarItem(item: TabItem.settings),
+          _buildBarItem(item: TabItem.profile),
+        ],
+        currentIndex: TabItem.values.indexOf(currentTab),
+        onTap: (index) => onSelectTab(TabItem.values[index]),
       ),
     );
   }

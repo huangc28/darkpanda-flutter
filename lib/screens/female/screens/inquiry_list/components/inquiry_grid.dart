@@ -66,7 +66,7 @@ class InquiryGrid extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Bullet(
-                '預算: 0 ~ 112 DP',
+                '預算: ${inquiry.budget} DP',
                 style: TextStyle(
                   height: 1.3,
                   color: Colors.white,
@@ -75,7 +75,7 @@ class InquiryGrid extends StatelessWidget {
               ),
               SizedBox(height: 6),
               Bullet(
-                '項目: 看電影',
+                '項目: ${inquiry.serviceType}',
                 style: TextStyle(
                   color: Colors.white,
                   height: 1.3,
@@ -161,7 +161,7 @@ class InquiryGrid extends StatelessWidget {
                   onPressed: () {
                     print('DEBUG trigger hide');
                   },
-                  text: '看他檔案',
+                  text: '檔案',
                 ),
               ),
             ),
@@ -177,7 +177,7 @@ class InquiryGrid extends StatelessWidget {
                 onPressed: () {
                   print('DEBUG trigger hide');
                 },
-                text: '立即洽談',
+                text: '聊聊',
               ),
             ),
           ],
@@ -188,6 +188,8 @@ class InquiryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('DEBUG iq ~ ${inquiry.appointmentTime}');
+
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(
@@ -209,9 +211,5 @@ class InquiryGrid extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _handleTapPickup() {
-    onTapPickup(inquiry.uuid);
   }
 }

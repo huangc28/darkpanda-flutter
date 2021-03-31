@@ -101,12 +101,18 @@ class _InqiuryListState extends State<InqiuryList> {
 
                 return null;
               },
-              builder: (context, state) => Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
+
+              // We use `Expanded` widget to make the child `Container` takes over
+              // the rest of the height of the `Column`. The `InquiryList` (`ListView.builder`)
+              // can then render the list of grids utilizing the within the full height container.
+              // @Ref: https://stackoverflow.com/questions/49480051/flutter-dart-exceptions-caused-by-rendering-a-renderflex-overflowed
+              builder: (context, state) => Expanded(
                 child: Container(
                   padding: EdgeInsets.only(
                     top: 25,
                     bottom: 20,
+                    left: 16,
+                    right: 16,
                   ),
                   child: InquiryList(
                     onLoadMore: () {

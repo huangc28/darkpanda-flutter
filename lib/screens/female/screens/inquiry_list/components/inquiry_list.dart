@@ -24,25 +24,27 @@ class InquiryList extends StatelessWidget {
   final Function onLoadMore;
 
   @override
-  Widget build(BuildContext context) => Container(
-        child: LoadMoreScrollable(
-          onLoadMore: onLoadMore,
-          builder: (context, scrollController) => RefreshIndicator(
-            onRefresh: onRefresh,
-            child: ListView.separated(
-              controller: scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: inquiries.length,
-              itemBuilder: (BuildContext context, int idx) =>
-                  inquiryItemBuilder(context, inquiries[idx], idx),
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(
-                height: 1,
-              ),
-            ),
-          ),
+  Widget build(BuildContext context) {
+    print('DEBUG ${inquiries.length}');
+
+    return LoadMoreScrollable(
+      onLoadMore: onLoadMore,
+      builder: (context, scrollController) => RefreshIndicator(
+        onRefresh: onRefresh,
+        child: ListView.builder(
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: inquiries.length,
+          itemBuilder: (BuildContext context, int idx) =>
+              inquiryItemBuilder(context, inquiries[idx], idx),
+          // separatorBuilder: (BuildContext context, int index) =>
+          //     const Divider(
+          //   height: 1,
+          // ),
         ),
-      );
+      ),
+    );
+  }
 }
