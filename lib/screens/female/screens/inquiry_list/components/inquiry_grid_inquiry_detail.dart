@@ -7,7 +7,7 @@ class InquiryDetail extends StatelessWidget {
 
   final Inquiry inquiry;
 
-  Widget _buildAppointmentTime() {
+  Widget _buildAppointmentTimeText() {
     final format = DateFormat.jm();
     final timeWithJM = format.format(inquiry.appointmentTime);
 
@@ -22,9 +22,22 @@ class InquiryDetail extends StatelessWidget {
     );
   }
 
+  Widget _buildDurationText() {
+    final durationSplit = inquiry.duration.toString().split(':');
+    return Bullet(
+      '時長: ${durationSplit.first} 小時 ${durationSplit[1]} 分',
+      style: TextStyle(
+        color: Colors.white,
+        height: 1.3,
+        fontSize: 13,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // print('DEBUG **~~ ${inquiry.}');
+    print(
+        'DEBUG **~~ ${inquiry.duration.inHours} ${inquiry.duration.toString()}');
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -94,16 +107,9 @@ class InquiryDetail extends StatelessWidget {
               ),
             ),
             SizedBox(height: 6),
-            _buildAppointmentTime(),
+            _buildAppointmentTimeText(),
             SizedBox(height: 6),
-            Bullet(
-              '時長: 1 小時',
-              style: TextStyle(
-                color: Colors.white,
-                height: 1.3,
-                fontSize: 13,
-              ),
-            ),
+            _buildDurationText(),
           ],
         ),
       ],
