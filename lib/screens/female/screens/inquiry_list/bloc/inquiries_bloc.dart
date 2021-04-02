@@ -154,14 +154,17 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     final updatedInquiries = state.inquiries.map<Inquiry>((inquiry) {
       // If matches in uuid, update it's inquiry status status.
       if (inquiry.uuid == event.inquiryUuid) {
+        print('DEBUG 8800');
         return inquiry.copyWith(inquiryStatus: InquiryStatus.asking);
       }
 
       return inquiry;
-    });
+    }).toList();
+
+    print('DEBUG 8811 ${updatedInquiries[0].inquiryStatus}');
 
     // Replace current inquiry list witht updated list.
-    yield InquiriesState.fetched(
+    yield InquiriesState.putInquiries(
       state,
       inquiries: updatedInquiries,
     );

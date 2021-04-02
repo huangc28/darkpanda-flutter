@@ -100,6 +100,7 @@ class Inquiry extends Equatable {
 
   @override
   List<Object> get props => [
+        inquiryStatus,
         uuid,
         budget,
         serviceType,

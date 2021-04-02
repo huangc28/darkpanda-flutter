@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 
 import '../../../models/inquiry.dart';
 
 part 'inquiry_grid_inquiry_detail.dart';
+part 'inquiry_grid_actions.dart';
 
 class InquiryGrid extends StatelessWidget {
   const InquiryGrid({
@@ -22,85 +24,6 @@ class InquiryGrid extends StatelessWidget {
   /// Girl is interested in this inquiry and want to start an inquiry chat
   /// with the guy.
   final ValueChanged<String> onTapChat;
-
-// @Issue: https://stackoverflow.com/questions/58812778/a-borderradius-can-only-be-given-for-uniform-borders
-  Widget _buildActionBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(106, 109, 137, 1),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(6),
-          topRight: Radius.circular(6),
-        ),
-      ),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 14,
-        ),
-        margin: const EdgeInsetsDirectional.only(
-          start: 0.5,
-          end: 0.5,
-          top: 1,
-        ),
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(31, 30, 56, 1),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(6.0),
-            topRight: const Radius.circular(6.0),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Hide button
-            Expanded(
-              child: DPTextButton(
-                theme: DPTextButtonThemes.grey,
-                onPressed: () {
-                  print('DEBUG trigger hide');
-                },
-                text: '隱藏',
-              ),
-            ),
-
-            SizedBox(
-              width: 11,
-            ),
-
-            // Check profile button
-            Expanded(
-              child: SizedBox(
-                height: 44,
-                child: DPTextButton(
-                  theme: DPTextButtonThemes.grey,
-                  onPressed: () {
-                    print('DEBUG trigger hide');
-                  },
-                  text: '看他檔案',
-                ),
-              ),
-            ),
-
-            SizedBox(
-              width: 11,
-            ),
-
-            // Chat now button
-            Expanded(
-              child: DPTextButton(
-                theme: DPTextButtonThemes.lightGrey,
-                onPressed: () {
-                  onTapChat(inquiry.uuid);
-                },
-                text: '立即洽談',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +46,10 @@ class InquiryGrid extends StatelessWidget {
           InquiryDetail(
             inquiry: inquiry,
           ),
-          _buildActionBar(),
+          InquiryGridActions(
+            onTapChat: onTapChat,
+            inquiry: inquiry,
+          )
         ],
       ),
     );

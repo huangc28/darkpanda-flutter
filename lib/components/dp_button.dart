@@ -66,14 +66,16 @@ class DPTextButton extends StatefulWidget {
     this.disabled = false,
     this.text = '',
     this.loading = false,
+    this.icon = null,
     @required this.onPressed,
   }) : super(key: key);
 
   final bool disabled;
-  final DPTextButtonThemes theme;
-  final Function onPressed;
-  final String text;
   final bool loading;
+  final DPTextButtonThemes theme;
+  final String text;
+  final Icon icon;
+  final Function onPressed;
 
   @override
   _DPTextButtonState createState() => _DPTextButtonState();
@@ -81,10 +83,22 @@ class DPTextButton extends StatefulWidget {
 
 class _DPTextButtonState extends State<DPTextButton> {
   Widget _buildText(ThemeConfig themeConf) {
-    return Text(
-      widget.text,
-      textAlign: TextAlign.center,
-      style: themeConf.textStyle,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          widget.text,
+          textAlign: TextAlign.center,
+          style: themeConf.textStyle,
+        ),
+        widget.icon == null
+            ? Container()
+            : Padding(
+                padding: EdgeInsets.only(left: 6),
+                child: widget.icon,
+              ),
+      ],
     );
   }
 

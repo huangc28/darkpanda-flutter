@@ -47,17 +47,18 @@ class DarkPandaApp extends StatelessWidget {
   final AppConfig appConfig;
   final mainRoutes = MainRoutes();
 
-  Future<void> _writeMockJwtToken() =>
-      SecureStore().writeJwtToken(appConfig.token);
+  // Future<void> _writeMockJwtToken() =>
+  //     SecureStore().writeJwtToken(appConfig.token);
 
   @override
   Widget build(BuildContext context) {
     final List<Future> futures = [];
 
     if (!kReleaseMode) {
-      futures.addAll([
-        _writeMockJwtToken(),
-      ]);
+      // futures.addAll([
+      //   _writeMockJwtToken(),
+      // ]);
+      futures.addAll([]);
     }
 
     return FutureBuilder(

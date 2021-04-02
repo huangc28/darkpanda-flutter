@@ -46,7 +46,7 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
 
       final res = await apiClient.pickupInquiry(event.uuid);
 
-      print('DEBUG pickup iq resp ${res.body}');
+      print('DEBUG pickup iq resp ${res.body} ${res.statusCode}');
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -58,23 +58,25 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
       // Update the status of corresponding inqiury in the app
       // to reflect on the screen.
       final dataMap = json.decode(res.body);
-      final inquiryStatus = dataMap['inquiry_status'];
+
+      print('DEBUG dataMap ${dataMap}');
+
+      String iqStatus = dataMap['inquiry_status'] as String;
 
       inquiriesBloc.add(
         UpdateInquiryStatus(
           inquiryUuid: event.uuid,
-          inquiryStatus: inquiryStatus.toInquiryStatusEnum(),
+          inquiryStatus: iqStatus.toInquiryStatusEnum(),
         ),
       );
-
-      print('DEBUG inquiriesBloc ${inquiriesBloc}');
 
       // We need to listen to that inquiry record document
     } on APIException catch (err) {
       yield PickupInquiryState.loadFailed(err);
     } on AppGeneralExeption catch (err) {
       yield PickupInquiryState.loadFailed(err);
-    } on Error catch (err) {
+    } on Exception catch (err) {
+      print('err!!! ${err}');
       yield PickupInquiryState.loadFailed(
         AppGeneralExeption(
           message: err.toString(),

@@ -63,6 +63,16 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           hasMore: hasMore ?? state.hasMore,
         );
 
+  InquiriesState.putInquiries(
+    InquiriesState state, {
+    List<Inquiry> inquiries,
+  }) : this._(
+          status: state.status,
+          inquiries: inquiries ?? state.inquiries,
+          currentPage: state.currentPage,
+          hasMore: state.hasMore,
+        );
+
   @override
   List<Object> get props => [
         status,

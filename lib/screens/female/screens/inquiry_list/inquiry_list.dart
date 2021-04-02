@@ -77,13 +77,16 @@ class _InqiuryListState extends State<InqiuryList> {
               listener: (context, state) {
                 if (state.status == FetchInquiryStatus.initial ||
                     state.status == FetchInquiryStatus.fetching) {
-                  Dialogs.showLoadingDialog(context, _keyLoader);
+                  // Dialogs.showLoadingDialog(context, _keyLoader);
+                  print('fetch inquiries');
                 }
 
                 if (state.status == FetchInquiryStatus.fetched) {
                   _refreshCompleter.complete();
                   _refreshCompleter = Completer();
-                  Navigator.of(context, rootNavigator: true).pop();
+
+                  print('fetch inquiries done');
+                  // Dialogs.closeLoadingDialog(context);
                 }
 
                 if (state.status == FetchInquiryStatus.fetchFailed) {
@@ -130,12 +133,13 @@ class _InqiuryListState extends State<InqiuryList> {
                     inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
                       inquiry: inquiry,
                       onTapAvatar: (String uuid) {
-                        widget.onPush(
-                          InquiriesRoutes.inquirerProfile,
-                          {
-                            'uuid': uuid,
-                          },
-                        );
+                        print('DEBUG trigger on push avatar');
+                        // widget.onPush(
+                        //   InquiriesRoutes.inquirerProfile,
+                        //   {
+                        //     'uuid': uuid,
+                        //   },
+                        // );
                       },
                       onTapChat: _handleTapChat,
                     ),
