@@ -25,8 +25,6 @@ class InquiryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG ${inquiries.length}');
-
     return LoadMoreScrollable(
       onLoadMore: onLoadMore,
       builder: (context, scrollController) => RefreshIndicator(

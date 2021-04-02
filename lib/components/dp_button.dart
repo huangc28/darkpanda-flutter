@@ -95,7 +95,7 @@ class _DPTextButtonState extends State<DPTextButton> {
         widget.icon == null
             ? Container()
             : Padding(
-                padding: EdgeInsets.only(left: 6),
+                padding: EdgeInsets.only(left: 4),
                 child: widget.icon,
               ),
       ],

@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/components/dialogs.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
-import './routes.dart';
 import './bloc/inquiries_bloc.dart';
 import './bloc/pickup_inquiry_bloc.dart';
 import './components/inquiry_grid.dart';
@@ -14,6 +13,9 @@ import './components/inquiry_list.dart';
 typedef OnPushInquiryDetail = void Function(
     String routeName, Map<String, dynamic> args);
 
+// TODOs:
+//   - Complete `check profile` function.
+//   - Complete `hide inquiry` function when pickup is denied.
 class InqiuryList extends StatefulWidget {
   const InqiuryList({
     this.onPush,
@@ -73,6 +75,21 @@ class _InqiuryListState extends State<InqiuryList> {
         child: Column(
           children: [
             _buildHeader(),
+            BlocListener<PickupInquiryBloc, PickupInquiryState>(
+              listener: (context, state) {
+                // Show message when error occured when picking up inquiry.
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        state.error.message,
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Container(),
+            ),
             BlocConsumer<InquiriesBloc, InquiriesState>(
               listener: (context, state) {
                 if (state.status == FetchInquiryStatus.initial ||

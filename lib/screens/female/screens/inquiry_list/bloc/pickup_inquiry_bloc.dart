@@ -71,12 +71,13 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
       );
 
       // We need to listen to that inquiry record document
+
+      PickupInquiryState.loaded();
     } on APIException catch (err) {
       yield PickupInquiryState.loadFailed(err);
     } on AppGeneralExeption catch (err) {
       yield PickupInquiryState.loadFailed(err);
     } on Exception catch (err) {
-      print('err!!! ${err}');
       yield PickupInquiryState.loadFailed(
         AppGeneralExeption(
           message: err.toString(),

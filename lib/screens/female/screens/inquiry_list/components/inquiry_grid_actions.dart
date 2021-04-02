@@ -14,8 +14,7 @@ class InquiryGridActions extends StatelessWidget {
     String btnText = '';
     Icon icon = null;
     Function btnHandler = () => {};
-
-    print('DEBUG _buildChatButton ${inquiry.inquiryStatus}');
+    DPTextButtonThemes theme = DPTextButtonThemes.lightGrey;
 
     if (inquiry.inquiryStatus == InquiryStatus.inquiring) {
       btnText = '立即洽談';
@@ -29,18 +28,90 @@ class InquiryGridActions extends StatelessWidget {
       icon = Icon(
         Icons.schedule,
         size: 14,
-        color: Color.fromRGBO(31, 30, 56, 1),
+        color: Colors.white,
       );
       btnHandler = () => {};
+      theme = DPTextButtonThemes.grey;
     }
 
     return Expanded(
       child: DPTextButton(
-        theme: DPTextButtonThemes.lightGrey,
+        theme: theme,
         onPressed: btnHandler,
         text: btnText,
         icon: icon,
       ),
+    );
+  }
+
+  Widget _buildThreeButtonActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        // Hide button
+        Expanded(
+          child: DPTextButton(
+            theme: DPTextButtonThemes.grey,
+            onPressed: () {
+              print('DEBUG trigger hide');
+            },
+            text: '隱藏',
+          ),
+        ),
+
+        SizedBox(
+          width: 11,
+        ),
+
+        // Check profile button
+        Expanded(
+          child: SizedBox(
+            height: 44,
+            child: DPTextButton(
+              theme: DPTextButtonThemes.grey,
+              onPressed: () {
+                print('DEBUG trigger hide');
+              },
+              text: '看他檔案',
+            ),
+          ),
+        ),
+
+        SizedBox(
+          width: 11,
+        ),
+
+        // Chat now button
+        _buildChatButton(),
+      ],
+    );
+  }
+
+  Widget _buildDeniedAction() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Text(
+            '對方已回絕',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Expanded(
+          child: SizedBox(
+            height: 44,
+            child: DPTextButton(
+              theme: DPTextButtonThemes.grey,
+              text: '清除',
+              onPressed: () {
+                print('DEBUG trigger clear inquiry');
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -71,46 +142,10 @@ class InquiryGridActions extends StatelessWidget {
             topRight: const Radius.circular(6.0),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Hide button
-            Expanded(
-              child: DPTextButton(
-                theme: DPTextButtonThemes.grey,
-                onPressed: () {
-                  print('DEBUG trigger hide');
-                },
-                text: '隱藏',
-              ),
-            ),
-
-            SizedBox(
-              width: 11,
-            ),
-
-            // Check profile button
-            Expanded(
-              child: SizedBox(
-                height: 44,
-                child: DPTextButton(
-                  theme: DPTextButtonThemes.grey,
-                  onPressed: () {
-                    print('DEBUG trigger hide');
-                  },
-                  text: '看他檔案',
-                ),
-              ),
-            ),
-
-            SizedBox(
-              width: 11,
-            ),
-
-            // Chat now button
-            _buildChatButton(),
-          ],
-        ),
+        // If inquiry status is canceled, we display denied action bar.
+        child: inquiry.inquiryStatus == InquiryStatus.canceled
+            ? _buildDeniedAction()
+            : _buildThreeButtonActions(),
       ),
     );
   }
