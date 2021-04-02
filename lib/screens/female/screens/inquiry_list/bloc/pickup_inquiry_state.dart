@@ -1,14 +1,7 @@
 part of 'pickup_inquiry_bloc.dart';
 
-enum PickupInquiryStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class PickupInquiryState<E extends AppBaseException> extends Equatable {
-  final PickupInquiryStatus status;
+  final AsyncLoadingStatus status;
   final E error;
 
   PickupInquiryState._({
@@ -18,23 +11,23 @@ class PickupInquiryState<E extends AppBaseException> extends Equatable {
 
   PickupInquiryState.init()
       : this._(
-          status: PickupInquiryStatus.initial,
+          status: AsyncLoadingStatus.initial,
         );
 
   PickupInquiryState.loading()
       : this._(
-          status: PickupInquiryStatus.loading,
+          status: AsyncLoadingStatus.loading,
         );
 
   PickupInquiryState.loadFailed(E error)
       : this._(
-          status: PickupInquiryStatus.loadFailed,
+          status: AsyncLoadingStatus.error,
           error: error,
         );
 
   PickupInquiryState.loaded()
       : this._(
-          status: PickupInquiryStatus.loaded,
+          status: AsyncLoadingStatus.done,
         );
 
   @override

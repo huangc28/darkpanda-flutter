@@ -12,13 +12,16 @@ class InquiryGrid extends StatelessWidget {
   const InquiryGrid({
     Key key,
     @required this.onTapAvatar,
-    @required this.onTapPickup,
+    @required this.onTapChat,
     this.inquiry,
   }) : super(key: key);
 
   final Inquiry inquiry;
   final ValueChanged<String> onTapAvatar;
-  final ValueChanged<String> onTapPickup;
+
+  /// Girl is interested in this inquiry and want to start an inquiry chat
+  /// with the guy.
+  final ValueChanged<String> onTapChat;
 
 // @Issue: https://stackoverflow.com/questions/58812778/a-borderradius-can-only-be-given-for-uniform-borders
   Widget _buildActionBar() {
@@ -74,7 +77,7 @@ class InquiryGrid extends StatelessWidget {
                   onPressed: () {
                     print('DEBUG trigger hide');
                   },
-                  text: '檔案',
+                  text: '看他檔案',
                 ),
               ),
             ),
@@ -88,9 +91,9 @@ class InquiryGrid extends StatelessWidget {
               child: DPTextButton(
                 theme: DPTextButtonThemes.lightGrey,
                 onPressed: () {
-                  print('DEBUG trigger hide');
+                  onTapChat(inquiry.uuid);
                 },
-                text: '聊聊',
+                text: '立即洽談',
               ),
             ),
           ],

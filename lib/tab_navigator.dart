@@ -1,4 +1,3 @@
-// Each tag keeps it's own navigator instance to track navigation history.
 import 'package:flutter/material.dart';
 
 import './bottom_navigation.dart';
@@ -7,6 +6,7 @@ import './screens/female/screens/inquiry_list/routes.dart';
 import './screens/female/screens/inquiry_chats/routes.dart';
 import './screens/female/screens/service_list/routes.dart';
 
+// Each tag keeps it's own navigator instance to track navigation history.
 final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
   TabItem.inquiryChats: InquiryChatsRoutes.root,

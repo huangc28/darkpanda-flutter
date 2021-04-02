@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+
 import './inquirer.dart';
 
 class Inquiry extends Equatable {
@@ -12,6 +14,7 @@ class Inquiry extends Equatable {
   final DateTime appointmentTime;
   final double lng;
   final double lat;
+  final InquiryStatus inquiryStatus;
   final Inquirer inquirer;
 
   const Inquiry({
@@ -23,6 +26,7 @@ class Inquiry extends Equatable {
     this.appointmentTime,
     this.lng,
     this.lat,
+    this.inquiryStatus,
     this.inquirer,
   });
 
@@ -51,6 +55,9 @@ class Inquiry extends Equatable {
       );
     }
 
+    // Convert the value of `inquiry_status` from enum to string.
+    String iqStatus = data['inquiry_status'] as String;
+
     return Inquiry(
       uuid: data['uuid'],
       budget: data['budget'].toDouble(),
@@ -60,9 +67,37 @@ class Inquiry extends Equatable {
       appointmentTime: parsedAppointmentTime,
       lng: data['lng'].toDouble(),
       lat: data['lat'].toDouble(),
+      inquiryStatus: iqStatus.toInquiryStatusEnum(),
       inquirer: Inquirer.fromJson(data['inquirer']),
     );
   }
+
+  Inquiry copyWith({
+    String uuid,
+    double budget,
+    String serviceType,
+    double price,
+    Duration duration,
+    DateTime appointmentTime,
+    double lng,
+    double lat,
+    InquiryStatus inquiryStatus,
+    Inquirer inquirer,
+  }) {
+    return Inquiry(
+      uuid: uuid ?? this.uuid,
+      budget: budget ?? this.budget,
+      serviceType: serviceType ?? this.serviceType,
+      price: price ?? this.price,
+      duration: duration ?? this.duration,
+      appointmentTime: appointmentTime ?? this.appointmentTime,
+      lng: lng ?? this.lng,
+      lat: lng ?? this.lat,
+      inquiryStatus: inquiryStatus ?? this.inquiryStatus,
+      inquirer: inquirer ?? this.inquirer,
+    );
+  }
+
   @override
   List<Object> get props => [
         uuid,

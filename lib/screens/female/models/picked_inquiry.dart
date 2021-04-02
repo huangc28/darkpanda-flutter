@@ -4,7 +4,7 @@ import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/enums/premium_types.dart';
 
-// DEBUG 1 PickupInquiryState {
+// API format: PickupInquiryState {
 //   "uuid":"a5b9080b-d574-4fa0-87a7-5f873aa38aff",
 //   "budget":84680,
 //   "service_type":"sex",

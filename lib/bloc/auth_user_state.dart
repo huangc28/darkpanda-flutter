@@ -7,7 +7,7 @@ enum FetchUserStatus {
   fetchSuccess,
 }
 
-class AuthUserState<Error extends AppBaseException> extends Equatable {
+class AuthUserState<E extends AppBaseException> extends Equatable {
   const AuthUserState._({
     this.status,
     this.error,
@@ -15,7 +15,7 @@ class AuthUserState<Error extends AppBaseException> extends Equatable {
   });
 
   final FetchUserStatus status;
-  final Error error;
+  final E error;
   final AuthUser user;
 
   AuthUserState.initial({
@@ -28,7 +28,6 @@ class AuthUserState<Error extends AppBaseException> extends Equatable {
   AuthUserState.fetching(AuthUserState m)
       : this._(
           status: FetchUserStatus.fetching,
-          error: null,
         );
 
   AuthUserState.fetchFailed(AuthUserState m)
@@ -57,7 +56,7 @@ class AuthUserState<Error extends AppBaseException> extends Equatable {
   factory AuthUserState.copyFrom(
     AuthUserState state, {
     AuthUser user,
-    Error error,
+    E error,
   }) {
     return AuthUserState._(
       user: user ?? state.user,

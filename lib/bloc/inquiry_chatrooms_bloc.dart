@@ -60,11 +60,11 @@ class InquiryChatroomsBloc
   Stream<InquiryChatroomsState> _mapAddChatroomToState(
       AddChatroom event) async* {
     try {
-      // Test the adding a sample user to collection in firestore
+      // Test the adding a sample user to collection in firestore.
       final streamSub =
           _createChatroomSubscriptionStream(event.chatroom.channelUUID);
 
-      // Store stream to later cancel the subscription
+      // Store stream so that we can cancel the subscription later.
       state.privateChatStreamMap[event.chatroom.channelUUID] = streamSub;
 
       yield InquiryChatroomsState.updateChatrooms(state);

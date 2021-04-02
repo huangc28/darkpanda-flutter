@@ -25,11 +25,25 @@ class FetchInquiries extends InquiriesEvent {
 class LoadMoreInquiries extends InquiriesEvent {
   final int perPage;
 
-  const LoadMoreInquiries({this.perPage = 7});
+  const LoadMoreInquiries({
+    this.perPage = 7,
+  });
 }
 
 class AppendInquiries extends InquiriesEvent {
   final List<Inquiry> inquiries;
 
-  const AppendInquiries({this.inquiries});
+  const AppendInquiries({
+    this.inquiries,
+  });
+}
+
+class UpdateInquiryStatus extends InquiriesEvent {
+  final String inquiryUuid;
+  final InquiryStatus inquiryStatus;
+
+  const UpdateInquiryStatus({
+    this.inquiryUuid,
+    this.inquiryStatus,
+  });
 }

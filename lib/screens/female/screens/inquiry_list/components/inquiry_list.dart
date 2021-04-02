@@ -39,10 +39,6 @@ class InquiryList extends StatelessWidget {
           itemCount: inquiries.length,
           itemBuilder: (BuildContext context, int idx) =>
               inquiryItemBuilder(context, inquiries[idx], idx),
-          // separatorBuilder: (BuildContext context, int index) =>
-          //     const Divider(
-          //   height: 1,
-          // ),
         ),
       ),
     );

@@ -137,7 +137,7 @@ class _InqiuryListState extends State<InqiuryList> {
                           },
                         );
                       },
-                      onTapPickup: _handleTapPickup,
+                      onTapChat: _handleTapChat,
                     ),
                     inquiries: state.inquiries,
                   ),
@@ -150,7 +150,12 @@ class _InqiuryListState extends State<InqiuryList> {
     );
   }
 
-  _handleTapPickup(String uuid) {
-    BlocProvider.of<PickupInquiryBloc>(context).add(PickupInquiry(uuid: uuid));
+  _handleTapChat(String uuid) {
+    // Emit chat now event to try to start an inquiry chat.
+    BlocProvider.of<PickupInquiryBloc>(context).add(
+      PickupInquiry(
+        uuid: uuid,
+      ),
+    );
   }
 }

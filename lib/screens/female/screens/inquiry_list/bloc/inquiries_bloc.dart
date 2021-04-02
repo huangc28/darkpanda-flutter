@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/util/util.dart';
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 
 import '../services/api_client.dart';
 import '../../../models/inquiry.dart';
@@ -31,6 +32,10 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
     if (event is LoadMoreInquiries) {
       yield* _mapLoadMoreInquiries(event);
+    }
+
+    if (event is UpdateInquiryStatus) {
+      yield* _mapUpdateInquiryStatusToState(event);
     }
   }
 
@@ -140,5 +145,25 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         ),
       );
     }
+  }
+
+  Stream<InquiriesState> _mapUpdateInquiryStatusToState(
+      UpdateInquiryStatus event) async* {
+    // Iterate through current inquiries try to find the one that matches
+    // the `uuid`. Update it's status.
+    final updatedInquiries = state.inquiries.map<Inquiry>((inquiry) {
+      // If matches in uuid, update it's inquiry status status.
+      if (inquiry.uuid == event.inquiryUuid) {
+        return inquiry.copyWith(inquiryStatus: InquiryStatus.asking);
+      }
+
+      return inquiry;
+    });
+
+    // Replace current inquiry list witht updated list.
+    yield InquiriesState.fetched(
+      state,
+      inquiries: updatedInquiries,
+    );
   }
 }

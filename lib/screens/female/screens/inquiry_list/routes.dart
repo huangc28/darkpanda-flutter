@@ -34,8 +34,9 @@ class InquiriesRoutes extends BaseRoutes {
               BlocProvider(
                 create: (context) => PickupInquiryBloc(
                   apiClient: ApiClient(),
-                  inquiryChatroomsBloc:
-                      BlocProvider.of<InquiryChatroomsBloc>(context),
+                  inquiriesBloc: BlocProvider.of<InquiriesBloc>(context),
+                  // inquiryChatroomsBloc:
+                  //     BlocProvider.of<InquiryChatroomsBloc>(context),
                 ),
               ),
             ],
