@@ -52,8 +52,6 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         offset: offset,
       );
 
-      print('DEBUG resp ${resp.body}');
-
       // if response status is not OK, emit fail event
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -154,8 +152,9 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     final updatedInquiries = state.inquiries.map<Inquiry>((inquiry) {
       // If matches in uuid, update it's inquiry status status.
       if (inquiry.uuid == event.inquiryUuid) {
-        print('DEBUG 8800');
-        return inquiry.copyWith(inquiryStatus: InquiryStatus.asking);
+        return inquiry.copyWith(
+          inquiryStatus: event.inquiryStatus,
+        );
       }
 
       return inquiry;
