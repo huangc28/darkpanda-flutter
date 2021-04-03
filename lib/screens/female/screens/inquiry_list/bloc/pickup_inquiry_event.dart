@@ -14,3 +14,11 @@ class PickupInquiry extends PickupInquiryEvent {
     this.uuid,
   }) : assert(uuid != null);
 }
+
+class RemovePickedupInquiry extends PickupInquiryEvent {
+  final String uuid;
+
+  const RemovePickedupInquiry({
+    this.uuid,
+  }) : assert(uuid != null);
+}

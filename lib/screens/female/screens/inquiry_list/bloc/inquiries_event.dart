@@ -47,3 +47,11 @@ class UpdateInquiryStatus extends InquiriesEvent {
     this.inquiryStatus,
   });
 }
+
+class RemoveInquiry extends InquiriesEvent {
+  final String inquiryUuid;
+
+  const RemoveInquiry({
+    this.inquiryUuid,
+  });
+}

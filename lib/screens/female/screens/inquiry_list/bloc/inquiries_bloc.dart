@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -36,6 +37,10 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
     if (event is UpdateInquiryStatus) {
       yield* _mapUpdateInquiryStatusToState(event);
+    }
+
+    if (event is RemoveInquiry) {
+      yield* _mapRemoveInquiryToState(event);
     }
   }
 
@@ -150,8 +155,11 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     // Iterate through current inquiries try to find the one that matches
     // the `uuid`. Update it's status.
     final updatedInquiries = state.inquiries.map<Inquiry>((inquiry) {
-      // If matches in uuid, update it's inquiry status status.
+      // If matches in uuid, update it's inquiry status.
       if (inquiry.uuid == event.inquiryUuid) {
+        developer.log(
+            'Inquiry found: ${event.inquiryUuid}, updating status: ${event.inquiryStatus.toString()}');
+
         return inquiry.copyWith(
           inquiryStatus: event.inquiryStatus,
         );
@@ -160,12 +168,21 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       return inquiry;
     }).toList();
 
-    print('DEBUG 8811 ${updatedInquiries[0].inquiryStatus}');
-
     // Replace current inquiry list witht updated list.
     yield InquiriesState.putInquiries(
       state,
       inquiries: updatedInquiries,
+    );
+  }
+
+  Stream<InquiriesState> _mapRemoveInquiryToState(RemoveInquiry event) async* {
+    final filteredInquiries = state.inquiries
+        .where((inquiry) => inquiry.uuid != event.inquiryUuid)
+        .toList();
+
+    yield InquiriesState.putInquiries(
+      state,
+      inquiries: filteredInquiries,
     );
   }
 }

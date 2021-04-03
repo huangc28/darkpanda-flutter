@@ -5,9 +5,11 @@ class InquiryGridActions extends StatelessWidget {
   const InquiryGridActions({
     @required this.onTapChat,
     @required this.inquiry,
+    @required this.onTapClear,
   });
 
   final ValueChanged<String> onTapChat;
+  final ValueChanged<String> onTapClear;
   final Inquiry inquiry;
 
   Widget _buildChatButton() {
@@ -99,16 +101,15 @@ class InquiryGridActions extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
-          child: SizedBox(
-            height: 44,
-            child: DPTextButton(
-              theme: DPTextButtonThemes.grey,
-              text: '清除',
-              onPressed: () {
-                print('DEBUG trigger clear inquiry');
-              },
-            ),
+        SizedBox(
+          height: 44,
+          width: 77,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.grey,
+            text: '清除',
+            onPressed: () {
+              onTapClear(inquiry.uuid);
+            },
           ),
         ),
       ],

@@ -15,6 +15,7 @@ class InquiryGrid extends StatelessWidget {
     Key key,
     @required this.onTapAvatar,
     @required this.onTapChat,
+    @required this.onTapClear,
     this.inquiry,
   }) : super(key: key);
 
@@ -22,8 +23,13 @@ class InquiryGrid extends StatelessWidget {
   final ValueChanged<String> onTapAvatar;
 
   /// Girl is interested in this inquiry and want to start an inquiry chat
-  /// with the guy.
+  /// with the guy. The girl still has to wait for the reply of the man.
   final ValueChanged<String> onTapChat;
+
+  /// When male user denies to chat with the girl. Girl can hide that record by
+  /// clicking on `clear` button on the inquiry grid to remove this grid from
+  /// the inquiry list.
+  final ValueChanged<String> onTapClear;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +54,7 @@ class InquiryGrid extends StatelessWidget {
           ),
           InquiryGridActions(
             onTapChat: onTapChat,
+            onTapClear: onTapClear,
             inquiry: inquiry,
           )
         ],

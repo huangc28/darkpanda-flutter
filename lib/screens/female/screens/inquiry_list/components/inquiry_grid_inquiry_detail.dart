@@ -36,8 +36,6 @@ class InquiryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG **~~ ${inquiry.inquiryStatus}');
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

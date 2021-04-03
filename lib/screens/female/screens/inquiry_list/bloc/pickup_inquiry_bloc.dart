@@ -34,6 +34,10 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
     if (event is PickupInquiry) {
       yield* _mapPickupInquiryToState(event);
     }
+
+    if (event is RemovePickedupInquiry) {
+      yield* _removePickedupInquiry(event);
+    }
   }
 
   StreamSubscription<DocumentSnapshot> _createInquirySubscriptionStream(
@@ -95,7 +99,6 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
       // We need to listen to that inquiry record document on firestore. The inquiry has to react to
       // status change on firestore made by male user.
       // We will achieve this by keeping a map of `inquiry_uuid: StreamSubscription`.
-
       final streamSub = _createInquirySubscriptionStream(event.uuid);
       state.inquiryStreamMap[event.uuid] = streamSub;
 
@@ -121,5 +124,25 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
         ),
       );
     }
+  }
+
+  Stream<PickupInquiryState> _removePickedupInquiry(
+      RemovePickedupInquiry event) async* {
+    // Don't forget to remove corresponding firestore subscription stream from `PickedInquiryBloc`.
+    if (state.inquiryStreamMap.containsKey(event.uuid)) {
+      // Stop subscribing to firestore document of that inquiry.
+      state.inquiryStreamMap[event.uuid].cancel();
+
+      state.inquiryStreamMap.remove(event.uuid);
+
+      yield PickupInquiryState.putInquiryStreamMap(
+        state,
+        inquiryStreamMap: state.inquiryStreamMap,
+      );
+    }
+
+    inquiriesBloc.add(
+      RemoveInquiry(inquiryUuid: event.uuid),
+    );
   }
 }

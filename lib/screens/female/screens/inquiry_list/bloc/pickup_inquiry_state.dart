@@ -44,6 +44,15 @@ class PickupInquiryState<E extends AppBaseException> extends Equatable {
           inquiryStreamMap: inquiryStreamMap ?? state.inquiryStreamMap,
         );
 
+  PickupInquiryState.putInquiryStreamMap(
+    PickupInquiryState state, {
+    Map<String, StreamSubscription> inquiryStreamMap,
+  }) : this._(
+          status: state.status,
+          error: state.error,
+          inquiryStreamMap: inquiryStreamMap ?? state.inquiryStreamMap,
+        );
+
   @override
   List<Object> get props => [
         status,

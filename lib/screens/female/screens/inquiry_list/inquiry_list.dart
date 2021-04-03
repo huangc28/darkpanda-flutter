@@ -159,6 +159,7 @@ class _InqiuryListState extends State<InqiuryList> {
                         // );
                       },
                       onTapChat: _handleTapChat,
+                      onTapClear: _handleClearInquiry,
                     ),
                     inquiries: state.inquiries,
                   ),
@@ -167,6 +168,15 @@ class _InqiuryListState extends State<InqiuryList> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  _handleClearInquiry(String uuid) {
+    print('DEBUG trigger _handleClearInquiry');
+    BlocProvider.of<PickupInquiryBloc>(context).add(
+      RemovePickedupInquiry(
+        uuid: uuid,
       ),
     );
   }
