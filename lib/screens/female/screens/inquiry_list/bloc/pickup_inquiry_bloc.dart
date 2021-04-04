@@ -47,7 +47,6 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
 
       final res = await apiClient.pickupInquiry(event.uuid);
 
-      print('DEBUG res ${res.body}');
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(res.body),

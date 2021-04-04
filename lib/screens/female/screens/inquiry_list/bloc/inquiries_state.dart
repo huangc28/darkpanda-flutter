@@ -1,14 +1,14 @@
 part of 'inquiries_bloc.dart';
 
-enum FetchInquiryStatus {
-  initial,
-  fetching,
-  fetchFailed,
-  fetched,
-}
+// enum FetchInquiryStatus {
+//   initial,
+//   fetching,
+//   fetchFailed,
+//   fetched,
+// }
 
 class InquiriesState<Error extends AppBaseException> extends Equatable {
-  final FetchInquiryStatus status;
+  final AsyncLoadingStatus status;
   final List<Inquiry> inquiries;
   final int currentPage;
 
@@ -31,7 +31,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
 
   InquiriesState.initial()
       : this._(
-          status: FetchInquiryStatus.initial,
+          status: AsyncLoadingStatus.initial,
           inquiries: [],
           currentPage: 0,
           hasMore: true,
@@ -40,7 +40,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
 
   InquiriesState.fetching(InquiriesState state)
       : this._(
-          status: FetchInquiryStatus.fetching,
+          status: AsyncLoadingStatus.loading,
           inquiries: state.inquiries,
           currentPage: state.currentPage,
           hasMore: state.hasMore,
@@ -51,7 +51,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
     InquiriesState state, {
     Error error,
   }) : this._(
-          status: FetchInquiryStatus.fetchFailed,
+          status: AsyncLoadingStatus.error,
           inquiries: state.inquiries,
           currentPage: state.currentPage,
           error: error ?? state.error,
@@ -64,12 +64,13 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
     List<Inquiry> inquiries,
     int currentPage,
     bool hasMore,
+    Map<String, StreamSubscription<DocumentSnapshot>> inquiryStreamMap,
   }) : this._(
-          status: FetchInquiryStatus.fetched,
+          status: AsyncLoadingStatus.done,
           inquiries: inquiries ?? state.inquiries,
           currentPage: currentPage ?? state.currentPage,
           hasMore: hasMore ?? state.hasMore,
-          inquiryStreamMap: state.inquiryStreamMap,
+          inquiryStreamMap: inquiryStreamMap ?? state.inquiryStreamMap,
         );
 
   InquiriesState.putInquiries(

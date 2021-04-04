@@ -92,21 +92,19 @@ class _InqiuryListState extends State<InqiuryList> {
             ),
             BlocConsumer<InquiriesBloc, InquiriesState>(
               listener: (context, state) {
-                if (state.status == FetchInquiryStatus.initial ||
-                    state.status == FetchInquiryStatus.fetching) {
-                  // Dialogs.showLoadingDialog(context, _keyLoader);
+                if (state.status == AsyncLoadingStatus.initial ||
+                    state.status == AsyncLoadingStatus.loading) {
                   print('fetch inquiries');
                 }
 
-                if (state.status == FetchInquiryStatus.fetched) {
+                if (state.status == AsyncLoadingStatus.done) {
                   _refreshCompleter.complete();
                   _refreshCompleter = Completer();
 
                   print('fetch inquiries done');
-                  // Dialogs.closeLoadingDialog(context);
                 }
 
-                if (state.status == FetchInquiryStatus.fetchFailed) {
+                if (state.status == AsyncLoadingStatus.error) {
                   _refreshCompleter.completeError(state.error);
                   _refreshCompleter = Completer();
 

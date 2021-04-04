@@ -10,6 +10,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/api_client.dart';
 import '../../../models/inquiry.dart';
@@ -62,23 +63,28 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         offset: offset,
       );
 
-      // if response status is not OK, emit fail event
+      // If response status is not OK, emit fail event.
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(resp.body),
         );
       }
 
-      // Normalize response with inquiry model
+      // Normalize response with inquiry model.
       final dataMap = json.decode(resp.body);
+
+      final parsedIqs = dataMap['inquiries']
+          .map<Inquiry>((data) => Inquiry.fromJson(data))
+          .toList();
 
       yield InquiriesState.fetched(
         state,
-        inquiries: dataMap['inquiries']
-            .map<Inquiry>((data) => Inquiry.fromJson(data))
-            .toList(),
+        inquiries: parsedIqs,
         currentPage: event.nextPage,
         hasMore: dataMap['has_more'],
+
+        // We need to subscribe those inquiry with status `asking`. Organize an inquiry subscription map here.
+        inquiryStreamMap: _createInquirySubscriptionStreamMap(parsedIqs),
       );
     } on APIException catch (e) {
       yield InquiriesState.fetchFailed(
@@ -204,6 +210,21 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       state,
       inquiries: filteredInquiries,
     );
+  }
+
+  Map<String, StreamSubscription<DocumentSnapshot>>
+      _createInquirySubscriptionStreamMap(List<Inquiry> inquiries) {
+    Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
+
+    inquiries.forEach(
+      (iq) {
+        if (iq.inquiryStatus == InquiryStatus.asking) {
+          _streamMap[iq.uuid] = _createInquirySubscriptionStream(iq.uuid);
+        }
+      },
+    );
+
+    return _streamMap;
   }
 
   StreamSubscription<DocumentSnapshot> _createInquirySubscriptionStream(
