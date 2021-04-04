@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:developer' as developer;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -41,6 +42,10 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
     if (event is RemoveInquiry) {
       yield* _mapRemoveInquiryToState(event);
+    }
+
+    if (event is AddInquirySubscription) {
+      yield* _mapAddInquirySubscriptionToState(event);
     }
   }
 
@@ -176,6 +181,21 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
   }
 
   Stream<InquiriesState> _mapRemoveInquiryToState(RemoveInquiry event) async* {
+    // Remove inquiry subscription on firestore if the key exists.
+    if (state.inquiryStreamMap.containsKey(event.inquiryUuid)) {
+      developer.log('remove inqiury subscription: ${event.inquiryUuid}');
+
+      // Stop subscribing to firestore document of that inquiry.
+      state.inquiryStreamMap[event.inquiryUuid].cancel();
+
+      state.inquiryStreamMap.remove(event.inquiryUuid);
+
+      yield InquiriesState.putInquiryStreamMap(
+        state,
+        inquiryStreamMap: state.inquiryStreamMap,
+      );
+    }
+
     final filteredInquiries = state.inquiries
         .where((inquiry) => inquiry.uuid != event.inquiryUuid)
         .toList();
@@ -183,6 +203,48 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
     yield InquiriesState.putInquiries(
       state,
       inquiries: filteredInquiries,
+    );
+  }
+
+  StreamSubscription<DocumentSnapshot> _createInquirySubscriptionStream(
+      String inquiryUuid) {
+    return FirebaseFirestore.instance
+        .collection('inquiries')
+        .doc(inquiryUuid)
+        .snapshots()
+        .listen(
+      (DocumentSnapshot snapshot) {
+        // If male user alter the inquiry to either `canceled` or `chatting`, We need to update
+        // the inquiry status in the app to reflect on the screen.
+        _handleInquiryStatusChange(inquiryUuid, snapshot);
+      },
+    );
+  }
+
+  _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
+    String iqStatus = snapshot['status'] as String;
+
+    developer.log(
+        'firestore inquiry changes recieved: ${snapshot.data().toString()}');
+
+    add(
+      UpdateInquiryStatus(
+        inquiryUuid: inquiryUuid,
+        inquiryStatus: iqStatus.toInquiryStatusEnum(),
+      ),
+    );
+  }
+
+  Stream<InquiriesState> _mapAddInquirySubscriptionToState(
+      AddInquirySubscription event) async* {
+    developer.log('add inquiry subscription ${event.uuid}');
+
+    final streamSub = _createInquirySubscriptionStream(event.uuid);
+    state.inquiryStreamMap[event.uuid] = streamSub;
+
+    yield InquiriesState.putInquiryStreamMap(
+      state,
+      inquiryStreamMap: state.inquiryStreamMap,
     );
   }
 }

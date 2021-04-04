@@ -55,3 +55,11 @@ class RemoveInquiry extends InquiriesEvent {
     this.inquiryUuid,
   });
 }
+
+class AddInquirySubscription extends InquiriesEvent {
+  final String uuid;
+
+  const AddInquirySubscription({
+    this.uuid,
+  });
+}

@@ -16,12 +16,17 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
   final bool hasMore;
   final Error error;
 
+  /// This map keeps track of those inquiry record with status `asking`
+  /// on firestore document. The app would react state change on the inquiry made by female or male user.
+  final Map<String, StreamSubscription> inquiryStreamMap;
+
   const InquiriesState._({
     this.status,
     this.inquiries,
     this.currentPage,
     this.hasMore,
     this.error,
+    this.inquiryStreamMap,
   });
 
   InquiriesState.initial()
@@ -30,6 +35,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           inquiries: [],
           currentPage: 0,
           hasMore: true,
+          inquiryStreamMap: {},
         );
 
   InquiriesState.fetching(InquiriesState state)
@@ -38,6 +44,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           inquiries: state.inquiries,
           currentPage: state.currentPage,
           hasMore: state.hasMore,
+          inquiryStreamMap: state.inquiryStreamMap,
         );
 
   InquiriesState.fetchFailed(
@@ -49,6 +56,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           currentPage: state.currentPage,
           error: error ?? state.error,
           hasMore: state.hasMore,
+          inquiryStreamMap: state.inquiryStreamMap,
         );
 
   InquiriesState.fetched(
@@ -61,6 +69,7 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           inquiries: inquiries ?? state.inquiries,
           currentPage: currentPage ?? state.currentPage,
           hasMore: hasMore ?? state.hasMore,
+          inquiryStreamMap: state.inquiryStreamMap,
         );
 
   InquiriesState.putInquiries(
@@ -71,6 +80,18 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
           inquiries: inquiries ?? state.inquiries,
           currentPage: state.currentPage,
           hasMore: state.hasMore,
+          inquiryStreamMap: state.inquiryStreamMap,
+        );
+
+  InquiriesState.putInquiryStreamMap(
+    InquiriesState state, {
+    Map<String, StreamSubscription> inquiryStreamMap,
+  }) : this._(
+          status: state.status,
+          inquiries: state.inquiries,
+          currentPage: state.currentPage,
+          hasMore: state.hasMore,
+          inquiryStreamMap: inquiryStreamMap ?? state.inquiryStreamMap,
         );
 
   @override
@@ -78,5 +99,6 @@ class InquiriesState<Error extends AppBaseException> extends Equatable {
         status,
         inquiries,
         error,
+        inquiryStreamMap,
       ];
 }

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -22,7 +20,9 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
     this.inquiriesBloc,
   })  : assert(apiClient != null),
         assert(inquiriesBloc != null),
-        super(PickupInquiryState.init());
+        super(
+          PickupInquiryState.init(),
+        );
 
   final ApiClient apiClient;
   final InquiriesBloc inquiriesBloc;
@@ -35,38 +35,9 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
       yield* _mapPickupInquiryToState(event);
     }
 
-    if (event is RemovePickedupInquiry) {
-      yield* _removePickedupInquiry(event);
-    }
-  }
-
-  StreamSubscription<DocumentSnapshot> _createInquirySubscriptionStream(
-      String inquiryUuid) {
-    return FirebaseFirestore.instance
-        .collection('inquiries')
-        .doc(inquiryUuid)
-        .snapshots()
-        .listen(
-      (DocumentSnapshot snapshot) {
-        // If male user alter the inquiry to either `canceled` or `chatting`, We need to update
-        // the inquiry status in the app to reflect on the screen.
-        _handleInquiryStatusChange(inquiryUuid, snapshot);
-      },
-    );
-  }
-
-  _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
-    String iqStatus = snapshot['status'] as String;
-
-    developer.log(
-        'firestore inquiry changes recieved: ${snapshot.data().toString()}');
-
-    inquiriesBloc.add(
-      UpdateInquiryStatus(
-        inquiryUuid: inquiryUuid,
-        inquiryStatus: iqStatus.toInquiryStatusEnum(),
-      ),
-    );
+    // if (event is RemovePickedupInquiry) {
+    //   yield* _removePickedupInquiry(event);
+    // }
   }
 
   Stream<PickupInquiryState> _mapPickupInquiryToState(
@@ -76,6 +47,7 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
 
       final res = await apiClient.pickupInquiry(event.uuid);
 
+      print('DEBUG res ${res.body}');
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(res.body),
@@ -99,12 +71,14 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
       // We need to listen to that inquiry record document on firestore. The inquiry has to react to
       // status change on firestore made by male user.
       // We will achieve this by keeping a map of `inquiry_uuid: StreamSubscription`.
-      final streamSub = _createInquirySubscriptionStream(event.uuid);
-      state.inquiryStreamMap[event.uuid] = streamSub;
+      inquiriesBloc.add(
+        AddInquirySubscription(
+          uuid: event.uuid,
+        ),
+      );
 
       PickupInquiryState.loaded(
         state,
-        inquiryStreamMap: state.inquiryStreamMap,
       );
     } on APIException catch (err) {
       yield PickupInquiryState.loadFailed(
@@ -124,25 +98,5 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
         ),
       );
     }
-  }
-
-  Stream<PickupInquiryState> _removePickedupInquiry(
-      RemovePickedupInquiry event) async* {
-    // Don't forget to remove corresponding firestore subscription stream from `PickedInquiryBloc`.
-    if (state.inquiryStreamMap.containsKey(event.uuid)) {
-      // Stop subscribing to firestore document of that inquiry.
-      state.inquiryStreamMap[event.uuid].cancel();
-
-      state.inquiryStreamMap.remove(event.uuid);
-
-      yield PickupInquiryState.putInquiryStreamMap(
-        state,
-        inquiryStreamMap: state.inquiryStreamMap,
-      );
-    }
-
-    inquiriesBloc.add(
-      RemoveInquiry(inquiryUuid: event.uuid),
-    );
   }
 }

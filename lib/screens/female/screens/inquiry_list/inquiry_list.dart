@@ -173,10 +173,9 @@ class _InqiuryListState extends State<InqiuryList> {
   }
 
   _handleClearInquiry(String uuid) {
-    print('DEBUG trigger _handleClearInquiry');
-    BlocProvider.of<PickupInquiryBloc>(context).add(
-      RemovePickedupInquiry(
-        uuid: uuid,
+    BlocProvider.of<InquiriesBloc>(context).add(
+      RemoveInquiry(
+        inquiryUuid: uuid,
       ),
     );
   }
