@@ -6,10 +6,12 @@ class InquiryGridActions extends StatelessWidget {
     @required this.onTapChat,
     @required this.inquiry,
     @required this.onTapClear,
+    @required this.onTapCheckProfile,
   });
 
   final ValueChanged<String> onTapChat;
   final ValueChanged<String> onTapClear;
+  final ValueChanged<String> onTapCheckProfile;
   final Inquiry inquiry;
 
   Widget _buildChatButton() {
@@ -72,7 +74,7 @@ class InquiryGridActions extends StatelessWidget {
             child: DPTextButton(
               theme: DPTextButtonThemes.grey,
               onPressed: () {
-                print('DEBUG trigger hide');
+                onTapCheckProfile(inquiry.inquirer.uuid);
               },
               text: '看他檔案',
             ),

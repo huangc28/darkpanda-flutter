@@ -145,6 +145,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
         inquiries: appended,
         currentPage: state.currentPage + 1,
         hasMore: dataMap['has_more'],
+        inquiryStreamMap: _createInquirySubscriptionStreamMap(appended),
       );
     } on APIException catch (e) {
       yield InquiriesState.fetchFailed(

@@ -1,4 +1,4 @@
-part of 'inquirer_profile.dart';
+part of '../inquirer_profile.dart';
 
 abstract class BaseLabel<V> {
   String get label;

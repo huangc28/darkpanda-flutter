@@ -1,4 +1,4 @@
-part of 'inquirer_profile.dart';
+part of '../inquirer_profile.dart';
 
 class InquirerProfileTabs extends StatefulWidget {
   InquirerProfileTabs({

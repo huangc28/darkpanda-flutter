@@ -7,15 +7,22 @@ import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/components/dialogs.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/image_gallery.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import './models/historical_service.dart';
 import './bloc/load_user_images_bloc.dart';
 import './bloc/load_historical_services_bloc.dart';
+import './components/Tag.dart';
+import '../../screen_arguments/args.dart';
 
-part 'inquirer_profile_status_bar.dart';
-part 'inquirer_profile_tabs.dart';
-part 'inquirer_profile_images.dart';
-part 'inquirer_profile_services.dart';
+part 'components/inquirer_profile_status_bar.dart';
+part 'components/inquirer_profile_tabs.dart';
+part 'components/inquirer_profile_images.dart';
+part 'components/inquirer_profile_services.dart';
+part 'components/inquirer_description.dart';
+part 'components/inquirer_gallery_image.dart';
+part 'components/inquirer_comment_card.dart';
 
 enum ProfileTabs {
   images,
@@ -29,13 +36,14 @@ Map<ProfileTabs, ValueKey> ProfileTabKey = {
 
 class InquirerProfile extends StatefulWidget {
   const InquirerProfile({
+    this.args,
     this.uuid,
     this.loadUserBloc,
   });
 
   final String uuid;
-
   final LoadUserBloc loadUserBloc;
+  final InquirerProfileArguments args;
 
   @override
   _InquirerProfileState createState() => _InquirerProfileState();
@@ -73,87 +81,193 @@ class _InquirerProfileState extends State<InquirerProfile>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appBarUserame),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(
+          95.0,
+        ),
+        child: AppBar(
+          flexibleSpace: Image(
+            image: NetworkImage(
+                'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg'),
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
-      body: BlocConsumer<LoadUserBloc, LoadUserState>(
-        listener: (context, state) {
-          if (state.status == LoadUserStatus.initial ||
-              state.status == LoadUserStatus.loading) {
-            Dialogs.showLoadingDialog(context, _keyLoader);
-          }
-
-          if (state.status == LoadUserStatus.loadFailed) {
-            Navigator.of(context, rootNavigator: true).pop();
-
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error.message),
-              ),
-            );
-          }
-
-          if (state.status == LoadUserStatus.loaded) {
-            setState(() {
-              appBarUserame = state.userProfile.username;
-            });
-
-            Navigator.of(context, rootNavigator: true).pop();
-          }
-        },
-        builder: (context, state) {
-          if (state.status == LoadUserStatus.loading ||
-              state.status == LoadUserStatus.initial) {
-            return Container(
-              width: 0,
-              height: 0,
-            );
-          }
-
-          if (state.status == LoadUserStatus.loadFailed) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error.message),
-              ),
-            );
-          }
-          return Column(
-            children: [
-              _buildUserStatusRow(state.userProfile),
-              _buildDescriptionRow(state.userProfile.description),
-              _buildSendMessageRow(),
-              InquirerProfileTabs(
-                tabController: _tabController,
-                tabKeys: [
-                  ProfileTabKey[ProfileTabs.images],
-                  ProfileTabKey[ProfileTabs.transactions],
-                ],
-                onTab: _handleOnTab,
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    BlocBuilder<LoadUserImagesBloc, LoadUserImagesState>(
-                      builder: (context, state) => InquirerProfileImages(
-                        images: state.userImages,
-                        onLoadMoreImages: _handleOnLoadMoreImages,
-                        onTapImage: (int index) =>
-                            _handleTapImage(index, state.userImages),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Name bar with rating stars.
+                Container(
+                  padding: EdgeInsets.only(
+                    top: 20,
+                    left: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Brat',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      RatingBarIndicator(
+                        unratedColor: Colors.grey,
+                        rating: 3,
+                        direction: Axis.horizontal,
+                        itemCount: 5,
+                        itemSize: 20,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Container(
+                  padding: EdgeInsets.only(
+                    top: 12,
+                    left: 16,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Tags: age, height, weight.
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Tag(
+                          text: '22歲',
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Tag(
+                          text: '188cm',
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Tag(
+                          text: '70kg',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Inquirer description.
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 17,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '女生們看的真的不只是長相，尤其是想要追求一段長期 關係的女生，只要順眼，大部分女生更在乎的是你到底是一個什麼樣的人。',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Inquirer image scroll view.
+                Container(
+                  padding: EdgeInsets.only(top: 17),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: InquirerGalleryImage(
+                            src:
+                                'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg',
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: InquirerGalleryImage(
+                            src:
+                                'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg',
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: InquirerGalleryImage(
+                            src:
+                                'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg',
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: InquirerGalleryImage(
+                            src:
+                                'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg',
+                          ),
+                        ),
+                      ],
                     ),
-                    BlocBuilder<LoadHistoricalServicesBloc,
-                        LoadHistoricalServicesState>(
-                      builder: (context, state) => InquirerProfileServices(
-                        services: state.historicalServices,
-                      ),
-                    )
+                  ),
+                ),
+
+                // Comments list.
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 40,
+                    horizontal: 16,
+                  ),
+                  child: Text(
+                    '評價(13)',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 22),
+                Column(
+                  children: [
+                    Container(
+                        child: InquirerCommentCard(),
+                        margin: EdgeInsets.only(bottom: 20)),
+                    Container(
+                        child: InquirerCommentCard(),
+                        margin: EdgeInsets.only(bottom: 20)),
                   ],
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

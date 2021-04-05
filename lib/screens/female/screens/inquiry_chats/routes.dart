@@ -12,11 +12,10 @@ class InquiryChatsRoutes extends BaseRoutes {
   // Page of specific chatroom chatroom.
   static const chatroom = '/chatroom';
 
-  Map<String, WidgetBuilder> routeBuilder(BuildContext context,
-      [Map<String, dynamic> args]) {
+  Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
       InquiryChatsRoutes.root: (context) => ChatRooms(
-            onPush: (String routeName, [Map<String, dynamic> args]) => push(
+            onPush: (String routeName, [Object args]) => push(
               context,
               routeName,
               args,

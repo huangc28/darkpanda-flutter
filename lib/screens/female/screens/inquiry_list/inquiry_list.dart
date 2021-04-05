@@ -9,13 +9,14 @@ import './bloc/inquiries_bloc.dart';
 import './bloc/pickup_inquiry_bloc.dart';
 import './components/inquiry_grid.dart';
 import './components/inquiry_list.dart';
+import './screen_arguments/args.dart';
 
 typedef OnPushInquiryDetail = void Function(
-    String routeName, Map<String, dynamic> args);
+    String routeName, InquirerProfileArguments args);
 
 // TODOs:
 //   - Complete `check profile` function.
-//   - Complete `hide inquiry` function when pickup is denied.
+//   - Complete `hide inquiry` function when pickup is denied. [ok]
 class InqiuryList extends StatefulWidget {
   const InqiuryList({
     this.onPush,
@@ -147,17 +148,18 @@ class _InqiuryListState extends State<InqiuryList> {
                     },
                     inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
                       inquiry: inquiry,
-                      onTapAvatar: (String uuid) {
-                        print('DEBUG trigger on push avatar');
-                        // widget.onPush(
-                        //   InquiriesRoutes.inquirerProfile,
-                        //   {
-                        //     'uuid': uuid,
-                        //   },
-                        // );
-                      },
                       onTapChat: _handleTapChat,
                       onTapClear: _handleClearInquiry,
+                      onTapCheckProfile: (String userUuid) {
+                        print('trigger onTapCheckProfile ${userUuid}');
+
+                        widget.onPush(
+                          '/inquirer-profile',
+                          InquirerProfileArguments(
+                            uuid: userUuid,
+                          ),
+                        );
+                      },
                     ),
                     inquiries: state.inquiries,
                   ),

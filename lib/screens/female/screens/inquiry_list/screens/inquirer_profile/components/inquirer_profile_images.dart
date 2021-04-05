@@ -1,4 +1,4 @@
-part of 'inquirer_profile.dart';
+part of '../inquirer_profile.dart';
 
 class InquirerProfileImages extends StatelessWidget {
   const InquirerProfileImages({

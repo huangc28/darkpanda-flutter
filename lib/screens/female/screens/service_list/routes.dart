@@ -8,7 +8,7 @@ class ServiceRoutes extends BaseRoutes {
   static const root = '/';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context,
-          [Map<String, dynamic> args]) =>
+          [Object args]) =>
       {
         ServiceRoutes.root: (context) => ServiceList(),
       };

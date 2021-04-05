@@ -1,4 +1,4 @@
-part of 'inquirer_profile.dart';
+part of '../inquirer_profile.dart';
 
 class InquirerProfileServices extends StatelessWidget {
   const InquirerProfileServices({

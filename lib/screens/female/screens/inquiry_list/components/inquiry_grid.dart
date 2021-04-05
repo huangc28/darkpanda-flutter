@@ -13,14 +13,13 @@ part 'inquiry_grid_actions.dart';
 class InquiryGrid extends StatelessWidget {
   const InquiryGrid({
     Key key,
-    @required this.onTapAvatar,
     @required this.onTapChat,
     @required this.onTapClear,
+    @required this.onTapCheckProfile,
     this.inquiry,
   }) : super(key: key);
 
   final Inquiry inquiry;
-  final ValueChanged<String> onTapAvatar;
 
   /// Girl is interested in this inquiry and want to start an inquiry chat
   /// with the guy. The girl still has to wait for the reply of the man.
@@ -30,6 +29,10 @@ class InquiryGrid extends StatelessWidget {
   /// clicking on `clear` button on the inquiry grid to remove this grid from
   /// the inquiry list.
   final ValueChanged<String> onTapClear;
+
+  /// Female user can view male user profile on inquiry list. User uuid will be provided
+  /// to `onTapCheckProfile` in order to fetch user profile.
+  final ValueChanged<String> onTapCheckProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,7 @@ class InquiryGrid extends StatelessWidget {
             InquiryGridActions(
               onTapChat: onTapChat,
               onTapClear: onTapClear,
+              onTapCheckProfile: onTapCheckProfile,
               inquiry: inquiry,
             )
           ],
