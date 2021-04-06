@@ -14,7 +14,7 @@ class LoadUserState<E extends AppBaseException> extends Equatable {
     this.error,
   });
 
-  final LoadUserStatus status;
+  final AsyncLoadingStatus status;
 
   final UserProfile userProfile;
 
@@ -22,24 +22,24 @@ class LoadUserState<E extends AppBaseException> extends Equatable {
 
   const LoadUserState.initial()
       : this._(
-          status: LoadUserStatus.initial,
+          status: AsyncLoadingStatus.initial,
         );
 
   const LoadUserState.loading()
       : this._(
-          status: LoadUserStatus.loading,
+          status: AsyncLoadingStatus.loading,
         );
 
   const LoadUserState.loadFailed(E error)
       : this._(
-          status: LoadUserStatus.loadFailed,
+          status: AsyncLoadingStatus.error,
           error: error,
         );
 
   const LoadUserState.loaded({
     UserProfile userProfile,
   }) : this._(
-          status: LoadUserStatus.loaded,
+          status: AsyncLoadingStatus.done,
           userProfile: userProfile,
         );
   @override

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'package:darkpanda_flutter/components/loading_icon.dart';
+
 enum DPTextButtonThemes {
   pink,
   purple,
@@ -105,10 +107,7 @@ class _DPTextButtonState extends State<DPTextButton> {
   Widget _buildSpinner() {
     return Container(
       height: 30.0,
-      child: SpinKitCircle(
-        color: Colors.white,
-        size: 30,
-      ),
+      child: LoadingIcon(),
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../models/user_profile.dart';
 
