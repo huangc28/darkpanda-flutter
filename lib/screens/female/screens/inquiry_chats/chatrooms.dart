@@ -25,13 +25,17 @@ class ChatRooms extends StatefulWidget {
 class _ChatRoomsState extends State<ChatRooms> {
   @override
   void initState() {
+    print('DEBUG 41 initState');
     BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+
+    print('DEBUG 42 initState');
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('hello chatrooms');
     return SafeArea(
       child: Scaffold(
         body: BlocBuilder<InquiryChatroomsBloc, InquiryChatroomsState>(
@@ -79,7 +83,10 @@ class _ChatRoomsState extends State<ChatRooms> {
 
     // Dispatch fetch chatroom messages
     // After messages are fetched, redirect to chatroom.
-    Navigator.of(context, rootNavigator: true).pushNamed(
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).pushNamed(
       MainRoutes.chatroom,
       arguments: ChatroomScreenArguments(
         channelUUID: channelUUID,

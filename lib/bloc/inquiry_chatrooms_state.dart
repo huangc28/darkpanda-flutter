@@ -1,12 +1,5 @@
 part of 'inquiry_chatrooms_bloc.dart';
 
-enum FetchInquiryChatroomStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   final List<Chatroom> chatrooms;
   final E error;
@@ -14,7 +7,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   /// Key value map of `channel UUID` and corresponding message [StreamSubscription].
   final Map<String, StreamSubscription> privateChatStreamMap;
 
-  final FetchInquiryChatroomStatus status;
+  final AsyncLoadingStatus status;
 
   const InquiryChatroomsState._({
     this.chatrooms,
@@ -27,28 +20,28 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
       : this._(
           chatrooms: [],
           privateChatStreamMap: {},
-          status: FetchInquiryChatroomStatus.initial,
+          status: AsyncLoadingStatus.initial,
         );
 
   InquiryChatroomsState.loading(InquiryChatroomsState state)
       : this._(
           chatrooms: state.chatrooms,
           privateChatStreamMap: state.privateChatStreamMap,
-          status: FetchInquiryChatroomStatus.loading,
+          status: AsyncLoadingStatus.loading,
         );
 
   InquiryChatroomsState.loadFailed(InquiryChatroomsState state, E err)
       : this._(
           chatrooms: state.chatrooms,
           privateChatStreamMap: state.privateChatStreamMap,
-          status: FetchInquiryChatroomStatus.loadFailed,
+          status: AsyncLoadingStatus.error,
         );
 
   InquiryChatroomsState.updateChatrooms(InquiryChatroomsState state)
       : this._(
           privateChatStreamMap: state.privateChatStreamMap,
           chatrooms: state.chatrooms,
-          status: FetchInquiryChatroomStatus.loaded,
+          status: AsyncLoadingStatus.done,
         );
 
   @override

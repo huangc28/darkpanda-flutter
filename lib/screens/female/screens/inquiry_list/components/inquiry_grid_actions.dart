@@ -7,11 +7,13 @@ class InquiryGridActions extends StatelessWidget {
     @required this.inquiry,
     @required this.onTapClear,
     @required this.onTapCheckProfile,
+    @required this.onTapStartChat,
   });
 
   final ValueChanged<String> onTapChat;
   final ValueChanged<String> onTapClear;
   final ValueChanged<String> onTapCheckProfile;
+  final ValueChanged<String> onTapStartChat;
   final Inquiry inquiry;
 
   Widget _buildChatButton() {
@@ -118,6 +120,33 @@ class InquiryGridActions extends StatelessWidget {
     );
   }
 
+  Widget _buildChatAction() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Text(
+            '對方已同意洽談',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 44,
+          width: 77,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.grey,
+            text: '開始洽談',
+            onPressed: () {
+              onTapStartChat(inquiry.uuid);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -146,9 +175,17 @@ class InquiryGridActions extends StatelessWidget {
           ),
         ),
         // If inquiry status is canceled, we display denied action bar.
-        child: inquiry.inquiryStatus == InquiryStatus.canceled
-            ? _buildDeniedAction()
-            : _buildThreeButtonActions(),
+        child: Builder(builder: (BuildContext context) {
+          if (inquiry.inquiryStatus == InquiryStatus.canceled) {
+            return _buildDeniedAction();
+          }
+
+          if (inquiry.inquiryStatus == InquiryStatus.chatting) {
+            return _buildChatAction();
+          }
+
+          return _buildThreeButtonActions();
+        }),
       ),
     );
   }

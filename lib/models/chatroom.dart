@@ -10,7 +10,7 @@ class Chatroom {
   final String channelUUID;
   final DateTime expiredAt;
   final DateTime createdAt;
-  final Message latestMessage;
+  final List<Message> messages;
 
   const Chatroom({
     this.serviceType,
@@ -22,20 +22,24 @@ class Chatroom {
     this.channelUUID,
     this.expiredAt,
     this.createdAt,
-    this.latestMessage,
+    this.messages,
   });
 
-  factory Chatroom.fromMap(Map<String, dynamic> data) => Chatroom(
-        serviceType: data['service_type'] ?? '',
-        inquiryStatus: data['inquiry_status'] ?? '',
-        inquiryUUID: data['inquiry_uuid'] ?? '',
-        username: data['username'] ?? '',
-        avatarURL: data['avatar_url'] ?? '',
-        channelUUID: data['channel_uuid'] ?? '',
-        expiredAt: DateTime.parse(data['expired_at']),
-        createdAt: DateTime.parse(data['created_at']),
-        latestMessage: data.containsKey('latest_message')
-            ? Message.fromMap(data['latest_message'])
-            : null,
-      );
+  factory Chatroom.fromMap(Map<String, dynamic> data) {
+    // We
+
+    return Chatroom(
+      serviceType: data['service_type'] ?? '',
+      inquiryStatus: data['inquiry_status'] ?? '',
+      inquiryUUID: data['inquiry_uuid'] ?? '',
+      username: data['username'] ?? '',
+      avatarURL: data['avatar_url'] ?? '',
+      channelUUID: data['channel_uuid'] ?? '',
+      expiredAt: DateTime.parse(data['expired_at']),
+      createdAt: DateTime.parse(data['created_at']),
+      // messages: data.containsKey('messages')
+      //     ? Message.fromMap(data['latest_message'])
+      //     : null,
+    );
+  }
 }

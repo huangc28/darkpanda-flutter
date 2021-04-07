@@ -149,6 +149,7 @@ class _InqiuryListState extends State<InqiuryList> {
                     inquiryItemBuilder: (context, inquiry, ___) => InquiryGrid(
                       inquiry: inquiry,
                       onTapChat: _handleTapChat,
+                      onTapStartChat: _handleStartChat,
                       onTapClear: _handleClearInquiry,
                       onTapCheckProfile: (String userUuid) {
                         print('trigger onTapCheckProfile ${userUuid}');
@@ -170,6 +171,13 @@ class _InqiuryListState extends State<InqiuryList> {
         ),
       ),
     );
+  }
+
+  _handleStartChat(String uuid) {
+    print('DEBUG handle start chatting ${uuid}');
+    // We need to redirect female to chatroom and clear the inquiry
+    // item from inquiry list.
+    // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => ChatRooms()));
   }
 
   _handleClearInquiry(String uuid) {

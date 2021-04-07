@@ -9,7 +9,7 @@ class InquiryChatsRoutes extends BaseRoutes {
   // List of inquiry chats.
   static const root = '/';
 
-  // Page of specific chatroom chatroom.
+  // Specific chatroom.
   static const chatroom = '/chatroom';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {

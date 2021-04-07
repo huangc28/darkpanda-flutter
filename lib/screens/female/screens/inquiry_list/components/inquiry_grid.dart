@@ -16,6 +16,7 @@ class InquiryGrid extends StatelessWidget {
     @required this.onTapChat,
     @required this.onTapClear,
     @required this.onTapCheckProfile,
+    @required this.onTapStartChat,
     this.inquiry,
   }) : super(key: key);
 
@@ -33,6 +34,10 @@ class InquiryGrid extends StatelessWidget {
   /// Female user can view male user profile on inquiry list. User uuid will be provided
   /// to `onTapCheckProfile` in order to fetch user profile.
   final ValueChanged<String> onTapCheckProfile;
+
+  /// Male user agrees to chat with the female user. By pressing the `onTapChatting` button,
+  /// Female user would be redirect to inquiry chatroom.
+  final ValueChanged<String> onTapStartChat;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +67,7 @@ class InquiryGrid extends StatelessWidget {
             ),
             InquiryGridActions(
               onTapChat: onTapChat,
+              onTapStartChat: onTapStartChat,
               onTapClear: onTapClear,
               onTapCheckProfile: onTapCheckProfile,
               inquiry: inquiry,

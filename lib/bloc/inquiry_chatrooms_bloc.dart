@@ -11,6 +11,7 @@ import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../models/chatroom.dart';
 
@@ -46,6 +47,7 @@ class InquiryChatroomsBloc
 
   StreamSubscription<QuerySnapshot> _createChatroomSubscriptionStream(
       String channelUUID) {
+    print('DEBUG pc channelUUID ${channelUUID}');
     return FirebaseFirestore.instance
         .collection('private_chats')
         .doc(channelUUID)
@@ -102,7 +104,7 @@ class InquiryChatroomsBloc
       inquiryChatMesssagesBloc.add(
         DispatchMessage(
           chatroomUUID: chatroom.channelUUID,
-          message: chatroom.latestMessage,
+          message: chatroom.messages[0],
         ),
       );
     }
@@ -154,6 +156,7 @@ class InquiryChatroomsBloc
   Stream<InquiryChatroomsState> _mapFetchChatroomToState(
       FetchChatrooms event) async* {
     try {
+      print('DEBUG 31');
       yield InquiryChatroomsState.loading(state);
       final resp = await inquiryChatroomApis.fetchInquiryChatrooms();
 
@@ -165,12 +168,15 @@ class InquiryChatroomsBloc
 
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
+      print('DEBUG respMap ${respMap}');
+
       final chatrooms = respMap['chats']
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      add(AddChatrooms(chatrooms));
+      // add(AddChatrooms(chatrooms));
     } on APIException catch (err) {
+      print('DEBUG ~~** ${err}');
       developer.log(
         err.toString(),
         name: "APIException: fetch_chats_bloc",
@@ -178,6 +184,7 @@ class InquiryChatroomsBloc
 
       yield InquiryChatroomsState.loadFailed(state, err);
     } on AppGeneralExeption catch (e) {
+      print('DEBUG ~~** ${e}');
       developer.log(
         e.toString(),
         name: "AppGeneralExeption: fetch_chats_bloc",

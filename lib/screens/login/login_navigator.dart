@@ -33,7 +33,6 @@ class LoginNavigatorState extends State<LoginNavigator> {
   }
 
   Map<String, WidgetBuilder> _routeBuilder([Object args]) {
-    print('trigger !!! _routeBuilder');
     return {
       '/': (context) => Login(
             onPush: (String routeName, VerifyLoginPinArguments args) =>

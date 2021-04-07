@@ -14,7 +14,9 @@ class InquiryChatroomApis extends BaseClient {
 
       await withTokenFromSecureStore(request);
 
-      return sendWithResponse(request);
+      final res = await sendWithResponse(request);
+
+      return res;
     } catch (e) {
       rethrow;
     }
