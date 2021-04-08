@@ -1,20 +1,18 @@
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 // Any API client requesting darkpanda service should extend this base client.
 // It parses the given backend service origin to [Uri] object and builds correct
 // request `uri` string and append necessary request header.
 abstract class BaseClient extends http.BaseClient {
-  final String host;
-
   String jwtToken;
   Uri baseUri;
 
   BaseClient({
-    this.host = 'http://localhost:3001',
     this.jwtToken,
   }) {
-    baseUri = Uri.parse(this.host);
+    baseUri = Uri.parse('${env['DEV_SERVER_HOST']}:${env['DEV_SERVER_PORT']}');
   }
 
   Uri buildUri(String path, [Map<String, dynamic> queryParams]) {
@@ -39,8 +37,6 @@ abstract class BaseClient extends http.BaseClient {
 
   withTokenFromSecureStore(http.BaseRequest request) async {
     final jwt = await SecureStore().readJwtToken();
-
-    print('DEBUG jwt ${jwt}');
 
     if (jwt == null) {
       throw Exception('jwt token can not be null.');

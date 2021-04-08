@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
@@ -52,8 +51,6 @@ class SendLoginVerifyCodeBloc
   Stream<SendLoginVerifyCodeState> _mapSendLoginVerifyCodeToState(
       SendLoginVerifyCode event) async* {
     try {
-      print('DEBUG trigger******* ${state.numSend}');
-
       yield SendLoginVerifyCodeState.sending(
         SendLoginVerifyCodeState.copyFrom(state),
       );
@@ -92,6 +89,7 @@ class SendLoginVerifyCodeBloc
         );
       }
     } on APIException catch (e) {
+      print('DEBUG err 1 ${e}');
       yield SendLoginVerifyCodeState.sendFailed(
         SendLoginVerifyCodeState.copyFrom(state, error: e),
       );

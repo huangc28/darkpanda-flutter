@@ -16,10 +16,13 @@ class LoginAPIClient extends BaseClient {
         ),
       );
 
+      print('DEBUG req ${request.url}');
+
       final res = await sendWithResponse(request);
 
       return res;
     } catch (err) {
+      print('DEBUG err ${err}');
       throw AppGeneralExeption(
         message: err.toString(),
       );

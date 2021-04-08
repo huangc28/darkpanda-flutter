@@ -80,8 +80,6 @@ class _LoginState extends State<Login> {
                   // which means the user should have numSend equals 0.
                   if (state.status == AsyncLoadingStatus.done &&
                       state.numSend == 1) {
-                    print('DEBUG trigger push /login/verify-login-ping');
-
                     widget.onPush(
                       '/login/verify-login-ping',
                       VerifyLoginPinArguments(

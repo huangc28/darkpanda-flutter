@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 import 'package:darkpanda_flutter/services/apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
@@ -21,7 +21,6 @@ import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 
 import './routes.dart';
-import './config.dart';
 import './theme.dart';
 import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
@@ -33,33 +32,20 @@ void main() async {
   FirebaseApp app = await Firebase.initializeApp();
   assert(app != null);
 
-  final config = await AppConfig.forEnvironment('dev');
+  await DotEnv.load(fileName: '.env');
 
-  runApp(DarkPandaApp(
-    appConfig: config,
-  ));
+  runApp(
+    DarkPandaApp(),
+  );
 }
 
 class DarkPandaApp extends StatelessWidget {
-  DarkPandaApp({
-    this.appConfig,
-  });
-  final AppConfig appConfig;
+  DarkPandaApp();
   final mainRoutes = MainRoutes();
-
-  // Future<void> _writeMockJwtToken() =>
-  //     SecureStore().writeJwtToken(appConfig.token);
 
   @override
   Widget build(BuildContext context) {
     final List<Future> futures = [];
-
-    if (!kReleaseMode) {
-      // futures.addAll([
-      //   _writeMockJwtToken(),
-      // ]);
-      futures.addAll([]);
-    }
 
     return FutureBuilder(
       future: Future.wait(futures),
