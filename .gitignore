@@ -39,3 +39,10 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Environment variable
+.env
+
+# Firebase firestore google service credentials 
+android/app/google-services.json
+
