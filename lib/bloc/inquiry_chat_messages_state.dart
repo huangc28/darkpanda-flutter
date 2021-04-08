@@ -5,14 +5,18 @@ typedef LastMessageGetter = Message Function(String channelUUID);
 class PrivateChatsState<E extends AppBaseException> extends Equatable {
   final E error;
 
+  final bool updateChatRoomMessageStatus;
+
   const PrivateChatsState._({
     this.chatroomMessages,
+    this.updateChatRoomMessageStatus,
     this.error,
   });
 
   PrivateChatsState.init()
       : this._(
           chatroomMessages: {},
+          updateChatRoomMessageStatus: false,
         );
 
   PrivateChatsState.loading(PrivateChatsState state)
@@ -35,6 +39,7 @@ class PrivateChatsState<E extends AppBaseException> extends Equatable {
       Map<String, List<Message>> chatroomMessages)
       : this._(
           chatroomMessages: chatroomMessages,
+          updateChatRoomMessageStatus: false,
         );
 
   final Map<String, List<Message>> chatroomMessages;
@@ -48,12 +53,19 @@ class PrivateChatsState<E extends AppBaseException> extends Equatable {
         return Message(content: '');
       }
 
-      return chatroomMessages[channelUUID].first;
+      chatroomMessages[channelUUID].forEach(
+        (msg) {
+          print('DEBUG list of message ${msg.content}');
+        },
+      );
+
+      return chatroomMessages[channelUUID].last;
     };
   }
 
   @override
   List<Object> get props => [
         chatroomMessages,
+        updateChatRoomMessageStatus,
       ];
 }

@@ -42,12 +42,13 @@ class InquiryChatroomsBloc
       yield* _mapAddChatroomsToState(event);
     } else if (event is FetchChatrooms) {
       yield* _mapFetchChatroomToState(event);
+    } else if (event is PutLatestMessage) {
+      yield* _mapPutLatestMessage(event);
     }
   }
 
   StreamSubscription<QuerySnapshot> _createChatroomSubscriptionStream(
       String channelUUID) {
-    print('DEBUG pc channelUUID ${channelUUID}');
     return FirebaseFirestore.instance
         .collection('private_chats')
         .doc(channelUUID)
@@ -101,24 +102,45 @@ class InquiryChatroomsBloc
     yield InquiryChatroomsState.updateChatrooms(state);
 
     for (final chatroom in event.chatrooms) {
-      inquiryChatMesssagesBloc.add(
-        DispatchMessage(
-          chatroomUUID: chatroom.channelUUID,
-          message: chatroom.messages[0],
-        ),
-      );
+      if (chatroom.messages.length > 0) {
+        // Update latest message for each chatroom.
+        add(
+          PutLatestMessage(
+            channelUUID: chatroom.channelUUID,
+            message: chatroom.messages[0],
+          ),
+        );
+
+        inquiryChatMesssagesBloc.add(
+          DispatchMessage(
+            chatroomUUID: chatroom.channelUUID,
+            message: chatroom.messages[0],
+          ),
+        );
+      }
     }
   }
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
     developer.log('handle private chat on channel ID: $channelUUID');
 
+    final message = Message.fromMap(
+      event.docChanges.first.doc.data(),
+    );
+
+    developer.log('dispatching private chat message: ${message.content}');
+
+    add(
+      PutLatestMessage(
+        channelUUID: channelUUID,
+        message: message,
+      ),
+    );
+
     inquiryChatMesssagesBloc.add(
       DispatchMessage(
         chatroomUUID: channelUUID,
-        message: Message.fromMap(
-          event.docChanges.first.doc.data(),
-        ),
+        message: message,
       ),
     );
   }
@@ -156,7 +178,6 @@ class InquiryChatroomsBloc
   Stream<InquiryChatroomsState> _mapFetchChatroomToState(
       FetchChatrooms event) async* {
     try {
-      print('DEBUG 31');
       yield InquiryChatroomsState.loading(state);
       final resp = await inquiryChatroomApis.fetchInquiryChatrooms();
 
@@ -168,15 +189,14 @@ class InquiryChatroomsBloc
 
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
-      print('DEBUG respMap ${respMap}');
-
       final chatrooms = respMap['chats']
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      // add(AddChatrooms(chatrooms));
+      add(
+        AddChatrooms(chatrooms),
+      );
     } on APIException catch (err) {
-      print('DEBUG ~~** ${err}');
       developer.log(
         err.toString(),
         name: "APIException: fetch_chats_bloc",
@@ -184,7 +204,6 @@ class InquiryChatroomsBloc
 
       yield InquiryChatroomsState.loadFailed(state, err);
     } on AppGeneralExeption catch (e) {
-      print('DEBUG ~~** ${e}');
       developer.log(
         e.toString(),
         name: "AppGeneralExeption: fetch_chats_bloc",
@@ -197,5 +216,19 @@ class InquiryChatroomsBloc
         ),
       );
     }
+  }
+
+  Stream<InquiryChatroomsState> _mapPutLatestMessage(
+      PutLatestMessage event) async* {
+    final newMap = Map.of(state.chatroomLastMessage);
+    newMap[event.channelUUID] = event.message;
+
+    print(
+        'DEBUG new map ${newMap[event.channelUUID] == state.chatroomLastMessage[event.channelUUID]}');
+
+    yield InquiryChatroomsState.putChatroomLatestMessage(
+      state,
+      chatroomLastMessage: newMap,
+    );
   }
 }

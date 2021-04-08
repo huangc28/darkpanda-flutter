@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 
 import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
@@ -62,8 +63,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+      body: SystemUiOverlayLayout(
         child: Container(
           padding: EdgeInsets.fromLTRB(30, 92, 30, 0),
           constraints: BoxConstraints.expand(),

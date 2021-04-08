@@ -28,3 +28,13 @@ class LeaveChatroom extends InquiryChatroomsEvent {
     this.channelUUID,
   });
 }
+
+class PutLatestMessage extends InquiryChatroomsEvent {
+  final String channelUUID;
+  final Message message;
+
+  const PutLatestMessage({
+    this.channelUUID,
+    this.message,
+  });
+}

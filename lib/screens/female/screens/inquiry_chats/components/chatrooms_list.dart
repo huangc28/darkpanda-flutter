@@ -22,6 +22,11 @@ class ChatroomList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 26,
+      ),
       child: LoadMoreScrollable(
         onLoadMore: onLoadMore,
         builder: (context, scrollController) => RefreshIndicator(

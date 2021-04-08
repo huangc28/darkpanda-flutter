@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,110 +42,99 @@ void main() async {
 
 class DarkPandaApp extends StatelessWidget {
   DarkPandaApp();
+
   final mainRoutes = MainRoutes();
 
   @override
   Widget build(BuildContext context) {
-    final List<Future> futures = [];
-
-    return FutureBuilder(
-      future: Future.wait(futures),
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.hasError)
-          return Text('Error occur when initialize App: ${snapshot.error}');
-
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => RegisterBloc(
-                registerAPI: RegisterAPIClient(),
-              ),
-            ),
-            BlocProvider(
-              create: (context) => AuthUserBloc(
-                dataProvider: UserApis(),
-              ),
-            ),
-            // Inquiry chatroom related blocs
-            BlocProvider(
-              create: (context) => InquiryChatMessagesBloc(),
-            ),
-            BlocProvider(
-              create: (context) => InquiryChatroomsBloc(
-                inquiryChatMesssagesBloc:
-                    BlocProvider.of<InquiryChatMessagesBloc>(context),
-                inquiryChatroomApis: InquiryChatroomApis(),
-              ),
-            ),
-            BlocProvider(
-              create: (context) => LoadUserBloc(userApis: UserApis()),
-            ),
-
-            // Current chatroom related blocs
-            BlocProvider(
-              create: (context) => CurrentServiceBloc(
-                serviceApis: ServiceAPIs(),
-              ),
-            ),
-
-            BlocProvider(
-              create: (context) => NotifyServiceConfirmedBloc(),
-            ),
-
-            BlocProvider(
-              create: (context) => CurrentChatroomBloc(
-                inquiryChatroomApis: InquiryChatroomApis(),
-                inquiryChatroomsBloc:
-                    BlocProvider.of<InquiryChatroomsBloc>(context),
-                currentServiceBloc:
-                    BlocProvider.of<CurrentServiceBloc>(context),
-                notifyServiceConfirmedBloc:
-                    BlocProvider.of<NotifyServiceConfirmedBloc>(context),
-              ),
-            ),
-
-            BlocProvider(
-              create: (context) => SendMessageBloc(
-                inquiryChatroomApis: InquiryChatroomApis(),
-              ),
-            ),
-          ],
-          child: SecureStoreProvider(
-            secureStorage: SecureStore().fsc,
-            child: MaterialApp(
-              supportedLocales: [
-                Locale.fromSubtags(languageCode: 'zh'),
-              ],
-
-              /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
-              localizationsDelegates: [
-                GlobalCupertinoLocalizations.delegate,
-                CountryLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              theme: ThemeManager.getTheme(),
-              initialRoute: MainRoutes.login,
-              onGenerateRoute: (settings) {
-                return MaterialPageRoute(
-                  settings: settings,
-                  builder: (context) {
-                    if (settings.name == MainRoutes.chatroom) {
-                      final routeBuilder =
-                          mainRoutes.routeBuilder(context, settings.arguments);
-
-                      return routeBuilder[settings.name](context);
-                    }
-
-                    return mainRoutes
-                        .routeBuilder(context)[settings.name](context);
-                  },
-                );
-              },
-            ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RegisterBloc(
+            registerAPI: RegisterAPIClient(),
           ),
-        );
-      },
+        ),
+        BlocProvider(
+          create: (context) => AuthUserBloc(
+            dataProvider: UserApis(),
+          ),
+        ),
+        // Inquiry chatroom related blocs
+        BlocProvider(
+          create: (context) => InquiryChatMessagesBloc(),
+        ),
+        BlocProvider(
+          create: (context) => InquiryChatroomsBloc(
+            inquiryChatMesssagesBloc:
+                BlocProvider.of<InquiryChatMessagesBloc>(context),
+            inquiryChatroomApis: InquiryChatroomApis(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LoadUserBloc(userApis: UserApis()),
+        ),
+
+        // Current chatroom related blocs
+        BlocProvider(
+          create: (context) => CurrentServiceBloc(
+            serviceApis: ServiceAPIs(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => NotifyServiceConfirmedBloc(),
+        ),
+
+        BlocProvider(
+          create: (context) => CurrentChatroomBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+            inquiryChatroomsBloc:
+                BlocProvider.of<InquiryChatroomsBloc>(context),
+            currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
+            notifyServiceConfirmedBloc:
+                BlocProvider.of<NotifyServiceConfirmedBloc>(context),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => SendMessageBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+          ),
+        ),
+      ],
+      child: SecureStoreProvider(
+        secureStorage: SecureStore().fsc,
+        child: MaterialApp(
+          supportedLocales: [
+            Locale.fromSubtags(languageCode: 'zh'),
+          ],
+
+          /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
+          localizationsDelegates: [
+            GlobalCupertinoLocalizations.delegate,
+            CountryLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          theme: ThemeManager.getTheme(),
+          initialRoute: MainRoutes.login,
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) {
+                if (settings.name == MainRoutes.chatroom) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                }
+
+                return mainRoutes.routeBuilder(context)[settings.name](context);
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

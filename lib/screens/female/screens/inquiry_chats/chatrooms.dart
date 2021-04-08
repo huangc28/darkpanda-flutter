@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/components/loading_icon.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
@@ -25,49 +28,98 @@ class ChatRooms extends StatefulWidget {
 class _ChatRoomsState extends State<ChatRooms> {
   @override
   void initState() {
-    print('DEBUG 41 initState');
     BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
-
-    print('DEBUG 42 initState');
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('hello chatrooms');
-    return SafeArea(
-      child: Scaffold(
-        body: BlocBuilder<InquiryChatroomsBloc, InquiryChatroomsState>(
-          builder: (context, state) {
-            return ChatroomList(
-              chatrooms: state.chatrooms,
-              onRefresh: () {
-                print('DEBUG trigger onRefresh');
-              },
-              onLoadMore: () {
-                print('DEBUG trigger onLoadMore');
-              },
-              chatroomBuilder: (context, chatroom, ___) {
-                final lastMsg =
-                    BlocProvider.of<InquiryChatMessagesBloc>(context)
-                        .state
-                        .lastMessage(chatroom.channelUUID);
+    return Scaffold(
+      body: SystemUiOverlayLayout(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Inquiry chatrooms title
+              Text(
+                '聊天詢問',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  letterSpacing: 0.53,
+                ),
+              ),
+              BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
+                listener: (context, state) {
+                  // Display error in snack bar.
+                  if (state.status == AsyncLoadingStatus.error) {
+                    developer.log(
+                      'failed to fetch inquiry chatroom',
+                      error: state.error,
+                    );
 
-                return ChatroomGrid(
-                  onEnterChat: (chatroomModel.Chatroom chatroom) =>
-                      _onEnterChat(
-                    context,
-                    chatroom.channelUUID,
-                    chatroom.inquiryUUID,
-                    chatroom.serviceType,
-                  ),
-                  chatroom: chatroom,
-                  lastMessage: lastMsg.content,
-                );
-              },
-            );
-          },
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error.message),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state.status == AsyncLoadingStatus.loading ||
+                      state.status == AsyncLoadingStatus.initial) {
+                    return Container(
+                      constraints: BoxConstraints.expand(),
+                      child: Center(
+                        child: LoadingIcon(),
+                      ),
+                    );
+                  }
+
+                  print('DEBUG trigger rerender ~~');
+
+                  return ChatroomList(
+                    chatrooms: state.chatrooms,
+                    onRefresh: () {
+                      print('DEBUG trigger onRefresh');
+                    },
+                    onLoadMore: () {
+                      print('DEBUG trigger onLoadMore');
+                    },
+                    chatroomBuilder: (context, chatroom, ___) {
+                      // final lastMsg =
+                      //     BlocProvider.of<InquiryChatMessagesBloc>(context)
+                      //         .state
+                      //         .lastMessage(chatroom.channelUUID);
+
+                      final lastMsg =
+                          state.chatroomLastMessage[chatroom.channelUUID];
+
+                      print('DEBUG lastMsg ${lastMsg.content}');
+
+                      return Container(
+                        margin: EdgeInsets.only(
+                          bottom: 20,
+                        ),
+                        child: ChatroomGrid(
+                          onEnterChat: (chatroomModel.Chatroom chatroom) =>
+                              _onEnterChat(
+                            context,
+                            chatroom.channelUUID,
+                            chatroom.inquiryUUID,
+                            chatroom.serviceType,
+                          ),
+                          chatroom: chatroom,
+                          lastMessage: lastMsg.content,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

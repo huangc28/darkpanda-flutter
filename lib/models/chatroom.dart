@@ -26,7 +26,18 @@ class Chatroom {
   });
 
   factory Chatroom.fromMap(Map<String, dynamic> data) {
-    // We
+    // We need to parse the message and push them into a list.
+    // Since we are fetching chatroom list here, each chatroom should
+    // only have the latest message in the list or no message
+    // at all.
+
+    List<Message> messages = [];
+
+    if (data.containsKey('messages')) {
+      messages = data['messages'].map<Message>((msg) {
+        return Message.fromMap(msg);
+      }).toList();
+    }
 
     return Chatroom(
       serviceType: data['service_type'] ?? '',
@@ -37,9 +48,7 @@ class Chatroom {
       channelUUID: data['channel_uuid'] ?? '',
       expiredAt: DateTime.parse(data['expired_at']),
       createdAt: DateTime.parse(data['created_at']),
-      // messages: data.containsKey('messages')
-      //     ? Message.fromMap(data['latest_message'])
-      //     : null,
+      messages: messages,
     );
   }
 }
