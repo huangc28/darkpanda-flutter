@@ -10,7 +10,7 @@ import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/image_gallery.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/components/loading_icon.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 
 import './models/historical_service.dart';
 import './bloc/load_user_images_bloc.dart';
@@ -101,9 +101,7 @@ class _InquirerProfileState extends State<InquirerProfile>
             // If is loading user profile, display loading page.
             if (state.status == AsyncLoadingStatus.loading ||
                 state.status == AsyncLoadingStatus.initial) {
-              return Center(
-                child: LoadingIcon(),
-              );
+              return LoadingScreen();
             }
 
             if (state.status == AsyncLoadingStatus.error) {

@@ -38,3 +38,7 @@ class PutLatestMessage extends InquiryChatroomsEvent {
     this.message,
   });
 }
+
+class ClearInquiryChatList extends InquiryChatroomsEvent {
+  const ClearInquiryChatList();
+}

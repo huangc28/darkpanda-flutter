@@ -30,6 +30,14 @@ class InquiryChatroomsBloc
   final InquiryChatMessagesBloc inquiryChatMesssagesBloc;
   final InquiryChatroomApis inquiryChatroomApis;
 
+  /// We found that we will receive an initial event message we subscribe to firestore document.
+  /// This message is the first message in the chatroom and would override the latest message
+  /// we retrieved from the backend. It causes the chatroom list to display the first message instead
+  /// of the latest message. `_chatFirstCreateMap` keeps track of initial creation of the scription.
+  /// If a given channel has just created, we ignore the first event if the value is `true`. It then
+  /// toggle the value to `false`. Any subsequent event would trigger the message handler.
+  Map<String, bool> _chatFirstCreateMap = {};
+
   @override
   Stream<InquiryChatroomsState> mapEventToState(
     InquiryChatroomsEvent event,
@@ -55,15 +63,25 @@ class InquiryChatroomsBloc
         .collection('messages')
         .snapshots()
         .listen(
-          (QuerySnapshot snapshot) =>
-              _handlePrivateChatEvent(channelUUID, snapshot),
-        );
+      (QuerySnapshot snapshot) {
+        // Ignore the first event sent from firestore when the subscription first
+        // created. It messes up the displaying the latest message on the chatroom
+        // list.
+        if (_chatFirstCreateMap[channelUUID] == false) {
+          _handlePrivateChatEvent(channelUUID, snapshot);
+        }
+
+        // Toggle the flag to `false` for the subsequent event to trigger the
+        // handler `_handlePrivateChatEvent`.
+        _chatFirstCreateMap[channelUUID] = false;
+      },
+    );
   }
 
   Stream<InquiryChatroomsState> _mapAddChatroomToState(
       AddChatroom event) async* {
     try {
-      // Test the adding a sample user to collection in firestore.
+      // Test adding a sample user to collection in firestore.
       final streamSub =
           _createChatroomSubscriptionStream(event.chatroom.channelUUID);
 
@@ -87,33 +105,42 @@ class InquiryChatroomsBloc
     // if channel uuid exists in the current map.
     for (final chatroom in event.chatrooms) {
       if (state.privateChatStreamMap.containsKey(chatroom.channelUUID)) {
+        print('DEBUG contains key');
+
         continue;
       }
+
+      print('DEBUG no contains key');
 
       // Channel uuid does not exists in map, initiate subscription stream.
       // Store the stream in `privateChatStreamMap`.
       final streamSub = _createChatroomSubscriptionStream(chatroom.channelUUID);
+
+      // Put a flag to indicate that the channel has just been created. Ignore
+      // the first event from firestore subscription.
+      _chatFirstCreateMap[chatroom.channelUUID] = true;
+
       state.privateChatStreamMap[chatroom.channelUUID] = streamSub;
 
       // Insert new chatroom at the start of the chatroom array.
       state.chatrooms.insert(0, chatroom);
     }
+    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
-    yield InquiryChatroomsState.updateChatrooms(state);
+    yield InquiryChatroomsState.updateChatrooms(
+      state,
+      chatrooms: [...event.chatrooms],
+      privateChatStreamMap: newPrivateChatStreamMap,
+    );
 
     for (final chatroom in event.chatrooms) {
       if (chatroom.messages.length > 0) {
+        print('DEBUG latest message ${chatroom.messages[0].content}');
+
         // Update latest message for each chatroom.
         add(
           PutLatestMessage(
             channelUUID: chatroom.channelUUID,
-            message: chatroom.messages[0],
-          ),
-        );
-
-        inquiryChatMesssagesBloc.add(
-          DispatchMessage(
-            chatroomUUID: chatroom.channelUUID,
             message: chatroom.messages[0],
           ),
         );
@@ -123,6 +150,8 @@ class InquiryChatroomsBloc
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
     developer.log('handle private chat on channel ID: $channelUUID');
+
+    // print('DEBUG event metadata ${event.metadata}');
 
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
@@ -222,9 +251,6 @@ class InquiryChatroomsBloc
       PutLatestMessage event) async* {
     final newMap = Map.of(state.chatroomLastMessage);
     newMap[event.channelUUID] = event.message;
-
-    print(
-        'DEBUG new map ${newMap[event.channelUUID] == state.chatroomLastMessage[event.channelUUID]}');
 
     yield InquiryChatroomsState.putChatroomLatestMessage(
       state,

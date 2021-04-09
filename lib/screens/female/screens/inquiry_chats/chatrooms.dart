@@ -9,7 +9,7 @@ import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/components/loading_icon.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
@@ -26,12 +26,12 @@ class ChatRooms extends StatefulWidget {
 }
 
 class _ChatRoomsState extends State<ChatRooms> {
-  @override
-  void initState() {
-    BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+  // @override
+  // void initState() {
+  //   BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
 
-    super.initState();
-  }
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +69,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                 builder: (context, state) {
                   if (state.status == AsyncLoadingStatus.loading ||
                       state.status == AsyncLoadingStatus.initial) {
-                    return Container(
-                      constraints: BoxConstraints.expand(),
-                      child: Center(
-                        child: LoadingIcon(),
-                      ),
-                    );
+                    return LoadingScreen();
                   }
-
-                  print('DEBUG trigger rerender ~~');
 
                   return ChatroomList(
                     chatrooms: state.chatrooms,
@@ -88,11 +81,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                       print('DEBUG trigger onLoadMore');
                     },
                     chatroomBuilder: (context, chatroom, ___) {
-                      // final lastMsg =
-                      //     BlocProvider.of<InquiryChatMessagesBloc>(context)
-                      //         .state
-                      //         .lastMessage(chatroom.channelUUID);
-
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 
 import './bloc/inquiries_bloc.dart';
 import './bloc/pickup_inquiry_bloc.dart';
@@ -33,8 +35,6 @@ class _InqiuryListState extends State<InqiuryList> {
   /// a future based one.
   /// Please refer to [official documentation](https://api.flutter.dev/flutter/dart-async/Completer-class.html)
   Completer<void> _refreshCompleter;
-
-  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   initState() {
@@ -92,40 +92,47 @@ class _InqiuryListState extends State<InqiuryList> {
               child: Container(),
             ),
             BlocConsumer<InquiriesBloc, InquiriesState>(
-              listener: (context, state) {
-                if (state.status == AsyncLoadingStatus.initial ||
-                    state.status == AsyncLoadingStatus.loading) {
-                  print('fetch inquiries');
-                }
+                listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.initial ||
+                  state.status == AsyncLoadingStatus.loading) {}
 
-                if (state.status == AsyncLoadingStatus.done) {
-                  _refreshCompleter.complete();
-                  _refreshCompleter = Completer();
+              if (state.status == AsyncLoadingStatus.done) {
+                _refreshCompleter.complete();
+                _refreshCompleter = Completer();
+              }
 
-                  print('fetch inquiries done');
-                }
+              if (state.status == AsyncLoadingStatus.error) {
+                _refreshCompleter.completeError(state.error);
+                _refreshCompleter = Completer();
 
-                if (state.status == AsyncLoadingStatus.error) {
-                  _refreshCompleter.completeError(state.error);
-                  _refreshCompleter = Completer();
+                developer.log(
+                  'failed to refetch inquiries',
+                  error: state.error,
+                );
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error.message),
-                    ),
-                  );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error.message),
+                  ),
+                );
 
-                  Navigator.of(context, rootNavigator: true).pop();
-                }
+                Navigator.of(context, rootNavigator: true).pop();
+              }
 
-                return null;
-              },
+              return null;
+            },
 
-              // We use `Expanded` widget to make the child `Container` takes over
-              // the rest of the height of the `Column`. The `InquiryList` (`ListView.builder`)
-              // can then render the list of grids utilizing the within the full height container.
-              // @Ref: https://stackoverflow.com/questions/49480051/flutter-dart-exceptions-caused-by-rendering-a-renderflex-overflowed
-              builder: (context, state) => Expanded(
+                // We use `Expanded` widget to make the child `Container` takes over
+                // the rest of the height of the `Column`. The `InquiryList` (`ListView.builder`)
+                // can then render the list of grids utilizing the within the full height container.
+                // @Ref: https://stackoverflow.com/questions/49480051/flutter-dart-exceptions-caused-by-rendering-a-renderflex-overflowed
+                builder: (context, state) {
+              if (state.status == AsyncLoadingStatus.loading ||
+                  state.status == AsyncLoadingStatus.initial) {
+                return LoadingScreen();
+              }
+
+              return Expanded(
                 child: Container(
                   padding: EdgeInsets.only(
                     top: 25,
@@ -152,8 +159,6 @@ class _InqiuryListState extends State<InqiuryList> {
                       onTapStartChat: _handleStartChat,
                       onTapClear: _handleClearInquiry,
                       onTapCheckProfile: (String userUuid) {
-                        print('trigger onTapCheckProfile ${userUuid}');
-
                         widget.onPush(
                           '/inquirer-profile',
                           InquirerProfileArguments(
@@ -165,8 +170,8 @@ class _InqiuryListState extends State<InqiuryList> {
                     inquiries: state.inquiries,
                   ),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),

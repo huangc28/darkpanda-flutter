@@ -30,7 +30,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
 
   InquiryChatroomsState.loading(InquiryChatroomsState state)
       : this._(
-          chatrooms: state.chatrooms,
+          chatrooms: [],
           privateChatStreamMap: state.privateChatStreamMap,
           status: AsyncLoadingStatus.loading,
           chatroomLastMessage: state.chatroomLastMessage,
@@ -44,10 +44,14 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           chatroomLastMessage: state.chatroomLastMessage,
         );
 
-  InquiryChatroomsState.updateChatrooms(InquiryChatroomsState state)
-      : this._(
-          privateChatStreamMap: state.privateChatStreamMap,
-          chatrooms: state.chatrooms,
+  InquiryChatroomsState.updateChatrooms(
+    InquiryChatroomsState state, {
+    List<Chatroom> chatrooms,
+    Map<String, StreamSubscription> privateChatStreamMap,
+  }) : this._(
+          privateChatStreamMap:
+              privateChatStreamMap ?? state.privateChatStreamMap,
+          chatrooms: chatrooms ?? state.chatrooms,
           status: AsyncLoadingStatus.done,
           chatroomLastMessage: state.chatroomLastMessage,
         );
