@@ -44,14 +44,14 @@ class InquiryChatroomsBloc
   ) async* {
     if (event is LeaveChatroom) {
       yield* _mapLeaveChatroomToState(event);
-    } else if (event is AddChatroom) {
-      yield* _mapAddChatroomToState(event);
     } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     } else if (event is FetchChatrooms) {
       yield* _mapFetchChatroomToState(event);
     } else if (event is PutLatestMessage) {
       yield* _mapPutLatestMessage(event);
+    } else if (event is ClearInquiryChatList) {
+      yield* _mapClearInquiryChatListToState(event);
     }
   }
 
@@ -78,39 +78,14 @@ class InquiryChatroomsBloc
     );
   }
 
-  Stream<InquiryChatroomsState> _mapAddChatroomToState(
-      AddChatroom event) async* {
-    try {
-      // Test adding a sample user to collection in firestore.
-      final streamSub =
-          _createChatroomSubscriptionStream(event.chatroom.channelUUID);
-
-      // Store stream so that we can cancel the subscription later.
-      state.privateChatStreamMap[event.chatroom.channelUUID] = streamSub;
-
-      yield InquiryChatroomsState.updateChatrooms(state);
-    } catch (err) {
-      yield InquiryChatroomsState.loadFailed(
-        state,
-        AppGeneralExeption(
-          message: err.toString(),
-        ),
-      );
-    }
-  }
-
   Stream<InquiryChatroomsState> _mapAddChatroomsToState(
       AddChatrooms event) async* {
     // Iterate through list of chatrooms. Skip channel subscription
     // if channel uuid exists in the current map.
     for (final chatroom in event.chatrooms) {
       if (state.privateChatStreamMap.containsKey(chatroom.channelUUID)) {
-        print('DEBUG contains key');
-
         continue;
       }
-
-      print('DEBUG no contains key');
 
       // Channel uuid does not exists in map, initiate subscription stream.
       // Store the stream in `privateChatStreamMap`.
@@ -135,8 +110,6 @@ class InquiryChatroomsBloc
 
     for (final chatroom in event.chatrooms) {
       if (chatroom.messages.length > 0) {
-        print('DEBUG latest message ${chatroom.messages[0].content}');
-
         // Update latest message for each chatroom.
         add(
           PutLatestMessage(
@@ -256,5 +229,10 @@ class InquiryChatroomsBloc
       state,
       chatroomLastMessage: newMap,
     );
+  }
+
+  Stream<InquiryChatroomsState> _mapClearInquiryChatListToState(
+      ClearInquiryChatList event) async* {
+    yield InquiryChatroomsState.clearInqiuryChatList(state);
   }
 }

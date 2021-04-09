@@ -26,12 +26,20 @@ class ChatRooms extends StatefulWidget {
 }
 
 class _ChatRoomsState extends State<ChatRooms> {
-  // @override
-  // void initState() {
-  //   BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+  InquiryChatroomsBloc _inquiryChatroomsBloc;
 
-  //   super.initState();
-  // }
+  /// Emit flutter bloc event in lifecycle `Dispose` https://github.com/felangel/bloc/issues/588.
+  @override
+  void initState() {
+    _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _inquiryChatroomsBloc.add(ClearInquiryChatList());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

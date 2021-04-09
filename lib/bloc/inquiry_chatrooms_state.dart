@@ -66,6 +66,14 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           chatroomLastMessage: chatroomLastMessage ?? state.chatroomLastMessage,
         );
 
+  InquiryChatroomsState.clearInqiuryChatList(InquiryChatroomsState state)
+      : this._(
+          privateChatStreamMap: state.privateChatStreamMap,
+          chatrooms: [],
+          status: state.status,
+          chatroomLastMessage: {},
+        );
+
   @override
   List<Object> get props => [
         status,

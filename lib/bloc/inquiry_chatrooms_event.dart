@@ -9,12 +9,6 @@ abstract class InquiryChatroomsEvent extends Equatable {
 
 class FetchChatrooms extends InquiryChatroomsEvent {}
 
-class AddChatroom extends InquiryChatroomsEvent {
-  final Chatroom chatroom;
-
-  const AddChatroom(this.chatroom) : assert(chatroom != null);
-}
-
 class AddChatrooms extends InquiryChatroomsEvent {
   final List<Chatroom> chatrooms;
 
