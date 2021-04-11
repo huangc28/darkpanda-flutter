@@ -22,10 +22,10 @@ class InquiryChatroomApis extends BaseClient {
     }
   }
 
-  // PerPage int `form:"perpage,default=10"`
+  // PerPage int `form:"perpage,default=15"`
   // Page    int `form:"page,default=0"`
   Future<http.Response> fetchInquiryHistoricalMessages(String channelUUID,
-      [int perPage = 10, page = 1]) async {
+      [int perPage = 15, page = 1]) async {
     try {
       final request = http.Request(
         'GET',

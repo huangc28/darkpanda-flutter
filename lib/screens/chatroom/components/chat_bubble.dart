@@ -30,13 +30,6 @@ class ChatBubble extends StatelessWidget {
             decoration: BoxDecoration(
               color: Color.fromRGBO(119, 81, 255, 1),
               borderRadius: BorderRadius.circular(15),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.withOpacity(0.5),
-              //     spreadRadius: 2,
-              //     blurRadius: 5,
-              //   ),
-              // ],
             ),
             child: richText ?? _buildDefaultText(message.content),
           ),

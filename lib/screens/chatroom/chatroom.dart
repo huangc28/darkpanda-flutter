@@ -199,7 +199,6 @@ class _ChatroomState extends State<Chatroom> {
                       disable: serviceConfirmed,
                       editMessageController: _editMessageController,
                       onSend: () {
-                        print('DEBUG trigger on send ${_message}');
                         // Emit message if the value of _message is not empty
                         if (_message.isEmpty) {
                           return;
