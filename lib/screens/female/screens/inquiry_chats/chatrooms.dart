@@ -92,8 +92,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 
-                      print('DEBUG lastMsg ${lastMsg.content}');
-
                       return Container(
                         margin: EdgeInsets.only(
                           bottom: 20,

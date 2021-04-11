@@ -190,6 +190,8 @@ class CurrentChatroomBloc
         }
       }).toList();
 
+      print('DEBUG ${historicalMessages}');
+
       yield CurrentChatroomState.loaded(state, historicalMessages, state.page);
     } on APIException catch (e) {
       yield CurrentChatroomState.loadFailed(

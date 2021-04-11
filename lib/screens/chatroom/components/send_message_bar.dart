@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SendMessageBar extends StatelessWidget {
+class SendMessageBar extends StatefulWidget {
   const SendMessageBar({
     this.onSend,
     this.editMessageController,
@@ -12,41 +12,91 @@ class SendMessageBar extends StatelessWidget {
   final bool disable;
 
   @override
+  _SendMessageBarState createState() => _SendMessageBarState();
+}
+
+class _SendMessageBarState extends State<SendMessageBar> {
+  bool _showSendButton = false;
+
+  Widget _buildSendIconButton() {
+    return IconButton(
+      icon: Image.asset(
+        'lib/screens/chatroom/assets/send_message.png',
+      ),
+      iconSize: 22,
+      color: Colors.white,
+      onPressed: widget.disable ? null : widget.onSend,
+    );
+  }
+
+  Widget _buildImageGalleryIconButton() {
+    return IconButton(
+      icon: Image.asset(
+        'lib/screens/chatroom/assets/image_gallery.png',
+      ),
+      iconSize: 22,
+      color: Colors.white,
+      onPressed: () {},
+    );
+  }
+
+  Widget _buildSendMessageIconButton() {
+    return IconButton(
+      icon: Icon(Icons.send),
+      iconSize: 22,
+      color: Colors.white,
+      onPressed: widget.onSend,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      height: 60,
-      color: Colors.white,
+      padding: EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 8,
+      ),
+      height: 68,
+      color: Color.fromRGBO(31, 30, 56, 1),
       child: Row(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(0.0),
-            width: 30,
-            child: IconButton(
-              icon: Icon(Icons.photo),
-              iconSize: 25,
-              color: Theme.of(context).primaryColor,
-              onPressed: () {},
-            ),
-          ),
-          SizedBox(
-            width: 15,
-          ),
+          _buildSendIconButton(),
+
+          // Display image Gallery icon.
+          _buildImageGalleryIconButton(),
           Expanded(
             child: TextField(
-              controller: editMessageController,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Send a message..',
+              textAlignVertical: TextAlignVertical.center,
+              controller: widget.editMessageController,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 2, left: 20),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                  Radius.circular(40),
+                )),
+                filled: true,
+                fillColor: Colors.black38,
+                hintText: '輸入訊息',
               ),
               textCapitalization: TextCapitalization.sentences,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              onChanged: (String v) {
+                //  If v has value and is not an empty string, display the send icon.
+                setState(() {
+                  _showSendButton = v.isNotEmpty;
+                });
+              },
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.send),
-            iconSize: 25,
-            color: Theme.of(context).primaryColor,
-            onPressed: disable ? null : onSend,
-          ),
+
+          // Only display sending icon when user is typing.
+          _showSendButton
+              ? _buildSendMessageIconButton()
+              : SizedBox(
+                  width: 25,
+                ),
         ],
       ),
     );

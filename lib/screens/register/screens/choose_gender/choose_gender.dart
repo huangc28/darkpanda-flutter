@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/enums/gender.dart';
 
 import '../../screen_arguments/args.dart';
 import '../../components/step_bar_image.dart';
@@ -86,15 +85,13 @@ class _ChooseGenderState extends State<ChooseGender> {
                               _femaleBtnActive = false;
                             });
                           },
-                          child: Container(
-                            child: _femaleBtnActive
-                                ? Image.asset(
-                                    'assets/male_icon_inactive.png',
-                                  )
-                                : Image.asset(
-                                    'assets/male_icon_active.png',
-                                  ),
-                          ),
+                          child: _femaleBtnActive
+                              ? Image.asset(
+                                  'assets/male_icon_inactive.png',
+                                )
+                              : Image.asset(
+                                  'assets/male_icon_active.png',
+                                ),
                         ),
                       ],
                     ),

@@ -9,6 +9,7 @@ import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
@@ -19,7 +20,7 @@ import 'components/service_settings_sheet.dart';
 
 import '../../models/service_settings.dart';
 
-part 'chatroom_screen_arguments.dart';
+part 'screen_arguments/chatroom_screen_arguments.dart';
 
 class Chatroom extends StatefulWidget {
   const Chatroom({
@@ -37,22 +38,25 @@ class _ChatroomState extends State<Chatroom> {
   final ScrollController _scrollController = ScrollController();
 
   String _message;
+  AuthUser _sender;
   bool serviceConfirmed = false;
 
   @override
   void initState() {
-    super.initState();
-
-    // Fetch inquiry related service if exists
-    BlocProvider.of<CurrentServiceBloc>(context).add(
-      GetCurrentService(
-        inquiryUUID: widget.args.inquiryUUID,
-      ),
-    );
+    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(channelUUID: widget.args.channelUUID),
     );
+
+    super.initState();
+
+    // Fetch inquiry related service if exists
+    // BlocProvider.of<CurrentServiceBloc>(context).add(
+    //   GetCurrentService(
+    //     inquiryUUID: widget.args.inquiryUUID,
+    //   ),
+    // );
 
     _editMessageController.addListener(_handleEditMessage);
   }
@@ -80,8 +84,6 @@ class _ChatroomState extends State<Chatroom> {
 
   @override
   Widget build(BuildContext context) {
-    final sender = BlocProvider.of<AuthUserBloc>(context).state.user;
-
     return BlocConsumer<CurrentChatroomBloc, CurrentChatroomState>(
       listener: (context, state) {
         if (state.status == FetchHistoricalMessageStatus.loadFailed) {
@@ -125,84 +127,96 @@ class _ChatroomState extends State<Chatroom> {
               }),
             ],
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: LoadMoreScrollable(
-                  scrollController: _scrollController,
-                  onLoadMore: () {
-                    BlocProvider.of<CurrentChatroomBloc>(context).add(
-                      FetchMoreHistoricalMessages(
-                        channelUUID: widget.args.channelUUID,
-                      ),
-                    );
-                  },
-                  builder: (context, scrollController) {
-                    return BlocListener<NotifyServiceConfirmedBloc,
-                        NotifyServiceConfirmedState>(
-                      listener: (context, state) {
-                        if (state.confirmed) {
-                          // Lock the message sending button
-                          // Lock the detail setting panel
-                          setState(() {
-                            serviceConfirmed = true;
-                          });
-                        }
-                      },
-                      child: ChatroomWindow(
-                        scrollController: scrollController,
-                        historicalMessages: state.historicalMessages,
-                        currentMessages: state.currentMessages,
-                        builder: (BuildContext context, message) {
-                          // Render different chat bubble based on message type.
-                          if (message is ServiceDetailMessage) {
-                            return ServiceDetailBubble(
-                              isMe: sender.uuid == message.from,
-                              message: message,
-                              onTapMessage: _handleTapServiceSettingMessage,
-                            );
-                          } else if (message is ServiceConfirmedMessage) {
-                            return ConfirmedServiceBubble(
-                              isMe: sender.uuid == message.from,
-                              message: message,
-                            );
-                          } else {
-                            return ChatBubble(
-                              isMe: sender.uuid == message.from,
-                              message: message,
-                            );
-                          }
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              BlocListener<SendMessageBloc, SendMessageState>(
-                listener: (context, state) {
-                  if (state.status == SendMessageStatus.loaded) {
-                    _editMessageController.clear();
-                  }
-                },
-                child: SendMessageBar(
-                  disable: serviceConfirmed,
-                  editMessageController: _editMessageController,
-                  onSend: () {
-                    // Emit message if the value of _message is not empty
-                    if (_message.isEmpty) {
-                      return;
-                    }
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
 
-                    BlocProvider.of<SendMessageBloc>(context).add(
-                      SendTextMessage(
-                        content: _message,
-                        channelUUID: widget.args.channelUUID,
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: LoadMoreScrollable(
+                      scrollController: _scrollController,
+                      onLoadMore: () {
+                        BlocProvider.of<CurrentChatroomBloc>(context).add(
+                          FetchMoreHistoricalMessages(
+                            channelUUID: widget.args.channelUUID,
+                          ),
+                        );
+                      },
+                      builder: (context, scrollController) {
+                        return BlocListener<NotifyServiceConfirmedBloc,
+                            NotifyServiceConfirmedState>(
+                          listener: (context, state) {
+                            if (state.confirmed) {
+                              // Lock the message sending button
+                              // Lock the detail setting panel
+                              setState(() {
+                                serviceConfirmed = true;
+                              });
+                            }
+                          },
+                          child: ChatroomWindow(
+                            scrollController: scrollController,
+                            historicalMessages: state.historicalMessages,
+                            currentMessages: state.currentMessages,
+                            builder: (BuildContext context, message) {
+                              // Render different chat bubble based on message type.
+                              if (message is ServiceDetailMessage) {
+                                return ServiceDetailBubble(
+                                  isMe: _sender.uuid == message.from,
+                                  message: message,
+                                  onTapMessage: _handleTapServiceSettingMessage,
+                                );
+                              } else if (message is ServiceConfirmedMessage) {
+                                return ConfirmedServiceBubble(
+                                  isMe: _sender.uuid == message.from,
+                                  message: message,
+                                );
+                              } else {
+                                return ChatBubble(
+                                  isMe: _sender.uuid == message.from,
+                                  message: message,
+                                );
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  BlocListener<SendMessageBloc, SendMessageState>(
+                    listener: (context, state) {
+                      if (state.status == SendMessageStatus.loaded) {
+                        _editMessageController.clear();
+                      }
+                    },
+                    child: SendMessageBar(
+                      disable: serviceConfirmed,
+                      editMessageController: _editMessageController,
+                      onSend: () {
+                        print('DEBUG trigger on send ${_message}');
+                        // Emit message if the value of _message is not empty
+                        if (_message.isEmpty) {
+                          return;
+                        }
+
+                        BlocProvider.of<SendMessageBloc>(context).add(
+                          SendTextMessage(
+                            content: _message,
+                            channelUUID: widget.args.channelUUID,
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         );
       },
