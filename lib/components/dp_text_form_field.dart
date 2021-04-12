@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 enum DPTextFieldThemes {
   transparent,
   white,
+  inquiryForm,
 }
 
 class ThemeConfig {
@@ -84,27 +85,48 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       errorBorder: InputBorder.none,
     ),
   ),
+  DPTextFieldThemes.inquiryForm: ThemeConfig.setConfig(
+    decoration: InputDecoration(
+      contentPadding: EdgeInsets.only(left: 10),
+      filled: true,
+      fillColor: Color.fromRGBO(243, 244, 246, 1),
+      hintText: '請輸入價格',
+      hintStyle: TextStyle(
+        fontSize: 15,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        borderSide: BorderSide.none,
+      ),
+    ),
+  )
 };
 
 class DPTextFormField extends StatelessWidget {
   const DPTextFormField({
     Key key,
     this.theme = DPTextFieldThemes.transparent,
+    this.textAlignVertical,
     this.hintText = '',
     this.controller,
     this.onSaved,
     this.onChanged,
     this.validator,
     this.keyboardType,
+    this.focusNode,
   }) : super(key: key);
 
   final DPTextFieldThemes theme;
+  final TextAlignVertical textAlignVertical;
   final String hintText;
   final TextEditingController controller;
   final ValueChanged<String> onSaved;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> validator;
   final TextInputType keyboardType;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +136,7 @@ class DPTextFormField extends StatelessWidget {
     );
 
     return TextFormField(
+      textAlignVertical: textAlignVertical,
       controller: controller,
       onChanged: onChanged,
       onSaved: onSaved,
@@ -121,6 +144,7 @@ class DPTextFormField extends StatelessWidget {
       validator: validator,
       style: chosenTheme.style,
       decoration: textFieldDecoration,
+      focusNode: focusNode,
     );
   }
 }

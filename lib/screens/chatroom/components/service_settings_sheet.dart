@@ -31,10 +31,12 @@ class ServiceSettingsSheet extends StatefulWidget {
   const ServiceSettingsSheet({
     this.serviceSettings,
     this.controller,
+    @required this.onTapClose,
   });
 
   final ServiceSettings serviceSettings;
   final SlideUpController controller;
+  final VoidCallback onTapClose;
 
   @override
   _ServiceSettingsSheetState createState() => _ServiceSettingsSheetState();
@@ -120,18 +122,57 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       child: Consumer<SlideUpProvider>(
         builder: (context, provider, child) {
           widget.controller?.providerContext = context;
-
-          print('DEBUG isShow pannel ${provider.isShow}');
-
           return provider.isShow
               ? Container(
-                  height: 200,
+                  height: 571,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            top: 20,
+                            left: 16,
+                            right: 12,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Build inquiry pannel title.
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '發送邀請',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromRGBO(49, 50, 53, 1),
+                                    ),
+                                  ),
+
+                                  // Close edit inquiry panel.
+                                  IconButton(
+                                    onPressed: () {
+                                      widget.onTapClose();
+                                    },
+                                    icon: Icon(Icons.cancel_outlined),
+                                    iconSize: 22,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               : Container();

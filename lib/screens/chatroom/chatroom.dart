@@ -16,8 +16,7 @@ import 'components/confirmed_service_bubble.dart';
 import 'components/service_detail_bubble.dart';
 import 'components/send_message_bar.dart';
 import 'components/chatroom_window.dart';
-import 'components/service_settings_sheet.dart';
-import 'components/slideup_controller.dart';
+import 'components/service_settings/service_settings.dart';
 
 import '../../models/service_settings.dart';
 
@@ -74,7 +73,7 @@ class _ChatroomState extends State<Chatroom>
 
   _initSlideUpAnimation() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 250),
       vsync: this,
     );
 
@@ -185,10 +184,6 @@ class _ChatroomState extends State<Chatroom>
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-
-              if (!_animationController.isDismissed) {
-                _animationController.reverse();
-              }
             },
             child: SafeArea(
               child: Stack(
@@ -222,33 +217,40 @@ class _ChatroomState extends State<Chatroom>
                                       });
                                     }
                                   },
-                                  child: ChatroomWindow(
-                                    scrollController: scrollController,
-                                    historicalMessages:
-                                        state.historicalMessages,
-                                    currentMessages: state.currentMessages,
-                                    builder: (BuildContext context, message) {
-                                      // Render different chat bubble based on message type.
-                                      if (message is ServiceDetailMessage) {
-                                        return ServiceDetailBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                          onTapMessage:
-                                              _handleTapServiceSettingMessage,
-                                        );
-                                      } else if (message
-                                          is ServiceConfirmedMessage) {
-                                        return ConfirmedServiceBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                        );
-                                      } else {
-                                        return ChatBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                        );
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (!_animationController.isDismissed) {
+                                        _animationController.reverse();
                                       }
                                     },
+                                    child: ChatroomWindow(
+                                      scrollController: scrollController,
+                                      historicalMessages:
+                                          state.historicalMessages,
+                                      currentMessages: state.currentMessages,
+                                      builder: (BuildContext context, message) {
+                                        // Render different chat bubble based on message type.
+                                        if (message is ServiceDetailMessage) {
+                                          return ServiceDetailBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                            onTapMessage:
+                                                _handleTapServiceSettingMessage,
+                                          );
+                                        } else if (message
+                                            is ServiceConfirmedMessage) {
+                                          return ConfirmedServiceBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        } else {
+                                          return ChatBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        }
+                                      },
+                                    ),
                                   ),
                                 );
                               },
@@ -287,6 +289,9 @@ class _ChatroomState extends State<Chatroom>
                     position: _offsetAnimation,
                     child: ServiceSettingsSheet(
                       controller: _slideUpController,
+                      onTapClose: () {
+                        _animationController.reverse();
+                      },
                     ),
                   ),
                 ],
@@ -299,10 +304,11 @@ class _ChatroomState extends State<Chatroom>
   }
 
   _handleTapEditInquiry() {
-    // print('DEBUG trigger _handleTapEditInquiry');
-
-    // _slideUpController.toggle();
-    _animationController.forward();
+    if (_animationController.isDismissed) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
   }
 
   _handleTapServiceSettingMessage(ServiceDetailMessage message) async {
