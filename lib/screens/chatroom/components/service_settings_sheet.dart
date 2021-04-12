@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_duration_picker/flutter_duration_picker.dart';
+
+import './slideup_controller.dart';
+import './slideup_provider.dart';
 
 import '../../../models/service_settings.dart';
 
@@ -22,12 +26,15 @@ part 'service_setting_field.dart';
 //   - Add service type field
 // @reference: https://medium.com/flutterdevs/date-and-time-picker-in-flutter-72141e7531c
 // @reference: https://stackoverflow.com/questions/51908187/how-to-make-a-full-screen-dialog-in-flutter
+
 class ServiceSettingsSheet extends StatefulWidget {
   const ServiceSettingsSheet({
     this.serviceSettings,
+    this.controller,
   });
 
   final ServiceSettings serviceSettings;
+  final SlideUpController controller;
 
   @override
   _ServiceSettingsSheetState createState() => _ServiceSettingsSheetState();
@@ -49,8 +56,16 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
 
   @override
   void initState() {
-    _initDefaultServiceSettings();
+    super.initState();
 
+    // Initialze service settings.
+    _initDefaultServiceSettings();
+  }
+
+  _initDefaultServiceSettings() {
+    if (widget.serviceSettings == null) return;
+
+    _serviceSetting = widget.serviceSettings;
     _dateController.text = DateFormat.yMd().format(_serviceSetting.serviceDate);
     _timeController.text = formatDate(
       DateTime(
@@ -69,14 +84,6 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
         _serviceSetting.price != null ? '${_serviceSetting.price}' : null;
 
     _serviceSetting.serviceType = _serviceSetting.serviceType;
-
-    super.initState();
-  }
-
-  _initDefaultServiceSettings() {
-    if (widget.serviceSettings == null) return;
-
-    _serviceSetting = widget.serviceSettings;
   }
 
   String _formatDuration(Duration duration) {
@@ -108,48 +115,27 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _headingRow(context),
-            SizedBox(
-              height: 18,
-            ),
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _buildPriceField(),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      _buildServiceDatePicker(),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      _buildServiceTimePicker(),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      _buildDurationPicker(),
-                      ButtonBar(
-                        children: [
-                          _buildSaveButton(),
-                          _buildCancelButton(),
-                        ],
-                      ),
-                    ],
+    return ChangeNotifierProvider(
+      create: (_) => SlideUpProvider(),
+      child: Consumer<SlideUpProvider>(
+        builder: (context, provider, child) {
+          widget.controller?.providerContext = context;
+
+          print('DEBUG isShow pannel ${provider.isShow}');
+
+          return provider.isShow
+              ? Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ],
-        ),
+                )
+              : Container();
+        },
       ),
     );
   }

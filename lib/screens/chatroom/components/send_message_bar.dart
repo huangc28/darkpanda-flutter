@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 class SendMessageBar extends StatefulWidget {
   const SendMessageBar({
-    this.onSend,
+    @required this.onSend,
+    @required this.onEditInquiry,
     this.editMessageController,
     this.disable = false,
   });
 
   final VoidCallback onSend;
+  final VoidCallback onEditInquiry;
+
   final TextEditingController editMessageController;
   final bool disable;
 
@@ -18,14 +21,14 @@ class SendMessageBar extends StatefulWidget {
 class _SendMessageBarState extends State<SendMessageBar> {
   bool _showSendButton = false;
 
-  Widget _buildSendIconButton() {
+  Widget _buildEditInquiryButton() {
     return IconButton(
       icon: Image.asset(
         'lib/screens/chatroom/assets/send_message.png',
       ),
       iconSize: 22,
       color: Colors.white,
-      onPressed: widget.disable ? null : widget.onSend,
+      onPressed: widget.disable ? null : widget.onEditInquiry,
     );
   }
 
@@ -60,7 +63,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Color.fromRGBO(31, 30, 56, 1),
       child: Row(
         children: <Widget>[
-          _buildSendIconButton(),
+          _buildEditInquiryButton(),
 
           // Display image Gallery icon.
           _buildImageGalleryIconButton(),
