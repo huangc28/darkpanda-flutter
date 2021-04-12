@@ -18,7 +18,6 @@ import 'components/send_message_bar.dart';
 import 'components/chatroom_window.dart';
 import 'components/service_settings_sheet.dart';
 import 'components/slideup_controller.dart';
-import 'components/slideup_provider.dart';
 
 import '../../models/service_settings.dart';
 
