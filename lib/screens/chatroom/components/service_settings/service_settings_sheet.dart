@@ -7,6 +7,7 @@ import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
 import './slideup_controller.dart';
 import './slideup_provider.dart';
@@ -60,33 +61,26 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   TextEditingController _durationController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
 
-  FocusNode _addressFieldFocusNode = FocusNode();
-
   @override
   void initState() {
     super.initState();
-
-    _addressFieldFocusNode.addListener(_navigateToAddressSelector);
 
     // Initialze service settings.
     _initDefaultServiceSettings();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    _addressFieldFocusNode?.dispose();
-  }
-
   _navigateToAddressSelector() async {
-    if (_addressFieldFocusNode.hasPrimaryFocus) {
-      // Push to address selector screen.
-      final addr = await Navigator.push(
-          context, MaterialPageRoute(builder: (context) {}));
+    // Push to address selector screen.
+    final addr = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return AddressSelector();
+        },
+      ),
+    );
 
-      print('DEBUG addr object ${addr}');
-    }
+    print('debug addr object ${addr}');
   }
 
   _initDefaultServiceSettings() {
@@ -192,8 +186,14 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                                       ),
                                       SizedBox(height: 25),
                                       // Focus address field would open a map route letting the user to select an address from google map.
-                                      AddressField(
-                                        focusNode: _addressFieldFocusNode,
+                                      GestureDetector(
+                                        onTap: _navigateToAddressSelector,
+                                        child: Container(
+                                          color: Colors.transparent,
+                                          child: IgnorePointer(
+                                            child: AddressField(),
+                                          ),
+                                        ),
                                       ),
                                       SizedBox(height: 25),
                                       AppointmentTimeField(),

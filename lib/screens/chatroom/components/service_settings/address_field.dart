@@ -27,6 +27,7 @@ class AddressField extends StatelessWidget {
         Container(
           height: 44,
           child: DPTextFormField(
+            readOnly: true,
             focusNode: focusNode,
             controller: controller,
             validator: validator,

@@ -116,6 +116,7 @@ class DPTextFormField extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.focusNode,
+    this.readOnly = false,
   }) : super(key: key);
 
   final DPTextFieldThemes theme;
@@ -127,6 +128,7 @@ class DPTextFormField extends StatelessWidget {
   final ValueChanged<String> validator;
   final TextInputType keyboardType;
   final FocusNode focusNode;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,7 @@ class DPTextFormField extends StatelessWidget {
     );
 
     return TextFormField(
+      readOnly: readOnly,
       textAlignVertical: textAlignVertical,
       controller: controller,
       onChanged: onChanged,
