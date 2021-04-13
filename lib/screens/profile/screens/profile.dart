@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'edit_profile/edit_profile.dart';
+
 class DemoImage {
   final String image;
 
@@ -18,6 +20,48 @@ List demoImageList = [
   ),
   DemoImage(
     image: "assets/male_icon_inactive.png",
+  ),
+];
+
+class DemoReview {
+  final String image;
+  final String name;
+  final String description;
+  final String date;
+  final int rate;
+
+  DemoReview({this.image, this.name, this.description, this.date, this.rate});
+}
+
+List demoReviewList = [
+  DemoReview(
+    image: "assets/logo.png",
+    name: "Jenny",
+    description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
+    date: "2020.05.20",
+    rate: 5,
+  ),
+  DemoReview(
+    image: "assets/logo.png",
+    name: "Sally",
+    description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
+    date: "2021.05.20",
+    rate: 3,
+  ),
+];
+
+class LabelList {
+  final String description;
+
+  LabelList({this.description});
+}
+
+List demoLabelList = [
+  LabelList(
+    description: "身材",
+  ),
+  LabelList(
+    description: "身材",
   ),
 ];
 
@@ -40,7 +84,12 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     ProfileDetail(),
                     MyRating(),
-                    Review(),
+                    Column(
+                      children: List.generate(demoReviewList.length, (index) {
+                        return Review(
+                            context: context, review: demoReviewList[index]);
+                      }),
+                    ),
                   ],
                 ),
               ),
@@ -76,8 +125,13 @@ class _ProfileState extends State<Profile> {
 }
 
 class Review extends StatelessWidget {
+  final context;
+  final DemoReview review;
+
   const Review({
     Key key,
+    this.context,
+    this.review,
   }) : super(key: key);
 
   @override
@@ -101,7 +155,7 @@ class Review extends StatelessWidget {
               children: <Widget>[
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage("assets/logo.png"),
+                  backgroundImage: AssetImage(review.image),
                 ),
                 SizedBox(width: 15),
                 Expanded(
@@ -110,7 +164,7 @@ class Review extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Jenny',
+                        review.name,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -120,11 +174,19 @@ class Review extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Image(
-                            image: AssetImage("assets/edit_profile.png"),
+                          Row(
+                            children: <Widget>[
+                              IconTheme(
+                                data: IconThemeData(
+                                  color: Colors.amber,
+                                  size: 18,
+                                ),
+                                child: StarDisplay(value: review.rate),
+                              ),
+                            ],
                           ),
                           Text(
-                            '2020.05.20',
+                            review.date,
                             style: TextStyle(
                               fontSize: 14,
                               color: Color.fromRGBO(106, 109, 137, 1),
@@ -139,7 +201,7 @@ class Review extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Text(
-              "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
+              review.description,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.white,
@@ -151,54 +213,47 @@ class Review extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Wrap(
-                      children: <Widget>[
-                        SizedBox(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-                            child: Container(
-                              padding:
-                                  EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: Color.fromRGBO(190, 172, 255, 0.3),
-                              ),
-                              child: Text(
-                                '身材',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-                            child: Container(
-                              padding:
-                                  EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: Color.fromRGBO(190, 172, 255, 0.3),
-                              ),
-                              child: Text(
-                                '身材',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      children: List.generate(demoLabelList.length, (index) {
+                        return DescriptionList(label: demoLabelList[index]);
+                      }),
                     ),
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class DescriptionList extends StatelessWidget {
+  final LabelList label;
+
+  const DescriptionList({
+    Key key,
+    this.label,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromRGBO(190, 172, 255, 0.3),
+          ),
+          child: Text(
+            label.description,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
         ),
       ),
     );
@@ -218,7 +273,8 @@ class MyRating extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           image: new DecorationImage(
-            image: new AssetImage('assets/my_rating_background.png'),
+            image: new AssetImage(
+                'lib/screens/profile/assets/my_rating_background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -227,13 +283,46 @@ class MyRating extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    '我的評價(13)',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        height: 7.0,
+                        width: 7.0,
+                        transform: new Matrix4.identity()
+                          ..rotateZ(45 * 3.1415927 / 180),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(254, 226, 136, 1),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        '我的評價(13)',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      IconTheme(
+                        data: IconThemeData(
+                          color: Colors.amber,
+                          size: 18,
+                        ),
+                        child: StarDisplay(value: 3),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '4.2/5',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -334,8 +423,19 @@ class ProfileDetail extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 10),
-                          Image(
-                            image: AssetImage("assets/edit_profile.png"),
+                          InkWell(
+                            onTap: () {
+                              // Navigator.pushNamed(
+                              //     context, ProfileRoutes.editProfile);
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile()),
+                              );
+                            },
+                            child: Image(
+                              image: AssetImage(
+                                  "lib/screens/profile/assets/edit_profile.png"),
+                            ),
                           ),
                         ],
                       ),
@@ -405,7 +505,7 @@ class ProfileDetail extends StatelessWidget {
                   ),
                 ),
                 CircleAvatar(
-                  radius: 20,
+                  radius: 30,
                   backgroundImage: AssetImage("assets/logo.png"),
                 ),
               ],
@@ -436,7 +536,7 @@ class ProfileDetail extends StatelessWidget {
                       child: ImageCard(image: demoImageList[index].image),
                     );
                   }),
-            )
+            ),
           ],
         ),
       ),
@@ -485,6 +585,24 @@ class _ImageCardState extends State<ImageCard> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class StarDisplay extends StatelessWidget {
+  final int value;
+  const StarDisplay({Key key, this.value = 0})
+      : assert(value != null),
+        super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return Icon(
+          index < value ? Icons.star : Icons.star_border,
+        );
+      }),
     );
   }
 }
