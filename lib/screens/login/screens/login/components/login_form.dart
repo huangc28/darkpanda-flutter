@@ -86,28 +86,30 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              '你的用戶名',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                wordSpacing: 0.5,
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '你的用戶名',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  wordSpacing: 0.5,
+                ),
               ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 26,
-        ),
-        _buildForm(),
-      ],
+            ],
+          ),
+          SizedBox(
+            height: 26,
+          ),
+          _buildForm(),
+        ],
+      ),
     );
   }
 

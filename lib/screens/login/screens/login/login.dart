@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
@@ -65,81 +64,90 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SystemUiOverlayLayout(
         child: Container(
-          padding: EdgeInsets.fromLTRB(30, 92, 30, 0),
-          constraints: BoxConstraints.expand(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _buildLogoImage(),
-              SizedBox(height: 26),
-              _buildTitleText(),
-              SizedBox(height: 60),
-              BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
-                listener: (context, state) {
-                  // User send his / her first login verify code on login page
-                  // which means the user should have numSend equals 0.
-                  if (state.status == AsyncLoadingStatus.done &&
-                      state.numSend == 1) {
-                    widget.onPush(
-                      '/login/verify-login-ping',
-                      VerifyLoginPinArguments(
-                        verifyPrefix: state.verifyChar,
-                        uuid: state.uuid,
-                        mobile: state.mobile,
-                        username: _username,
-                      ),
-                    );
-                  }
-                },
-                child: BlocBuilder<SendLoginVerifyCodeBloc,
-                    SendLoginVerifyCodeState>(
-                  builder: (context, state) {
-                    return LoginForm(
-                      loading: state.status == AsyncLoadingStatus.loading,
-                      formKey: _formKey,
-                      onLogin: (String username) {
-                        setState(() {
-                          _username = username;
-                        });
-
-                        // send login verify code
-                        BlocProvider.of<SendLoginVerifyCodeBloc>(context).add(
-                          SendLoginVerifyCodeResetNumSend(
-                            username: username,
+          padding: EdgeInsets.only(
+            left: 30,
+            right: 30,
+          ),
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 92),
+                  _buildLogoImage(),
+                  SizedBox(height: 26),
+                  _buildTitleText(),
+                  SizedBox(height: 60),
+                  BlocListener<SendLoginVerifyCodeBloc,
+                      SendLoginVerifyCodeState>(
+                    listener: (context, state) {
+                      // User send his / her first login verify code on login page
+                      // which means the user should have numSend equals 0.
+                      if (state.status == AsyncLoadingStatus.done &&
+                          state.numSend == 1) {
+                        widget.onPush(
+                          '/login/verify-login-ping',
+                          VerifyLoginPinArguments(
+                            verifyPrefix: state.verifyChar,
+                            uuid: state.uuid,
+                            mobile: state.mobile,
+                            username: _username,
                           ),
                         );
-                      },
-                    );
-                  },
-                ),
-              ),
+                      }
+                    },
+                    child: BlocBuilder<SendLoginVerifyCodeBloc,
+                        SendLoginVerifyCodeState>(
+                      builder: (context, state) {
+                        return LoginForm(
+                          loading: state.status == AsyncLoadingStatus.loading,
+                          formKey: _formKey,
+                          onLogin: (String username) {
+                            setState(() {
+                              _username = username;
+                            });
 
-              /// Use [Expanded] to fill up the rest of the column space
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    height: 44,
-                    child: DPTextButton(
-                      theme: DPTextButtonThemes.purple,
-                      onPressed: () {
-                        Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        ).push(
-                          MaterialPageRoute(
-                            builder: (context) => AuthNavigator(),
-                          ),
+                            // send login verify code
+                            BlocProvider.of<SendLoginVerifyCodeBloc>(context)
+                                .add(
+                              SendLoginVerifyCodeResetNumSend(
+                                username: username,
+                              ),
+                            );
+                          },
                         );
                       },
-                      text: '註冊',
                     ),
                   ),
-                ),
-              ),
 
-              SizedBox(height: 24),
-            ],
+                  /// Use [Expanded] to fill up the rest of the column space
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: 44,
+                        child: DPTextButton(
+                          theme: DPTextButtonThemes.purple,
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).push(
+                              MaterialPageRoute(
+                                builder: (context) => AuthNavigator(),
+                              ),
+                            );
+                          },
+                          text: '註冊',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                ],
+              ),
+            ),
           ),
           decoration: BoxDecoration(
             image: DecorationImage(
