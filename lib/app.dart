@@ -82,6 +82,7 @@ class _AppState extends State<App> {
         _buildOffstageNavigator(TabItem.inquiries),
         _buildOffstageNavigator(TabItem.inquiryChats),
         _buildOffstageNavigator(TabItem.manage),
+        _buildOffstageNavigator(TabItem.profile),
       ],
     );
   }
