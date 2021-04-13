@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/profile/screens/routes.dart';
 import 'package:flutter/material.dart';
 
 import './bottom_navigation.dart';
@@ -11,6 +12,7 @@ final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
   TabItem.inquiryChats: InquiryChatsRoutes.root,
   TabItem.manage: ServiceRoutes.root,
+  TabItem.profile: ProfileRoutes.root,
 };
 
 class TabNavigator extends StatelessWidget {
@@ -32,6 +34,8 @@ class TabNavigator extends StatelessWidget {
 
   final ServiceRoutes _servicesRoutes = ServiceRoutes();
 
+  final ProfileRoutes _profileRoutes = ProfileRoutes();
+
   // Retrieve route builders by current tab item.
   Map<String, WidgetBuilder> _getRouteBuildersByTab(context, TabItem tabItem) {
     if (tabItem == TabItem.inquiries) {
@@ -40,6 +44,8 @@ class TabNavigator extends StatelessWidget {
       return _inquiryChatsRoutes.routeBuilder(context);
     } else if (tabItem == TabItem.manage) {
       return _servicesRoutes.routeBuilder(context);
+    } else if (tabItem == TabItem.profile) {
+      return _profileRoutes.routeBuilder(context);
     }
 
     return {
