@@ -76,7 +76,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children: [
+          children: <Widget>[
             _buildHeader(),
             Expanded(
               child: SingleChildScrollView(
