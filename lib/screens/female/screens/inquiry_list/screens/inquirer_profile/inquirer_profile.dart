@@ -5,16 +5,15 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
-import 'package:darkpanda_flutter/components/dialogs.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-import 'package:darkpanda_flutter/components/image_gallery.dart';
+// import 'package:darkpanda_flutter/components/image_gallery.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 
 import './models/historical_service.dart';
-import './bloc/load_user_images_bloc.dart';
-import './bloc/load_historical_services_bloc.dart';
+// import './bloc/load_user_images_bloc.dart';
+// import './bloc/load_historical_services_bloc.dart';
 import './components/Tag.dart';
 import '../../screen_arguments/args.dart';
 
