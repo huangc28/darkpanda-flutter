@@ -2,6 +2,7 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
 import 'package:flutter/material.dart';
 
@@ -104,9 +105,16 @@ class _SettingState extends State<Setting> {
                         ),
                       ],
                     ),
-                    Image(
-                      image:
-                          AssetImage("lib/screens/setting/assets/feedback.png"),
+                    InkWell(
+                      child: Image(
+                        image: AssetImage(
+                            "lib/screens/setting/assets/feedback.png"),
+                      ),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(builder: (context) => TopupDp()),
+                        );
+                      },
                     ),
                     Padding(
                       padding:
@@ -118,7 +126,7 @@ class _SettingState extends State<Setting> {
                           child: DPTextButton(
                             theme: DPTextButtonThemes.purple,
                             onPressed: () {},
-                            text: '更新',
+                            text: '登出',
                           ),
                         ),
                       ),
