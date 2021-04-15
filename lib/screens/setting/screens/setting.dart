@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
@@ -77,16 +78,24 @@ class _SettingState extends State<Setting> {
                             );
                           },
                         ),
-                        Image(
-                          image: AssetImage(
-                              "lib/screens/setting/assets/bank_account.png"),
+                        InkWell(
+                          child: Image(
+                            image: AssetImage(
+                                "lib/screens/setting/assets/bank_account.png"),
+                          ),
+                          onTap: () {
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                  builder: (context) => BankAccount()),
+                            );
+                          },
                         ),
                         InkWell(
                           child: Image(
                             image: AssetImage(
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
-                           onTap: () {
+                          onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(
                                   builder: (context) => BlackList()),
