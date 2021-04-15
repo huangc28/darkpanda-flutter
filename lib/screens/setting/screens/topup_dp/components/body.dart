@@ -1,9 +1,19 @@
+import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/args.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
 import 'package:flutter/material.dart';
 
 import '../../routes.dart';
 
 class Body extends StatefulWidget {
+  const Body({
+    this.args,
+    this.onPush,
+  });
+
+  final TopUpDpArguments args;
+  final OnPush onPush;
+
   @override
   _BodyState createState() => _BodyState();
 }
@@ -100,9 +110,15 @@ class _BodyState extends State<Body> {
                               rootNavigator: true,
                             ).push(
                               MaterialPageRoute(
-                                builder: (context) => TopupPayment(),
+                                builder: (context) => TopupPayment(amount: 500),
                               ),
                             );
+                            // widget.onPush(
+                            //   '/topup-payment',
+                            //   TopUpDpArguments(
+                            //     amount: 500,
+                            //   ),
+                            // );
                           },
                           child: Row(
                             children: <Widget>[
@@ -148,7 +164,17 @@ class _BodyState extends State<Body> {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TopupPayment(amount: 5000),
+                              ),
+                            );
+                          },
                           child: Row(
                             children: <Widget>[
                               Expanded(

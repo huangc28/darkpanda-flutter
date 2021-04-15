@@ -2,6 +2,11 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:flutter/material.dart';
 
 class TopupPayment extends StatefulWidget {
+  const TopupPayment({
+    this.amount,
+  });
+
+  final int amount;
   @override
   _TopupPaymentState createState() => _TopupPaymentState();
 }
@@ -58,7 +63,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                                 ),
                               ),
                               Text(
-                                "2000",
+                                widget.amount.toString(),
                                 style: TextStyle(
                                   fontSize: 46,
                                   color: Colors.white,
