@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +19,7 @@ import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
+import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 
 import './routes.dart';
 import './theme.dart';
@@ -97,10 +97,12 @@ class DarkPandaApp extends StatelessWidget {
         ),
 
         BlocProvider(
-          create: (context) => SendMessageBloc(
+          create: (_) => SendMessageBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
           ),
         ),
+
+        BlocProvider(create: (_) => GetInquiryBloc()),
       ],
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,

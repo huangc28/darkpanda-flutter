@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
+import 'package:darkpanda_flutter/screens/address_selector/screen_arguments/address_selector_args.dart';
 
 import './slideup_controller.dart';
 import './slideup_provider.dart';

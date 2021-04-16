@@ -21,6 +21,7 @@ samples, guidance on mobile development, and a full API reference.
 - [How to fix form overflow problem](https://www.google.com/search?q=flutter+from+keyboard+overflow&rlz=1C5CHFA_enTW891TW891&oq=flutter+keyboard+form+o&aqs=chrome.1.69i57j0i10i22i30j69i60.11468j0j7&sourceid=chrome&ie=UTF-8#kpvalbx=_6Gd0YMewBrXLmAXXtJe4DA12)
 - [Slideup panel animation](https://nhancv.medium.com/simple-slide-up-widget-animation-56b14e0189c5)
 - [Enable android map SDK on GCP before using the sdk in flutter](https://console.developers.google.com/google/maps-apis/overview?project=studious-optics-233010)
+- [How to distribute IOS app outside of app store?](https://medium.com/globant/ios-in-house-app-distribution-on-own-server-ca23e793670a)
 
 ## TODOs 
 

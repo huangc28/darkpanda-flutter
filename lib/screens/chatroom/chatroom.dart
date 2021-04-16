@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
+import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
@@ -59,6 +60,9 @@ class _ChatroomState extends State<Chatroom>
     );
 
     // Fetch inquiry related service if exists
+    BlocProvider.of<GetInquiryBloc>(context).add(
+      GetInquiry(inquiryUuid: widget.args.inquiryUUID),
+    );
     // BlocProvider.of<CurrentServiceBloc>(context).add(
     //   GetCurrentService(
     //     inquiryUUID: widget.args.inquiryUUID,
