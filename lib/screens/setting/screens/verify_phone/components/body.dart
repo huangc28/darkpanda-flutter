@@ -1,8 +1,11 @@
+//  3rd party
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/material.dart';
+
+// project dependencies
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
-import 'package:flutter/material.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -113,28 +116,5 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
-    // Padding(
-    //   padding: EdgeInsets.all(20.0),
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: <Widget>[
-    //       Text(
-    //         '請輸入您的新號碼',
-    //         style: TextStyle(
-    //           color: Colors.white,
-    //           fontSize: 16,
-    //         ),
-    //       ),
-    //       Text(
-    //         '我們會寄驗證碼到你的手機',
-    //         style: TextStyle(
-    //           color: Color.fromRGBO(106, 109, 137, 1),
-    //           fontSize: 15,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

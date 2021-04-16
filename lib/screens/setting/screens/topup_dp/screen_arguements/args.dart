@@ -1,1 +1,1 @@
-part 'topup_dp_arguements.dart';
+export 'topup_dp_arguements.dart';

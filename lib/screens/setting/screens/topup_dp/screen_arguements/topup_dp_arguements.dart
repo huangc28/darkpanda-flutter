@@ -1,9 +1,7 @@
-part of 'args.dart';
-
 class TopUpDpArguments {
-  TopUpDpArguments({
+  const TopUpDpArguments({
     this.amount,
   });
 
-  int amount;
+  final int amount;
 }

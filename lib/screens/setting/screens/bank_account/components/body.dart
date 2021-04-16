@@ -14,8 +14,6 @@ class _BodyState extends State<Body> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
                 children: <Widget>[

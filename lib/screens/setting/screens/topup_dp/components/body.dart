@@ -113,12 +113,6 @@ class _BodyState extends State<Body> {
                                 builder: (context) => TopupPayment(amount: 500),
                               ),
                             );
-                            // widget.onPush(
-                            //   '/topup-payment',
-                            //   TopUpDpArguments(
-                            //     amount: 500,
-                            //   ),
-                            // );
                           },
                           child: Row(
                             children: <Widget>[

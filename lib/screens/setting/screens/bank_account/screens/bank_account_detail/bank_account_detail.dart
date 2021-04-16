@@ -13,7 +13,6 @@ class _BankAccountDetailState extends State<BankAccountDetail> {
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20.0),
-          // child: Expanded(
           child: Column(
             children: <Widget>[
               InputTextLabel(label: "帳戶名稱"),
@@ -30,7 +29,6 @@ class _BankAccountDetailState extends State<BankAccountDetail> {
               buildVerifyButton(),
             ],
           ),
-          // ),
         ),
       ),
     );
@@ -74,7 +72,6 @@ class _BankAccountDetailState extends State<BankAccountDetail> {
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).size.height / 4,
       ),
-      // padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 30.0),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: SizedBox(

@@ -14,31 +14,11 @@ class SettingRoutes extends BaseRoutes {
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
       SettingRoutes.root: (context) => Setting(),
-      // SettingRoutes.topup_payment: (context) => TopupPayment(),
       SettingRoutes.topup_payment: (context) {
         final screenArgs = args as TopUpDpArguments;
         return Body(
-          // loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
           args: screenArgs,
         );
-        // return MultiBlocProvider(
-        //   providers: [
-        //     BlocProvider(
-        //       create: (context) => LoadUserImagesBloc(
-        //         userApi: UserApis(),
-        //       ),
-        //     ),
-        //     BlocProvider(
-        //       create: (context) => LoadHistoricalServicesBloc(
-        //         userApi: UserApis(),
-        //       ),
-        //     ),
-        //   ],
-        //   child: InquirerProfile(
-        //     loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
-        //     args: screenArgs,
-        //   ),
-        // );
       }
     };
   }
