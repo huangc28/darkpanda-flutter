@@ -1,10 +1,14 @@
 part of 'get_inquiry_bloc.dart';
 
-class GetInquiryState extends Equatable {
+class GetInquiryState<E extends AppBaseException> extends Equatable {
   final AsyncLoadingStatus status;
+  final E error;
+  final Inquiry inquiry;
 
   const GetInquiryState._({
     this.status,
+    this.error,
+    this.inquiry,
   });
 
   GetInquiryState.init()
@@ -17,16 +21,19 @@ class GetInquiryState extends Equatable {
           status: AsyncLoadingStatus.loading,
         );
 
-  GetInquiryState.error()
-      : this._(
-          status: AsyncLoadingStatus.error,
-        );
+  GetInquiryState.error(E error)
+      : this._(status: AsyncLoadingStatus.error, error: error);
 
-  GetInquiryState.done()
+  GetInquiryState.done(Inquiry inquiry)
       : this._(
           status: AsyncLoadingStatus.done,
+          inquiry: inquiry,
         );
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        status,
+        error,
+        inquiry,
+      ];
 }

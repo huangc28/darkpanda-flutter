@@ -53,12 +53,6 @@ class PrivateChatsState<E extends AppBaseException> extends Equatable {
         return Message(content: '');
       }
 
-      chatroomMessages[channelUUID].forEach(
-        (msg) {
-          print('DEBUG list of message ${msg.content}');
-        },
-      );
-
       return chatroomMessages[channelUUID].last;
     };
   }

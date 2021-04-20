@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -65,7 +66,7 @@ class VerifyLoginCodeBloc
       await SecureStore().writeJwtToken(responseMap['jwt']);
       final fetchUserResp = await userApis.fetchMe();
 
-      print('DEBUG fetchUserResp ${fetchUserResp.body}');
+      developer.log('DEBUG fetchUserResp ${fetchUserResp.body}');
 
       if (fetchUserResp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

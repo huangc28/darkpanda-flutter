@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -71,8 +71,6 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       );
 
       final authUserInfo = await userApis.fetchMe();
-
-      print('DEBUG authUserInfo ${authUserInfo.body}');
 
       authUserBloc.add(
         PutUser(

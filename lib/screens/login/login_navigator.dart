@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/pkg/timer.dart';

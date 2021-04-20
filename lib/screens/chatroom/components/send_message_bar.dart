@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 class SendMessageBar extends StatefulWidget {
   const SendMessageBar({
@@ -22,13 +26,26 @@ class _SendMessageBarState extends State<SendMessageBar> {
   bool _showSendButton = false;
 
   Widget _buildEditInquiryButton() {
-    return IconButton(
-      icon: Image.asset(
-        'lib/screens/chatroom/assets/send_message.png',
-      ),
-      iconSize: 22,
-      color: Colors.white,
-      onPressed: widget.disable ? null : widget.onEditInquiry,
+    return BlocBuilder<GetInquiryBloc, GetInquiryState>(
+      builder: (context, state) {
+        // Allow user to edit inquiry detail only when done loading
+        var disable =
+            widget.disable || state.status == AsyncLoadingStatus.loading;
+
+        var opacity = disable ? 0.4 : 1.0;
+
+        return Opacity(
+          opacity: opacity,
+          child: IconButton(
+            icon: Image.asset(
+              'lib/screens/chatroom/assets/send_message.png',
+            ),
+            iconSize: 22,
+            color: Colors.white,
+            onPressed: disable ? null : widget.onEditInquiry,
+          ),
+        );
+      },
     );
   }
 

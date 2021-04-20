@@ -16,8 +16,6 @@ class LoginAPIClient extends BaseClient {
         ),
       );
 
-      print('DEBUG req ${request.url}');
-
       final res = await sendWithResponse(request);
 
       return res;

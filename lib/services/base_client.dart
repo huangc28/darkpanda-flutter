@@ -1,6 +1,8 @@
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'dart:developer' as developer;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
 // Any API client requesting darkpanda service should extend this base client.
 // It parses the given backend service origin to [Uri] object and builds correct
@@ -58,6 +60,11 @@ abstract class BaseClient extends http.BaseClient {
 
       return http.Response.fromStream(streamResp);
     } catch (e) {
+      developer.log(
+        'failed to request API ${request.url}',
+        error: e,
+      );
+
       rethrow;
     }
   }

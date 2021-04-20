@@ -172,8 +172,7 @@ class CurrentChatroomBloc
         );
       }
 
-      // Convert response data to list of messages and store them to
-      // historical messages.
+      // Convert response data to list of messages and store them to historical messages.
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
       if (respMap['messages'].isEmpty) {
@@ -189,9 +188,6 @@ class CurrentChatroomBloc
           return Message.fromMap(data);
         }
       }).toList();
-
-      print(
-          'DEBUG ${historicalMessages[historicalMessages.length - 1].content}');
 
       yield CurrentChatroomState.loaded(state, historicalMessages, state.page);
     } on APIException catch (e) {

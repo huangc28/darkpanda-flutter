@@ -124,8 +124,6 @@ class InquiryChatroomsBloc
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
     developer.log('handle private chat on channel ID: $channelUUID');
 
-    // print('DEBUG event metadata ${event.metadata}');
-
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );

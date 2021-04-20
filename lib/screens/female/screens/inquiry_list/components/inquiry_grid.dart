@@ -5,7 +5,7 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 
-import '../../../models/inquiry.dart';
+import '../../../../../models/inquiry.dart';
 
 part 'inquiry_grid_inquiry_detail.dart';
 part 'inquiry_grid_actions.dart';

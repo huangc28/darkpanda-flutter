@@ -13,7 +13,7 @@ import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/api_client.dart';
-import '../../../models/inquiry.dart';
+import '../../../../../models/inquiry.dart';
 
 part 'inquiries_event.dart';
 part 'inquiries_state.dart';

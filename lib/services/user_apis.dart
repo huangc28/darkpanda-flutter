@@ -4,9 +4,11 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 
 class UserApis extends BaseClient {
   // pass in jwt token from constructor to request the API. However,
-  // most of the time you don't have the jwt token instance is instantiated.
+  // most of the time you don't have the jwt token instance instantiated.
   // Thus, jwt token can also be passed in from the jwt setter.
-  UserApis({String jwtToken}) : super(jwtToken: jwtToken);
+  UserApis({
+    String jwtToken,
+  }) : super(jwtToken: jwtToken);
 
   Future<http.Response> fetchMe() async {
     final request = http.Request(

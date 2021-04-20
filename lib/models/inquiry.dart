@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 
-import './inquirer.dart';
+import 'inquirer.dart';
 
 class Inquiry extends Equatable {
   final String uuid;
@@ -16,6 +16,7 @@ class Inquiry extends Equatable {
   final double lat;
   final InquiryStatus inquiryStatus;
   final Inquirer inquirer;
+  final String address;
 
   const Inquiry({
     this.uuid,
@@ -28,6 +29,7 @@ class Inquiry extends Equatable {
     this.lat,
     this.inquiryStatus,
     this.inquirer,
+    this.address,
   });
 
   factory Inquiry.fromJson(Map<String, dynamic> data) {
@@ -35,7 +37,7 @@ class Inquiry extends Equatable {
 
     // The appointment time may be `null`. If the parsed result is `null`, we use
     // current date as the `appointmentTime` and log the errorneous datetime
-    if (parsedAppointmentTime != null) {
+    if (data['appointment_time'] != null) {
       parsedAppointmentTime = DateTime.tryParse(data['appointment_time']);
     } else {
       developer.log(
@@ -46,7 +48,7 @@ class Inquiry extends Equatable {
 
     var parsedDuration = Duration(minutes: 60);
 
-    if (parsedDuration != null) {
+    if (data['duration'] != null) {
       parsedDuration = Duration(minutes: data['duration']);
     } else {
       developer.log(
@@ -68,7 +70,10 @@ class Inquiry extends Equatable {
       lng: data['lng'].toDouble(),
       lat: data['lat'].toDouble(),
       inquiryStatus: iqStatus.toInquiryStatusEnum(),
-      inquirer: Inquirer.fromJson(data['inquirer']),
+      inquirer: data.containsKey('inquirer')
+          ? Inquirer.fromJson(data['inquirer'])
+          : Inquirer(),
+      address: data['address'],
     );
   }
 
@@ -83,6 +88,7 @@ class Inquiry extends Equatable {
     double lat,
     InquiryStatus inquiryStatus,
     Inquirer inquirer,
+    String address,
   }) {
     return Inquiry(
       uuid: uuid ?? this.uuid,
@@ -95,6 +101,7 @@ class Inquiry extends Equatable {
       lat: lng ?? this.lat,
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
       inquirer: inquirer ?? this.inquirer,
+      address: address ?? this.address,
     );
   }
 
@@ -109,5 +116,6 @@ class Inquiry extends Equatable {
         appointmentTime,
         lng,
         lat,
+        address,
       ];
 }

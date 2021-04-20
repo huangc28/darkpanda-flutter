@@ -1,7 +1,14 @@
 part of '../address_selector.dart';
 
+/// We reference this article: https://stackoverflow.com/questions/53652573/fix-google-map-marker-in-center
+/// to center the marker at the middle of the map.
 class AddressMap extends StatefulWidget {
-  AddressMap({Key key}) : super(key: key);
+  AddressMap({
+    Key key,
+    this.initialAddress,
+  }) : super(key: key);
+
+  final String initialAddress;
 
   @override
   _AddressMapState createState() => _AddressMapState();
@@ -11,17 +18,76 @@ class _AddressMapState extends State<AddressMap> {
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
   GoogleMapController _mapController;
-  TextEditingController _addressController;
+  TextEditingController _addressController = TextEditingController();
+  String address;
+
+  static const _markerId = 'currentPos';
+
+  /// Location determined by the [DetermineLocationBloc]. We will show
+  /// this location marker on the map.
+  Location _location;
+
+  /// We will make a marker on the map.
+  Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
 
   @override
   void initState() {
     super.initState();
 
-    _addressController = TextEditingController();
+    address = widget.initialAddress;
+
+    BlocProvider.of<DetermineLocationBloc>(context).add(
+      DetermineLocationFromAddress(address: address),
+    );
+
+    _addressController.text = widget.initialAddress;
   }
 
   void _onMapCreated(GoogleMapController controller) {
+    final markerId = MarkerId(_markerId);
+
+    final marker = Marker(
+      markerId: markerId,
+      position: LatLng(
+        _location.latitude,
+        _location.longtitude,
+      ),
+      draggable: false,
+    );
+
+    setState(() {
+      _markers[markerId] = marker;
+    });
+
     _mapController = controller;
+  }
+
+  Widget _buildGoogleMap(Location location) {
+    return GoogleMap(
+      markers: Set<Marker>.of(_markers.values),
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+        target: LatLng(
+          location.latitude,
+          location.longtitude,
+        ),
+        zoom: 18.0,
+      ),
+      onCameraMove: (CameraPosition position) {
+        // We update the marker position here
+        final markerId = MarkerId(_markerId);
+        final marker = _markers[markerId];
+        final updatedMarker = marker.copyWith(
+          positionParam: position.target,
+        );
+
+        // We will dispatch an event to retrieve address based on coordinate.
+
+        setState(() {
+          _markers[markerId] = updatedMarker;
+        });
+      },
+    );
   }
 
   @override
@@ -34,16 +100,36 @@ class _AddressMapState extends State<AddressMap> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Display google map. The map display sector should be relatively small.
+                // We need to display loading spinner when location is being loaded.
                 Expanded(
                   flex: 4,
-                  child: Container(
-                    child: GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target: _center,
-                        zoom: 20.0,
-                      ),
-                    ),
+                  child: BlocConsumer<DetermineLocationBloc,
+                      DetermineLocationState>(
+                    listener: (context, state) {
+                      if (state.status == AsyncLoadingStatus.done) {
+                        setState(() {
+                          _location = state.location;
+                        });
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state.status == AsyncLoadingStatus.error) {
+                        print('DEBUG error message ${state.error.message}');
+                      }
+
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(243, 244, 246, 1),
+                        ),
+                        child: state.status == AsyncLoadingStatus.done
+                            ? _buildGoogleMap(state.location)
+                            : Container(
+                                child: LoadingIcon(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                      );
+                    },
                   ),
                 ),
 
@@ -97,7 +183,7 @@ class _AddressMapState extends State<AddressMap> {
                               ),
                             ),
 
-                            SizedBox(height: 6),
+                            SizedBox(height: 10),
 
                             // Submit address button.
                             DPTextButton(

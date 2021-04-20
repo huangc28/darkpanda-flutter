@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
@@ -54,20 +54,14 @@ class _ChatroomState extends State<Chatroom>
     super.initState();
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
-
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(channelUUID: widget.args.channelUUID),
     );
 
-    // Fetch inquiry related service if exists
+    // Fetch inquiry related inquiry if exists
     BlocProvider.of<GetInquiryBloc>(context).add(
       GetInquiry(inquiryUuid: widget.args.inquiryUUID),
     );
-    // BlocProvider.of<CurrentServiceBloc>(context).add(
-    //   GetCurrentService(
-    //     inquiryUUID: widget.args.inquiryUUID,
-    //   ),
-    // );
 
     _editMessageController.addListener(_handleEditMessage);
 
@@ -152,34 +146,34 @@ class _ChatroomState extends State<Chatroom>
                 fontSize: 18,
               ),
             ),
-            actions: [
-              BlocBuilder<CurrentServiceBloc, GetServiceState>(
-                  builder: (context, state) {
-                if (state.status == GetServiceStatus.loadFailed) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error.message),
-                    ),
-                  );
-                }
+            // actions: [
+            //   BlocBuilder<CurrentServiceBloc, GetServiceState>(
+            //       builder: (context, state) {
+            //     if (state.status == GetServiceStatus.loadFailed) {
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //         SnackBar(
+            //           content: Text(state.error.message),
+            //         ),
+            //       );
+            //     }
 
-                if (state.status == GetServiceStatus.loaded) {
-                  return IconButton(
-                    icon: Icon(Icons.assignment),
-                    iconSize: 25,
-                    color: Colors.white,
-                    onPressed: () => serviceConfirmed
-                        ? null
-                        : _handleTapServiceSetting(state.serviceSettings),
-                  );
-                }
+            //     if (state.status == GetServiceStatus.loaded) {
+            //       return IconButton(
+            //         icon: Icon(Icons.assignment),
+            //         iconSize: 25,
+            //         color: Colors.white,
+            //         onPressed: () => serviceConfirmed
+            //             ? null
+            //             : _handleTapServiceSetting(state.serviceSettings),
+            //       );
+            //     }
 
-                return Container(
-                  width: 0,
-                  height: 0,
-                );
-              }),
-            ],
+            //     return Container(
+            //       width: 0,
+            //       height: 0,
+            //     );
+            //   }),
+            // ],
           ),
           body: GestureDetector(
             onTap: () {
@@ -238,8 +232,11 @@ class _ChatroomState extends State<Chatroom>
                                           return ServiceDetailBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
-                                            onTapMessage:
-                                                _handleTapServiceSettingMessage,
+                                            onTapMessage: (_) {
+                                              print(
+                                                  'DEBUG tap inquiry detail message');
+                                            },
+                                            // _handleTapServiceSettingMessage,
                                           );
                                         } else if (message
                                             is ServiceConfirmedMessage) {
@@ -289,12 +286,25 @@ class _ChatroomState extends State<Chatroom>
                       ),
                     ),
                   ),
+
+                  // Listen the loading status of `GetInquiryBloc`. If status is loading,
+                  // display spinner on service settings sheet.
                   SlideTransition(
                     position: _offsetAnimation,
-                    child: ServiceSettingsSheet(
-                      controller: _slideUpController,
-                      onTapClose: () {
-                        _animationController.reverse();
+                    child: BlocBuilder<GetInquiryBloc, GetInquiryState>(
+                      builder: (context, state) {
+                        var serviceSettings =
+                            state.status == AsyncLoadingStatus.done
+                                ? ServiceSettings.fromInquiry(state.inquiry)
+                                : null;
+
+                        return ServiceSettingsSheet(
+                          serviceSettings: serviceSettings,
+                          controller: _slideUpController,
+                          onTapClose: () {
+                            _animationController.reverse();
+                          },
+                        );
                       },
                     ),
                   ),
@@ -315,59 +325,59 @@ class _ChatroomState extends State<Chatroom>
     }
   }
 
-  _handleTapServiceSettingMessage(ServiceDetailMessage message) async {
-    final serviceSettings = await _showServiceDetailModal(
-        ServiceSettings.fromServiceDetailMessage(message));
+  // _handleTapServiceSettingMessage(ServiceDetailMessage message) async {
+  //   final serviceSettings = await _showServiceDetailModal(
+  //       ServiceSettings.fromServiceDetailMessage(message));
 
-    if (serviceSettings == null) {
-      return null;
-    }
+  //   if (serviceSettings == null) {
+  //     return null;
+  //   }
 
-    BlocProvider.of<SendMessageBloc>(context).add(
-      SendServiceDetailConfirmMessage(
-        channelUUID: widget.args.channelUUID,
-        serviceSettings: serviceSettings,
-        inquiryUUID: widget.args.inquiryUUID,
-      ),
-    );
-  }
+  //   BlocProvider.of<SendMessageBloc>(context).add(
+  //     SendServiceDetailConfirmMessage(
+  //       channelUUID: widget.args.channelUUID,
+  //       serviceSettings: serviceSettings,
+  //       inquiryUUID: widget.args.inquiryUUID,
+  //     ),
+  //   );
+  // }
 
-  Future<ServiceSettings> _showServiceDetailModal(
-      [ServiceSettings settings]) async {
-    final ServiceSettings serviceSettings = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => ServiceSettingsSheet(
-          serviceSettings: settings,
-        ),
-        fullscreenDialog: true,
-      ),
-    );
+  // Future<ServiceSettings> _showServiceDetailModal(
+  //     [ServiceSettings settings]) async {
+  //   final ServiceSettings serviceSettings = await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (BuildContext context) => ServiceSettingsSheet(
+  //         serviceSettings: settings,
+  //       ),
+  //       fullscreenDialog: true,
+  //     ),
+  //   );
 
-    return serviceSettings;
-  }
+  //   return serviceSettings;
+  // }
 
-  _handleTapServiceSetting(ServiceSettings ss) async {
-    final ServiceSettings updatedss = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => ServiceSettingsSheet(
-          serviceSettings: ss,
-        ),
-        fullscreenDialog: true,
-      ),
-    );
+  // _handleTapServiceSetting(ServiceSettings ss) async {
+  //   final ServiceSettings updatedss = await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (BuildContext context) => ServiceSettingsSheet(
+  //         serviceSettings: ss,
+  //       ),
+  //       fullscreenDialog: true,
+  //     ),
+  //   );
 
-    // If serviceSettings is null, do nothing
-    if (updatedss == null) {
-      return;
-    }
+  //   // If serviceSettings is null, do nothing
+  //   if (updatedss == null) {
+  //     return;
+  //   }
 
-    // Sends a service detail message to chatroom.
-    BlocProvider.of<SendMessageBloc>(context).add(
-      SendServiceDetailConfirmMessage(
-        inquiryUUID: widget.args.inquiryUUID,
-        channelUUID: widget.args.channelUUID,
-        serviceSettings: updatedss,
-      ),
-    );
-  }
+  //   // Sends a service detail message to chatroom.
+  //   BlocProvider.of<SendMessageBloc>(context).add(
+  //     SendServiceDetailConfirmMessage(
+  //       inquiryUUID: widget.args.inquiryUUID,
+  //       channelUUID: widget.args.channelUUID,
+  //       serviceSettings: updatedss,
+  //     ),
+  //   );
+  // }
 }

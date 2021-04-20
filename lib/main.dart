@@ -5,9 +5,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
-import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/services/service_apis.dart';
+import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/register_api_client.dart';
@@ -102,7 +103,11 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
 
-        BlocProvider(create: (_) => GetInquiryBloc()),
+        BlocProvider(
+          create: (_) => GetInquiryBloc(
+            inquiryApi: InquiryAPIClient(),
+          ),
+        ),
       ],
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,

@@ -1,15 +1,26 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/services/inquiry_apis.dart';
+import 'package:darkpanda_flutter/models/inquiry.dart';
 
 part 'get_inquiry_event.dart';
 part 'get_inquiry_state.dart';
 
 class GetInquiryBloc extends Bloc<GetInquiryEvent, GetInquiryState> {
-  GetInquiryBloc() : super(GetInquiryState.init());
+  GetInquiryBloc({
+    this.inquiryApi,
+  })  : assert(inquiryApi != null),
+        super(GetInquiryState.init());
+
+  final InquiryAPIClient inquiryApi;
 
   @override
   Stream<GetInquiryState> mapEventToState(
@@ -21,8 +32,26 @@ class GetInquiryBloc extends Bloc<GetInquiryEvent, GetInquiryState> {
   }
 
   Stream<GetInquiryState> _mapGetInquiryToState(GetInquiry event) async* {
-    print('DEBUG trigger _mapGetInquiryToState ${event.inquiryUuid}');
+    yield GetInquiryState.loading();
 
-    yield null;
+    try {
+      final resp = await inquiryApi.getInquiry(event.inquiryUuid);
+
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(json.decode(resp.body));
+      }
+
+      developer.log('Get inquiry result ${resp.body}');
+
+      final inquiry = Inquiry.fromJson(
+        json.decode(resp.body),
+      );
+
+      yield GetInquiryState.done(inquiry);
+    } on APIException catch (e) {
+      yield GetInquiryState.error(e);
+    } catch (e) {
+      yield GetInquiryState.error(AppGeneralExeption(message: e.toString()));
+    }
   }
 }

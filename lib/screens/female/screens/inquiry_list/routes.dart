@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/services/apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 
 import './inquiry_list.dart';
 import './bloc/inquiries_bloc.dart';

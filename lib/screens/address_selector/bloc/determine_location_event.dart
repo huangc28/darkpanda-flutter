@@ -7,4 +7,14 @@ abstract class DetermineLocationEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DetermineLocation extends DetermineLocationEvent {}
+class DetermineCurrentLocation extends DetermineLocationEvent {}
+
+class DetermineLocationFromAddress extends DetermineLocationEvent {
+  final String address;
+
+  const DetermineLocationFromAddress({
+    this.address,
+  });
+}
+
+class DetermineAddressFromLocation extends DetermineLocationEvent {}

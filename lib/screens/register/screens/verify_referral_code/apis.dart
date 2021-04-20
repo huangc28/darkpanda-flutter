@@ -4,8 +4,6 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 
 class VerifyRegisterInfoAPIs extends BaseClient {
   Future<http.Response> verifyReferralCode(String refCode) {
-    print('DEBUG refCode ${refCode}');
-
     try {
       final request = http.Request(
         'POST',

@@ -16,6 +16,7 @@ Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
   TabItem.inquiryChats: GlobalKey<NavigatorState>(),
   TabItem.manage: GlobalKey<NavigatorState>(),
   TabItem.profile: GlobalKey<NavigatorState>(),
+  TabItem.settings: GlobalKey<NavigatorState>(),
 };
 
 class App extends StatefulWidget {

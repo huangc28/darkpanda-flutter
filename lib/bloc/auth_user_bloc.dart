@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
-import '../services/apis.dart';
+import '../services/user_apis.dart';
 import '../pkg/secure_store.dart';
 import '../models/auth_user.dart';
 

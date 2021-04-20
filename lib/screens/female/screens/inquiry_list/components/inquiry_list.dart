@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 
-import '../../../models/inquiry.dart';
+import '../../../../../models/inquiry.dart';
 
 typedef InquiryItemBuilder = Widget Function(
     BuildContext context, Inquiry inquiry, int index);
