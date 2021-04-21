@@ -146,34 +146,6 @@ class _ChatroomState extends State<Chatroom>
                 fontSize: 18,
               ),
             ),
-            // actions: [
-            //   BlocBuilder<CurrentServiceBloc, GetServiceState>(
-            //       builder: (context, state) {
-            //     if (state.status == GetServiceStatus.loadFailed) {
-            //       ScaffoldMessenger.of(context).showSnackBar(
-            //         SnackBar(
-            //           content: Text(state.error.message),
-            //         ),
-            //       );
-            //     }
-
-            //     if (state.status == GetServiceStatus.loaded) {
-            //       return IconButton(
-            //         icon: Icon(Icons.assignment),
-            //         iconSize: 25,
-            //         color: Colors.white,
-            //         onPressed: () => serviceConfirmed
-            //             ? null
-            //             : _handleTapServiceSetting(state.serviceSettings),
-            //       );
-            //     }
-
-            //     return Container(
-            //       width: 0,
-            //       height: 0,
-            //     );
-            //   }),
-            // ],
           ),
           body: GestureDetector(
             onTap: () {

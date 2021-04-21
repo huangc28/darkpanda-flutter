@@ -16,5 +16,3 @@ class DetermineLocationFromAddress extends DetermineLocationEvent {
     this.address,
   });
 }
-
-class DetermineAddressFromLocation extends DetermineLocationEvent {}

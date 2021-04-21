@@ -47,6 +47,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_dotenv: ^3.1.0
   provider: ^5.0.0
+  easy_debounce: ^2.0.0
 
   # Google map relatives.
   google_maps_flutter: ^2.0.1

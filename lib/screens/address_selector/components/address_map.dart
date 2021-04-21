@@ -5,18 +5,18 @@ part of '../address_selector.dart';
 class AddressMap extends StatefulWidget {
   AddressMap({
     Key key,
-    this.initialAddress,
+    this.address,
+    this.onConfirmAddress,
   }) : super(key: key);
 
-  final String initialAddress;
+  final String address;
+  final ValueChanged<String> onConfirmAddress;
 
   @override
   _AddressMapState createState() => _AddressMapState();
 }
 
 class _AddressMapState extends State<AddressMap> {
-  final LatLng _center = const LatLng(45.521563, -122.677433);
-
   GoogleMapController _mapController;
   TextEditingController _addressController = TextEditingController();
   String address;
@@ -34,13 +34,13 @@ class _AddressMapState extends State<AddressMap> {
   void initState() {
     super.initState();
 
-    address = widget.initialAddress;
+    address = widget.address;
 
     BlocProvider.of<DetermineLocationBloc>(context).add(
       DetermineLocationFromAddress(address: address),
     );
 
-    _addressController.text = widget.initialAddress;
+    _addressController.text = widget.address;
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -66,6 +66,13 @@ class _AddressMapState extends State<AddressMap> {
     return GoogleMap(
       markers: Set<Marker>.of(_markers.values),
       onMapCreated: _onMapCreated,
+      onTap: (_) {
+        final currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
       initialCameraPosition: CameraPosition(
         target: LatLng(
           location.latitude,
@@ -82,6 +89,17 @@ class _AddressMapState extends State<AddressMap> {
         );
 
         // We will dispatch an event to retrieve address based on coordinate.
+        // Update the content of address field with retrieved address.
+        EasyDebounce.debounce(
+          'determine_address_debouncer',
+          Duration(milliseconds: 500),
+          () => BlocProvider.of<DetermineAddressBloc>(context).add(
+            DetermineAddressFromLocation(
+              latitude: position.target.latitude,
+              longtitude: position.target.longitude,
+            ),
+          ),
+        );
 
         setState(() {
           _markers[markerId] = updatedMarker;
@@ -174,12 +192,25 @@ class _AddressMapState extends State<AddressMap> {
                             SizedBox(height: 6),
 
                             // Search content.
-                            Container(
-                              height: 36,
-                              child: DPTextFormField(
-                                theme: DPTextFieldThemes.inquiryForm,
-                                hintText: '請輸入地址',
-                                controller: _addressController,
+                            BlocListener<DetermineAddressBloc,
+                                DetermineAddressState>(
+                              listener: (context, state) {
+                                if (state.status == AsyncLoadingStatus.done) {
+                                  setState(() {
+                                    address = state.address.address;
+                                  });
+
+                                  _addressController.text =
+                                      state.address.address;
+                                }
+                              },
+                              child: Container(
+                                height: 36,
+                                child: DPTextFormField(
+                                  theme: DPTextFieldThemes.inquiryForm,
+                                  hintText: '請輸入地址',
+                                  controller: _addressController,
+                                ),
                               ),
                             ),
 
@@ -188,7 +219,9 @@ class _AddressMapState extends State<AddressMap> {
                             // Submit address button.
                             DPTextButton(
                               theme: DPTextButtonThemes.purple,
-                              onPressed: () {},
+                              onPressed: () {
+                                widget.onConfirmAddress(widget.address);
+                              },
                               text: '確認地址',
                             ),
                           ],

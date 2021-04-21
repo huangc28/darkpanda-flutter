@@ -45,6 +45,10 @@ class DetermineLocationBloc
     if (event is DetermineLocationFromAddress) {
       yield* _mapDetermineLocationFromAddress(event);
     }
+
+    // if (event is DetermineAddressFromLocation) {
+    //   yield* _mapDetermineAddressFromLocationToState(event);
+    // }
   }
 
   /// When the location services are not enabled or permissions
@@ -113,11 +117,6 @@ class DetermineLocationBloc
       DetermineLocationFromAddress event) async* {
     yield DetermineLocationState.loading();
     try {
-      // We need to apply url escape on the address by replacing `space` and `plus`
-      // with `%20` and `%2B` before requesting google geocoding API.
-      // final address = event.address;
-      // print('DEBUG _mapDetermineLocationFromAddress ${event.address}');
-
       final resp = await apiClient.getCoordinateFromAddress(event.address);
 
       if (resp.statusCode != HttpStatus.ok) {
