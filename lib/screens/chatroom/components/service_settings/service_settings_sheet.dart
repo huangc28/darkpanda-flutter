@@ -67,14 +67,18 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   void initState() {
     super.initState();
 
-    _initDefaultServiceSettings();
+    print('DEBUG trigger init ${widget.serviceSettings}');
+
+    _initDefaultServiceSettings(widget.serviceSettings);
   }
 
   @override
   void didUpdateWidget(ServiceSettingsSheet oldWidget) {
-    // ServiceSettingsSheet is not going to rebuild when
-    if (widget.serviceSettings != null) {
-      _initDefaultServiceSettings();
+    // Makesure we don't reinitialize service setting sheet value when after
+    // user set the address.
+    if (widget.serviceSettings != null &&
+        widget.serviceSettings.address != oldWidget.serviceSettings.address) {
+      _initDefaultServiceSettings(widget.serviceSettings);
     }
 
     super.didUpdateWidget(oldWidget);
@@ -92,12 +96,14 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
         },
       ),
     );
+
+    _addressController.text = addr;
   }
 
-  _initDefaultServiceSettings() {
-    if (widget.serviceSettings == null) return;
+  _initDefaultServiceSettings(ServiceSettings serviceSettings) {
+    if (serviceSettings == null) return;
 
-    _serviceSetting = widget.serviceSettings;
+    _serviceSetting = serviceSettings;
 
     // Initialize service date.
     _dateController.text = DateFormat.yMd().format(_serviceSetting.serviceDate);
@@ -128,6 +134,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
 
     // Initialize service address
     _addressController.text = _serviceSetting.address;
+
+    setState(() {});
   }
 
   String _formatDuration(Duration duration) {

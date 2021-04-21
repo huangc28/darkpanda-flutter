@@ -6,7 +6,7 @@ class AddressMap extends StatefulWidget {
   AddressMap({
     Key key,
     this.address,
-    this.onConfirmAddress,
+    @required this.onConfirmAddress,
   }) : super(key: key);
 
   final String address;
@@ -19,7 +19,7 @@ class AddressMap extends StatefulWidget {
 class _AddressMapState extends State<AddressMap> {
   GoogleMapController _mapController;
   TextEditingController _addressController = TextEditingController();
-  String address;
+  String _address;
 
   static const _markerId = 'currentPos';
 
@@ -34,10 +34,10 @@ class _AddressMapState extends State<AddressMap> {
   void initState() {
     super.initState();
 
-    address = widget.address;
+    _address = widget.address;
 
     BlocProvider.of<DetermineLocationBloc>(context).add(
-      DetermineLocationFromAddress(address: address),
+      DetermineLocationFromAddress(address: _address),
     );
 
     _addressController.text = widget.address;
@@ -197,7 +197,7 @@ class _AddressMapState extends State<AddressMap> {
                               listener: (context, state) {
                                 if (state.status == AsyncLoadingStatus.done) {
                                   setState(() {
-                                    address = state.address.address;
+                                    _address = state.address.address;
                                   });
 
                                   _addressController.text =
@@ -220,7 +220,7 @@ class _AddressMapState extends State<AddressMap> {
                             DPTextButton(
                               theme: DPTextButtonThemes.purple,
                               onPressed: () {
-                                widget.onConfirmAddress(widget.address);
+                                widget.onConfirmAddress(_address);
                               },
                               text: '確認地址',
                             ),

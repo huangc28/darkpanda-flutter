@@ -21,10 +21,12 @@ class AddressSelector extends StatelessWidget {
     Key key,
     this.args,
     this.initialAddress,
+    this.onConfirmAddress,
   }) : super(key: key);
 
   final AddressSelectorArgs args;
   final String initialAddress;
+  final ValueChanged<String> onConfirmAddress;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,9 @@ class AddressSelector extends StatelessWidget {
           // Dispatch event to load inquiry position in coordinate. If position is not provided, use current position instead.
           child: AddressMap(
             address: initialAddress,
+            onConfirmAddress: (address) {
+              Navigator.pop<String>(context, address);
+            },
           ),
         ),
       ),
