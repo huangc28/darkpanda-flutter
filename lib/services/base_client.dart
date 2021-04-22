@@ -49,6 +49,19 @@ abstract class BaseClient extends http.BaseClient {
     request.headers['Authorization'] = 'Bearer $jwtToken';
   }
 
+  withTokenFromSecureStoreMultiPart(http.BaseRequest request) async {
+    final jwt = await SecureStore().readJwtToken();
+
+    if (jwt == null) {
+      throw Exception('jwt token can not be null.');
+    }
+
+    jwtToken = jwt;
+
+    request.headers['Content-type'] = "multipart/form-data";
+    request.headers['Authorization'] = 'Bearer $jwtToken';
+  }
+
   Future<http.StreamedResponse> send(http.BaseRequest request) =>
       http.Client().send(request);
 
@@ -65,6 +78,17 @@ abstract class BaseClient extends http.BaseClient {
         error: e,
       );
 
+      rethrow;
+    }
+  }
+
+  Future<http.Response> sendWithResponseMultiPart(
+      http.BaseRequest request) async {
+    try {
+      final streamResp = await this.send(request);
+
+      return http.Response.fromStream(streamResp);
+    } catch (e) {
       rethrow;
     }
   }

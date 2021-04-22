@@ -42,6 +42,13 @@ class LoadUserState<E extends AppBaseException> extends Equatable {
           status: AsyncLoadingStatus.done,
           userProfile: userProfile,
         );
+
+  const LoadUserState.clearState(LoadUserState state)
+      : this._(
+          userProfile: null,
+          status: AsyncLoadingStatus.initial,
+        );
+
   @override
   List<Object> get props => [
         status,

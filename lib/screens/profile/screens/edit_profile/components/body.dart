@@ -1,28 +1,28 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/models/user_image.dart';
+
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
+import 'package:darkpanda_flutter/util/decimal_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-class DemoImage {
-  final String image;
-  final File imageFile;
-
-  DemoImage({this.image, this.imageFile});
-}
-
-List demoImageList = [
-  DemoImage(
-    image: "assets/female_icon_active.png",
-    imageFile: null,
-  ),
-  DemoImage(
-    image: "",
-    imageFile: null,
-  ),
-];
-
 class Body extends StatefulWidget {
+  final UserProfile args;
+  final List<UserImage> imageList;
+
+  const Body({
+    Key key,
+    this.args,
+    this.imageList,
+  }) : super(key: key);
+
   @override
   _BodyState createState() => _BodyState();
 }
@@ -30,6 +30,35 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   File _image;
   final picker = ImagePicker();
+  UpdateProfileBloc updateProfileBloc = UpdateProfileBloc();
+  UserProfile userProfile;
+  TextEditingController _nicknameTextController = TextEditingController();
+  TextEditingController _ageTextController = TextEditingController();
+  TextEditingController _heightTextController = TextEditingController();
+  TextEditingController _weightTextController = TextEditingController();
+  TextEditingController _descriptionTextController = TextEditingController();
+  UserImage userImageAdd = UserImage(url: "");
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<UpdateProfileBloc>(context)
+        .add(FetchProfileEdit(widget.args));
+
+    widget.imageList.add(userImageAdd);
+  }
+
+  @override
+  void dispose() {
+    updateProfileBloc.close();
+    _nicknameTextController.clear();
+    _ageTextController.clear();
+    _heightTextController.clear();
+    _weightTextController.clear();
+    _descriptionTextController.clear();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,31 +192,7 @@ class _BodyState extends State<Body> {
             SizedBox(height: 24),
             InputTextLabel(label: "簡介"),
             SizedBox(height: 20),
-            TextField(
-              keyboardType: TextInputType.multiline,
-              onChanged: (summary) {},
-              maxLines: 4,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(255, 255, 255, 0.1),
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16),
-                  ),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(16),
-                  ),
-                ),
-                contentPadding:
-                    const EdgeInsets.only(left: 20.0, bottom: 8.0, top: 8.0),
-                filled: true,
-                fillColor: Color.fromRGBO(255, 255, 255, 0.1),
-              ),
-            ),
+            buildDescriptionInput(),
             SizedBox(height: 24),
             InputTextLabel(label: "照片*（至少上傳兩張）"),
             buildAddImage(),
@@ -206,17 +211,13 @@ class _BodyState extends State<Body> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        DemoImage demoImage = DemoImage(
-          image: null,
-          imageFile: _image,
+        UserImage demoImage = UserImage(
+          url: null,
+          fileName: _image,
         );
-        demoImageList.removeAt(demoImageList.length - 1);
-        demoImageList.add(demoImage);
-        demoImage = DemoImage(
-          image: "",
-          imageFile: null,
-        );
-        demoImageList.add(demoImage);
+        widget.imageList.removeAt(demoImageList.length - 1);
+        widget.imageList.add(demoImage);
+        widget.imageList.add(userImageAdd);
       } else {
         print('No image selected.');
       }
@@ -229,17 +230,14 @@ class _BodyState extends State<Body> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        DemoImage demoImage = DemoImage(
-          image: null,
-          imageFile: _image,
+
+        UserImage demoImage = UserImage(
+          url: null,
+          fileName: _image,
         );
-        demoImageList.removeAt(demoImageList.length - 1);
-        demoImageList.add(demoImage);
-        demoImage = DemoImage(
-          image: "",
-          imageFile: null,
-        );
-        demoImageList.add(demoImage);
+        widget.imageList.removeAt(widget.imageList.length - 1);
+        widget.imageList.add(demoImage);
+        widget.imageList.add(userImageAdd);
       } else {
         print('No image selected.');
       }
@@ -247,46 +245,176 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildNicknameInput() {
-    return Column(
-      children: <Widget>[
-        TextField(
-          style: TextStyle(color: Colors.white),
-          decoration: inputDecoration(),
-        ),
-      ],
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      buildWhen: (previous, current) => previous.username != current.username,
+      builder: (context, state) {
+        _nicknameTextController.text = state.nickname;
+        return Column(
+          children: <Widget>[
+            TextFormField(
+              controller: new TextEditingController.fromValue(
+                new TextEditingValue(
+                  text: _nicknameTextController.text,
+                  selection: new TextSelection.collapsed(
+                      offset: _nicknameTextController.text.length),
+                ),
+              ),
+              style: TextStyle(color: Colors.white),
+              decoration: inputDecoration("請輸入您的暱稱"),
+              onChanged: (username) {
+                context
+                    .read<UpdateProfileBloc>()
+                    .add(NicknameChanged(username));
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget buildAgeInput() {
-    return Column(
-      children: <Widget>[
-        TextField(
-          style: TextStyle(color: Colors.white),
-          decoration: inputDecoration(),
-        ),
-      ],
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      buildWhen: (previous, current) => previous.age != current.age,
+      builder: (context, state) {
+        _ageTextController.text = state.age == null ? '' : state.age.toString();
+        return Column(
+          children: <Widget>[
+            TextFormField(
+              controller: new TextEditingController.fromValue(
+                new TextEditingValue(
+                  text: _ageTextController.text,
+                  selection: new TextSelection.collapsed(
+                      offset: _ageTextController.text.length),
+                ),
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              onChanged: (age) {
+                context.read<UpdateProfileBloc>().add(
+                      AgeChanged(int.parse(age)),
+                    );
+              },
+              style: TextStyle(color: Colors.white),
+              decoration: inputDecoration("請選擇您的年齡"),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget buildHeightInput() {
-    return Column(
-      children: <Widget>[
-        TextField(
-          style: TextStyle(color: Colors.white),
-          decoration: inputDecoration(),
-        ),
-      ],
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      builder: (context, state) {
+        _heightTextController.text =
+            state.height == null ? '' : state.height.toString();
+        return Column(
+          children: <Widget>[
+            TextFormField(
+              controller: new TextEditingController.fromValue(
+                new TextEditingValue(
+                  text: _heightTextController.text,
+                  selection: new TextSelection.collapsed(
+                      offset: _heightTextController.text.length == 0
+                          ? _heightTextController.text.length
+                          : _heightTextController.text.length - 2),
+                ),
+              ),
+              inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onChanged: (height) {
+                context
+                    .read<UpdateProfileBloc>()
+                    .add(HeightChanged(double.parse(height)));
+              },
+              style: TextStyle(color: Colors.white),
+              decoration: inputDecoration("請輸入您的身高"),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget buildWeightInput() {
-    return Column(
-      children: <Widget>[
-        TextField(
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      builder: (context, state) {
+        _weightTextController.text =
+            state.weight == null ? '' : state.weight.toString();
+        return Column(
+          children: <Widget>[
+            TextFormField(
+              controller: new TextEditingController.fromValue(
+                new TextEditingValue(
+                  text: _weightTextController.text,
+                  selection: new TextSelection.collapsed(
+                      offset: _weightTextController.text.length == 0
+                          ? _weightTextController.text.length
+                          : _weightTextController.text.length - 2),
+                ),
+              ),
+              inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onChanged: (weight) {
+                context
+                    .read<UpdateProfileBloc>()
+                    .add(WeightChanged(double.parse(weight)));
+              },
+              style: TextStyle(color: Colors.white),
+              decoration: inputDecoration("請輸入您的體重"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildDescriptionInput() {
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      builder: (context, state) {
+        _descriptionTextController.text = state.description;
+        return TextFormField(
+          controller: new TextEditingController.fromValue(
+            new TextEditingValue(
+              text: _descriptionTextController.text,
+              selection: new TextSelection.collapsed(
+                  offset: _descriptionTextController.text.length),
+            ),
+          ),
+          onChanged: (description) {
+            context
+                .read<UpdateProfileBloc>()
+                .add(DescriptionChanged(description));
+          },
+          keyboardType: TextInputType.multiline,
+          maxLines: 4,
           style: TextStyle(color: Colors.white),
-          decoration: inputDecoration(),
-        ),
-      ],
+          decoration: InputDecoration(
+            hintText: "請輸入您的自我介紹",
+            border: InputBorder.none,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Color.fromRGBO(255, 255, 255, 0.1),
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+            ),
+            contentPadding:
+                const EdgeInsets.only(left: 20.0, bottom: 8.0, top: 8.0),
+            filled: true,
+            fillColor: Color.fromRGBO(255, 255, 255, 0.1),
+          ),
+        );
+      },
     );
   }
 
@@ -295,24 +423,20 @@ class _BodyState extends State<Body> {
       height: 190,
       padding: EdgeInsets.only(top: 25),
       child: ListView.builder(
-        itemCount: demoImageList.length,
+        itemCount: widget.imageList.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              // setState(() {
-              //  index;
-              // });
-              // demoImageList.removeAt(2);
-              if (index == demoImageList.length - 1) {
+              if (index == widget.imageList.length - 1) {
                 _showPicker(context);
               }
             },
-            child: demoImageList[index].image == ""
+            child: widget.imageList[index].url == ""
                 ? AddImageButton()
-                : demoImageList[index].image == null
-                    ? ImageCardUpload(image: demoImageList[index].imageFile)
-                    : ImageCard(image: demoImageList[index].image),
+                : widget.imageList[index].url == null
+                    ? ImageCardFile(image: widget.imageList[index].fileName)
+                    : ImageCard(image: widget.imageList[index].url),
           );
         },
       ),
@@ -320,47 +444,63 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildUpdateButton() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: SizedBox(
-        height: 44,
-        child: DPTextButton(
-          theme: DPTextButtonThemes.purple,
-          onPressed: () {},
-          text: '更新',
-        ),
-      ),
+    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.username != current.username ||
+          previous.age != current.age ||
+          previous.height != current.height ||
+          previous.weight != current.weight ||
+          previous.description != current.description,
+      builder: (context, state) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 44,
+            child: DPTextButton(
+              theme: DPTextButtonThemes.purple,
+              onPressed: () {
+                BlocProvider.of<UpdateProfileBloc>(context).add(
+                  UpdateUserProfile(widget.imageList),
+                );
+              },
+              text: '更新',
+            ),
+          ),
+        );
+      },
     );
   }
 
   void _showPicker(context) {
     showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
-                      onTap: () {
-                        getGalleryImage();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
                     onTap: () {
-                      getCameraImage();
+                      getGalleryImage();
                       Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    getCameraImage();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -416,12 +556,12 @@ class ProfilePicture extends StatelessWidget {
   }
 }
 
-InputDecoration inputDecoration() {
+InputDecoration inputDecoration(String hintText) {
   return InputDecoration(
     filled: true,
     fillColor: Color.fromRGBO(255, 255, 255, 0.1),
     labelStyle: TextStyle(color: Colors.white),
-    // hintText: 'Enter Username',
+    hintText: hintText,
     contentPadding: const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(
@@ -474,8 +614,10 @@ class _ImageCardState extends State<ImageCard> {
       ),
       child: Column(
         children: <Widget>[
-          Image(
-            image: AssetImage(image),
+          Image.network(
+            image,
+            fit: BoxFit.cover,
+            height: 150,
           ),
         ],
       ),
@@ -483,22 +625,22 @@ class _ImageCardState extends State<ImageCard> {
   }
 }
 
-class ImageCardUpload extends StatefulWidget {
+class ImageCardFile extends StatefulWidget {
   final File image;
 
-  const ImageCardUpload({
+  const ImageCardFile({
     Key key,
     this.image,
   }) : super(key: key);
 
   @override
-  _ImageCardUploadState createState() => _ImageCardUploadState(this.image);
+  _ImageCardFileState createState() => _ImageCardFileState(this.image);
 }
 
-class _ImageCardUploadState extends State<ImageCardUpload> {
+class _ImageCardFileState extends State<ImageCardFile> {
   final File image;
 
-  _ImageCardUploadState(this.image);
+  _ImageCardFileState(this.image);
 
   @override
   Widget build(BuildContext context) {
@@ -513,6 +655,7 @@ class _ImageCardUploadState extends State<ImageCardUpload> {
         children: <Widget>[
           Image.file(
             image,
+            height: 150,
           ),
         ],
       ),

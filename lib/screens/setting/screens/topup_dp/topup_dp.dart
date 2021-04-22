@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
+import 'screen_arguements/args.dart';
 import 'screens/topup_payment/topup_payment.dart';
 
 class TopupDp extends StatefulWidget {
+  const TopupDp({
+    this.onPush,
+  });
+
+  final Function(String, TopUpDpArguments) onPush;
+
   @override
   _TopupDpState createState() => _TopupDpState();
 }
@@ -20,7 +27,7 @@ class _TopupDpState extends State<TopupDp> {
           color: Color.fromRGBO(106, 109, 137, 1), //change your color here
         ),
       ),
-      body: Body(),
+      body: Body(onPush: widget.onPush),
     );
   }
 }

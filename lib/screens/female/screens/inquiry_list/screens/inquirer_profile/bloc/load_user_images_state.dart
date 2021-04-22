@@ -49,6 +49,12 @@ class LoadUserImagesState<E extends AppBaseException> extends Equatable {
           currentPage: currentPage,
         );
 
+  LoadUserImagesState.clearState(LoadUserImagesState state)
+      : this._(
+          userImages: <UserImage>[],
+          status: LoadUserImagesStatus.initial,
+        );
+
   @override
   List<Object> get props => [
         status,

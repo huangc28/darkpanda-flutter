@@ -6,8 +6,8 @@ abstract class BaseRoutes {
   static const root = '/';
 
   void push(BuildContext context, String routeName, [Object args]) {
-    Navigator.push(
-      context,
+    Navigator.of(context, rootNavigator: true).push(
+      // context,
       MaterialPageRoute(
         builder: (context) => routeBuilder(context, args)[routeName](context),
       ),

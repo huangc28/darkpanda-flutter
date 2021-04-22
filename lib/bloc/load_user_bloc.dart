@@ -27,6 +27,8 @@ class LoadUserBloc extends Bloc<LoadUserEvent, LoadUserState> {
   ) async* {
     if (event is LoadUser) {
       yield* _mapLoadUserToState(event);
+    } else if (event is ClearUserState) {
+      yield* _mapClearUserStateToState(event);
     }
   }
 
@@ -59,5 +61,9 @@ class LoadUserBloc extends Bloc<LoadUserEvent, LoadUserState> {
         AppGeneralExeption(message: e.toString()),
       );
     }
+  }
+
+  Stream<LoadUserState> _mapClearUserStateToState(ClearUserState event) async* {
+    yield LoadUserState.clearState(state);
   }
 }

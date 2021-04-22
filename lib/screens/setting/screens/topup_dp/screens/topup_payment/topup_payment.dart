@@ -44,7 +44,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                           Row(
                             children: <Widget>[
                               Text(
-                                "您總共購買了2000DP",
+                                "您總共購買了" + widget.amount.toString() + "DP",
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Color.fromRGBO(254, 226, 136, 1),
