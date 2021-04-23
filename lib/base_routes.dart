@@ -7,7 +7,6 @@ abstract class BaseRoutes {
 
   void push(BuildContext context, String routeName, [Object args]) {
     Navigator.of(context, rootNavigator: true).push(
-      // context,
       MaterialPageRoute(
         builder: (context) => routeBuilder(context, args)[routeName](context),
       ),

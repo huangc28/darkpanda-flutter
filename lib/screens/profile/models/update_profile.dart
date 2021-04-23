@@ -6,4 +6,9 @@ class UpdateProfile {
   final List<UserImage> userImageList;
 
   const UpdateProfile({this.userProfile, this.userImageList});
+
+  Map<String, dynamic> toJson() => {
+        'user_profile': userProfile,
+        'user_image_list': userImageList,
+      };
 }

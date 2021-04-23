@@ -57,17 +57,30 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       );
 
       List<UserImage> imageList = event.imageList;
-      UserProfile userProfile = await getUserProfile(state);
-      UpdateProfile updateProfile =
-          new UpdateProfile(userProfile: userProfile, userImageList: imageList);
+
+      UpdateProfile updateProfile = new UpdateProfile(userImageList: imageList);
 
       final resp = await profileApiClient.updateUserProfileImage(updateProfile);
 
-      if (resp.statusCode != HttpStatus.ok) {
-        throw APIException.fromJson(json.decode(resp.body));
+      List<UserImage> imageStringList = [];
+
+      if (resp != null) {
+        if (resp.statusCode != HttpStatus.ok) {
+          throw APIException.fromJson(json.decode(resp.body));
+        }
+
+        final Map<String, dynamic> result = json.decode(resp.body);
+
+        imageStringList = result['links']
+            .map<UserImage>((image) => UserImage(url: image))
+            .toList();
       }
 
-      final result = json.decode(resp.body);
+      UserProfile userProfile = await getUserProfile(state, imageStringList);
+
+      updateProfile = new UpdateProfile(userProfile: userProfile);
+
+      await profileApiClient.updateUserProfile(updateProfile);
 
       yield UpdateProfileState.updated();
     } on APIException catch (e) {
@@ -185,7 +198,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     }
   }
 
-  Future<UserProfile> getUserProfile(state) async {
+  Future<UserProfile> getUserProfile(state, imageList) async {
     UserProfile createPetObject;
 
     createPetObject = new UserProfile(
@@ -195,6 +208,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       height: state.height,
       weight: state.weight,
       description: state.description,
+      imageList: imageList,
     );
 
     return createPetObject;

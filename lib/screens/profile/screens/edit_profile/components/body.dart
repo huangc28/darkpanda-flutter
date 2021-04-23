@@ -356,7 +356,7 @@ class _BodyState extends State<Body> {
                           : _weightTextController.text.length - 2),
                 ),
               ),
-              inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
+              inputFormatters: [DecimalTextInputFormatter(decimalRange: 3)],
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onChanged: (weight) {
                 context

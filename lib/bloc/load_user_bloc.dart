@@ -64,6 +64,6 @@ class LoadUserBloc extends Bloc<LoadUserEvent, LoadUserState> {
   }
 
   Stream<LoadUserState> _mapClearUserStateToState(ClearUserState event) async* {
-    yield LoadUserState.clearState(state);
+    yield LoadUserState.clearState();
   }
 }

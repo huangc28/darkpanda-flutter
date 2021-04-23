@@ -1,3 +1,6 @@
+
+import 'user_image.dart';
+
 class UserProfile {
   final String uuid;
   final String username;
@@ -10,6 +13,7 @@ class UserProfile {
   final double height;
   final double weight;
   final String description;
+  final List<UserImage> imageList;
 
   const UserProfile({
     this.uuid,
@@ -23,6 +27,7 @@ class UserProfile {
     this.height,
     this.weight,
     this.description,
+    this.imageList,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> data) {
@@ -55,6 +60,7 @@ class UserProfile {
     double height,
     double weight,
     String description,
+    List<UserImage> imageList,
   }) {
     return UserProfile(
       uuid: uuid ?? this.uuid,
@@ -68,6 +74,22 @@ class UserProfile {
       height: height ?? this.height,
       weight: weight ?? this.weight,
       description: description ?? this.description,
+      imageList: imageList ?? this.imageList,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'uuid': uuid,
+        'username': username,
+        'nickname': nickname,
+        'gender': gender,
+        'avatarUrl': avatarUrl,
+        'nationality': nationality,
+        'region': region,
+        'age': age,
+        'height': height,
+        'weight': weight,
+        'description': description,
+        'imageList': imageList,
+      };
 }

@@ -43,7 +43,7 @@ class LoadUserState<E extends AppBaseException> extends Equatable {
           userProfile: userProfile,
         );
 
-  const LoadUserState.clearState(LoadUserState state)
+  const LoadUserState.clearState()
       : this._(
           userProfile: null,
           status: AsyncLoadingStatus.initial,

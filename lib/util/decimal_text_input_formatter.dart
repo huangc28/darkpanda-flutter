@@ -2,6 +2,9 @@ import 'package:flutter/services.dart';
 
 import 'dart:math' as math;
 
+/// Use for [Height] and [Weight] text input in Edit Profile
+/// which allow user to key in how many decimal places
+/// by passing decimalRange parameter.
 class DecimalTextInputFormatter extends TextInputFormatter {
   DecimalTextInputFormatter({this.decimalRange})
       : assert(decimalRange == null || decimalRange > 0);

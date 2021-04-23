@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:darkpanda_flutter/screens/profile/models/update_profile.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,25 +27,18 @@ class ProfileApiClient extends BaseClient {
   Future<http.Response> updateUserProfile(UpdateProfile updateProfile) async {
     try {
       final uuid = updateProfile.userProfile.uuid;
-      final age = updateProfile.userProfile.age;
-      final height = updateProfile.userProfile.height;
-      final weight = updateProfile.userProfile.weight;
+      final body = updateProfile.userProfile;
+
+      final jsonBody = jsonEncode(body);
       final request = http.Request(
         'PUT',
-        buildUri(
-          '/v1/users/$uuid',
-          {
-            'uuid': updateProfile.userProfile.uuid,
-            // 'nickname': userProfile.nickname,
-            'age': '$age',
-            'height': '$height',
-            'weight': '$weight',
-            'description': updateProfile.userProfile.description,
-          },
-        ),
+        buildUri('/v1/users/$uuid'),
       );
 
+      request.body = jsonBody;
+
       await withTokenFromSecureStore(request);
+      withJson(request);
 
       final res = await sendWithResponse(request);
 
@@ -61,13 +56,6 @@ class ProfileApiClient extends BaseClient {
         buildUri('/v1/images'),
       );
 
-      request.fields['uuid'] = updateProfile.userProfile.uuid;
-      request.fields['age'] = updateProfile.userProfile.age.toString();
-      request.fields['height'] = updateProfile.userProfile.height.toString();
-      request.fields['weight'] = updateProfile.userProfile.weight.toString();
-      request.fields['description'] =
-          updateProfile.userProfile.description.toString();
-
       for (var i = 0; i < updateProfile.userImageList.length; i++) {
         if (updateProfile.userImageList[i].url == null) {
           request.files.add(await http.MultipartFile.fromPath('image',
@@ -75,7 +63,12 @@ class ProfileApiClient extends BaseClient {
         }
       }
 
-      await withTokenFromSecureStoreMultiPart(request);
+      if (request.files.length == 0) {
+        return null;
+      }
+
+      await withTokenFromSecureStore(request);
+      withMultiPart(request);
 
       final res = await sendWithResponse(request);
 
@@ -85,3 +78,5 @@ class ProfileApiClient extends BaseClient {
     }
   }
 }
+
+class Dynamic {}
