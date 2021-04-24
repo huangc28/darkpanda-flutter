@@ -435,10 +435,83 @@ class _BodyState extends State<Body> {
             child: widget.imageList[index].url == ""
                 ? AddImageButton()
                 : widget.imageList[index].url == null
-                    ? ImageCardFile(image: widget.imageList[index].fileName)
-                    : ImageCard(image: widget.imageList[index].url),
+                    ? imageCardFile(index)
+                    : imageCard(index),
           );
         },
+      ),
+    );
+  }
+
+  Widget imageCardFile(index) {
+    return Container(
+      margin: EdgeInsets.only(right: 16),
+      width: 123,
+      height: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Stack(
+        children: <Widget>[
+          Image.file(
+            widget.imageList[index].fileName,
+            height: 150,
+          ),
+          Positioned(
+            top: 5,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                print('delete image from List');
+                widget.imageList.removeAt(index);
+                setState(() {
+                  print('set new state of images');
+                });
+              },
+              child: Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget imageCard(index) {
+    return Container(
+      margin: EdgeInsets.only(right: 16),
+      width: 123,
+      height: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Stack(
+        children: <Widget>[
+          Image.network(
+            widget.imageList[index].url,
+            fit: BoxFit.cover,
+            height: 150,
+          ),
+          Positioned(
+            top: 5,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                print('delete image from List');
+                widget.imageList.removeAt(index);
+                setState(() {
+                  print('set new state of images');
+                });
+              },
+              child: Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -579,19 +652,15 @@ InputDecoration inputDecoration(String hintText) {
 }
 
 class ImageCard extends StatefulWidget {
-  final String operation;
-  final String selectedIcon;
-  final String unselectedIcon;
-  final bool isSelected;
   final String image;
+  final List<UserImage> imageList;
+  final index;
 
   const ImageCard({
     Key key,
-    this.operation,
-    this.selectedIcon,
-    this.unselectedIcon,
-    this.isSelected,
     this.image,
+    this.imageList,
+    this.index,
   }) : super(key: key);
 
   @override
@@ -612,12 +681,29 @@ class _ImageCardState extends State<ImageCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Column(
+      child: Stack(
         children: <Widget>[
           Image.network(
-            image,
+            widget.imageList[widget.index].url,
             fit: BoxFit.cover,
             height: 150,
+          ),
+          Positioned(
+            top: 5,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                print('delete image from List');
+                setState(() {
+                  print('set new state of images');
+                  // widget.imageList.removeAt(widget.index);
+                });
+              },
+              child: Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+            ),
           ),
         ],
       ),
@@ -627,10 +713,14 @@ class _ImageCardState extends State<ImageCard> {
 
 class ImageCardFile extends StatefulWidget {
   final File image;
+  final List<UserImage> imageList;
+  final index;
 
   const ImageCardFile({
     Key key,
     this.image,
+    this.imageList,
+    this.index,
   }) : super(key: key);
 
   @override
@@ -651,11 +741,28 @@ class _ImageCardFileState extends State<ImageCardFile> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Column(
+      child: Stack(
         children: <Widget>[
           Image.file(
-            image,
+            widget.imageList[widget.index].fileName,
             height: 150,
+          ),
+          Positioned(
+            top: 5,
+            right: 16,
+            child: GestureDetector(
+              onTap: () {
+                print('delete image from List');
+                widget.imageList.removeAt(widget.index);
+                setState(() {
+                  print('set new state of images');
+                });
+              },
+              child: Icon(
+                Icons.remove_circle_outline,
+                color: Colors.red,
+              ),
+            ),
           ),
         ],
       ),
