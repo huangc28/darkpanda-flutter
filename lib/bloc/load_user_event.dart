@@ -12,3 +12,7 @@ class LoadUser extends LoadUserEvent {
 
   const LoadUser({this.uuid});
 }
+
+class ClearUserState extends LoadUserEvent {
+  const ClearUserState();
+}

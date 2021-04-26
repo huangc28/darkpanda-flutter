@@ -49,6 +49,14 @@ abstract class BaseClient extends http.BaseClient {
     request.headers['Authorization'] = 'Bearer $jwtToken';
   }
 
+  withMultiPart(http.BaseRequest request) {
+    request.headers['Content-type'] = "multipart/form-data";
+  }
+
+  withJson(http.BaseRequest request) {
+    request.headers['Content-type'] = "application/json";
+  }
+
   Future<http.StreamedResponse> send(http.BaseRequest request) =>
       http.Client().send(request);
 

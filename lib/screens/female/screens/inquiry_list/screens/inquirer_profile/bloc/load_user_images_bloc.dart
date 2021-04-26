@@ -27,6 +27,8 @@ class LoadUserImagesBloc
   ) async* {
     if (event is LoadUserImages) {
       yield* _mapLoadUserImagesToState(event);
+    } else if (event is ClearUserImagesState) {
+      yield* _mapClearUserImagesStateToState(event);
     }
   }
 
@@ -84,5 +86,10 @@ class LoadUserImagesBloc
         ),
       );
     }
+  }
+
+  Stream<LoadUserImagesState> _mapClearUserImagesStateToState(
+      ClearUserImagesState event) async* {
+    yield LoadUserImagesState.clearState(state);
   }
 }

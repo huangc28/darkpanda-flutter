@@ -1,4 +1,9 @@
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/user_image.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
 
@@ -6,9 +11,13 @@ class EditProfile extends StatefulWidget {
   const EditProfile({
     Key key,
     this.onPush,
+    this.args,
+    this.imageList,
   }) : super(key: key);
 
   final ValueChanged<String> onPush;
+  final UserProfile args;
+  final List<UserImage> imageList;
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -26,7 +35,24 @@ class _EditProfileState extends State<EditProfile> {
           color: Color.fromRGBO(106, 109, 137, 1), //change your color here
         ),
       ),
-      body: Body(),
+      body: BlocListener<UpdateProfileBloc, UpdateProfileState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.done) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Update successfully!",
+                ),
+              ),
+            );
+            Navigator.pop(context);
+          }
+        },
+        child: Body(
+          args: widget.args,
+          imageList: widget.imageList,
+        ),
+      ),
     );
   }
 }

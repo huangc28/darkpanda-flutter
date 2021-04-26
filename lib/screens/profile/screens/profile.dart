@@ -1,4 +1,17 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/models/user_image.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'edit_profile/edit_profile.dart';
 
@@ -66,11 +79,42 @@ List demoLabelList = [
 ];
 
 class Profile extends StatefulWidget {
+  final LoadUserBloc loadUserBloc;
+  final UserProfile args;
+  final Function(String, UserProfile) onPush;
+
+  const Profile({this.loadUserBloc, this.args, this.onPush});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  AuthUser _sender;
+  LoadUserImagesBloc loadUserImagesBloc;
+  List<UserImage> userImageList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    widget.loadUserBloc.add(
+      LoadUser(
+        uuid: _sender.uuid,
+      ),
+    );
+
+    loadUserImagesBloc = BlocProvider.of<LoadUserImagesBloc>(context);
+    loadUserImagesBloc.add(LoadUserImages(uuid: _sender.uuid));
+  }
+
+  @override
+  void dispose() {
+    widget.loadUserBloc.add(ClearUserState());
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +126,7 @@ class _ProfileState extends State<Profile> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    ProfileDetail(),
+                    _buildProfileDetail(),
                     MyRating(),
                     Column(
                       children: List.generate(demoReviewList.length, (index) {
@@ -119,6 +163,260 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfileDetail() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Color.fromRGBO(255, 255, 255, 0.1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocConsumer<LoadUserBloc, LoadUserState>(
+          listener: (BuildContext context, LoadUserState state) {},
+          builder: (BuildContext context, LoadUserState state) {
+            if (state.status == AsyncLoadingStatus.initial ||
+                state.status == AsyncLoadingStatus.loading) {
+              return Row(
+                children: [
+                  LoadingScreen(),
+                ],
+              );
+            }
+            return Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                state.userProfile.username,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              InkWell(
+                                onTap: () {
+                                  // widget.onPush(
+                                  //     '/edit-profile', state.userProfile);
+                                  navigateUpdateProfilePage(
+                                      state, userImageList);
+                                },
+                                child: Image(
+                                  image: AssetImage(
+                                      "lib/screens/profile/assets/edit_profile.png"),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            child: Column(
+                              children: <Widget>[
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    children: <Widget>[
+                                      state.userProfile.age != null &&
+                                              state.userProfile.age != ""
+                                          ? ageLabel(state)
+                                          : SizedBox(),
+                                      state.userProfile.height != null &&
+                                              state.userProfile.age != ""
+                                          ? heightLabel(state)
+                                          : SizedBox(),
+                                      state.userProfile.weight != null &&
+                                              state.userProfile.age != ""
+                                          ? weightLabel(state)
+                                          : SizedBox(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage("assets/logo.png"),
+                    ),
+                  ],
+                ),
+                descriptionText(state),
+                imageList(),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget imageList() {
+    return BlocConsumer<LoadUserImagesBloc, LoadUserImagesState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        userImageList = state.userImages;
+        for (var i = 0; i < state.userImages.length; i++) {
+          if (state.userImages[i].url == null ||
+              state.userImages[i].url == "") {
+            state.userImages.removeAt(i);
+            i--;
+          }
+        }
+        if (state.status == AsyncLoadingStatus.initial ||
+            state.status == AsyncLoadingStatus.loading) {
+          return Row(
+            children: [
+              LoadingScreen(),
+            ],
+          );
+        }
+        return state.userImages.length > 0
+            ? Container(
+                height: 190,
+                padding: EdgeInsets.only(top: 25),
+                child: ListView.builder(
+                  itemCount:
+                      state.userImages[state.userImages.length - 1].url == ""
+                          ? state.userImages.length - 1
+                          : state.userImages.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {},
+                      child: ImageCard(image: state.userImages[index].url),
+                    );
+                  },
+                ),
+              )
+            : SizedBox();
+      },
+    );
+  }
+
+  // write this way is to call inistate after pop from edit profile page
+  void navigateUpdateProfilePage(state, userImage) {
+    Route route = MaterialPageRoute(
+      builder: (BuildContext context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => UpdateProfileBloc(
+                profileApiClient: ProfileApiClient(),
+              ),
+            ),
+          ],
+          child: EditProfile(
+            args: state.userProfile,
+            imageList: userImage,
+          ),
+        );
+      },
+    );
+
+    Navigator.push(context, route).then(onGoBack);
+  }
+
+  FutureOr onGoBack(dynamic value) {
+    setState(() {
+      widget.loadUserBloc.add(
+        LoadUser(
+          uuid: _sender.uuid,
+        ),
+      );
+      loadUserImagesBloc.add(ClearUserImagesState());
+      loadUserImagesBloc.add(LoadUserImages(uuid: _sender.uuid));
+    });
+  }
+
+  Widget ageLabel(state) {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromRGBO(190, 172, 255, 0.3),
+          ),
+          child: Text(
+            state.userProfile.age.toString() + '岁',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget heightLabel(state) {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromRGBO(190, 172, 255, 0.3),
+          ),
+          child: Text(
+            state.userProfile.height.toString() + 'm',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget weightLabel(state) {
+    return SizedBox(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromRGBO(190, 172, 255, 0.3),
+          ),
+          child: Text(
+            state.userProfile.weight.toString() + 'kg',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget descriptionText(state) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          state.userProfile.description,
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -545,18 +843,10 @@ class ProfileDetail extends StatelessWidget {
 }
 
 class ImageCard extends StatefulWidget {
-  final String operation;
-  final String selectedIcon;
-  final String unselectedIcon;
-  final bool isSelected;
   final String image;
 
   const ImageCard({
     Key key,
-    this.operation,
-    this.selectedIcon,
-    this.unselectedIcon,
-    this.isSelected,
     this.image,
   }) : super(key: key);
 
@@ -580,8 +870,51 @@ class _ImageCardState extends State<ImageCard> {
       ),
       child: Column(
         children: <Widget>[
-          Image(
-            image: AssetImage(image),
+          // Image(
+          //   image:
+          Image.network(
+            image,
+            fit: BoxFit.cover,
+            height: 150,
+          ),
+          // ),
+        ],
+      ),
+    );
+  }
+}
+
+class ImageCardFile extends StatefulWidget {
+  final File image;
+
+  const ImageCardFile({
+    Key key,
+    this.image,
+  }) : super(key: key);
+
+  @override
+  _ImageCardFileState createState() => _ImageCardFileState(this.image);
+}
+
+class _ImageCardFileState extends State<ImageCardFile> {
+  final File image;
+
+  _ImageCardFileState(this.image);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(right: 16),
+      width: 123,
+      height: 150,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: <Widget>[
+          Image.file(
+            image,
+            height: 150,
           ),
         ],
       ),
