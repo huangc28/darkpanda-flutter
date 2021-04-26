@@ -34,8 +34,8 @@ class AccoutNumberChanged extends VerifyBankEvent {
   List<Object> get props => [accoutNumber];
 }
 
-class UpdateVerifyBank extends VerifyBankEvent {
-  const UpdateVerifyBank();
+class SubmitVerifyBank extends VerifyBankEvent {
+  const SubmitVerifyBank();
 
   @override
   List<Object> get props => [];

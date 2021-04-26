@@ -23,8 +23,8 @@ class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
   Stream<VerifyBankState> mapEventToState(
     VerifyBankEvent event,
   ) async* {
-    if (event is UpdateVerifyBank) {
-      yield* _mapVerifyBankToState(event, state);
+    if (event is SubmitVerifyBank) {
+      yield* _mapSubmitVerifyBankToState(event, state);
     } else if (event is AccountNameChanged) {
       yield _mapUpdateAccountNameToState(event, state);
     } else if (event is BankCodeChanged) {
@@ -34,8 +34,8 @@ class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
     }
   }
 
-  Stream<VerifyBankState> _mapVerifyBankToState(
-      UpdateVerifyBank event, VerifyBankState state) async* {
+  Stream<VerifyBankState> _mapSubmitVerifyBankToState(
+      SubmitVerifyBank event, VerifyBankState state) async* {
     try {
       yield VerifyBankState.loading(
         VerifyBankState.copyFrom(state),
