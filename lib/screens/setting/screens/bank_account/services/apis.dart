@@ -1,36 +1,33 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import '../models/verify_bank.dart';
 import 'package:darkpanda_flutter/services/base_client.dart';
-import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 class BankAPIClient extends BaseClient {
   Future<http.Response> verifyBankAccount(
-      {String uuid,
-      String accountName,
-      String bankCode,
-      int accountNumber}) async {
+    VerifyBank verifyBank,
+  ) async {
     try {
+      final uuid = verifyBank.uuid;
+      final body = verifyBank;
+
+      final jsonBody = jsonEncode(body);
       final request = http.Request(
         'POST',
-        buildUri(
-          '/v1/users/verify-bank',
-          {
-            'uuid': uuid,
-            'account_name': accountName,
-            'bank_code': bankCode,
-            'account_number': accountNumber,
-          },
-        ),
+        buildUri('/v1/users/$uuid/verify-bank'),
       );
 
-      final res = await withTokenFromSecureStore(request);
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withJson(request);
+
+      final res = await sendWithResponse(request);
 
       return res;
-    } catch (err) {
-      throw AppGeneralExeption(
-        message: err.toString(),
-      );
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -42,7 +39,9 @@ class BankAPIClient extends BaseClient {
       buildUri('/v1/users/$uuid/bank'),
     );
 
-    final res = await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
 
     return res;
   }

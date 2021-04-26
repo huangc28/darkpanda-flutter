@@ -7,16 +7,36 @@ abstract class VerifyBankEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class VerifyBank extends VerifyBankEvent {
-  final String uuid;
+class AccountNameChanged extends VerifyBankEvent {
+  const AccountNameChanged(this.accountName);
+
   final String accountName;
+
+  @override
+  List<Object> get props => [accountName];
+}
+
+class BankCodeChanged extends VerifyBankEvent {
+  const BankCodeChanged(this.bankCode);
+
   final String bankCode;
+
+  @override
+  List<Object> get props => [bankCode];
+}
+
+class AccoutNumberChanged extends VerifyBankEvent {
+  const AccoutNumberChanged(this.accoutNumber);
+
   final int accoutNumber;
 
-  const VerifyBank({
-    this.uuid,
-    this.accountName,
-    this.bankCode,
-    this.accoutNumber,
-  });
+  @override
+  List<Object> get props => [accoutNumber];
+}
+
+class UpdateVerifyBank extends VerifyBankEvent {
+  const UpdateVerifyBank();
+
+  @override
+  List<Object> get props => [];
 }
