@@ -6,7 +6,6 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
 import '../services/apis.dart';
 import '../models/bank.dart';
@@ -33,9 +32,6 @@ class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
   Stream<VerifyBankState> _mapVerifyBankToState(VerifyBank event) async* {
     try {
       yield VerifyBankState.loading();
-
-      final jwt = await SecureStore().readJwtToken();
-      apiClient.jwtToken = jwt;
 
       final resp = await apiClient.verifyBankAccount(
         uuid: event.uuid,

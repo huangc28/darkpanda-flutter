@@ -24,7 +24,7 @@ class BankAPIClient extends BaseClient {
         ),
       );
 
-      final res = await sendWithResponse(request);
+      final res = await withTokenFromSecureStore(request);
 
       return res;
     } catch (err) {
@@ -42,9 +42,7 @@ class BankAPIClient extends BaseClient {
       buildUri('/v1/users/$uuid/bank'),
     );
 
-    withAuthHeader(request);
-
-    final res = await sendWithResponse(request);
+    final res = await withTokenFromSecureStore(request);
 
     return res;
   }

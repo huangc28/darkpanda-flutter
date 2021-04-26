@@ -4,8 +4,8 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/apis.dart';
 import '../models/bank_status_detail.dart';
@@ -35,8 +35,6 @@ class LoadBankStatusBloc
       yield LoadBankStatusState.loading(state);
 
       // request API
-      final jwt = await SecureStore().readJwtToken();
-      apiClient.jwtToken = jwt;
       final res = await apiClient.fetchUserBankStatus(event.uuid);
 
       if (res.statusCode != HttpStatus.ok) {
