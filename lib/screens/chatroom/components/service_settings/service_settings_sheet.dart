@@ -69,9 +69,9 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   void didUpdateWidget(ServiceSettingsSheet oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // If previous [ServiceSettings] model is different from
-    // the current [ServiceSettings] model, we replace
-    // the service setting sheet with the newest one.
+    // If previous [ServiceSettings] instance is different from
+    // the current one , we replace the service setting sheet
+    // with the newest one.
     if (widget.serviceSettings != oldWidget.serviceSettings) {
       _initDefaultServiceSettings(widget.serviceSettings);
 

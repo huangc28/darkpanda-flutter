@@ -18,23 +18,23 @@ class UpdateInquiryBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ServiceDetailBubble(
-      isMe: isMe,
-      message: _updateInquiry(message),
-      onTapMessage: onTapMessage,
-    );
-  }
-
-  ServiceDetailMessage _updateInquiry(UpdateInquiryMessage usm) {
-    return ServiceDetailMessage(
-      content: usm.content,
-      from: usm.from,
-      to: usm.to,
-      createdAt: usm.createdAt,
-      price: usm.price,
-      duration: usm.duration,
-      serviceTime: usm.serviceTime,
-      serviceType: usm.serviceType,
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: 16,
+        top: 16,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Jenny 已送出交易邀請',
+            style: TextStyle(
+              fontSize: 12,
+              color: Color.fromRGBO(106, 109, 137, 1),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
