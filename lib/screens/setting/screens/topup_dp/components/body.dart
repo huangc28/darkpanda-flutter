@@ -12,7 +12,7 @@ class Body extends StatefulWidget {
   });
 
   final TopUpDpArguments args;
-  final OnPush onPush;
+  final Function(String, TopUpDpArguments) onPush;
 
   @override
   _BodyState createState() => _BodyState();
@@ -105,12 +105,10 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).push(
-                              MaterialPageRoute(
-                                builder: (context) => TopupPayment(amount: 500),
+                            widget.onPush(
+                              '/topup-payment',
+                              TopUpDpArguments(
+                                amount: 500,
                               ),
                             );
                           },

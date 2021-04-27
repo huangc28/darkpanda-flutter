@@ -16,3 +16,7 @@ class LoadUserImages extends LoadUserImagesEvent {
     this.pageNum = 0,
   });
 }
+
+class ClearUserImagesState extends LoadUserImagesEvent {
+  const ClearUserImagesState();
+}

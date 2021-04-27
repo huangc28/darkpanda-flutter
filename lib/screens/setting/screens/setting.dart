@@ -1,10 +1,10 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
 import 'package:flutter/material.dart';
+
+import 'topup_dp/screen_arguements/args.dart';
 
 class DemoMenu {
   final String image;
@@ -31,6 +31,12 @@ List demoMenuList = [
 ];
 
 class Setting extends StatefulWidget {
+  const Setting({
+    this.onPush,
+  });
+
+  final Function(String, TopUpDpArguments) onPush;
+
   @override
   _SettingState createState() => _SettingState();
 }
@@ -97,10 +103,7 @@ class _SettingState extends State<Setting> {
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
                           onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => BlackList()),
-                            );
+                            widget.onPush('/blacklist', null);
                           },
                         ),
                       ],
@@ -111,9 +114,7 @@ class _SettingState extends State<Setting> {
                             "lib/screens/setting/assets/feedback.png"),
                       ),
                       onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) => TopupDp()),
-                        );
+                        widget.onPush('/topup-dp', null);
                       },
                     ),
                     Padding(
