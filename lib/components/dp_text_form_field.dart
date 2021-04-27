@@ -117,8 +117,10 @@ class DPTextFormField extends StatelessWidget {
     this.keyboardType,
     this.focusNode,
     this.readOnly = false,
+    this.decoration,
   }) : super(key: key);
 
+  final BoxDecoration decoration;
   final DPTextFieldThemes theme;
   final TextAlignVertical textAlignVertical;
   final String hintText;

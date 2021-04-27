@@ -25,7 +25,7 @@ class PriceField extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Container(
-          height: 44,
+          height: 70,
           child: DPTextFormField(
             controller: controller,
             validator: validator,

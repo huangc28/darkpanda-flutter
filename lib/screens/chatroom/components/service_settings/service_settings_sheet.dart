@@ -194,7 +194,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           _serviceSetting.price = double.tryParse(v);
                         },
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 10),
                       // Focus address field would open a map route letting the user to select an address from google map.
                       GestureDetector(
                         onTap: _navigateToAddressSelector,
@@ -266,14 +266,13 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           });
                         },
                       ),
-                      SizedBox(height: 25),
                     ],
                   ),
 
                   // Emit inquiry.
                   Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
                             listener: (context, state) {
@@ -307,8 +306,6 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                       ],
                     ),
                   ),
-
-                  SizedBox(height: 30),
                 ],
               ),
             ),
