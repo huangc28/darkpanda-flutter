@@ -14,8 +14,8 @@ class MyDp {
 
     if (data.containsKey('recharge_amount_list')) {
       RechargeAmountLists =
-          data['recharge_amount_list'].map<RechargeAmount>((RechargeAmount) {
-        return RechargeAmount.fromJson(RechargeAmount);
+          data['recharge_amount_list'].map<RechargeAmount>((rechargeAmount) {
+        return RechargeAmount.fromJson(rechargeAmount);
       }).toList();
     }
 
