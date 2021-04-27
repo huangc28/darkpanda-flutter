@@ -37,6 +37,10 @@ abstract class BaseClient extends http.BaseClient {
     request.headers['Authorization'] = 'Bearer $jwtToken';
   }
 
+  withApplicationJsonHeader(http.BaseRequest request) {
+    request.headers['Content-Type'] = 'application/json';
+  }
+
   withTokenFromSecureStore(http.BaseRequest request) async {
     final jwt = await SecureStore().readJwtToken();
 

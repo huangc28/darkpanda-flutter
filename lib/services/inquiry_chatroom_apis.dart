@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:darkpanda_flutter/services/base_client.dart';
 
@@ -73,15 +74,21 @@ class InquiryChatroomApis extends BaseClient {
     try {
       final request = http.Request(
         'POST',
-        buildUri('/v1/chat/emit-service-message', {
-          'channel_uuid': channelUUID,
-          'inquiry_uuid': inquiryUUID,
-          'service_time': serviceTime.toUtc().toIso8601String(),
-          'service_duration': '$serviceDuration',
-          'price': '$price',
-          'service_type': serviceType,
-        }),
+        buildUri(
+          '/v1/chat/emit-service-message',
+        ),
       );
+
+      request.body = json.encode({
+        'channel_uuid': channelUUID,
+        'inquiry_uuid': inquiryUUID,
+        'service_time': serviceTime.toUtc().toIso8601String(),
+        'service_duration': '$serviceDuration',
+        'price': '$price',
+        'service_type': serviceType,
+      });
+
+      withApplicationJsonHeader(request);
 
       await withTokenFromSecureStore(request);
 
@@ -89,5 +96,34 @@ class InquiryChatroomApis extends BaseClient {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<http.Response> sendInquiryUpdateMessage({
+    String channelUUID,
+    String inquiryUUID,
+    DateTime serviceTime,
+    int serviceDuration,
+    double price,
+    String serviceType,
+  }) async {
+    final request = http.Request(
+      'POST',
+      buildUri('/v1/chat/emit-inquiry-updated-message'),
+    );
+
+    request.body = json.encode({
+      'channel_uuid': channelUUID,
+      'inquiry_uuid': inquiryUUID,
+      'appointment_time': '${serviceTime.toIso8601String()}Z',
+      'duration': serviceDuration,
+      'price': price,
+      'service_type': serviceType,
+    });
+
+    withApplicationJsonHeader(request);
+
+    await withTokenFromSecureStore(request);
+
+    return sendWithResponse(request);
   }
 }

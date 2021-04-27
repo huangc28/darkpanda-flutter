@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/util/try_parse_to_date_time.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/inquiry.dart';
 
-class ServiceSettings {
+class ServiceSettings extends Equatable {
   ServiceSettings({
     this.uuid,
     this.serviceDate,
@@ -24,6 +25,30 @@ class ServiceSettings {
   Duration duration;
   String serviceType;
   String address;
+
+  @override
+  List<Object> get props => [
+        uuid,
+        serviceDate,
+        serviceTime,
+        price,
+        budget,
+        duration,
+        serviceType,
+        address,
+
+        // Service date
+        serviceDate.year,
+        serviceDate.month,
+        serviceDate.day,
+
+        // Service time
+        serviceTime.hour,
+        serviceTime.minute,
+      ];
+
+  @override
+  bool get stringify => true;
 
   ServiceSettings.fromServiceDetailMessage(ServiceDetailMessage msg)
       : price = msg.price,
@@ -45,8 +70,8 @@ class ServiceSettings {
 
   factory ServiceSettings.fromMap(Map<String, dynamic> data) {
     final DateTime ap = tryParseToDateTime(data['appointment_time']);
-
     return ServiceSettings(
+      address: data['address'] ?? '',
       uuid: data['uuid'] ?? '',
       serviceType: data['service_type'] ?? '',
       price: data['price']?.toDouble(),

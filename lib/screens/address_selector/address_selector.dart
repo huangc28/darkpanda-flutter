@@ -11,7 +11,6 @@ import 'package:easy_debounce/easy_debounce.dart';
 import './services/apis.dart';
 import './bloc/determine_location_bloc.dart';
 import './bloc/determine_address_bloc.dart';
-import './screen_arguments/address_selector_args.dart';
 import './models/location.dart';
 
 part 'components/address_map.dart';
@@ -19,12 +18,10 @@ part 'components/address_map.dart';
 class AddressSelector extends StatelessWidget {
   const AddressSelector({
     Key key,
-    this.args,
     this.initialAddress,
     this.onConfirmAddress,
   }) : super(key: key);
 
-  final AddressSelectorArgs args;
   final String initialAddress;
   final ValueChanged<String> onConfirmAddress;
 

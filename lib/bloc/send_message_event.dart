@@ -34,7 +34,18 @@ class SendServiceDetailConfirmMessage extends SendMessageEvent {
   final ServiceSettings serviceSettings;
   final String inquiryUUID;
   final String channelUUID;
+}
 
-  @override
-  List<Object> get props => [];
+class SendUpdateInquiryMessage extends SendMessageEvent {
+  const SendUpdateInquiryMessage({
+    this.serviceSettings,
+    this.inquiryUUID,
+    this.channelUUID,
+  })  : assert(serviceSettings != null),
+        assert(inquiryUUID != null),
+        assert(channelUUID != null);
+
+  final ServiceSettings serviceSettings;
+  final String inquiryUUID;
+  final String channelUUID;
 }

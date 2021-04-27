@@ -26,8 +26,8 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
   ) async* {
     if (event is SendTextMessage) {
       yield* _mapSendMessageToState(event);
-    } else if (event is SendServiceDetailConfirmMessage) {
-      yield* _mapSendServiceDetailConfirmMessage(event);
+    } else if (event is SendUpdateInquiryMessage) {
+      yield* _mapSendUpdateInquiryMessage(event);
     }
   }
 
@@ -59,13 +59,14 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
     }
   }
 
-  Stream<SendMessageState> _mapSendServiceDetailConfirmMessage(
-      SendServiceDetailConfirmMessage event) async* {
+  Stream<SendMessageState> _mapSendUpdateInquiryMessage(
+      SendUpdateInquiryMessage event) async* {
+    print('DEBUG SendUpdateInquiryMessage ${event.serviceSettings}');
     yield SendMessageState.loading();
 
     final serviceSettings = event.serviceSettings;
 
-    final resp = await inquiryChatroomApis.sendChatroomServiceSettingMessage(
+    final resp = await inquiryChatroomApis.sendInquiryUpdateMessage(
       channelUUID: event.channelUUID,
       inquiryUUID: event.inquiryUUID,
       serviceTime: new DateTime(
@@ -86,6 +87,6 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       name: 'service detail',
     );
 
-    yield SendMessageState.loaded();
+    // yield SendMessageState.loaded();
   }
 }

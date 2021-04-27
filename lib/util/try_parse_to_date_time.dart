@@ -12,9 +12,9 @@ DateTime tryParseToDateTime(dynamic field) {
 
   DateTime dt;
 
-  if (field.runtimeType == 'Timestamp') {
+  if (field.runtimeType == Timestamp) {
     dt = field.toDate();
-  } else if (field.runtimeType == 'String') {
+  } else if (field.runtimeType == String) {
     dt = DateTime.tryParse(field);
   }
 

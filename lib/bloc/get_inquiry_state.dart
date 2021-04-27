@@ -5,10 +5,15 @@ class GetInquiryState<E extends AppBaseException> extends Equatable {
   final E error;
   final Inquiry inquiry;
 
+  /// We will normalize response retrieved to [ServiceSettings]. We use
+  /// [ServiceSettings] to display inquiry data on the service setting sheet.
+  final ServiceSettings serviceSettings;
+
   const GetInquiryState._({
     this.status,
     this.error,
     this.inquiry,
+    this.serviceSettings,
   });
 
   GetInquiryState.init()
@@ -24,10 +29,10 @@ class GetInquiryState<E extends AppBaseException> extends Equatable {
   GetInquiryState.error(E error)
       : this._(status: AsyncLoadingStatus.error, error: error);
 
-  GetInquiryState.done(Inquiry inquiry)
+  GetInquiryState.done(ServiceSettings serviceSettings)
       : this._(
           status: AsyncLoadingStatus.done,
-          inquiry: inquiry,
+          serviceSettings: serviceSettings,
         );
 
   @override
@@ -35,5 +40,6 @@ class GetInquiryState<E extends AppBaseException> extends Equatable {
         status,
         error,
         inquiry,
+        serviceSettings,
       ];
 }

@@ -10,6 +10,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 import 'package:darkpanda_flutter/models/inquiry.dart';
+import 'package:darkpanda_flutter/models/service_settings.dart';
 
 part 'get_inquiry_event.dart';
 part 'get_inquiry_state.dart';
@@ -43,11 +44,11 @@ class GetInquiryBloc extends Bloc<GetInquiryEvent, GetInquiryState> {
 
       developer.log('Get inquiry result ${resp.body}');
 
-      final inquiry = Inquiry.fromJson(
+      final serviceSettings = ServiceSettings.fromMap(
         json.decode(resp.body),
       );
 
-      yield GetInquiryState.done(inquiry);
+      yield GetInquiryState.done(serviceSettings);
     } on APIException catch (e) {
       yield GetInquiryState.error(e);
     } catch (e) {

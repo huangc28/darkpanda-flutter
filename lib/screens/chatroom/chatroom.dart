@@ -7,14 +7,21 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
+
+/// @TODO: move these message models to a folder
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
 import 'components/service_detail_bubble.dart';
+import 'components/update_inquiry_bubble.dart';
+
 import 'components/send_message_bar.dart';
 import 'components/chatroom_window.dart';
 import 'components/service_settings/service_settings.dart';
@@ -48,6 +55,9 @@ class _ChatroomState extends State<Chatroom>
   AnimationController _animationController;
   Animation<Offset> _offsetAnimation;
   Animation<double> _fadeAnimation;
+
+  /// [ServiceSettings] model to be passed down to service settings sheet.
+  ServiceSettings _serviceSettings;
 
   @override
   void initState() {
@@ -200,21 +210,21 @@ class _ChatroomState extends State<Chatroom>
                                       currentMessages: state.currentMessages,
                                       builder: (BuildContext context, message) {
                                         // Render different chat bubble based on message type.
-                                        if (message is ServiceDetailMessage) {
-                                          return ServiceDetailBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onTapMessage: (_) {
-                                              print(
-                                                  'DEBUG tap inquiry detail message');
-                                            },
-                                            // _handleTapServiceSettingMessage,
-                                          );
-                                        } else if (message
+                                        if (message
                                             is ServiceConfirmedMessage) {
                                           return ConfirmedServiceBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
+                                          );
+                                        } else if (message
+                                            is UpdateInquiryMessage) {
+                                          return UpdateInquiryBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                            onTapMessage: (message) {
+                                              // Slideup inquiry pannel.
+                                              _animationController.forward();
+                                            },
                                           );
                                         } else {
                                           return ChatBubble(
@@ -263,21 +273,39 @@ class _ChatroomState extends State<Chatroom>
                   // display spinner on service settings sheet.
                   SlideTransition(
                     position: _offsetAnimation,
-                    child: BlocBuilder<GetInquiryBloc, GetInquiryState>(
-                      builder: (context, state) {
-                        var serviceSettings =
-                            state.status == AsyncLoadingStatus.done
-                                ? ServiceSettings.fromInquiry(state.inquiry)
-                                : null;
-
-                        return ServiceSettingsSheet(
-                          serviceSettings: serviceSettings,
-                          controller: _slideUpController,
-                          onTapClose: () {
-                            _animationController.reverse();
-                          },
-                        );
+                    child: BlocListener<GetInquiryBloc, GetInquiryState>(
+                      listener: (_, state) {
+                        if (state.status == AsyncLoadingStatus.done) {
+                          print(
+                              'DEBUG done loading iq ${state.serviceSettings}');
+                          setState(() {
+                            _serviceSettings = state.serviceSettings;
+                          });
+                        }
                       },
+                      child: ServiceSettingsSheet(
+                        serviceSettings: _serviceSettings,
+                        controller: _slideUpController,
+                        onTapClose: () {
+                          _animationController.reverse();
+                        },
+                        onUpdateInquiry: (ServiceSettings data) {
+                          print('DEBUG onUpdateInquiry data ${data}');
+
+                          setState(() {
+                            _serviceSettings = data;
+                          });
+
+                          /// Send inquiry settings message when done editing inquiry.
+                          BlocProvider.of<SendMessageBloc>(context).add(
+                            SendUpdateInquiryMessage(
+                              inquiryUUID: widget.args.inquiryUUID,
+                              channelUUID: widget.args.channelUUID,
+                              serviceSettings: data,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

@@ -17,7 +17,7 @@ class PriceField extends StatelessWidget {
     return Column(
       children: [
         Bullet(
-          '價格(台幣)',
+          '價格(DP幣)',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,

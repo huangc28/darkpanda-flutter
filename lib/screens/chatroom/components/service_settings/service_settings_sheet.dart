@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
-import 'package:darkpanda_flutter/screens/address_selector/screen_arguments/address_selector_args.dart';
+import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import './slideup_controller.dart';
 import './slideup_provider.dart';
@@ -17,32 +18,23 @@ import './slideup_provider.dart';
 part 'price_field.dart';
 part 'address_field.dart';
 part 'appointment_time_field.dart';
+part 'service_duration_field.dart';
 
-// TODOs
-//   - Add close button - [ok]
-//   - Service type
-//   - Add price field - [ok]
-//   - Meet up date - [ok]
-//   - Meet up time - [ok]
-//   - Service duration - [ok]
-//   - Location
-//   - Time picker and Date picker fields have the same style - [ok]
-//   - Save button - [ok]
-//   - Cancel button - [ok]
-//   - Replace the service settings with default values
-//   - Add service type field
-// @reference: https://medium.com/flutterdevs/date-and-time-picker-in-flutter-72141e7531c
 // @reference: https://stackoverflow.com/questions/51908187/how-to-make-a-full-screen-dialog-in-flutter
 class ServiceSettingsSheet extends StatefulWidget {
   const ServiceSettingsSheet({
     this.serviceSettings,
     this.controller,
     @required this.onTapClose,
+    @required this.onUpdateInquiry,
   });
 
   final ServiceSettings serviceSettings;
   final SlideUpController controller;
   final VoidCallback onTapClose;
+
+  /// Triggered when inquiry is updated.
+  final Function(ServiceSettings) onUpdateInquiry;
 
   @override
   _ServiceSettingsSheetState createState() => _ServiceSettingsSheetState();
@@ -67,21 +59,19 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   void initState() {
     super.initState();
 
-    print('DEBUG trigger init ${widget.serviceSettings}');
-
     _initDefaultServiceSettings(widget.serviceSettings);
   }
 
   @override
   void didUpdateWidget(ServiceSettingsSheet oldWidget) {
-    // Makesure we don't reinitialize service setting sheet value when after
-    // user set the address.
-    if (widget.serviceSettings != null &&
-        widget.serviceSettings.address != oldWidget.serviceSettings.address) {
+    super.didUpdateWidget(oldWidget);
+
+    /// If previous [ServiceSettings] model is different from
+    /// the current [ServiceSettings] model, we replace
+    /// the service setting sheet with the newest one.
+    if (widget.serviceSettings != oldWidget.serviceSettings) {
       _initDefaultServiceSettings(widget.serviceSettings);
     }
-
-    super.didUpdateWidget(oldWidget);
   }
 
   _navigateToAddressSelector() async {
@@ -97,7 +87,10 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       ),
     );
 
-    _addressController.text = addr;
+    setState(() {
+      _addressController.text = addr;
+      _serviceSetting.address = addr;
+    });
   }
 
   _initDefaultServiceSettings(ServiceSettings serviceSettings) {
@@ -106,28 +99,20 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     _serviceSetting = serviceSettings;
 
     // Initialize service date.
-    _dateController.text = DateFormat.yMd().format(_serviceSetting.serviceDate);
+    _dateController.text = _formatDate(_serviceSetting.serviceDate);
 
     // Initialize service time.
-    _timeController.text = formatDate(
-      DateTime(
-        _serviceSetting.serviceDate.year,
-        _serviceSetting.serviceDate.month,
-        _serviceSetting.serviceDate.day,
-        _serviceSetting.serviceDate.hour,
-        _serviceSetting.serviceDate.minute,
-        0,
-      ),
-      [hh, ':', nn, " ", am],
-    ).toString();
+    _timeController.text = _formatTime(
+      serviceSettings.serviceTime,
+    );
 
     // Initialize service duration.
-    _durationController.text = _formatDuration(_serviceSetting.duration);
+    _durationController.text = _serviceSetting.duration.inMinutes.toString();
 
     // Initialize price. If price is not yet set, use budget as the initial price.
     _priceController.text = _serviceSetting.price == null
-        ? _priceController.text = '${_serviceSetting.budget}'
-        : _priceController.text = '${_serviceSetting.price}';
+        ? '${_serviceSetting.budget}'
+        : '${_serviceSetting.price}';
 
     // Initialize service type.
     _serviceSetting.serviceType = _serviceSetting.serviceType;
@@ -138,10 +123,23 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     setState(() {});
   }
 
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String _formatDate(DateTime dateTime) =>
+      DateFormat.yMd().format(_serviceSetting.serviceDate);
 
-    return "${twoDigits(duration.inHours)}:${twoDigits(duration.inMinutes.remainder(60))}";
+  String _formatTime(TimeOfDay time) {
+    final now = DateTime.now();
+
+    return formatDate(
+      DateTime(
+        now.year,
+        now.month,
+        now.day,
+        time.hour,
+        time.minute,
+        0,
+      ),
+      [hh, ':', nn, " ", am],
+    ).toString();
   }
 
   Widget _buildServiceSettingsForm() {
@@ -210,19 +208,65 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                         ),
                       ),
                       SizedBox(height: 25),
-                      AppointmentTimeField(),
+                      Container(
+                        child: AppointmentTimeField(
+                          dateController: _dateController,
+                          timeController: _timeController,
+                          onSelectDate: (DateTime dateTime) {
+                            // We need to update the appointment time of current service settings.
+                            setState(() {
+                              _serviceSetting.serviceDate = dateTime;
+
+                              // Format the date text to be aligned with the newly selected date.
+                              _dateController = TextEditingController()
+                                ..text =
+                                    _formatDate(_serviceSetting.serviceDate);
+                            });
+                          },
+                          onSelectTime: (TimeOfDay time) {
+                            setState(() {
+                              _serviceSetting.serviceTime = time;
+                              _timeController = TextEditingController()
+                                ..text = _formatTime(time);
+                            });
+                          },
+                        ),
+                      ),
+
                       SizedBox(height: 25),
-                      Column(
-                        children: [
-                          Bullet(
-                            '服務期限',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )
+
+                      ServiceDurationField(
+                        controller: _durationController,
+                        validator: (String v) {
+                          if (v == null || v.isEmpty) {
+                            return '請輸入服務時長';
+                          }
+
+                          final doubleDuration = double.tryParse(v);
+
+                          if (doubleDuration < 30.0) {
+                            return '服務時長最少 30 分鐘';
+                          }
+
+                          // Check if user input contains decimal fraction.
+                          final fraction =
+                              doubleDuration - doubleDuration.truncate();
+
+                          if (fraction > 0) {
+                            return '服務時長必須為整數';
+                          }
+
+                          return null;
+                        },
+                        onSaved: (String v) {
+                          // Convert duration value to Duration instance.
+                          setState(() {
+                            _serviceSetting.duration =
+                                Duration(minutes: int.tryParse(v));
+                          });
+                        },
+                      ),
+                      SizedBox(height: 25),
                     ],
                   ),
 
@@ -231,13 +275,35 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        DPTextButton(
-                          onPressed: () {
-                            print('DEBUG trigger emit inquiry');
-                          },
-                          text: '發送邀請',
-                          theme: DPTextButtonThemes.purple,
-                        ),
+                        BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
+                            listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _serviceSetting = state.serviceSettings;
+                            });
+
+                            widget.onUpdateInquiry(state.serviceSettings);
+                          }
+                        }, builder: (context, state) {
+                          return DPTextButton(
+                            loading: state.status == AsyncLoadingStatus.loading,
+                            onPressed: () {
+                              if (!_formKey.currentState.validate()) {
+                                return;
+                              }
+
+                              _formKey.currentState.save();
+
+                              BlocProvider.of<UpdateInquiryBloc>(context).add(
+                                UpdateInquiry(
+                                  serviceSettings: _serviceSetting,
+                                ),
+                              );
+                            },
+                            text: '發送邀請',
+                            theme: DPTextButtonThemes.purple,
+                          );
+                        }),
                       ],
                     ),
                   ),

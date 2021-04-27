@@ -11,6 +11,7 @@ import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
@@ -121,6 +122,7 @@ class CurrentChatroomBloc
   }
 
   _handleCurrentMessage(data, String channelUUID) {
+    print('DEBUG current message ${data}');
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data();
 
@@ -128,6 +130,8 @@ class CurrentChatroomBloc
         (String type) => type == MessageType.service_detail.name;
     final isConfirmedServiceMsg =
         (String type) => type == MessageType.confirmed_service.name;
+    final isUpdateInquiryDetailMsg =
+        (String type) => type == MessageType.update_inquiry_detail.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -150,6 +154,8 @@ class CurrentChatroomBloc
           channelUUID: channelUUID,
         ),
       );
+    } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
+      msg = UpdateInquiryMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }
@@ -184,6 +190,8 @@ class CurrentChatroomBloc
           return ServiceDetailMessage.fromMap(data);
         } else if (data['type'] == MessageType.confirmed_service.name) {
           return ServiceConfirmedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.update_inquiry_detail.name) {
+          return UpdateInquiryMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
