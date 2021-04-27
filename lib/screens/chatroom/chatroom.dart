@@ -16,6 +16,7 @@ import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
@@ -190,8 +191,6 @@ class _ChatroomState extends State<Chatroom>
                                     NotifyServiceConfirmedState>(
                                   listener: (context, state) {
                                     if (state.confirmed) {
-                                      // Lock the message sending button
-                                      // Lock the detail setting panel
                                       setState(() {
                                         serviceConfirmed = true;
                                       });
@@ -249,7 +248,6 @@ class _ChatroomState extends State<Chatroom>
                               disable: serviceConfirmed,
                               editMessageController: _editMessageController,
                               onSend: () {
-                                // Emit message if the value of _message is not empty
                                 if (_message.isEmpty) {
                                   return;
                                 }
@@ -273,16 +271,24 @@ class _ChatroomState extends State<Chatroom>
                   // display spinner on service settings sheet.
                   SlideTransition(
                     position: _offsetAnimation,
-                    child: BlocListener<GetInquiryBloc, GetInquiryState>(
-                      listener: (_, state) {
-                        if (state.status == AsyncLoadingStatus.done) {
-                          print(
-                              'DEBUG done loading iq ${state.serviceSettings}');
-                          setState(() {
-                            _serviceSettings = state.serviceSettings;
-                          });
-                        }
-                      },
+                    child: MultiBlocListener(
+                      listeners: [
+                        BlocListener<GetInquiryBloc, GetInquiryState>(
+                          listener: (_, state) {
+                            if (state.status == AsyncLoadingStatus.done) {
+                              setState(() {
+                                _serviceSettings = state.serviceSettings;
+                              });
+                            }
+                          },
+                        ),
+                        BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
+                            listener: (_, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            _animationController.reverse();
+                          }
+                        }),
+                      ],
                       child: ServiceSettingsSheet(
                         serviceSettings: _serviceSettings,
                         controller: _slideUpController,
@@ -290,8 +296,6 @@ class _ChatroomState extends State<Chatroom>
                           _animationController.reverse();
                         },
                         onUpdateInquiry: (ServiceSettings data) {
-                          print('DEBUG onUpdateInquiry data ${data}');
-
                           setState(() {
                             _serviceSettings = data;
                           });

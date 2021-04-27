@@ -7,7 +7,7 @@ enum DPTextButtonThemes {
   purple,
   grey,
   lightGrey,
-  disable,
+  disabled,
 }
 
 class ThemeConfig {
@@ -52,10 +52,10 @@ Map<DPTextButtonThemes, ThemeConfig> themes = {
     backgroundColor: Color.fromRGBO(106, 109, 137, 1),
     textStyle: baseButtonTextStyle,
   ),
-  DPTextButtonThemes.disable: ThemeConfig.setConfig(
-    backgroundColor: Color.fromRGBO(255, 255, 255, 0.18),
+  DPTextButtonThemes.disabled: ThemeConfig.setConfig(
+    backgroundColor: Color.fromRGBO(214, 214, 215, 1),
     textStyle: baseButtonTextStyle.copyWith(
-      color: Color.fromRGBO(106, 109, 137, 1),
+      color: Color.fromRGBO(255, 255, 255, 1),
     ),
   )
 };
@@ -113,7 +113,7 @@ class _DPTextButtonState extends State<DPTextButton> {
   @override
   Widget build(BuildContext context) {
     var chosenTheme = widget.disabled
-        ? themes[DPTextButtonThemes.disable]
+        ? themes[DPTextButtonThemes.disabled]
         : themes[widget.theme];
 
     return TextButton(

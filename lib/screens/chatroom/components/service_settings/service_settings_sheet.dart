@@ -43,6 +43,9 @@ class ServiceSettingsSheet extends StatefulWidget {
 class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  /// Switch to determin whether to disable the update button or not.
+  bool _disableUpdate = false;
+
   ServiceSettings _serviceSetting = ServiceSettings(
     serviceDate: DateTime.now(),
     serviceTime: TimeOfDay(hour: 00, minute: 00),
@@ -66,11 +69,13 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   void didUpdateWidget(ServiceSettingsSheet oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    /// If previous [ServiceSettings] model is different from
-    /// the current [ServiceSettings] model, we replace
-    /// the service setting sheet with the newest one.
+    // If previous [ServiceSettings] model is different from
+    // the current [ServiceSettings] model, we replace
+    // the service setting sheet with the newest one.
     if (widget.serviceSettings != oldWidget.serviceSettings) {
       _initDefaultServiceSettings(widget.serviceSettings);
+
+      _disableUpdate = !_formKey.currentState.validate();
     }
   }
 
@@ -144,6 +149,11 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
 
   Widget _buildServiceSettingsForm() {
     return Form(
+      onChanged: () {
+        setState(() {
+          _disableUpdate = !_formKey.currentState.validate();
+        });
+      },
       key: _formKey,
       child: Row(
         children: [
@@ -301,6 +311,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                             },
                             text: '發送邀請',
                             theme: DPTextButtonThemes.purple,
+                            disabled: _disableUpdate,
                           );
                         }),
                       ],
