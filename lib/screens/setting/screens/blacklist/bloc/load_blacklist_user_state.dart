@@ -40,5 +40,7 @@ class LoadBlacklistUserState<E extends AppBaseException> extends Equatable {
   @override
   List<Object> get props => [
         status,
+        blacklistUserList,
+        error,
       ];
 }

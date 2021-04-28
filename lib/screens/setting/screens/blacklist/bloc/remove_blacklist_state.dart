@@ -34,5 +34,6 @@ class RemoveBlacklistState<E extends AppBaseException> extends Equatable {
   @override
   List<Object> get props => [
         status,
+        error,
       ];
 }
