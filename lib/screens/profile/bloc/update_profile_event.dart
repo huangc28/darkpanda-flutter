@@ -53,12 +53,13 @@ class DescriptionChanged extends UpdateProfileEvent {
 }
 
 class UpdateUserProfile extends UpdateProfileEvent {
-  const UpdateUserProfile(this.imageList);
+  const UpdateUserProfile(this.imageList, this.removeImageList);
 
   final List<UserImage> imageList;
+  final List<UserImage> removeImageList;
 
   @override
-  List<Object> get props => [imageList];
+  List<Object> get props => [imageList, removeImageList];
 }
 
 class UpdateUserImage extends UpdateProfileEvent {

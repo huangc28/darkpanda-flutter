@@ -1,4 +1,3 @@
-
 import 'user_image.dart';
 
 class UserProfile {
@@ -14,6 +13,7 @@ class UserProfile {
   final double weight;
   final String description;
   final List<UserImage> imageList;
+  final List<UserImage> removeImageList;
 
   const UserProfile({
     this.uuid,
@@ -28,6 +28,7 @@ class UserProfile {
     this.weight,
     this.description,
     this.imageList,
+    this.removeImageList,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> data) {
@@ -61,6 +62,7 @@ class UserProfile {
     double weight,
     String description,
     List<UserImage> imageList,
+    List<UserImage> removeImageList,
   }) {
     return UserProfile(
       uuid: uuid ?? this.uuid,
@@ -75,6 +77,7 @@ class UserProfile {
       weight: weight ?? this.weight,
       description: description ?? this.description,
       imageList: imageList ?? this.imageList,
+      removeImageList: removeImageList ?? this.removeImageList,
     );
   }
 
@@ -91,5 +94,6 @@ class UserProfile {
         'weight': weight,
         'description': description,
         'imageList': imageList,
+        'removeImageList': removeImageList,
       };
 }

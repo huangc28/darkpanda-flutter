@@ -161,7 +161,11 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
             ),
 
             /// Use [Expanded] to fill up the rest of the column space
-            Expanded(
+            // Expanded(
+            //   child:
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: DPTextButton(
@@ -172,6 +176,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                     text: '我同意'),
               ),
             ),
+            // ),
             SizedBox(height: 30),
           ],
         ),

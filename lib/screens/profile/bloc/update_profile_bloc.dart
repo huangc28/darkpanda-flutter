@@ -57,6 +57,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       );
 
       List<UserImage> imageList = event.imageList;
+      List<UserImage> removeImageList = event.removeImageList;
 
       UpdateProfile updateProfile = new UpdateProfile(userImageList: imageList);
 
@@ -76,7 +77,8 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
             .toList();
       }
 
-      UserProfile userProfile = await getUserProfile(state, imageStringList);
+      UserProfile userProfile =
+          await getUserProfile(state, imageStringList, removeImageList);
 
       updateProfile = new UpdateProfile(userProfile: userProfile);
 
@@ -198,7 +200,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     }
   }
 
-  Future<UserProfile> getUserProfile(state, imageList) async {
+  Future<UserProfile> getUserProfile(state, imageList, removeImageList) async {
     UserProfile createPetObject;
 
     createPetObject = new UserProfile(
@@ -209,6 +211,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       weight: state.weight,
       description: state.description,
       imageList: imageList,
+      removeImageList: removeImageList,
     );
 
     return createPetObject;
