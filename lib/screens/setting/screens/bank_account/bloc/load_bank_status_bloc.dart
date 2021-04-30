@@ -15,11 +15,11 @@ part 'load_bank_status_state.dart';
 
 class LoadBankStatusBloc
     extends Bloc<LoadBankStatusEvent, LoadBankStatusState> {
-  LoadBankStatusBloc({this.apiClient})
-      : assert(apiClient != null),
+  LoadBankStatusBloc({this.bankAPIClient})
+      : assert(bankAPIClient != null),
         super(LoadBankStatusState.initial());
 
-  final BankAPIClient apiClient;
+  final BankAPIClient bankAPIClient;
 
   @override
   Stream<LoadBankStatusState> mapEventToState(
@@ -35,7 +35,7 @@ class LoadBankStatusBloc
       yield LoadBankStatusState.loading(state);
 
       // request API
-      final res = await apiClient.fetchUserBankStatus(event.uuid);
+      final res = await bankAPIClient.fetchUserBankStatus(event.uuid);
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

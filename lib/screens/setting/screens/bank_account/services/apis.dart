@@ -6,19 +6,20 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 class BankAPIClient extends BaseClient {
   Future<http.Response> verifyBankAccount(
-      {String uuid,
-      String accountName,
-      String bankCode,
-      int accountNumber}) async {
+    String uuid,
+    String bankName,
+    String branch,
+    String accountNumber,
+  ) async {
     try {
       final request = http.Request(
         'POST',
         buildUri(
-          '/v1/users/verify-bank',
+          '/v1/bank_account/$uuid',
           {
             'uuid': uuid,
-            'account_name': accountName,
-            'bank_code': bankCode,
+            'bank_name': bankName,
+            'branch': branch,
             'account_number': accountNumber,
           },
         ),
@@ -30,6 +31,7 @@ class BankAPIClient extends BaseClient {
 
       return res;
     } catch (err) {
+      print('DEBUG err ${err}');
       throw AppGeneralExeption(
         message: err.toString(),
       );
@@ -41,7 +43,7 @@ class BankAPIClient extends BaseClient {
   ) async {
     final request = http.Request(
       'GET',
-      buildUri('/v1/users/$uuid/bank'),
+      buildUri('/v1/bank_account/$uuid'),
     );
 
     await withTokenFromSecureStore(request);

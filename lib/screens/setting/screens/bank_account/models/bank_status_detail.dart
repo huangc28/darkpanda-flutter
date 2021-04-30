@@ -1,22 +1,22 @@
 class BankStatusDetail {
   const BankStatusDetail({
-    this.accountName,
-    this.bankCode,
+    this.bankName,
+    this.branch,
     this.accoutNumber,
-    this.status,
+    this.verifyStatus,
   });
 
-  final String accountName;
-  final String bankCode;
-  final int accoutNumber;
-  final String status;
+  final String bankName;
+  final String branch;
+  final String accoutNumber;
+  final String verifyStatus;
 
   static BankStatusDetail fromJson(Map<String, dynamic> data) {
     return BankStatusDetail(
-      accountName: data['account_name'],
-      bankCode: data['bank_code'],
+      bankName: data['bank_name'],
+      branch: data['branch'],
       accoutNumber: data['account_number'],
-      status: data['status'],
+      verifyStatus: data['verify_status'],
     );
   }
 }

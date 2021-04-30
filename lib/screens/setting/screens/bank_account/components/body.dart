@@ -1,5 +1,14 @@
-import 'package:darkpanda_flutter/screens/setting/screens/bank_account/screens/bank_account_detail/bank_account_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bloc/verify_bank_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/screens/bank_account_detail/bank_account_detail.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/screens/bank_account_status/bank_account_status.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bloc/load_bank_status_bloc.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -7,8 +16,49 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  AuthUser _sender;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    BlocProvider.of<LoadBankStatusBloc>(context)
+        .add(LoadBank(uuid: _sender.uuid));
+    super.initState();
+  }
+
+  void _refreshNow(refresh) {
+    if (refresh != null) {
+      if (refresh == true) {
+        BlocProvider.of<LoadBankStatusBloc>(context)
+            .add(LoadBank(uuid: _sender.uuid));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<LoadBankStatusBloc, LoadBankStatusState>(
+      builder: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          if (state.bankStatusDetail.verifyStatus != '') {
+            return BankAccountStatus(
+              bankStatusDetail: state.bankStatusDetail,
+              onRefresh: (bool refresh) {
+                _refreshNow(refresh);
+              },
+            );
+          } else {
+            return body();
+          }
+        } else {
+          return body();
+        }
+      },
+    );
+  }
+
+  Widget body() {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -42,11 +92,23 @@ class _BodyState extends State<Body> {
                     side: BorderSide(color: Colors.white),
                   ),
                 ),
-                onPressed: () {
-                  // Navigator.of(context, rootNavigator: true).push(
-                  //   MaterialPageRoute(
-                  //       builder: (context) => BankAccountDetail()),
-                  // );
+                onPressed: () async {
+                  bool refresh =
+                      await Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => VerifyBankBloc(
+                              bankAPIClient: BankAPIClient(),
+                            ),
+                          ),
+                        ],
+                        child: BankAccountDetail(),
+                      ),
+                    ),
+                  );
+                  _refreshNow(refresh);
                 },
                 child: Text(
                   '前往帳戶設定',

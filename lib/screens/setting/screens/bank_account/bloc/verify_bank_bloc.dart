@@ -8,17 +8,17 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/apis.dart';
-import '../models/bank.dart';
 
 part 'verify_bank_event.dart';
 part 'verify_bank_state.dart';
 
 class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
   VerifyBankBloc({
-    this.apiClient,
-  }) : super(VerifyBankState.initial());
+    this.bankAPIClient,
+  })  : assert(bankAPIClient != null),
+        super(VerifyBankState.initial());
 
-  final BankAPIClient apiClient;
+  final BankAPIClient bankAPIClient;
 
   @override
   Stream<VerifyBankState> mapEventToState(
@@ -33,11 +33,11 @@ class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
     try {
       yield VerifyBankState.loading();
 
-      final resp = await apiClient.verifyBankAccount(
-        uuid: event.uuid,
-        accountName: event.accountName,
-        bankCode: event.bankCode,
-        accountNumber: event.accoutNumber,
+      final resp = await bankAPIClient.verifyBankAccount(
+        event.uuid,
+        event.bankName,
+        event.branch,
+        event.accoutNumber,
       );
 
       // if response status is not equal to 200, throw an exception.
@@ -45,12 +45,9 @@ class VerifyBankBloc extends Bloc<VerifyBankEvent, VerifyBankState> {
         throw APIException.fromJson(json.decode(resp.body));
       }
 
-      yield VerifyBankState.done(
-        Bank.fromJson(
-          json.decode(resp.body),
-        ),
-      );
+      yield VerifyBankState.done();
     } on APIException catch (e) {
+      print('DEBUG err 1 ${e}');
       yield VerifyBankState.error(e);
     } catch (e) {
       yield VerifyBankState.error(
