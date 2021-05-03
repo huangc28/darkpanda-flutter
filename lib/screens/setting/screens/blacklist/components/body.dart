@@ -1,33 +1,12 @@
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/blacklist/models/blacklist_user.dart';
 import 'package:flutter/material.dart';
-
-class DemoUser {
-  final String image;
-  final String name;
-
-  DemoUser({
-    this.image,
-    this.name,
-  });
-}
-
-List demoUserList = [
-  DemoUser(
-    image: "assets/logo.png",
-    name: "Jenny",
-  ),
-  DemoUser(
-    image: "assets/logo.png",
-    name: "Ali",
-  ),
-  DemoUser(
-    image: "assets/logo.png",
-    name: "John",
-  ),
-  DemoUser(
-    image: "assets/logo.png",
-    name: "Kane",
-  ),
-];
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -35,23 +14,56 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  AuthUser _sender;
+  List<BlacklistUser> blacklistUserList = [];
+
+  @override
+  void initState() {
+    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    BlocProvider.of<LoadBlacklistUserBloc>(context).add(
+      LoadBlacklistUser(uuid: _sender.uuid),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 26, 20, 0),
-          child: Column(
-            children: List.generate(demoUserList.length, (index) {
-              return userList(context: context, user: demoUserList[index]);
-            }),
+          child: BlocListener<LoadBlacklistUserBloc, LoadBlacklistUserState>(
+            listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.done) {
+                blacklistUserList = state.blacklistUserList;
+              }
+            },
+            child: BlocBuilder<LoadBlacklistUserBloc, LoadBlacklistUserState>(
+              builder: (context, state) {
+                if (state.status == AsyncLoadingStatus.done) {
+                  return Column(
+                      children: List.generate(
+                    blacklistUserList.length,
+                    (index) {
+                      return userList(
+                          context: context,
+                          blacklistUser: blacklistUserList[index],
+                          index: index);
+                    },
+                  ));
+                } else
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget userList({BuildContext context, user}) {
+  Widget userList({BuildContext context, BlacklistUser blacklistUser, index}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
@@ -74,11 +86,13 @@ class _BodyState extends State<Body> {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: AssetImage(user.image),
+                      backgroundImage: (blacklistUser.avatarUrl != "")
+                          ? NetworkImage(blacklistUser.avatarUrl)
+                          : AssetImage('assets/logo.png'),
                     ),
                     SizedBox(width: 15),
                     Text(
-                      user.name,
+                      blacklistUser.userName,
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -96,7 +110,17 @@ class _BodyState extends State<Body> {
                           side: BorderSide(color: Colors.white),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        BlocProvider.of<RemoveBlacklistBloc>(context).add(
+                          RemoveBlacklist(
+                            blacklistId: blacklistUser.id,
+                          ),
+                        );
+                        setState(() {
+                          blacklistUserList.removeWhere(
+                              (item) => item.id == blacklistUser.id);
+                        });
+                      },
                       child: Text(
                         '解除封鎖',
                         style: TextStyle(color: Colors.white),

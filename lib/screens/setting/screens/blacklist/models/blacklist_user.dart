@@ -1,18 +1,21 @@
 class BlacklistUser {
   const BlacklistUser({
-    this.blacklistId,
-    this.name,
+    this.id,
+    this.userId,
+    this.userName,
     this.avatarUrl,
   });
 
-  final int blacklistId;
-  final String name;
+  final int id;
+  final int userId;
+  final String userName;
   final String avatarUrl;
 
   static BlacklistUser fromJson(Map<String, dynamic> data) {
     return BlacklistUser(
-      blacklistId: data['blacklist_id'],
-      name: data['name'],
+      id: data['id'],
+      userId: data['user_id'],
+      userName: data['username'],
       avatarUrl: data['avatar_url'],
     );
   }

@@ -15,11 +15,11 @@ part 'load_blacklist_user_state.dart';
 
 class LoadBlacklistUserBloc
     extends Bloc<LoadBlacklistUserEvent, LoadBlacklistUserState> {
-  LoadBlacklistUserBloc({this.apiClient})
-      : assert(apiClient != null),
+  LoadBlacklistUserBloc({this.blacklistApiClient})
+      : assert(blacklistApiClient != null),
         super(LoadBlacklistUserState.initial());
 
-  final BlacklistApiClient apiClient;
+  final BlacklistApiClient blacklistApiClient;
 
   @override
   Stream<LoadBlacklistUserState> mapEventToState(
@@ -37,7 +37,7 @@ class LoadBlacklistUserBloc
       yield LoadBlacklistUserState.loading(state);
 
       // request API
-      final res = await apiClient.fetchBlacklistUser(event.uuid);
+      final res = await blacklistApiClient.fetchBlacklistUser(event.uuid);
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -47,12 +47,12 @@ class LoadBlacklistUserBloc
 
       // Normalize response with blacklist user model.
       final dataMap = json.decode(res.body);
+      print(json.decode(res.body));
 
       List<BlacklistUser> blacklistUser = [];
 
-      if (dataMap.containsKey('blacklist_user')) {
-        blacklistUser =
-            dataMap['blacklist_user'].map<BlacklistUser>((blacklistUser) {
+      if (dataMap.containsKey('block')) {
+        blacklistUser = dataMap['block'].map<BlacklistUser>((blacklistUser) {
           return BlacklistUser.fromJson(blacklistUser);
         }).toList();
       }
