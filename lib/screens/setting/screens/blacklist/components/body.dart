@@ -1,7 +1,6 @@
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/models/blacklist_user.dart';
@@ -46,9 +45,9 @@ class _BodyState extends State<Body> {
                     blacklistUserList.length,
                     (index) {
                       return userList(
-                          context: context,
-                          blacklistUser: blacklistUserList[index],
-                          index: index);
+                        context: context,
+                        blacklistUser: blacklistUserList[index],
+                      );
                     },
                   ));
                 } else
@@ -63,7 +62,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget userList({BuildContext context, BlacklistUser blacklistUser, index}) {
+  Widget userList({BuildContext context, BlacklistUser blacklistUser}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Container(
