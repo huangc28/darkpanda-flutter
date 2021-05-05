@@ -74,8 +74,6 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     // with the newest one.
     if (widget.serviceSettings != oldWidget.serviceSettings) {
       _initDefaultServiceSettings(widget.serviceSettings);
-
-      _disableUpdate = !_formKey.currentState.validate();
     }
   }
 

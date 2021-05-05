@@ -5,22 +5,20 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
 
 /// @TODO: move these message models to a folder
-import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
-import 'components/service_detail_bubble.dart';
 import 'components/update_inquiry_bubble.dart';
 
 import 'components/send_message_bar.dart';
@@ -30,6 +28,7 @@ import 'components/service_settings/service_settings.dart';
 import '../../models/service_settings.dart';
 
 part 'screen_arguments/chatroom_screen_arguments.dart';
+part 'components/notification_banner.dart';
 
 class Chatroom extends StatefulWidget {
   const Chatroom({
@@ -50,7 +49,7 @@ class _ChatroomState extends State<Chatroom>
 
   String _message;
   AuthUser _sender;
-  bool serviceConfirmed = false;
+  bool _serviceConfirmed = false;
 
   /// Animations controllers.
   AnimationController _animationController;
@@ -147,12 +146,19 @@ class _ChatroomState extends State<Chatroom>
             ),
           );
         }
+
+        // Retrieve the latest the message of the current message.
+        if (state.currentMessages.first is ServiceConfirmedMessage) {
+          setState(() {
+            _serviceConfirmed = true;
+          });
+        }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              _sender.username,
+              widget.args.inquirerProfile.username,
               style: TextStyle(
                 fontSize: 18,
               ),
@@ -187,53 +193,60 @@ class _ChatroomState extends State<Chatroom>
                                 );
                               },
                               builder: (context, scrollController) {
-                                return BlocListener<NotifyServiceConfirmedBloc,
-                                    NotifyServiceConfirmedState>(
-                                  listener: (context, state) {
-                                    if (state.confirmed) {
-                                      setState(() {
-                                        serviceConfirmed = true;
-                                      });
-                                    }
-                                  },
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!_animationController.isDismissed) {
-                                        _animationController.reverse();
-                                      }
-                                    },
-                                    child: ChatroomWindow(
-                                      scrollController: scrollController,
-                                      historicalMessages:
-                                          state.historicalMessages,
-                                      currentMessages: state.currentMessages,
-                                      builder: (BuildContext context, message) {
-                                        // Render different chat bubble based on message type.
-                                        if (message
-                                            is ServiceConfirmedMessage) {
-                                          return ConfirmedServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is UpdateInquiryMessage) {
-                                          return UpdateInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onTapMessage: (message) {
-                                              // Slideup inquiry pannel.
-                                              _animationController.forward();
-                                            },
-                                          );
-                                        } else {
-                                          return ChatBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
+                                return Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (!_animationController.isDismissed) {
+                                          _animationController.reverse();
                                         }
                                       },
+                                      child: ChatroomWindow(
+                                        scrollController: scrollController,
+                                        historicalMessages:
+                                            state.historicalMessages,
+                                        currentMessages: state.currentMessages,
+                                        builder:
+                                            (BuildContext context, message) {
+                                          // Render different chat bubble based on message type.
+                                          if (message
+                                              is ServiceConfirmedMessage) {
+                                            return ConfirmedServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is UpdateInquiryMessage) {
+                                            return UpdateInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onTapMessage: (message) {
+                                                // Slideup inquiry pannel.
+                                                _animationController.forward();
+                                              },
+                                            );
+                                          } else {
+                                            return ChatBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          }
+                                        },
+                                      ),
                                     ),
-                                  ),
+
+                                    // When we receive service confirmed message, we will
+                                    // display this top notification banner.
+                                    _serviceConfirmed
+                                        ? NotificationBanner(
+                                            avatarUrl: widget
+                                                .args.inquirerProfile.avatarUrl,
+                                          )
+                                        : Container(),
+                                  ],
                                 );
                               },
                             ),
@@ -245,7 +258,7 @@ class _ChatroomState extends State<Chatroom>
                               }
                             },
                             child: SendMessageBar(
-                              disable: serviceConfirmed,
+                              disable: _serviceConfirmed,
                               editMessageController: _editMessageController,
                               onSend: () {
                                 if (_message.isEmpty) {

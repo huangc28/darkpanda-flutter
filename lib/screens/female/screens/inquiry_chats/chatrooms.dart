@@ -10,6 +10,8 @@ import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
@@ -28,6 +30,8 @@ class ChatRooms extends StatefulWidget {
 class _ChatRoomsState extends State<ChatRooms> {
   InquiryChatroomsBloc _inquiryChatroomsBloc;
 
+  bool _hasDoneLoadingUserAndNavigate = false;
+
   /// Emit flutter bloc event in lifecycle `Dispose` https://github.com/felangel/bloc/issues/588.
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _ChatRoomsState extends State<ChatRooms> {
   @override
   void dispose() {
     _inquiryChatroomsBloc.add(ClearInquiryChatList());
+    print('DEBUG trigger dispose');
     super.dispose();
   }
 
@@ -92,20 +97,60 @@ class _ChatRoomsState extends State<ChatRooms> {
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 
-                      return Container(
-                        margin: EdgeInsets.only(
-                          bottom: 20,
-                        ),
-                        child: ChatroomGrid(
-                          onEnterChat: (chatroomModel.Chatroom chatroom) =>
-                              _onEnterChat(
-                            context,
-                            chatroom.channelUUID,
-                            chatroom.inquiryUUID,
-                            chatroom.serviceType,
+                      // Loading inquirier info before proceeding to chatroom.
+                      return BlocListener<LoadUserBloc, LoadUserState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            if (!_hasDoneLoadingUserAndNavigate) {
+                              setState(() {
+                                _hasDoneLoadingUserAndNavigate = true;
+                              });
+
+                              Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              )
+                                  .pushNamed(
+                                MainRoutes.chatroom,
+                                arguments: ChatroomScreenArguments(
+                                  channelUUID: chatroom.channelUUID,
+                                  inquiryUUID: chatroom.inquiryUUID,
+                                  serviceType: chatroom.serviceType,
+                                  inquirerProfile: state.userProfile,
+                                ),
+                              )
+                                  .then((dynamic value) {
+                                setState(() {
+                                  _hasDoneLoadingUserAndNavigate = false;
+                                });
+                              });
+                            }
+                          }
+
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  state.error.message,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            bottom: 20,
                           ),
-                          chatroom: chatroom,
-                          lastMessage: lastMsg.content,
+                          child: ChatroomGrid(
+                            onEnterChat: (chatroomModel.Chatroom chatroom) {
+                              return _onEnterChat(
+                                context,
+                                chatroom.inquirerUUID,
+                              );
+                            },
+                            chatroom: chatroom,
+                            lastMessage: lastMsg.content,
+                          ),
                         ),
                       );
                     },
@@ -121,24 +166,11 @@ class _ChatRoomsState extends State<ChatRooms> {
 
   void _onEnterChat(
     BuildContext context,
-    String channelUUID,
-    String inquiryUUID,
-    String serviceType,
+    String inquirerUUID,
   ) {
-    // Retrieve inquirer information here
-
-    // Dispatch fetch chatroom messages
-    // After messages are fetched, redirect to chatroom.
-    Navigator.of(
-      context,
-      rootNavigator: true,
-    ).pushNamed(
-      MainRoutes.chatroom,
-      arguments: ChatroomScreenArguments(
-        channelUUID: channelUUID,
-        inquiryUUID: inquiryUUID,
-        serviceType: serviceType,
-      ),
+    // Retrieve inquirer information here.
+    BlocProvider.of<LoadUserBloc>(context).add(
+      LoadUser(uuid: inquirerUUID),
     );
   }
 }

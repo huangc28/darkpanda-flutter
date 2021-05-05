@@ -43,6 +43,7 @@ class Chatroom {
       serviceType: data['service_type'] ?? '',
       inquiryStatus: data['inquiry_status'] ?? '',
       inquiryUUID: data['inquiry_uuid'] ?? '',
+      inquirerUUID: data['inquirer_uuid'] ?? '',
       username: data['username'] ?? '',
       avatarURL: data['avatar_url'] ?? '',
       channelUUID: data['channel_uuid'] ?? '',

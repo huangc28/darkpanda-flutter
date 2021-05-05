@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 
-import './service_detail_bubble.dart';
-
 class UpdateInquiryBubble extends StatelessWidget {
   const UpdateInquiryBubble({
     this.message,

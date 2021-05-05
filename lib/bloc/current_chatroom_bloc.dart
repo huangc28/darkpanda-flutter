@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -15,7 +16,6 @@ import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
-import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -26,17 +26,14 @@ class CurrentChatroomBloc
     this.inquiryChatroomApis,
     this.inquiryChatroomsBloc,
     this.currentServiceBloc,
-    this.notifyServiceConfirmedBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
-        assert(notifyServiceConfirmedBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
   final InquiryChatroomsBloc inquiryChatroomsBloc;
   final CurrentServiceBloc currentServiceBloc;
-  final NotifyServiceConfirmedBloc notifyServiceConfirmedBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
@@ -122,9 +119,10 @@ class CurrentChatroomBloc
   }
 
   _handleCurrentMessage(data, String channelUUID) {
-    print('DEBUG current message ${data}');
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data();
+
+    developer.log('Current chatroom incoming message ${rawMsg}');
 
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;
@@ -147,13 +145,6 @@ class CurrentChatroomBloc
       );
     } else if (isConfirmedServiceMsg(rawMsg['type'])) {
       msg = ServiceConfirmedMessage.fromMap(rawMsg);
-
-      // Emit event to disable current chatroom since the inquiry has become a service.
-      notifyServiceConfirmedBloc.add(
-        NotifyServiceConfirmed(
-          channelUUID: channelUUID,
-        ),
-      );
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
       msg = UpdateInquiryMessage.fromMap(rawMsg);
     } else {

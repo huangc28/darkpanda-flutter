@@ -19,7 +19,6 @@ import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
-import 'package:darkpanda_flutter/bloc/notify_service_confirmed_bloc.dart';
 import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 
@@ -84,17 +83,11 @@ class DarkPandaApp extends StatelessWidget {
         ),
 
         BlocProvider(
-          create: (context) => NotifyServiceConfirmedBloc(),
-        ),
-
-        BlocProvider(
           create: (context) => CurrentChatroomBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
             inquiryChatroomsBloc:
                 BlocProvider.of<InquiryChatroomsBloc>(context),
             currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
-            notifyServiceConfirmedBloc:
-                BlocProvider.of<NotifyServiceConfirmedBloc>(context),
           ),
         ),
 

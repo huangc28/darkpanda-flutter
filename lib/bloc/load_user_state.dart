@@ -1,12 +1,5 @@
 part of 'load_user_bloc.dart';
 
-enum LoadUserStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class LoadUserState<E extends AppBaseException> extends Equatable {
   const LoadUserState._({
     this.status,
@@ -52,5 +45,7 @@ class LoadUserState<E extends AppBaseException> extends Equatable {
   @override
   List<Object> get props => [
         status,
+        error,
+        userProfile,
       ];
 }

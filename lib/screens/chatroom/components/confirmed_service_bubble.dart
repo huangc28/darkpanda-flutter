@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
-import 'package:darkpanda_flutter/models/service_detail_message.dart';
-
-import './service_detail_bubble.dart';
 
 class ConfirmedServiceBubble extends StatelessWidget {
   const ConfirmedServiceBubble({
@@ -16,23 +13,23 @@ class ConfirmedServiceBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ServiceDetailBubble(
-      isMe: isMe,
-      message: _confirmedServiceToServiceDetail(message),
-    );
-  }
-
-  ServiceDetailMessage _confirmedServiceToServiceDetail(
-      ServiceConfirmedMessage csm) {
-    return ServiceDetailMessage(
-      content: csm.content,
-      from: csm.from,
-      to: csm.to,
-      createdAt: csm.createdAt,
-      price: csm.price,
-      duration: csm.duration,
-      serviceTime: csm.serviceTime,
-      serviceType: csm.serviceType,
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: 16,
+        top: 16,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Brat 已接受邀請',
+            style: TextStyle(
+              fontSize: 12,
+              color: Color.fromRGBO(106, 109, 137, 1),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
