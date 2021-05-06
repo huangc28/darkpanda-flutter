@@ -6,21 +6,20 @@ import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/bloc/service_confirm_notifier_bloc.dart';
 
-/// @TODO: move these message models to a folder
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
 import 'components/update_inquiry_bubble.dart';
-
 import 'components/send_message_bar.dart';
 import 'components/chatroom_window.dart';
 import 'components/service_settings/service_settings.dart';
@@ -137,200 +136,201 @@ class _ChatroomState extends State<Chatroom>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CurrentChatroomBloc, CurrentChatroomState>(
-      listener: (context, state) {
-        if (state.status == FetchHistoricalMessageStatus.loadFailed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error.message),
-            ),
-          );
-        }
-
-        // Retrieve the latest the message of the current message.
-        if (state.currentMessages.first is ServiceConfirmedMessage) {
-          setState(() {
-            _serviceConfirmed = true;
-          });
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              widget.args.inquirerProfile.username,
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.args.inquirerProfile.username,
+          style: TextStyle(
+            fontSize: 18,
           ),
-          body: GestureDetector(
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+        ),
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-            },
-            child: SafeArea(
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: LoadMoreScrollable(
-                              scrollController: _scrollController,
-                              onLoadMore: () {
-                                BlocProvider.of<CurrentChatroomBloc>(context)
-                                    .add(
-                                  FetchMoreHistoricalMessages(
-                                    channelUUID: widget.args.channelUUID,
-                                  ),
-                                );
-                              },
-                              builder: (context, scrollController) {
-                                return Stack(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (!_animationController.isDismissed) {
-                                          _animationController.reverse();
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: SafeArea(
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: LoadMoreScrollable(
+                          scrollController: _scrollController,
+                          onLoadMore: () {
+                            BlocProvider.of<CurrentChatroomBloc>(context).add(
+                              FetchMoreHistoricalMessages(
+                                channelUUID: widget.args.channelUUID,
+                              ),
+                            );
+                          },
+                          builder: (context, scrollController) {
+                            return Stack(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    if (!_animationController.isDismissed) {
+                                      _animationController.reverse();
+                                    }
+                                  },
+                                  child: BlocListener<
+                                      ServiceConfirmNotifierBloc,
+                                      ServiceConfirmNotifierState>(
+                                    listener: (context, state) {
+                                      print('DEBUG _serviceConfirmed !!@@');
+                                      setState(() {
+                                        _serviceConfirmed = true;
+                                      });
+                                    },
+                                    child: BlocConsumer<CurrentChatroomBloc,
+                                        CurrentChatroomState>(
+                                      listener: (context, state) {
+                                        if (state.status ==
+                                            AsyncLoadingStatus.error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content:
+                                                  Text(state.error.message),
+                                            ),
+                                          );
                                         }
                                       },
-                                      child: ChatroomWindow(
-                                        scrollController: scrollController,
-                                        historicalMessages:
-                                            state.historicalMessages,
-                                        currentMessages: state.currentMessages,
-                                        builder:
-                                            (BuildContext context, message) {
-                                          // Render different chat bubble based on message type.
-                                          if (message
-                                              is ServiceConfirmedMessage) {
-                                            return ConfirmedServiceBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is UpdateInquiryMessage) {
-                                            return UpdateInquiryBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                              onTapMessage: (message) {
-                                                // Slideup inquiry pannel.
-                                                _animationController.forward();
-                                              },
-                                            );
-                                          } else {
-                                            return ChatBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          }
-                                        },
-                                      ),
+                                      builder: (context, state) {
+                                        return ChatroomWindow(
+                                          scrollController: scrollController,
+                                          historicalMessages:
+                                              state.historicalMessages,
+                                          currentMessages:
+                                              state.currentMessages,
+                                          builder:
+                                              (BuildContext context, message) {
+                                            // Render different chat bubble based on message type.
+                                            if (message
+                                                is ServiceConfirmedMessage) {
+                                              return ConfirmedServiceBubble(
+                                                isMe: _sender.uuid ==
+                                                    message.from,
+                                                message: message,
+                                              );
+                                            } else if (message
+                                                is UpdateInquiryMessage) {
+                                              return UpdateInquiryBubble(
+                                                isMe: _sender.uuid ==
+                                                    message.from,
+                                                message: message,
+                                                onTapMessage: (message) {
+                                                  // Slideup inquiry pannel.
+                                                  _animationController
+                                                      .forward();
+                                                },
+                                              );
+                                            } else {
+                                              return ChatBubble(
+                                                isMe: _sender.uuid ==
+                                                    message.from,
+                                                message: message,
+                                              );
+                                            }
+                                          },
+                                        );
+                                      },
                                     ),
-
-                                    // When we receive service confirmed message, we will
-                                    // display this top notification banner.
-                                    _serviceConfirmed
-                                        ? NotificationBanner(
-                                            avatarUrl: widget
-                                                .args.inquirerProfile.avatarUrl,
-                                          )
-                                        : Container(),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          BlocListener<SendMessageBloc, SendMessageState>(
-                            listener: (context, state) {
-                              if (state.status == SendMessageStatus.loaded) {
-                                _editMessageController.clear();
-                              }
-                            },
-                            child: SendMessageBar(
-                              disable: _serviceConfirmed,
-                              editMessageController: _editMessageController,
-                              onSend: () {
-                                if (_message.isEmpty) {
-                                  return;
-                                }
-
-                                BlocProvider.of<SendMessageBloc>(context).add(
-                                  SendTextMessage(
-                                    content: _message,
-                                    channelUUID: widget.args.channelUUID,
                                   ),
-                                );
-                              },
-                              onEditInquiry: _handleTapEditInquiry,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                                ),
 
-                  // Listen the loading status of `GetInquiryBloc`. If status is loading,
-                  // display spinner on service settings sheet.
-                  SlideTransition(
-                    position: _offsetAnimation,
-                    child: MultiBlocListener(
-                      listeners: [
-                        BlocListener<GetInquiryBloc, GetInquiryState>(
-                          listener: (_, state) {
-                            if (state.status == AsyncLoadingStatus.done) {
-                              setState(() {
-                                _serviceSettings = state.serviceSettings;
-                              });
-                            }
+                                // When we receive service confirmed message, we will
+                                // display this top notification banner.
+                                _serviceConfirmed
+                                    ? NotificationBanner(
+                                        avatarUrl: widget
+                                            .args.inquirerProfile.avatarUrl,
+                                      )
+                                    : Container(),
+                              ],
+                            );
                           },
                         ),
-                        BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
-                            listener: (_, state) {
-                          if (state.status == AsyncLoadingStatus.done) {
-                            _animationController.reverse();
+                      ),
+                      SendMessageBar(
+                        disable: _serviceConfirmed,
+                        editMessageController: _editMessageController,
+                        onSend: () {
+                          if (_message.isEmpty) {
+                            return;
                           }
-                        }),
-                      ],
-                      child: ServiceSettingsSheet(
-                        serviceSettings: _serviceSettings,
-                        controller: _slideUpController,
-                        onTapClose: () {
-                          _animationController.reverse();
-                        },
-                        onUpdateInquiry: (ServiceSettings data) {
-                          setState(() {
-                            _serviceSettings = data;
-                          });
 
-                          /// Send inquiry settings message when done editing inquiry.
                           BlocProvider.of<SendMessageBloc>(context).add(
-                            SendUpdateInquiryMessage(
-                              inquiryUUID: widget.args.inquiryUUID,
+                            SendTextMessage(
+                              content: _message,
                               channelUUID: widget.args.channelUUID,
-                              serviceSettings: data,
                             ),
                           );
                         },
-                      ),
-                    ),
+                        onEditInquiry: _handleTapEditInquiry,
+                      )
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+
+              // Listen the loading status of `GetInquiryBloc`. If status is loading,
+              // display spinner on service settings sheet.
+              SlideTransition(
+                position: _offsetAnimation,
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<GetInquiryBloc, GetInquiryState>(
+                      listener: (_, state) {
+                        if (state.status == AsyncLoadingStatus.done) {
+                          setState(() {
+                            _serviceSettings = state.serviceSettings;
+                          });
+                        }
+                      },
+                    ),
+                    BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
+                        listener: (_, state) {
+                      if (state.status == AsyncLoadingStatus.done) {
+                        _animationController.reverse();
+                      }
+                    }),
+                  ],
+                  child: ServiceSettingsSheet(
+                    serviceSettings: _serviceSettings,
+                    controller: _slideUpController,
+                    onTapClose: () {
+                      _animationController.reverse();
+                    },
+                    onUpdateInquiry: (ServiceSettings data) {
+                      setState(() {
+                        _serviceSettings = data;
+                      });
+
+                      /// Send inquiry settings message when done editing inquiry.
+                      BlocProvider.of<SendMessageBloc>(context).add(
+                        SendUpdateInquiryMessage(
+                          inquiryUUID: widget.args.inquiryUUID,
+                          channelUUID: widget.args.channelUUID,
+                          serviceSettings: data,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

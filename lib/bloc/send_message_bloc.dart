@@ -61,7 +61,6 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
   Stream<SendMessageState> _mapSendUpdateInquiryMessage(
       SendUpdateInquiryMessage event) async* {
-    print('DEBUG SendUpdateInquiryMessage ${event.serviceSettings}');
     yield SendMessageState.loading();
 
     final serviceSettings = event.serviceSettings;

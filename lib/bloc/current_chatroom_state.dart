@@ -1,12 +1,5 @@
 part of 'current_chatroom_bloc.dart';
 
-enum FetchHistoricalMessageStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class CurrentChatroomState<E extends AppBaseException> extends Equatable {
   const CurrentChatroomState._({
     this.status,
@@ -16,7 +9,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
     this.error,
   });
 
-  final FetchHistoricalMessageStatus status;
+  final AsyncLoadingStatus status;
   final List<Message> historicalMessages;
   final int page;
   final List<Message> currentMessages;
@@ -25,7 +18,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
   CurrentChatroomState.init()
       : this._(
           page: 1,
-          status: FetchHistoricalMessageStatus.initial,
+          status: AsyncLoadingStatus.initial,
           historicalMessages: [],
           currentMessages: [],
         );
@@ -35,7 +28,7 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
           page: state.page,
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
-          status: FetchHistoricalMessageStatus.loading,
+          status: AsyncLoadingStatus.loading,
         );
 
   CurrentChatroomState.loadFailed(CurrentChatroomState state, E error)
@@ -44,13 +37,13 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
           error: error,
-          status: FetchHistoricalMessageStatus.loadFailed,
+          status: AsyncLoadingStatus.error,
         );
 
   CurrentChatroomState.loaded(
       CurrentChatroomState state, List<Message> historicalMessages, int page)
       : this._(
-          status: FetchHistoricalMessageStatus.loaded,
+          status: AsyncLoadingStatus.done,
           historicalMessages: historicalMessages,
           page: page,
           currentMessages: state.currentMessages,

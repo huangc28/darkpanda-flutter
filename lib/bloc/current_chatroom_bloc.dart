@@ -9,13 +9,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
+
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+
 import 'package:darkpanda_flutter/enums/message_types.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
+import 'package:darkpanda_flutter/bloc/service_confirm_notifier_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -26,14 +31,17 @@ class CurrentChatroomBloc
     this.inquiryChatroomApis,
     this.inquiryChatroomsBloc,
     this.currentServiceBloc,
+    this.serviceConfirmNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
+        assert(serviceConfirmNotifierBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
   final InquiryChatroomsBloc inquiryChatroomsBloc;
   final CurrentServiceBloc currentServiceBloc;
+  final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
@@ -115,14 +123,16 @@ class CurrentChatroomBloc
     final subStream =
         inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
 
-    subStream.onData((data) => _handleCurrentMessage(data, event.channelUUID));
+    subStream.onData((data) {
+      _handleCurrentMessage(data, event.channelUUID);
+    });
   }
 
   _handleCurrentMessage(data, String channelUUID) {
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data();
 
-    developer.log('Current chatroom incoming message ${rawMsg}');
+    developer.log('Current chatroom incoming message ${rawMsg['type']}');
 
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;
@@ -144,7 +154,11 @@ class CurrentChatroomBloc
         ),
       );
     } else if (isConfirmedServiceMsg(rawMsg['type'])) {
+      print('DEBUG 888774');
+
       msg = ServiceConfirmedMessage.fromMap(rawMsg);
+
+      serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
       msg = UpdateInquiryMessage.fromMap(rawMsg);
     } else {

@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:darkpanda_flutter/util/try_parse_to_date_time.dart';
 
-class Message {
+class Message extends Equatable {
   Message({
     this.content,
     this.from,
@@ -8,7 +10,7 @@ class Message {
     this.createdAt,
   });
 
-  String content;
+  final String content;
   final String from;
   final String to;
   final DateTime createdAt;
@@ -23,4 +25,12 @@ class Message {
       createdAt: Message.fieldToDateTime(data['created_at']),
     );
   }
+
+  @override
+  List<Object> get props => [
+        content,
+        from,
+        to,
+        createdAt,
+      ];
 }
