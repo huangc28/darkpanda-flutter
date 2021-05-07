@@ -11,7 +11,6 @@ import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
-import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'components/chatrooms_list.dart';
 import 'components/chatroom_grid.dart';
@@ -42,7 +41,6 @@ class _ChatRoomsState extends State<ChatRooms> {
   @override
   void dispose() {
     _inquiryChatroomsBloc.add(ClearInquiryChatList());
-    print('DEBUG trigger dispose');
     super.dispose();
   }
 
