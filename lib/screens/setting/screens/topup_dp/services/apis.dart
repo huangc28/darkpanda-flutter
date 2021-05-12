@@ -1,10 +1,13 @@
+import 'dart:convert';
+
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/card.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/payment_card.dart';
 
 class TopUpClient extends BaseClient {
   Future<http.Response> fetchMyDpAndRechargeList(
@@ -22,27 +25,21 @@ class TopUpClient extends BaseClient {
     return res;
   }
 
-  Future<http.Response> buyDp({
-    String uuid,
-    int rechargeId,
-    String paymentType,
-    Card card,
-  }) async {
+  Future<http.Response> buyDp(BuyCoin buyDp) async {
     try {
+      final uuid = buyDp.uuid;
+      final body = buyDp;
+
+      final jsonBody = jsonEncode(body);
       final request = http.Request(
         'POST',
-        buildUri(
-          '/v1/users/buy_dp',
-          {
-            'uuid': uuid,
-            'recharge_id': rechargeId,
-            'payment_type': paymentType,
-            'card': card.toJson(),
-          },
-        ),
+        buildUri('/v1/coin/$uuid'),
       );
 
+      request.body = jsonBody;
+
       await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
 
       final res = await sendWithResponse(request);
 

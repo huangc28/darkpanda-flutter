@@ -8,15 +8,10 @@ abstract class BuyDpEvent extends Equatable {
 }
 
 class BuyDp extends BuyDpEvent {
-  final String uuid;
-  final int rechargeId;
-  final String paymentType;
-  final Card card;
+  const BuyDp(this.buyCoin);
 
-  const BuyDp({
-    this.uuid,
-    this.rechargeId,
-    this.paymentType,
-    this.card,
-  });
+  final BuyCoin buyCoin;
+
+  @override
+  List<Object> get props => [buyCoin];
 }

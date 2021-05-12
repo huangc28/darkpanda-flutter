@@ -8,7 +8,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import '../services/apis.dart';
-import '../models/card.dart';
+import '../models/payment_card.dart';
 
 part 'buy_dp_event.dart';
 part 'buy_dp_state.dart';
@@ -33,12 +33,9 @@ class BuyDpBloc extends Bloc<BuyDpEvent, BuyDpState> {
     try {
       yield BuyDpState.loading();
 
-      final resp = await apiClient.buyDp(
-        uuid: event.uuid,
-        rechargeId: event.rechargeId,
-        paymentType: event.paymentType,
-        card: event.card,
-      );
+      BuyCoin buyDp = event.buyCoin;
+
+      final resp = await apiClient.buyDp(buyDp);
 
       // if response status is not equal to 200, throw an exception.
       if (resp.statusCode != HttpStatus.ok) {

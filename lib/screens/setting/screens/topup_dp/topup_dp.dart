@@ -6,9 +6,11 @@ import 'screens/topup_payment/topup_payment.dart';
 
 class TopupDp extends StatefulWidget {
   const TopupDp({
+    this.args,
     this.onPush,
   });
 
+  final TopUpDpArguments args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override
