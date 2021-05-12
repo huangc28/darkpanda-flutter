@@ -198,34 +198,37 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                 child: Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: DPTextButton(
-                      theme: DPTextButtonThemes.purple,
-                      onPressed: () {
-                        /// Reset async error before performing validation
-                        setState(() {
-                          _verifyRefCodeErrStr = '';
-                          _verifyUsernameErrStr = '';
-                        });
+                    child: SizedBox(
+                      height: 44,
+                      child: DPTextButton(
+                        theme: DPTextButtonThemes.purple,
+                        onPressed: () {
+                          /// Reset async error before performing validation
+                          setState(() {
+                            _verifyRefCodeErrStr = '';
+                            _verifyUsernameErrStr = '';
+                          });
 
-                        /// verify pin code input and username synchronously
-                        if (!_formKey.currentState.validate()) {
-                          return null;
-                        }
+                          /// verify pin code input and username synchronously
+                          if (!_formKey.currentState.validate()) {
+                            return null;
+                          }
 
-                        _formKey.currentState.save();
+                          _formKey.currentState.save();
 
-                        /// verify pin code and username validity asynchornously
-                        BlocProvider.of<VerifyReferralCodeBloc>(context).add(
-                          VerifyReferralCodeEvent(
-                            referralCode: _referralCode,
-                            username: _username,
-                          ),
-                        );
+                          /// verify pin code and username validity asynchornously
+                          BlocProvider.of<VerifyReferralCodeBloc>(context).add(
+                            VerifyReferralCodeEvent(
+                              referralCode: _referralCode,
+                              username: _username,
+                            ),
+                          );
 
-                        /// The rest of the form operations `_formKey.save()`, `_formKey.validate()`
-                        /// will be performed in bloc listeners
-                      },
-                      text: '下一步',
+                          /// The rest of the form operations `_formKey.save()`, `_formKey.validate()`
+                          /// will be performed in bloc listeners
+                        },
+                        text: '下一步',
+                      ),
                     ),
                   ),
                 ),

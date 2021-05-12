@@ -103,21 +103,24 @@ class _ChooseGenderState extends State<ChooseGender> {
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: DPTextButton(
-                    theme: DPTextButtonThemes.purple,
-                    onPressed: () {
-                      /// if `_femaleBtnActive` is true, the user has chosen female, if not, the user has chosen male.
-                      // var _gender =
-                      //     _femaleBtnActive ? Gender.female : Gender.male;
+                  child: SizedBox(
+                    height: 44,
+                    child: DPTextButton(
+                      theme: DPTextButtonThemes.purple,
+                      onPressed: () {
+                        /// if `_femaleBtnActive` is true, the user has chosen female, if not, the user has chosen male.
+                        // var _gender =
+                        //     _femaleBtnActive ? Gender.female : Gender.male;
 
-                      var _gender = _femaleBtnActive ? 'female' : 'male';
+                        var _gender = _femaleBtnActive ? 'female' : 'male';
 
-                      widget.onPush(
-                        '/register/verify-referral-code',
-                        VerifyReferralCodeArguments(gender: _gender),
-                      );
-                    },
-                    text: '下一步',
+                        widget.onPush(
+                          '/register/verify-referral-code',
+                          VerifyReferralCodeArguments(gender: _gender),
+                        );
+                      },
+                      text: '下一步',
+                    ),
                   ),
                 ),
               ),

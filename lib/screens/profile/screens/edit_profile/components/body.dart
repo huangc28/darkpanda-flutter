@@ -38,6 +38,7 @@ class _BodyState extends State<Body> {
   TextEditingController _weightTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
   UserImage userImageAdd = UserImage(url: "");
+  List<UserImage> removeImageList = [];
 
   @override
   void initState() {
@@ -499,10 +500,9 @@ class _BodyState extends State<Body> {
             right: 16,
             child: GestureDetector(
               onTap: () {
-                print('delete image from List');
-                widget.imageList.removeAt(index);
                 setState(() {
-                  print('set new state of images');
+                  removeImageList.add(widget.imageList[index]);
+                  widget.imageList.removeAt(index);
                 });
               },
               child: Icon(
@@ -534,7 +534,7 @@ class _BodyState extends State<Body> {
               theme: DPTextButtonThemes.purple,
               onPressed: () {
                 BlocProvider.of<UpdateProfileBloc>(context).add(
-                  UpdateUserProfile(widget.imageList),
+                  UpdateUserProfile(widget.imageList, removeImageList),
                 );
               },
               text: '更新',
@@ -651,124 +651,124 @@ InputDecoration inputDecoration(String hintText) {
   );
 }
 
-class ImageCard extends StatefulWidget {
-  final String image;
-  final List<UserImage> imageList;
-  final index;
+// class ImageCard extends StatefulWidget {
+//   final String image;
+//   final List<UserImage> imageList;
+//   final index;
 
-  const ImageCard({
-    Key key,
-    this.image,
-    this.imageList,
-    this.index,
-  }) : super(key: key);
+//   const ImageCard({
+//     Key key,
+//     this.image,
+//     this.imageList,
+//     this.index,
+//   }) : super(key: key);
 
-  @override
-  _ImageCardState createState() => _ImageCardState(this.image);
-}
+//   @override
+//   _ImageCardState createState() => _ImageCardState(this.image);
+// }
 
-class _ImageCardState extends State<ImageCard> {
-  final String image;
+// class _ImageCardState extends State<ImageCard> {
+//   final String image;
 
-  _ImageCardState(this.image);
+//   _ImageCardState(this.image);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Stack(
-        children: <Widget>[
-          Image.network(
-            widget.imageList[widget.index].url,
-            fit: BoxFit.cover,
-            height: 150,
-          ),
-          Positioned(
-            top: 5,
-            right: 16,
-            child: GestureDetector(
-              onTap: () {
-                print('delete image from List');
-                setState(() {
-                  print('set new state of images');
-                  // widget.imageList.removeAt(widget.index);
-                });
-              },
-              child: Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(right: 16),
+//       width: 123,
+//       height: 150,
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(15),
+//       ),
+//       child: Stack(
+//         children: <Widget>[
+//           Image.network(
+//             widget.imageList[widget.index].url,
+//             fit: BoxFit.cover,
+//             height: 150,
+//           ),
+//           Positioned(
+//             top: 5,
+//             right: 16,
+//             child: GestureDetector(
+//               onTap: () {
+//                 print('delete image from List');
+//                 setState(() {
+//                   print('set new state of images');
+//                   // widget.imageList.removeAt(widget.index);
+//                 });
+//               },
+//               child: Icon(
+//                 Icons.remove_circle_outline,
+//                 color: Colors.red,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-class ImageCardFile extends StatefulWidget {
-  final File image;
-  final List<UserImage> imageList;
-  final index;
+// class ImageCardFile extends StatefulWidget {
+//   final File image;
+//   final List<UserImage> imageList;
+//   final index;
 
-  const ImageCardFile({
-    Key key,
-    this.image,
-    this.imageList,
-    this.index,
-  }) : super(key: key);
+//   const ImageCardFile({
+//     Key key,
+//     this.image,
+//     this.imageList,
+//     this.index,
+//   }) : super(key: key);
 
-  @override
-  _ImageCardFileState createState() => _ImageCardFileState(this.image);
-}
+//   @override
+//   _ImageCardFileState createState() => _ImageCardFileState(this.image);
+// }
 
-class _ImageCardFileState extends State<ImageCardFile> {
-  final File image;
+// class _ImageCardFileState extends State<ImageCardFile> {
+//   final File image;
 
-  _ImageCardFileState(this.image);
+//   _ImageCardFileState(this.image);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Stack(
-        children: <Widget>[
-          Image.file(
-            widget.imageList[widget.index].fileName,
-            height: 150,
-          ),
-          Positioned(
-            top: 5,
-            right: 16,
-            child: GestureDetector(
-              onTap: () {
-                print('delete image from List');
-                widget.imageList.removeAt(widget.index);
-                setState(() {
-                  print('set new state of images');
-                });
-              },
-              child: Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(right: 16),
+//       width: 123,
+//       height: 150,
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(15),
+//       ),
+//       child: Stack(
+//         children: <Widget>[
+//           Image.file(
+//             widget.imageList[widget.index].fileName,
+//             height: 150,
+//           ),
+//           Positioned(
+//             top: 5,
+//             right: 16,
+//             child: GestureDetector(
+//               onTap: () {
+//                 print('delete image from List');
+//                 widget.imageList.removeAt(widget.index);
+//                 setState(() {
+//                   print('set new state of images');
+//                 });
+//               },
+//               child: Icon(
+//                 Icons.remove_circle_outline,
+//                 color: Colors.red,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class AddImageButton extends StatefulWidget {
   @override
