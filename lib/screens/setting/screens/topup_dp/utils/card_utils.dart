@@ -77,9 +77,9 @@ class CardUtils {
   }
 
   static String validateCVV(String value) {
-    // if (value.isEmpty) {
-    //   return Strings.fieldReq;
-    // }
+    if (value.isEmpty) {
+      return Strings.fieldReq;
+    }
 
     if (value.length < 3 || value.length > 4) {
       return "CVV is invalid";

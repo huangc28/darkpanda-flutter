@@ -42,9 +42,6 @@ class SettingRoutes extends BaseRoutes {
             args: screenArgs,
           ),
         );
-        // Body(
-        //   args: screenArgs,
-        // );
       }
     };
   }
