@@ -14,11 +14,11 @@ part 'remove_blacklist_state.dart';
 
 class RemoveBlacklistBloc
     extends Bloc<RemoveBlacklistEvent, RemoveBlacklistState> {
-  RemoveBlacklistBloc({this.apiClient})
-      : assert(apiClient != null),
+  RemoveBlacklistBloc({this.blacklistApiClient})
+      : assert(blacklistApiClient != null),
         super(RemoveBlacklistState.initial());
 
-  final BlacklistApiClient apiClient;
+  final BlacklistApiClient blacklistApiClient;
 
   @override
   Stream<RemoveBlacklistState> mapEventToState(
@@ -36,8 +36,7 @@ class RemoveBlacklistBloc
       yield RemoveBlacklistState.loading(state);
 
       // request API
-      final res = await apiClient.removeBlacklistUser(
-        uuid: event.uuid,
+      final res = await blacklistApiClient.removeBlacklistUser(
         blacklistId: event.blacklistId,
       );
 

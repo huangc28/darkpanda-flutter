@@ -10,7 +10,7 @@ class BlacklistApiClient extends BaseClient {
   ) async {
     final request = http.Request(
       'GET',
-      buildUri('/v1/users/$uuid/blacklist'),
+      buildUri('/v1/block/$uuid'),
     );
 
     await withTokenFromSecureStore(request);
@@ -21,14 +21,13 @@ class BlacklistApiClient extends BaseClient {
   }
 
   Future<http.Response> removeBlacklistUser({
-    String uuid,
     int blacklistId,
   }) async {
     try {
       final request = http.Request(
-        'POST',
+        'DELETE',
         buildUri(
-          '/v1/users/$uuid/blacklist/$blacklistId/remove',
+          '/v1/block/$blacklistId',
         ),
       );
 
