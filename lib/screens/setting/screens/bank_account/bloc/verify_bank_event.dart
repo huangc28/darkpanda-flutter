@@ -9,14 +9,14 @@ abstract class VerifyBankEvent extends Equatable {
 
 class VerifyBank extends VerifyBankEvent {
   final String uuid;
-  final String accountName;
-  final String bankCode;
-  final int accoutNumber;
+  final String bankName;
+  final String branch;
+  final String accoutNumber;
 
   const VerifyBank({
     this.uuid,
-    this.accountName,
-    this.bankCode,
+    this.bankName,
+    this.branch,
     this.accoutNumber,
   });
 }

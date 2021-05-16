@@ -1,8 +1,5 @@
-import 'package:darkpanda_flutter/screens/setting/screens/bank_account/screens/bank_account_status/bank_account_status.dart';
 import 'package:flutter/material.dart';
-
 import 'components/body.dart';
-import 'screens/bank_account_detail/bank_account_detail.dart';
 
 class BankAccount extends StatefulWidget {
   @override

@@ -91,10 +91,7 @@ class _SettingState extends State<Setting> {
                                 "lib/screens/setting/assets/bank_account.png"),
                           ),
                           onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => BankAccount()),
-                            );
+                            widget.onPush('/bank-account', null);
                           },
                         ),
                         InkWell(

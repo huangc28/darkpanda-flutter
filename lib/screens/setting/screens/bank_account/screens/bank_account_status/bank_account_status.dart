@@ -1,12 +1,37 @@
-import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/models/bank_status_detail.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/screens/bank_account_detail/bank_account_detail.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bloc/verify_bank_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/apis.dart';
+
+typedef RefreshCallback = void Function(bool refresh);
 
 class BankAccountStatus extends StatefulWidget {
+  BankAccountStatus({
+    Key key,
+    this.bankStatusDetail,
+    this.onRefresh,
+  }) : super(key: key);
+
+  final BankStatusDetail bankStatusDetail;
+  final RefreshCallback onRefresh;
+
   @override
   _BankAccountStatusState createState() => _BankAccountStatusState();
 }
 
 class _BankAccountStatusState extends State<BankAccountStatus> {
+  BankStatusDetail bankStatusDetail;
+
+  @override
+  void initState() {
+    bankStatusDetail = widget.bankStatusDetail;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -32,31 +57,46 @@ class _BankAccountStatusState extends State<BankAccountStatus> {
                     children: <Widget>[
                       InputTextLabel(
                         label: "户名：",
+                        value: bankStatusDetail.bankName,
                       ),
                       SizedBox(height: 10),
                       InputTextLabel(
                         label: "銀行：",
+                        value: bankStatusDetail.branch,
                       ),
                       SizedBox(height: 10),
                       InputTextLabel(
                         label: "帳號：",
+                        value: bankStatusDetail.accoutNumber,
                       ),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                "驗證中",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color.fromRGBO(254, 226, 136, 1),
-                ),
-              ),
-              buildVerifyButton(),
+              if (bankStatusDetail.verifyStatus == 'pending' ||
+                  bankStatusDetail.verifyStatus == 'verifying')
+                statusText("驗證中", Color.fromRGBO(254, 226, 136, 1)),
+              if (bankStatusDetail.verifyStatus == 'verified')
+                statusText("已驗證", Colors.white),
+              if (bankStatusDetail.verifyStatus == 'verify_failed')
+                statusText("驗證失敗", Color.fromRGBO(236, 97, 88, 1)),
+              if (bankStatusDetail.verifyStatus == 'verified' ||
+                  bankStatusDetail.verifyStatus == 'verify_failed')
+                buildVerifyButton(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget statusText(String status, Color color) {
+    return Text(
+      status,
+      style: TextStyle(
+        fontSize: 18,
+        color: color,
       ),
     );
   }
@@ -73,7 +113,28 @@ class _BankAccountStatusState extends State<BankAccountStatus> {
           height: 44,
           child: DPTextButton(
             theme: DPTextButtonThemes.purple,
-            onPressed: () {},
+            onPressed: () async {
+              bool refresh =
+                  await Navigator.of(context, rootNavigator: true).push<bool>(
+                MaterialPageRoute(
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => VerifyBankBloc(
+                          bankAPIClient: BankAPIClient(),
+                        ),
+                      ),
+                    ],
+                    child: BankAccountDetail(),
+                  ),
+                ),
+              );
+              if (refresh != null) {
+                if (refresh == true) {
+                  widget.onRefresh(true);
+                }
+              }
+            },
             text: '帳戶設定',
           ),
         ),
@@ -84,11 +145,9 @@ class _BankAccountStatusState extends State<BankAccountStatus> {
 
 class InputTextLabel extends StatelessWidget {
   final String label;
+  final String value;
 
-  const InputTextLabel({
-    Key key,
-    this.label,
-  }) : super(key: key);
+  const InputTextLabel({Key key, this.label, this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +173,7 @@ class InputTextLabel extends StatelessWidget {
         ),
         SizedBox(width: 5),
         Text(
-          'Jenny',
+          value,
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
