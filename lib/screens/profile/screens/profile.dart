@@ -99,9 +99,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
     widget.loadUserBloc.add(
-      LoadUser(
-        uuid: _sender.uuid,
-      ),
+      LoadUser(uuid: _sender.uuid),
     );
 
     loadUserImagesBloc = BlocProvider.of<LoadUserImagesBloc>(context);

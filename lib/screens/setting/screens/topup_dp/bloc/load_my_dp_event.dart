@@ -14,3 +14,7 @@ class LoadMyDp extends LoadMyDpEvent {
 
   final String uuid;
 }
+
+class ClearMyDpState extends LoadMyDpEvent {
+  const ClearMyDpState();
+}

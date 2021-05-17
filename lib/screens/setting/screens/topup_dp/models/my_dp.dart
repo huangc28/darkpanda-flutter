@@ -1,12 +1,12 @@
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/recharge_amount.dart';
 
 class MyDp {
-  const MyDp({
-    this.currentDpCoin,
+  MyDp({
+    this.balance,
     this.RechargeAmountLists,
   });
 
-  final double currentDpCoin;
+  int balance;
   final List<RechargeAmount> RechargeAmountLists;
 
   static MyDp fromJson(Map<String, dynamic> data) {
@@ -20,7 +20,7 @@ class MyDp {
     }
 
     return MyDp(
-      currentDpCoin: data['current_dp_coin'],
+      balance: data['balance'],
       RechargeAmountLists: RechargeAmountLists,
     );
   }

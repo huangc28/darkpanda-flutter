@@ -17,9 +17,11 @@ import 'components/topup_payment_confirmation_dialog.dart';
 class TopupPayment extends StatefulWidget {
   const TopupPayment({
     this.amount,
+    this.packageId,
   });
 
   final int amount;
+  final int packageId;
 
   @override
   _TopupPaymentState createState() => _TopupPaymentState();
@@ -64,7 +66,7 @@ class _TopupPaymentState extends State<TopupPayment> {
       );
 
       _paymentCard.prime = prime.prime;
-      _paymentCard.packageId = 1;
+      _paymentCard.packageId = widget.packageId;
 
       showDialog(
         barrierDismissible: false,

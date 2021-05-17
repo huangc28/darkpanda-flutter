@@ -14,9 +14,9 @@ part 'load_my_dp_event.dart';
 part 'load_my_dp_state.dart';
 
 class LoadMyDpBloc extends Bloc<LoadMyDpEvent, LoadMyDpState> {
-  LoadMyDpBloc({this.apiClient})
-      : assert(apiClient != null),
-        super(LoadMyDpState.initial());
+  LoadMyDpBloc({
+    this.apiClient,
+  }) : super(LoadMyDpState.initial());
 
   final TopUpClient apiClient;
 
@@ -26,6 +26,8 @@ class LoadMyDpBloc extends Bloc<LoadMyDpEvent, LoadMyDpState> {
   ) async* {
     if (event is LoadMyDp) {
       yield* _mapLoadMyDpEventToState(event);
+    } else if (event is ClearMyDpState) {
+      yield* _mapClearMyDpStateToState(event);
     }
   }
 
@@ -35,7 +37,7 @@ class LoadMyDpBloc extends Bloc<LoadMyDpEvent, LoadMyDpState> {
       yield LoadMyDpState.loading(state);
 
       // request API
-      final res = await apiClient.fetchMyDpAndRechargeList(event.uuid);
+      final res = await apiClient.fetchMyDp();
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -57,5 +59,9 @@ class LoadMyDpBloc extends Bloc<LoadMyDpEvent, LoadMyDpState> {
         error: AppGeneralExeption(message: err.toString()),
       );
     }
+  }
+
+  Stream<LoadMyDpState> _mapClearMyDpStateToState(ClearMyDpState event) async* {
+    yield LoadMyDpState.clearState();
   }
 }
