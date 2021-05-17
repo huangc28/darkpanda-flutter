@@ -31,7 +31,6 @@ class _TopupPaymentState extends State<TopupPayment> {
   var _paymentCard = PaymentCard();
   var _formKey = new GlobalKey<FormState>();
   var _autoValidateMode = AutovalidateMode.disabled;
-  var _buyCoin = BuyCoin();
 
   @override
   void initState() {
@@ -65,12 +64,7 @@ class _TopupPaymentState extends State<TopupPayment> {
       );
 
       _paymentCard.prime = prime.prime;
-      _buyCoin.uuid = _sender.uuid;
-      _buyCoin.rechargeId = 1;
-      _buyCoin.paymentType = "CreditCard";
-      _buyCoin.paymentCard = _paymentCard;
-      _buyCoin.amount = widget.amount;
-      _buyCoin.cost = widget.amount;
+      _paymentCard.packageId = 1;
 
       showDialog(
         barrierDismissible: false,
@@ -81,7 +75,7 @@ class _TopupPaymentState extends State<TopupPayment> {
       ).then((value) {
         if (value) {
           BlocProvider.of<BuyDpBloc>(context).add(
-            BuyDp(_buyCoin),
+            BuyDp(_paymentCard),
           );
         }
       });
@@ -294,7 +288,7 @@ class _TopupPaymentState extends State<TopupPayment> {
           decoration: inputDecoration("請輸入您的卡號"),
           controller: numberController,
           onSaved: (String value) {
-            _paymentCard.number = CardUtils.getCleanedNumber(value);
+            _paymentCard.cardNumber = CardUtils.getCleanedNumber(value);
           },
           validator: CardUtils.validateCardNum,
         ),

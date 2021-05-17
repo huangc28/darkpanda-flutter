@@ -25,15 +25,15 @@ class TopUpClient extends BaseClient {
     return res;
   }
 
-  Future<http.Response> buyDp(BuyCoin buyDp) async {
+  Future<http.Response> buyDp(PaymentCard buyDp) async {
     try {
-      final uuid = buyDp.uuid;
+      // final uuid = buyDp.uuid;
       final body = buyDp;
 
       final jsonBody = jsonEncode(body);
       final request = http.Request(
         'POST',
-        buildUri('/v1/coin/$uuid'),
+        buildUri('/v1/coin'),
       );
 
       request.body = jsonBody;

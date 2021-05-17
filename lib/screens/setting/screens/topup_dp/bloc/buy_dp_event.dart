@@ -10,7 +10,7 @@ abstract class BuyDpEvent extends Equatable {
 class BuyDp extends BuyDpEvent {
   const BuyDp(this.buyCoin);
 
-  final BuyCoin buyCoin;
+  final PaymentCard buyCoin;
 
   @override
   List<Object> get props => [buyCoin];

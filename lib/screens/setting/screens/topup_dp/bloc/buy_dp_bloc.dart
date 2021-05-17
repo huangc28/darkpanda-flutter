@@ -33,7 +33,7 @@ class BuyDpBloc extends Bloc<BuyDpEvent, BuyDpState> {
     try {
       yield BuyDpState.loading();
 
-      BuyCoin buyDp = event.buyCoin;
+      PaymentCard buyDp = event.buyCoin;
 
       final resp = await apiClient.buyDp(buyDp);
 
