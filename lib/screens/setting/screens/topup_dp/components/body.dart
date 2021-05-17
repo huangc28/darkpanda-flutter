@@ -1,9 +1,9 @@
-import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/args.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:flutter/material.dart';
-
-import '../../routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -19,6 +19,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final int fiveHundred = 500;
+  final int fiveThousand = 5000;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -105,18 +107,30 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                           onPressed: () {
-                            widget.onPush(
-                              '/topup-payment',
-                              TopUpDpArguments(
-                                amount: 500,
-                              ),
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) => BuyDpBloc(
+                                        apiClient: TopUpClient(),
+                                      ),
+                                    ),
+                                  ],
+                                  child: TopupPayment(amount: fiveHundred),
+                                );
+                              }),
                             );
                           },
                           child: Row(
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  '500 DP',
+                                  fiveHundred.toString() + ' DP',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -132,7 +146,7 @@ class _BodyState extends State<Body> {
                                     color: Colors.white,
                                   ),
                                   child: Text(
-                                    "\$500",
+                                    "\$" + fiveHundred.toString(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -162,16 +176,25 @@ class _BodyState extends State<Body> {
                               rootNavigator: true,
                             ).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    TopupPayment(amount: 5000),
-                              ),
+                                  builder: (BuildContext context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) => BuyDpBloc(
+                                        apiClient: TopUpClient(),
+                                      ),
+                                    ),
+                                  ],
+                                  child: TopupPayment(amount: fiveThousand),
+                                );
+                              }),
                             );
                           },
                           child: Row(
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  '5000 DP',
+                                  fiveThousand.toString() + ' DP',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -187,7 +210,7 @@ class _BodyState extends State<Body> {
                                     color: Colors.white,
                                   ),
                                   child: Text(
-                                    "\$5000",
+                                    "\$" + fiveThousand.toString(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
