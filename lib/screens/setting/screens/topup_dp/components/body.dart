@@ -1,9 +1,18 @@
+import 'dart:async';
+
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/dp_package.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/my_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/args.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../topup_dp.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -19,212 +28,69 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final int fiveHundred = 500;
-  final int fiveThousand = 5000;
+  LoadMyDpBloc loadMyDpBloc = new LoadMyDpBloc();
+  LoadDpPackageBloc loadDpPackageBloc = new LoadDpPackageBloc();
+  MyDp myDp = new MyDp();
+  DpPackageList dpPackageList = new DpPackageList();
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
+    BlocProvider.of<LoadDpPackageBloc>(context).add(LoadDpPackage());
+  }
+
+  @override
+  void dispose() {
+    loadMyDpBloc.add(ClearMyDpState());
+    loadDpPackageBloc.add(ClearDpPackageState());
+
+    super.dispose();
+  }
+
+  // write this way is to call inistate after pop from Buy DP page
+  void navigateBuyDpPage(amount, id) {
+    Route route = MaterialPageRoute(
+      builder: (BuildContext context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => BuyDpBloc(
+                apiClient: TopUpClient(),
+              ),
+            ),
+          ],
+          child: TopupPayment(
+            amount: amount,
+            packageId: id,
+          ),
+        );
+      },
+    );
+
+    Navigator.push(context, route).then(onGoBack);
+  }
+
+  FutureOr onGoBack(dynamic value) {
+    setState(() {
+      BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Color.fromRGBO(31, 30, 56, 1),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
-                child: Row(
-                  children: <Widget>[
-                    Image(
-                      image:
-                          AssetImage("lib/screens/setting/assets/big_coin.png"),
-                    ),
-                    SizedBox(width: 30),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: [
-                            Text(
-                              "我的DP幣：",
-                              style: TextStyle(
-                                color: Color.fromRGBO(106, 109, 137, 1),
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              "0",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                              ),
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              "DP",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            myDpBalance(),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
                   InputTextLabel(label: "充值金額"),
                   SizedBox(height: 30.0),
-                  GridView.count(
-                    mainAxisSpacing: 25,
-                    crossAxisSpacing: 10,
-                    primary: false,
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    childAspectRatio: (3 / 1),
-                    children: <Widget>[
-                      Container(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.transparent, // background
-                            shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                              side: BorderSide(
-                                color: Color.fromRGBO(106, 109, 137, 1),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider(
-                                      create: (context) => BuyDpBloc(
-                                        apiClient: TopUpClient(),
-                                      ),
-                                    ),
-                                  ],
-                                  child: TopupPayment(amount: fiveHundred),
-                                );
-                              }),
-                            );
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  fiveHundred.toString() + ' DP',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 2),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.white,
-                                  ),
-                                  child: Text(
-                                    "\$" + fiveHundred.toString(),
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.transparent, // background
-                            shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                              side: BorderSide(
-                                color: Color.fromRGBO(106, 109, 137, 1),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider(
-                                      create: (context) => BuyDpBloc(
-                                        apiClient: TopUpClient(),
-                                      ),
-                                    ),
-                                  ],
-                                  child: TopupPayment(amount: fiveThousand),
-                                );
-                              }),
-                            );
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  fiveThousand.toString() + ' DP',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 2),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.white,
-                                  ),
-                                  child: Text(
-                                    "\$" + fiveThousand.toString(),
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  topupPackage(),
                   SizedBox(height: 30),
                   Row(
                     children: [
@@ -233,6 +99,149 @@ class _BodyState extends State<Body> {
                         style: TextStyle(
                           fontSize: 18,
                           color: Color.fromRGBO(254, 226, 136, 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget topupPackage() {
+    return BlocConsumer<LoadDpPackageBloc, LoadDpPackageState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            dpPackageList = state.dpPackageList;
+          });
+        }
+      },
+      builder: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          return GridView.count(
+            mainAxisSpacing: 25,
+            crossAxisSpacing: 10,
+            primary: false,
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            childAspectRatio: (3 / 1),
+            children: List.generate(dpPackageList.packages.length, (index) {
+              return Container(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent, // background
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(10.0),
+                      side: BorderSide(
+                        color: Color.fromRGBO(106, 109, 137, 1),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    navigateBuyDpPage(dpPackageList.packages[index].cost,
+                        dpPackageList.packages[index].id);
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          dpPackageList.packages[index].dpCoin.toString() +
+                              ' DP',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 2),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            "\$" +
+                                dpPackageList.packages[index].cost.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget myDpBalance() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Color.fromRGBO(31, 30, 56, 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
+        child: Row(
+          children: <Widget>[
+            Image(
+              image: AssetImage("lib/screens/setting/assets/big_coin.png"),
+            ),
+            SizedBox(width: 30),
+            BlocListener<LoadMyDpBloc, LoadMyDpState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.done) {
+                  setState(() {
+                    myDp = state.myDp;
+                  });
+                }
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Text(
+                        "我的DP幣：",
+                        style: TextStyle(
+                          color: Color.fromRGBO(106, 109, 137, 1),
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        myDp.balance.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        "DP",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
                       ),
                     ],

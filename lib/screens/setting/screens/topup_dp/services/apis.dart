@@ -10,12 +10,23 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/payment_card.dart';
 
 class TopUpClient extends BaseClient {
-  Future<http.Response> fetchMyDpAndRechargeList(
-    String uuid,
-  ) async {
+  Future<http.Response> fetchMyDp() async {
     final request = http.Request(
       'GET',
-      buildUri('/v1/users/$uuid/my_dp'),
+      buildUri('/v1/coin'),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
+
+  Future<http.Response> fetchDpPackage() async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/coin/packages'),
     );
 
     await withTokenFromSecureStore(request);

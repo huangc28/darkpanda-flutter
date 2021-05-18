@@ -12,6 +12,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_acco
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'topup_dp/bloc/load_dp_package_bloc.dart';
+import 'topup_dp/bloc/load_my_dp_bloc.dart';
 import 'topup_dp/components/body.dart';
 import 'topup_dp/screen_arguements/args.dart';
 import 'topup_dp/services/apis.dart';
@@ -49,10 +51,26 @@ class SettingRoutes extends BaseRoutes {
           child: BlackList(),
         );
       },
-      SettingRoutes.topup_dp: (context) => TopupDp(
+      SettingRoutes.topup_dp: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => LoadMyDpBloc(
+                apiClient: TopUpClient(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => LoadDpPackageBloc(
+                apiClient: TopUpClient(),
+              ),
+            ),
+          ],
+          child: TopupDp(
             onPush: (String routeName, TopUpDpArguments args) =>
                 this.push(context, routeName, args),
           ),
+        );
+      },
       SettingRoutes.topup_payment: (context) {
         final screenArgs = args as TopUpDpArguments;
         return MultiBlocProvider(

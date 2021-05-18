@@ -37,6 +37,12 @@ class LoadMyDpState<E extends AppBaseException> extends Equatable {
           myDp: myDp,
         );
 
+  const LoadMyDpState.clearState()
+      : this._(
+          myDp: null,
+          status: AsyncLoadingStatus.initial,
+        );
+
   @override
   List<Object> get props => [
         status,
