@@ -14,7 +14,7 @@ abstract class BaseClient extends http.BaseClient {
   BaseClient({
     this.jwtToken,
   }) {
-    baseUri = Uri.parse('${env['DEV_SERVER_HOST']}:${env['DEV_SERVER_PORT']}');
+    baseUri = Uri.parse('${env['SERVER_HOST']}');
   }
 
   Uri buildUri(String path, [Map<String, dynamic> queryParams]) {
