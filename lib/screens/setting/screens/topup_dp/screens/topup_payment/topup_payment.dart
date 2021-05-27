@@ -37,16 +37,9 @@ class _TopupPaymentState extends State<TopupPayment> {
   var _autoValidateMode = AutovalidateMode.disabled;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-
-    _payer = await FlutterTappay()
-      ..init(
-        appKey:
-            'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
-        appId: 17098,
-        serverType: FlutterTappayServerType.Sandbox,
-      );
+    _initTappay();
   }
 
   @override
@@ -54,6 +47,16 @@ class _TopupPaymentState extends State<TopupPayment> {
     // Clean up the controller when the Widget is removed from the Widget tree
     _numberController.dispose();
     super.dispose();
+  }
+
+  void _initTappay() async {
+    _payer = await FlutterTappay()
+      ..init(
+        appKey:
+            'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+        appId: 17098,
+        serverType: FlutterTappayServerType.Sandbox,
+      );
   }
 
   void _validateInputs() async {
