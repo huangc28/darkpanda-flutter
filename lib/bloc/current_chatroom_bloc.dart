@@ -130,9 +130,10 @@ class CurrentChatroomBloc
 
   _handleCurrentMessage(data, String channelUUID) {
     final QuerySnapshot msgSnapShot = data;
-    final rawMsg = msgSnapShot.docChanges.first.doc.data();
+    final rawMsg = msgSnapShot.docChanges.first.doc.data() as Map;
 
-    developer.log('Current chatroom incoming message ${rawMsg['type']}');
+    developer
+        .log('Current chatroom incoming message ${rawMsg['type'].toString()}');
 
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;

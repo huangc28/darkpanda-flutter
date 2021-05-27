@@ -185,7 +185,6 @@ class _ChatroomState extends State<Chatroom>
                                       ServiceConfirmNotifierBloc,
                                       ServiceConfirmNotifierState>(
                                     listener: (context, state) {
-                                      print('DEBUG _serviceConfirmed !!@@');
                                       setState(() {
                                         _serviceConfirmed = true;
                                       });
@@ -341,60 +340,4 @@ class _ChatroomState extends State<Chatroom>
       _animationController.reverse();
     }
   }
-
-  // _handleTapServiceSettingMessage(ServiceDetailMessage message) async {
-  //   final serviceSettings = await _showServiceDetailModal(
-  //       ServiceSettings.fromServiceDetailMessage(message));
-
-  //   if (serviceSettings == null) {
-  //     return null;
-  //   }
-
-  //   BlocProvider.of<SendMessageBloc>(context).add(
-  //     SendServiceDetailConfirmMessage(
-  //       channelUUID: widget.args.channelUUID,
-  //       serviceSettings: serviceSettings,
-  //       inquiryUUID: widget.args.inquiryUUID,
-  //     ),
-  //   );
-  // }
-
-  // Future<ServiceSettings> _showServiceDetailModal(
-  //     [ServiceSettings settings]) async {
-  //   final ServiceSettings serviceSettings = await Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //       builder: (BuildContext context) => ServiceSettingsSheet(
-  //         serviceSettings: settings,
-  //       ),
-  //       fullscreenDialog: true,
-  //     ),
-  //   );
-
-  //   return serviceSettings;
-  // }
-
-  // _handleTapServiceSetting(ServiceSettings ss) async {
-  //   final ServiceSettings updatedss = await Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //       builder: (BuildContext context) => ServiceSettingsSheet(
-  //         serviceSettings: ss,
-  //       ),
-  //       fullscreenDialog: true,
-  //     ),
-  //   );
-
-  //   // If serviceSettings is null, do nothing
-  //   if (updatedss == null) {
-  //     return;
-  //   }
-
-  //   // Sends a service detail message to chatroom.
-  //   BlocProvider.of<SendMessageBloc>(context).add(
-  //     SendServiceDetailConfirmMessage(
-  //       inquiryUUID: widget.args.inquiryUUID,
-  //       channelUUID: widget.args.channelUUID,
-  //       serviceSettings: updatedss,
-  //     ),
-  //   );
-  // }
 }
