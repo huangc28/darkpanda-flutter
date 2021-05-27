@@ -52,15 +52,7 @@ class _ChatRoomsState extends State<ChatRooms> {
           child: Column(
             children: [
               // Inquiry chatrooms title
-              Text(
-                '聊天詢問',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  letterSpacing: 0.53,
-                ),
-              ),
+              _buildHeader(),
               BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
                 listener: (context, state) {
                   // Display error in snack bar.
@@ -115,6 +107,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                                   inquiryUUID: chatroom.inquiryUUID,
                                   serviceType: chatroom.serviceType,
                                   inquirerProfile: state.userProfile,
+                                  isInquiry: true,
                                 ),
                               )
                                   .then((dynamic value) {
@@ -169,6 +162,33 @@ class _ChatRoomsState extends State<ChatRooms> {
     // Retrieve inquirer information here.
     BlocProvider.of<LoadUserBloc>(context).add(
       LoadUser(uuid: inquirerUUID),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: EdgeInsets.only(
+        top: 30,
+        right: 16,
+        left: 16,
+      ),
+      child: Row(
+        children: [
+          Image(
+            image: AssetImage('assets/panda_head_logo.png'),
+            width: 31,
+            height: 31,
+          ),
+          SizedBox(width: 8),
+          Text(
+            '洽談聊天列表',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

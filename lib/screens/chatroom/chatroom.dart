@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:darkpanda_flutter/screens/chatroom/components/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +19,7 @@ import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
@@ -144,6 +148,24 @@ class _ChatroomState extends State<Chatroom>
             fontSize: 18,
           ),
         ),
+        actions: <Widget>[
+          widget.args.isInquiry
+              ? Container()
+              : Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).push(MaterialPageRoute(
+                        builder: (context) => QrScanner(),
+                      ));
+                    },
+                    child: Icon(Icons.qr_code_scanner),
+                  ),
+                ),
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -275,8 +297,10 @@ class _ChatroomState extends State<Chatroom>
                             ),
                           );
                         },
-                        onEditInquiry: _handleTapEditInquiry,
-                      )
+                        onEditInquiry: widget.args.isInquiry
+                            ? _handleTapEditInquiry
+                            : null,
+                      ),
                     ],
                   ),
                 ),

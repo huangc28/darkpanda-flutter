@@ -41,7 +41,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           chatrooms: state.chatrooms,
           privateChatStreamMap: state.privateChatStreamMap,
           status: AsyncLoadingStatus.error,
-          chatroomLastMessage: state.chatroomLastMessage,
+          chatroomLastMessage: {},
         );
 
   InquiryChatroomsState.updateChatrooms(

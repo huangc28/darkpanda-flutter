@@ -7,6 +7,7 @@ import './screens/female/screens/inquiry_chats/routes.dart';
 import './screens/female/screens/service_list/routes.dart';
 import './screens/profile/screens/routes.dart';
 import './screens/setting/screens/routes.dart';
+import './screens/service_chatroom/routes.dart';
 
 // Each tag keeps it's own navigator instance to track navigation history.
 final Map<TabItem, String> initialRouteMap = {
@@ -34,7 +35,7 @@ class TabNavigator extends StatelessWidget {
 
   final InquiryChatsRoutes _inquiryChatsRoutes = InquiryChatsRoutes();
 
-  final ServiceRoutes _servicesRoutes = ServiceRoutes();
+  final ServiceChatroomRoutes _servicesRoutes = ServiceChatroomRoutes();
 
   final ProfileRoutes _profileRoutes = ProfileRoutes();
 

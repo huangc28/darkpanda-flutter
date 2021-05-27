@@ -80,7 +80,9 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Color.fromRGBO(31, 30, 56, 1),
       child: Row(
         children: <Widget>[
-          _buildEditInquiryButton(),
+          widget.onEditInquiry == null
+              ? Container()
+              : _buildEditInquiryButton(),
 
           // Display image Gallery icon.
           _buildImageGalleryIconButton(),
