@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:darkpanda_flutter/screens/login/login_navigator.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,15 @@ class _SettingState extends State<Setting> {
                           height: 44,
                           child: DPTextButton(
                             theme: DPTextButtonThemes.purple,
-                            onPressed: () {},
+                            onPressed: () async {
+                              await SecureStore().fsc.deleteAll();
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LoginNavigator()),
+                                      (Route<dynamic> route) => false);
+                            },
                             text: '登出',
                           ),
                         ),
