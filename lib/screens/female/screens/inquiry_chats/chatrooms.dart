@@ -114,26 +114,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 setState(() {
                                   _hasDoneLoadingUserAndNavigate = true;
                                 });
-
-                                Navigator.of(
-                                  context,
-                                  rootNavigator: true,
-                                )
-                                    .pushNamed(
-                                  MainRoutes.chatroom,
-                                  arguments: ChatroomScreenArguments(
-                                    channelUUID: chatroom.channelUUID,
-                                    inquiryUUID: chatroom.inquiryUUID,
-                                    serviceType: chatroom.serviceType,
-                                    inquirerProfile: state.userProfile,
-                                  ),
-                                )
-                                    .then((dynamic value) {
-                                  setState(() {
-                                    _hasDoneLoadingUserAndNavigate = false;
-                                  });
-                                });
-                              }
+                              });
                             }
 
                             if (state.status == AsyncLoadingStatus.error) {
@@ -145,8 +126,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 ),
                               );
                             }
-                          },
-                          child: Container(
+                          }
+                          return Container(
                             margin: EdgeInsets.only(
                               bottom: 20,
                             ),
@@ -160,14 +141,14 @@ class _ChatRoomsState extends State<ChatRooms> {
                               chatroom: chatroom,
                               lastMessage: lastMsg.content,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
