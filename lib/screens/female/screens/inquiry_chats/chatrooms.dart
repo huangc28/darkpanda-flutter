@@ -112,43 +112,62 @@ class _ChatRoomsState extends State<ChatRooms> {
                               )
                                   .then((dynamic value) {
                                 setState(() {
-                                  _hasDoneLoadingUserAndNavigate = false;
+                                  _hasDoneLoadingUserAndNavigate = true;
                                 });
-                              });
-                            }
-                          }
 
-                          if (state.status == AsyncLoadingStatus.error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  state.error.message,
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                )
+                                    .pushNamed(
+                                  MainRoutes.chatroom,
+                                  arguments: ChatroomScreenArguments(
+                                    channelUUID: chatroom.channelUUID,
+                                    inquiryUUID: chatroom.inquiryUUID,
+                                    serviceType: chatroom.serviceType,
+                                    inquirerProfile: state.userProfile,
+                                  ),
+                                )
+                                    .then((dynamic value) {
+                                  setState(() {
+                                    _hasDoneLoadingUserAndNavigate = false;
+                                  });
+                                });
+                              }
+                            }
+
+                            if (state.status == AsyncLoadingStatus.error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    state.error.message,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: 20,
-                          ),
-                          child: ChatroomGrid(
-                            onEnterChat: (chatroomModel.Chatroom chatroom) {
-                              return _onEnterChat(
-                                context,
-                                chatroom.inquirerUUID,
                               );
-                            },
-                            chatroom: chatroom,
-                            lastMessage: lastMsg.content,
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              bottom: 20,
+                            ),
+                            child: ChatroomGrid(
+                              onEnterChat: (chatroomModel.Chatroom chatroom) {
+                                return _onEnterChat(
+                                  context,
+                                  chatroom.inquirerUUID,
+                                );
+                              },
+                              chatroom: chatroom,
+                              lastMessage: lastMsg.content,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

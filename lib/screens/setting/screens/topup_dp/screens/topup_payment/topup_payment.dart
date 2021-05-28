@@ -8,7 +8,7 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_nu
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tappayflutterplugin/tappayflutterplugin.dart';
+import 'package:flutter_tappay/flutter_tappay.dart';
 
 import '../../utils//card_utils.dart';
 import '../../models/payment_card.dart';
@@ -28,23 +28,35 @@ class TopupPayment extends StatefulWidget {
 }
 
 class _TopupPaymentState extends State<TopupPayment> {
-  AuthUser _sender;
-  var numberController = new TextEditingController();
+  var _numberController = TextEditingController();
+
+  var _payer = FlutterTappay();
+
   var _paymentCard = PaymentCard();
-  var _formKey = new GlobalKey<FormState>();
+  var _formKey = GlobalKey<FormState>();
   var _autoValidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
     super.initState();
-    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    _initTappay();
   }
 
   @override
   void dispose() {
     // Clean up the controller when the Widget is removed from the Widget tree
-    numberController.dispose();
+    _numberController.dispose();
     super.dispose();
+  }
+
+  void _initTappay() async {
+    _payer = await FlutterTappay()
+      ..init(
+        appKey:
+            'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+        appId: 17098,
+        serverType: FlutterTappayServerType.Sandbox,
+      );
   }
 
   void _validateInputs() async {
@@ -57,15 +69,16 @@ class _TopupPaymentState extends State<TopupPayment> {
       _showInSnackBar('Please fix the errors in red before submitting.');
     } else {
       form.save();
-      String input = CardUtils.getCleanedNumber(numberController.text);
-      PrimeModel prime = await Tappayflutterplugin.getPrime(
+      String input = CardUtils.getCleanedNumber(_numberController.text);
+
+      var resp = await _payer.sendToken(
         cardNumber: input,
         dueMonth: _paymentCard.month,
         dueYear: _paymentCard.year,
         ccv: _paymentCard.cvv.toString(),
       );
 
-      _paymentCard.prime = prime.prime;
+      _paymentCard.prime = resp.prime;
       _paymentCard.packageId = widget.packageId;
 
       showDialog(
@@ -86,14 +99,18 @@ class _TopupPaymentState extends State<TopupPayment> {
 
   @override
   Widget build(BuildContext context) {
-    Tappayflutterplugin.setupTappay(
-        appId: 17098,
-        appKey:
-            'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
-        serverType: TappayServerType.sandBox,
-        errorMessage: (error) {
-          print(error);
-        });
+    FlutterTappay payer = FlutterTappay();
+
+    payer
+        .init(
+      appKey:
+          'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+      appId: 17098,
+      serverType: FlutterTappayServerType.Sandbox,
+    )
+        .then((_) {
+      print('tappay instance instantiated.');
+    });
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
@@ -288,7 +305,7 @@ class _TopupPaymentState extends State<TopupPayment> {
           ],
           style: TextStyle(color: Colors.white),
           decoration: inputDecoration("請輸入您的卡號"),
-          controller: numberController,
+          controller: _numberController,
           onSaved: (String value) {
             _paymentCard.cardNumber = CardUtils.getCleanedNumber(value);
           },
