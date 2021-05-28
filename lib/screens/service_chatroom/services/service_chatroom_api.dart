@@ -3,14 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
-class ApiClient extends BaseClient {
-  Future<http.Response> fetchInquiries({int offset = 0}) async {
+class ServiceChatroomClient extends BaseClient {
+  Future<http.Response> fetchIncomingService() async {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/inquiries', {
-          'offset': '$offset',
-        }),
+        buildUri('/v1/services/incoming'),
       );
 
       await withTokenFromSecureStore(request);
@@ -18,18 +16,16 @@ class ApiClient extends BaseClient {
       final res = await sendWithResponse(request);
 
       return res;
-    } catch (err) {
+    } on Exception catch (err) {
       throw AppGeneralExeption(message: err.toString());
     }
   }
 
-  Future<http.Response> pickupInquiry(String uuid) async {
+  Future<http.Response> fetchOverdueService() async {
     try {
       final request = http.Request(
-        'POST',
-        buildUri("/v1/inquiries/pickup", {
-          "inquiry_uuid": uuid,
-        }),
+        'GET',
+        buildUri('/v1/services/overdue'),
       );
 
       await withTokenFromSecureStore(request);
