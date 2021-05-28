@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class MyQrCode extends StatefulWidget {
-  const MyQrCode({
+class ServiceQrCode extends StatefulWidget {
+  const ServiceQrCode({
     this.controller,
     @required this.onTapClose,
   });
@@ -14,10 +14,10 @@ class MyQrCode extends StatefulWidget {
   final VoidCallback onTapClose;
 
   @override
-  _MyQrCodeState createState() => _MyQrCodeState();
+  _ServiceQrCodeState createState() => _ServiceQrCodeState();
 }
 
-class _MyQrCodeState extends State<MyQrCode> {
+class _ServiceQrCodeState extends State<ServiceQrCode> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -40,12 +40,12 @@ class _MyQrCodeState extends State<MyQrCode> {
                       ),
                     ),
                     Positioned(
-                      child: buildCancelButton(),
+                      child: _buildCancelButton(),
                       top: 20,
                       left: 20,
                     ),
                     Positioned(
-                      child: buildQrImage(),
+                      child: _buildQrImage(),
                       bottom: 0.0,
                       right: 0.0,
                       left: 0.0,
@@ -59,7 +59,7 @@ class _MyQrCodeState extends State<MyQrCode> {
     );
   }
 
-  Widget buildQrImage() {
+  Widget _buildQrImage() {
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: Column(
@@ -82,7 +82,7 @@ class _MyQrCodeState extends State<MyQrCode> {
     );
   }
 
-  Widget buildCancelButton() {
+  Widget _buildCancelButton() {
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(

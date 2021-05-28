@@ -25,7 +25,7 @@ class IncomingService {
   String inquiryUuid;
   final List<Message> messages;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
         'service_status': serviceStatus,
         'appointment_time': appointmentTime,
@@ -37,7 +37,7 @@ class IncomingService {
         'messages': messages,
       };
 
-  factory IncomingService.fromJson(Map<String, dynamic> data) {
+  factory IncomingService.fromMap(Map<String, dynamic> data) {
     var parsedAppointmentTime = DateTime.now();
     List<Message> messages = [];
 
@@ -84,7 +84,7 @@ class IncomingServiceList {
 
     if (data['services'] != null) {
       serviceList = data['services'].map<IncomingService>((v) {
-        return IncomingService.fromJson(v);
+        return IncomingService.fromMap(v);
       }).toList();
     }
 

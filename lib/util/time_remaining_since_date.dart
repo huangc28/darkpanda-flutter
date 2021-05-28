@@ -9,9 +9,6 @@ class DateTimeUtil {
     final dateNow = DateTime.now();
     final difference = notificationDate.difference(dateNow);
 
-    // if (difference.inDays > 8) {
-    //   return formatter.format(notificationDate);
-    // } else
     if ((difference.inDays / 7).floor() >= 1) {
       final week = (difference.inDays / 7).floor();
       return '$week 个星期前';
