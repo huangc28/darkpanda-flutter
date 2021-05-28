@@ -37,7 +37,7 @@ dependencies:
   carousel_slider: ^3.0.0
   enum_to_string: ^2.0.1
   firebase_core: ^1.0.2
-  cloud_firestore: ^2.2.0
+  cloud_firestore: ^2.2.0 
   firebase_analytics: ^8.1.0
   date_format: ^2.0.2
   intl: ^0.17.0
@@ -48,7 +48,6 @@ dependencies:
   flutter_dotenv: ^3.1.0
   provider: ^5.0.0
   easy_debounce: ^2.0.0
-  tappayflutterplugin: ^0.0.48
   qr_code_scanner: ^0.4.0
   qr_flutter: ^4.0.0
 
