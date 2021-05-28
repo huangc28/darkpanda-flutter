@@ -4,7 +4,7 @@ import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import 'my_qrcode.dart';
+import 'service_qrcode.dart';
 
 class QrScanner extends StatefulWidget {
   @override
@@ -98,11 +98,7 @@ class _QrScannerState extends State<QrScanner>
               opacity: _fadeAnimation,
               child: InkWell(
                 onTap: () {
-                  if (_animationController.isDismissed) {
-                    _animationController.forward();
-                  } else {
-                    _animationController.reverse();
-                  }
+                  _animationController.reverse();
                 },
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -123,7 +119,7 @@ class _QrScannerState extends State<QrScanner>
             ),
             SlideTransition(
               position: _offsetAnimation,
-              child: MyQrCode(
+              child: ServiceQrCode(
                 controller: _slideUpController,
                 onTapClose: () {
                   _animationController.reverse();
@@ -172,7 +168,7 @@ class _QrScannerState extends State<QrScanner>
             ),
             SizedBox(width: 10),
             Text(
-              'My QR Code',
+              'Service QR Code',
               style: TextStyle(
                 color: Colors.white,
               ),

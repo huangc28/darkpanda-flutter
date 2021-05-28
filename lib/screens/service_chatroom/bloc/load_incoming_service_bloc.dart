@@ -63,15 +63,11 @@ class LoadIncomingServiceBloc
         );
       }
 
-      // yield LoadIncomingServiceState.loaded(
-      //   services: IncomingServiceList.fromJson(json.decode(res.body)),
-      // );
       final Map<String, dynamic> respMap = json.decode(res.body);
 
       final serviceList = respMap['services'].map<IncomingService>((v) {
-        return IncomingService.fromJson(v);
+        return IncomingService.fromMap(v);
       }).toList();
-      // final chatrooms = IncomingServiceList.fromJson(json.decode(res.body));
 
       add(
         AddChatrooms(serviceList),
