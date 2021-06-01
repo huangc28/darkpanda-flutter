@@ -50,26 +50,26 @@ void main() async {
   );
 }
 
-class DarkPandaApp extends StatelessWidget {
+class DarkPandaApp extends StatefulWidget {
   DarkPandaApp();
 
+  @override
+  State<DarkPandaApp> createState() => _DarkPandaAppState();
+}
+
+class _DarkPandaAppState extends State<DarkPandaApp> {
   final mainRoutes = MainRoutes();
 
-  bool isLoggedIn = false;
+  bool hasLoggedIn = false;
 
-  Future<bool> _isLoggedIn() async {
-    final jwt = await SecureStore().fsc.read(key: 'jwt');
+  Future<bool> _hasLoggedIn() async {
+    final jwt = await SecureStore().readJwtToken();
 
-    if (jwt != null) {
-      return true;
-    } else {
-      return false;
-    }
+    return jwt != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    // _isLoggedIn();
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -136,13 +136,14 @@ class DarkPandaApp extends StatelessWidget {
         ),
       ],
       child: FutureBuilder(
-        future: _isLoggedIn(),
+        future: _hasLoggedIn(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == true) {
-              isLoggedIn = snapshot.data;
+              hasLoggedIn = snapshot.data;
             }
           }
+
           return SecureStoreProvider(
             secureStorage: SecureStore().fsc,
             child: MaterialApp(
@@ -164,20 +165,20 @@ class DarkPandaApp extends StatelessWidget {
                 return MaterialPageRoute(
                   settings: settings,
                   builder: (context) {
-                    if (!isLoggedIn) {
+                    if (!hasLoggedIn) {
                       return mainRoutes
                           .routeBuilder(context)[MainRoutes.login](context);
-                    } else {
-                      if (settings.name == MainRoutes.chatroom) {
-                        final routeBuilder = mainRoutes.routeBuilder(
-                            context, settings.arguments);
-
-                        return routeBuilder[settings.name](context);
-                      }
-
-                      return mainRoutes
-                          .routeBuilder(context)[settings.name](context);
                     }
+
+                    if (settings.name == MainRoutes.chatroom) {
+                      final routeBuilder =
+                          mainRoutes.routeBuilder(context, settings.arguments);
+
+                      return routeBuilder[settings.name](context);
+                    }
+
+                    return mainRoutes
+                        .routeBuilder(context)[settings.name](context);
                   },
                 );
               },
