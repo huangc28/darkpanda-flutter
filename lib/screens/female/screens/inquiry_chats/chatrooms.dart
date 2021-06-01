@@ -89,6 +89,21 @@ class _ChatRoomsState extends State<ChatRooms> {
 
                       // Loading inquirier info before proceeding to chatroom.
                       return BlocListener<LoadUserBloc, LoadUserState>(
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            bottom: 20,
+                          ),
+                          child: ChatroomGrid(
+                            onEnterChat: (chatroomModel.Chatroom chatroom) {
+                              return _onEnterChat(
+                                context,
+                                chatroom.inquirerUUID,
+                              );
+                            },
+                            chatroom: chatroom,
+                            lastMessage: lastMsg.content,
+                          ),
+                        ),
                         listener: (context, state) {
                           if (state.status == AsyncLoadingStatus.done) {
                             if (!_hasDoneLoadingUserAndNavigate) {
@@ -127,21 +142,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                               );
                             }
                           }
-                          return Container(
-                            margin: EdgeInsets.only(
-                              bottom: 20,
-                            ),
-                            child: ChatroomGrid(
-                              onEnterChat: (chatroomModel.Chatroom chatroom) {
-                                return _onEnterChat(
-                                  context,
-                                  chatroom.inquirerUUID,
-                                );
-                              },
-                              chatroom: chatroom,
-                              lastMessage: lastMsg.content,
-                            ),
-                          );
                         },
                       );
                     },
