@@ -9,16 +9,20 @@ class DateTimeUtil {
     final dateNow = DateTime.now();
     final difference = notificationDate.difference(dateNow);
 
-    if ((difference.inDays / 7).floor() >= 1) {
-      return formattedDate;
-    } else if (difference.inDays >= 1) {
-      return '還有${difference.inDays}天';
-    } else if (difference.inHours >= 1) {
-      return '還有${difference.inHours}个小时';
-    } else if (difference.inMinutes >= 1) {
-      return '還有${difference.inMinutes}分鐘';
-    } else {
+    if ((difference.inDays / DateTime.daysPerWeek).floor() >= 1) {
       return formattedDate;
     }
+    if (difference.inDays >= 1) {
+      return '還有${difference.inDays}天';
+    }
+
+    if (difference.inHours >= 1) {
+      return '還有${difference.inHours}個小時';
+    }
+
+    if (difference.inMinutes >= 1) {
+      return '還有${difference.inMinutes}分鐘';
+    }
+    return formattedDate;
   }
 }
