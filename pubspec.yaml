@@ -29,7 +29,7 @@ dependencies:
   flutter_localizations: 
     sdk: flutter        
   http: ^0.13.1
-  meta: 1.3.0
+  meta: 1.4.0
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
   equatable: ^2.0.0
@@ -96,6 +96,9 @@ flutter:
 
     # Setting assets.
     - lib/screens/setting/assets/
+
+    # Male assets.
+    - lib/screens/male/assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
