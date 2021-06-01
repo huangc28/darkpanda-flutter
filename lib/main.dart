@@ -50,10 +50,23 @@ void main() async {
   );
 }
 
-class DarkPandaApp extends StatelessWidget {
+class DarkPandaApp extends StatefulWidget {
   DarkPandaApp();
 
+  @override
+  State<DarkPandaApp> createState() => _DarkPandaAppState();
+}
+
+class _DarkPandaAppState extends State<DarkPandaApp> {
   final mainRoutes = MainRoutes();
+
+  bool hasLoggedIn = false;
+
+  Future<bool> _hasLoggedIn() async {
+    final jwt = await SecureStore().readJwtToken();
+
+    return jwt != null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,38 +135,56 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
       ],
-      child: SecureStoreProvider(
-        secureStorage: SecureStore().fsc,
-        child: MaterialApp(
-          supportedLocales: [
-            Locale.fromSubtags(languageCode: 'zh'),
-          ],
+      child: FutureBuilder(
+        future: _hasLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == true) {
+              hasLoggedIn = snapshot.data;
+            }
+          }
 
-          /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
-          localizationsDelegates: [
-            GlobalCupertinoLocalizations.delegate,
-            CountryLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          theme: ThemeManager.getTheme(),
-          initialRoute: MainRoutes.login,
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) {
-                if (settings.name == MainRoutes.chatroom) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
+          return SecureStoreProvider(
+            secureStorage: SecureStore().fsc,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              supportedLocales: [
+                Locale.fromSubtags(languageCode: 'zh'),
+              ],
 
-                  return routeBuilder[settings.name](context);
-                }
+              /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
+              localizationsDelegates: [
+                GlobalCupertinoLocalizations.delegate,
+                CountryLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              theme: ThemeManager.getTheme(),
+              initialRoute: MainRoutes.app,
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    if (!hasLoggedIn) {
+                      return mainRoutes
+                          .routeBuilder(context)[MainRoutes.login](context);
+                    }
 
-                return mainRoutes.routeBuilder(context)[settings.name](context);
+                    if (settings.name == MainRoutes.chatroom) {
+                      final routeBuilder =
+                          mainRoutes.routeBuilder(context, settings.arguments);
+
+                      return routeBuilder[settings.name](context);
+                    }
+
+                    return mainRoutes
+                        .routeBuilder(context)[settings.name](context);
+                  },
+                );
               },
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -33,19 +33,6 @@ class _AppState extends State<App> {
   TabItem _currentTab = TabItem.inquiries;
 
   @override
-  initState() {
-    // If we are in development environment, dispatch `fetchMe` event with predefined
-    // test token.
-    if (!kReleaseMode) {
-      BlocProvider.of<AuthUserBloc>(context).add(
-        FetchUserInfo(),
-      );
-    }
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthUserBloc, AuthUserState>(
       builder: (context, state) {
