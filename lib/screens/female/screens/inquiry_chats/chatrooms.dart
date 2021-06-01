@@ -127,7 +127,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                               )
                                   .then((dynamic value) {
                                 setState(() {
-                                  _hasDoneLoadingUserAndNavigate = true;
+                                  _hasDoneLoadingUserAndNavigate = false;
                                 });
                               });
                             }
