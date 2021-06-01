@@ -18,37 +18,34 @@ class _BodyState extends State<Body> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
 
-  // ServiceSettings _serviceSetting = ServiceSettings(
-  //   serviceDate: DateTime.now(),
-  //   serviceTime: TimeOfDay(hour: 00, minute: 00),
-  //   duration: Duration(hours: 0, minutes: 30),
-  // );
-
   @override
   Widget build(BuildContext context) {
+    final viewPortWidth = MediaQuery.of(context).size.width;
+    final viewPortHeight = MediaQuery.of(context).size.height;
+
     return SingleChildScrollView(
       child: SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: (20.0 / 375.0) * MediaQuery.of(context).size.width),
+          padding:
+              EdgeInsets.symmetric(horizontal: (20.0 / 375.0) * viewPortWidth),
           child: Column(
             children: <Widget>[
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              SizedBox(height: viewPortHeight * 0.05),
               _searchInput(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              SizedBox(height: viewPortHeight * 0.05),
               _textLabel('服務類型'),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              SizedBox(height: viewPortHeight * 0.02),
               _serviceTypeRadio(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              SizedBox(height: viewPortHeight * 0.05),
               _textLabel('見面時間'),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              SizedBox(height: viewPortHeight * 0.02),
               _appointmentTime(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              SizedBox(height: viewPortHeight * 0.05),
               _textLabel('服務期限'),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              SizedBox(height: viewPortHeight * 0.02),
               _servicePeriodRadio(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              SizedBox(height: viewPortHeight * 0.015),
               _confirmButton(),
             ],
           ),
@@ -63,7 +60,6 @@ class _BodyState extends State<Body> {
       height: 45,
       child: Material(
         borderRadius: BorderRadius.circular(20),
-        // shadowColor: Colors.greenAccent,
         color: Color.fromRGBO(119, 81, 255, 1),
         elevation: 7,
         child: GestureDetector(
@@ -92,20 +88,8 @@ class _BodyState extends State<Body> {
         timeController: _timeController,
         onSelectDate: (DateTime dateTime) {
           // We need to update the appointment time of current service settings.
-          setState(() {
-            // _serviceSetting.serviceDate = dateTime;
-
-            // Format the date text to be aligned with the newly selected date.
-            // _dateController = TextEditingController()
-            //   ..text = _formatDate(_serviceSetting.serviceDate);
-          });
         },
-        onSelectTime: (TimeOfDay time) {
-          setState(() {
-            // _serviceSetting.serviceTime = time;
-            // _timeController = TextEditingController()..text = _formatTime(time);
-          });
-        },
+        onSelectTime: (TimeOfDay time) {},
       ),
     );
   }
@@ -246,7 +230,6 @@ class _BodyState extends State<Body> {
         ),
         SizedBox(width: 5),
         Container(
-          // padding: EdgeInsets.fromLTRB(0.0, 45, 0, 0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(

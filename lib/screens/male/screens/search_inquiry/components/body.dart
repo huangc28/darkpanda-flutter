@@ -37,8 +37,6 @@ class _BodyState extends State<Body> {
         elevation: 7,
         child: GestureDetector(
           onTap: () {
-            // widget.onPush('/inquiry-form');
-            // Navigator.pushNamed(context, "/inquiry-form");
             Navigator.of(context, rootNavigator: false).push(
               MaterialPageRoute(builder: (context) => InquiryForm()),
             );

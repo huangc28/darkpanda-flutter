@@ -4,7 +4,7 @@ import 'components/body.dart';
 
 class InquiryForm extends StatefulWidget {
   @override
-  _InquiryFormState createState() => _InquiryFormState();
+  State<InquiryForm> createState() => _InquiryFormState();
 }
 
 class _InquiryFormState extends State<InquiryForm> {
