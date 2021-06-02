@@ -91,8 +91,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                         ),
                         child: ChatroomGrid(
                           onEnterChat: (chatroomModel.Chatroom chatroom) {
-                            print('trigger enter chat');
-
                             Navigator.of(
                               context,
                               rootNavigator: true,
