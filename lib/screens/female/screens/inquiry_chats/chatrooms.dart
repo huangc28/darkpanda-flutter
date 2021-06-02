@@ -99,9 +99,9 @@ class _ChatRoomsState extends State<ChatRooms> {
                               arguments: ChatroomScreenArguments(
                                 channelUUID: chatroom.channelUUID,
                                 inquiryUUID: chatroom.inquiryUUID,
-                                inquirerUUID: chatroom.inquirerUUID,
+                                counterPartUUID: chatroom.inquirerUUID,
                                 serviceType: chatroom.serviceType,
-                                isInquiry: true,
+                                // isInquiry: true,
                               ),
                             );
                           },

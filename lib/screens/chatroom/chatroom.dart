@@ -79,9 +79,8 @@ class _ChatroomState extends State<Chatroom>
 
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(
-        channelUUID: widget.args.channelUUID,
-        inquirerUUID: widget.args.inquirerUUID,
-      ),
+          channelUUID: widget.args.channelUUID,
+          inquirerUUID: widget.args.counterPartUUID),
     );
 
     // Fetch inquiry related inquiry if exists.
@@ -89,7 +88,6 @@ class _ChatroomState extends State<Chatroom>
       GetInquiry(inquiryUuid: widget.args.inquiryUUID),
     );
 
-    // widget.args.inquirerProfile
     _editMessageController.addListener(_handleEditMessage);
 
     // Initialize slideup panel animation.
