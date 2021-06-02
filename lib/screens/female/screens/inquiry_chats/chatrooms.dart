@@ -29,8 +29,6 @@ class ChatRooms extends StatefulWidget {
 class _ChatRoomsState extends State<ChatRooms> {
   InquiryChatroomsBloc _inquiryChatroomsBloc;
 
-  bool _hasDoneLoadingUserAndNavigate = false;
-
   /// Emit flutter bloc event in lifecycle `Dispose` https://github.com/felangel/bloc/issues/588.
   @override
   void initState() {
@@ -88,61 +86,31 @@ class _ChatRoomsState extends State<ChatRooms> {
                           state.chatroomLastMessage[chatroom.channelUUID];
 
                       // Loading inquirier info before proceeding to chatroom.
-                      return BlocListener<LoadUserBloc, LoadUserState>(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: 20,
-                          ),
-                          child: ChatroomGrid(
-                            onEnterChat: (chatroomModel.Chatroom chatroom) {
-                              return _onEnterChat(
-                                context,
-                                chatroom.inquirerUUID,
-                              );
-                            },
-                            chatroom: chatroom,
-                            lastMessage: lastMsg.content,
-                          ),
+                      return Container(
+                        margin: EdgeInsets.only(
+                          bottom: 20,
                         ),
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.done) {
-                            if (!_hasDoneLoadingUserAndNavigate) {
-                              setState(() {
-                                _hasDoneLoadingUserAndNavigate = true;
-                              });
+                        child: ChatroomGrid(
+                          onEnterChat: (chatroomModel.Chatroom chatroom) {
+                            print('trigger enter chat');
 
-                              Navigator.of(
-                                context,
-                                rootNavigator: true,
-                              )
-                                  .pushNamed(
-                                MainRoutes.chatroom,
-                                arguments: ChatroomScreenArguments(
-                                  channelUUID: chatroom.channelUUID,
-                                  inquiryUUID: chatroom.inquiryUUID,
-                                  serviceType: chatroom.serviceType,
-                                  inquirerProfile: state.userProfile,
-                                  isInquiry: true,
-                                ),
-                              )
-                                  .then((dynamic value) {
-                                setState(() {
-                                  _hasDoneLoadingUserAndNavigate = true;
-                                });
-                              });
-                            }
-
-                            if (state.status == AsyncLoadingStatus.error) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    state.error.message,
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).pushNamed(
+                              MainRoutes.chatroom,
+                              arguments: ChatroomScreenArguments(
+                                channelUUID: chatroom.channelUUID,
+                                inquiryUUID: chatroom.inquiryUUID,
+                                inquirerUUID: chatroom.inquirerUUID,
+                                serviceType: chatroom.serviceType,
+                                isInquiry: true,
+                              ),
+                            );
+                          },
+                          chatroom: chatroom,
+                          lastMessage: lastMsg.content,
+                        ),
                       );
                     },
                   );
@@ -152,16 +120,6 @@ class _ChatRoomsState extends State<ChatRooms> {
           ),
         ),
       ),
-    );
-  }
-
-  void _onEnterChat(
-    BuildContext context,
-    String inquirerUUID,
-  ) {
-    // Retrieve inquirer information here.
-    BlocProvider.of<LoadUserBloc>(context).add(
-      LoadUser(uuid: inquirerUUID),
     );
   }
 

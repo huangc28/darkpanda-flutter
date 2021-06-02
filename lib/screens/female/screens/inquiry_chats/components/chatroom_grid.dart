@@ -33,7 +33,8 @@ class ChatroomGrid extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: UserAvatar(chatroom.avatarURL),
+                  // child: UserAvatar(chatroom.avatarURL),
+                  child: Container(),
                 ),
                 Expanded(
                   flex: 3,

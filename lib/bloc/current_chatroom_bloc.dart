@@ -9,11 +9,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -29,16 +31,20 @@ class CurrentChatroomBloc
     extends Bloc<CurrentChatroomEvent, CurrentChatroomState> {
   CurrentChatroomBloc({
     this.inquiryChatroomApis,
+    this.userApis,
     this.inquiryChatroomsBloc,
     this.currentServiceBloc,
     this.serviceConfirmNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
+        assert(userApis != null),
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
+  final UserApis userApis;
+
   final InquiryChatroomsBloc inquiryChatroomsBloc;
   final CurrentServiceBloc currentServiceBloc;
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
@@ -49,8 +55,6 @@ class CurrentChatroomBloc
   ) async* {
     if (event is InitCurrentChatroom) {
       yield* _mapInitCurrentChatroomToState(event);
-    } else if (event is FetchHistoricalMessages) {
-      yield* _mapFetchHistoricalMessagesToState(event);
     } else if (event is DispatchNewMessage) {
       yield* _mapDispatchNewMessageToState(event);
     } else if (event is FetchMoreHistoricalMessages) {
@@ -89,7 +93,11 @@ class CurrentChatroomBloc
       final newMessages = List<Message>.from(state.historicalMessages)
         ..addAll(prevPageMessage);
 
-      yield CurrentChatroomState.loaded(state, newMessages, state.page + 1);
+      yield CurrentChatroomState.loaded(
+        state,
+        historicalMessages: newMessages,
+        page: state.page + 1,
+      );
     } on APIException catch (e) {
       yield CurrentChatroomState.loadFailed(state, e);
     } on Exception catch (e) {
@@ -115,17 +123,72 @@ class CurrentChatroomBloc
 
   Stream<CurrentChatroomState> _mapInitCurrentChatroomToState(
       InitCurrentChatroom event) async* {
-    // Fetch historical messages
-    add(FetchHistoricalMessages(channelUUID: event.channelUUID));
+    try {
+      // Fetch historical messages
+      yield CurrentChatroomState.loading(state);
 
-    // Grab chatroom subscription and listen to incoming messages. Push new message to
-    // current message array.
-    final subStream =
-        inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
+      final resp = await inquiryChatroomApis
+          .fetchInquiryHistoricalMessages(event.channelUUID);
 
-    subStream.onData((data) {
-      _handleCurrentMessage(data, event.channelUUID);
-    });
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+      // Convert response data to list of messages and store them to historical messages.
+      final Map<String, dynamic> respMap = json.decode(resp.body);
+
+      if (respMap['messages'].isEmpty) {
+        return;
+      }
+
+      // Convert response data to list of messages and store them to historical messages.
+      final historicalMessages = respMap['messages'].map<Message>((data) {
+        if (data['type'] == MessageType.service_detail.name) {
+          return ServiceDetailMessage.fromMap(data);
+        } else if (data['type'] == MessageType.confirmed_service.name) {
+          return ServiceConfirmedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.update_inquiry_detail.name) {
+          return UpdateInquiryMessage.fromMap(data);
+        } else {
+          return Message.fromMap(data);
+        }
+      }).toList();
+
+      // Fetch inquirer profile.
+      final upResp = await userApis.fetchUser(event.inquirerUUID);
+
+      final inquirerProfile = UserProfile.fromJson(
+        json.decode(upResp.body),
+      );
+
+      // Grab chatroom subscription and listen to incoming messages. Push new message to
+      // current message array.
+      final subStream =
+          inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
+
+      subStream.onData((data) {
+        _handleCurrentMessage(data, event.channelUUID);
+      });
+
+      yield CurrentChatroomState.loaded(
+        state,
+        inquirerProfile: inquirerProfile,
+        historicalMessages: historicalMessages,
+      );
+    } on APIException catch (e) {
+      yield CurrentChatroomState.loadFailed(
+        state,
+        e,
+      );
+    } on Exception catch (e) {
+      yield CurrentChatroomState.loadFailed(
+        state,
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
   }
 
   _handleCurrentMessage(data, String channelUUID) {
@@ -155,8 +218,6 @@ class CurrentChatroomBloc
         ),
       );
     } else if (isConfirmedServiceMsg(rawMsg['type'])) {
-      print('DEBUG 888774');
-
       msg = ServiceConfirmedMessage.fromMap(rawMsg);
 
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
@@ -167,56 +228,6 @@ class CurrentChatroomBloc
     }
 
     add(DispatchNewMessage(message: msg));
-  }
-
-  Stream<CurrentChatroomState> _mapFetchHistoricalMessagesToState(
-      FetchHistoricalMessages event) async* {
-    try {
-      // Toggle loading state
-      yield CurrentChatroomState.loading(state);
-
-      final resp = await inquiryChatroomApis
-          .fetchInquiryHistoricalMessages(event.channelUUID);
-
-      if (resp.statusCode != HttpStatus.ok) {
-        throw APIException.fromJson(
-          json.decode(resp.body),
-        );
-      }
-
-      // Convert response data to list of messages and store them to historical messages.
-      final Map<String, dynamic> respMap = json.decode(resp.body);
-
-      if (respMap['messages'].isEmpty) {
-        return;
-      }
-
-      final historicalMessages = respMap['messages'].map<Message>((data) {
-        if (data['type'] == MessageType.service_detail.name) {
-          return ServiceDetailMessage.fromMap(data);
-        } else if (data['type'] == MessageType.confirmed_service.name) {
-          return ServiceConfirmedMessage.fromMap(data);
-        } else if (data['type'] == MessageType.update_inquiry_detail.name) {
-          return UpdateInquiryMessage.fromMap(data);
-        } else {
-          return Message.fromMap(data);
-        }
-      }).toList();
-
-      yield CurrentChatroomState.loaded(state, historicalMessages, state.page);
-    } on APIException catch (e) {
-      yield CurrentChatroomState.loadFailed(
-        state,
-        e,
-      );
-    } on Exception catch (e) {
-      yield CurrentChatroomState.loadFailed(
-        state,
-        AppGeneralExeption(
-          message: e.toString(),
-        ),
-      );
-    }
   }
 
   Stream<CurrentChatroomState> _mapLeaveCurrentChatroomToState(

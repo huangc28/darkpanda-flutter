@@ -4,57 +4,68 @@ class CurrentChatroomState<E extends AppBaseException> extends Equatable {
   const CurrentChatroomState._({
     this.status,
     this.historicalMessages,
-    this.page,
     this.currentMessages,
+    this.userProfile,
+    this.page,
     this.error,
   });
 
   final AsyncLoadingStatus status;
   final List<Message> historicalMessages;
-  final int page;
   final List<Message> currentMessages;
+  final UserProfile userProfile;
+  final int page;
   final E error;
 
   CurrentChatroomState.init()
       : this._(
-          page: 1,
           status: AsyncLoadingStatus.initial,
+          page: 1,
           historicalMessages: [],
           currentMessages: [],
+          userProfile: UserProfile(),
         );
 
   CurrentChatroomState.loading(CurrentChatroomState state)
       : this._(
+          status: AsyncLoadingStatus.loading,
           page: state.page,
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
-          status: AsyncLoadingStatus.loading,
+          userProfile: state.userProfile,
         );
 
   CurrentChatroomState.loadFailed(CurrentChatroomState state, E error)
       : this._(
+          status: AsyncLoadingStatus.error,
           page: state.page,
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
           error: error,
-          status: AsyncLoadingStatus.error,
+          userProfile: state.userProfile,
         );
 
   CurrentChatroomState.loaded(
-      CurrentChatroomState state, List<Message> historicalMessages, int page)
-      : this._(
+    CurrentChatroomState state, {
+    UserProfile inquirerProfile,
+    List<Message> historicalMessages,
+    int page,
+  }) : this._(
           status: AsyncLoadingStatus.done,
-          historicalMessages: historicalMessages,
-          page: page,
+          historicalMessages: historicalMessages ?? state.historicalMessages,
           currentMessages: state.currentMessages,
+          page: page ?? state.page,
+          userProfile: inquirerProfile ?? state.userProfile,
         );
 
   CurrentChatroomState.updateCurrentMessage(
-      CurrentChatroomState state, List<Message> currentMessages)
-      : this._(
+    CurrentChatroomState state,
+    List<Message> currentMessages,
+  ) : this._(
           page: state.page,
           status: state.status,
           historicalMessages: state.historicalMessages,
+          userProfile: state.userProfile,
           currentMessages: currentMessages,
         );
 

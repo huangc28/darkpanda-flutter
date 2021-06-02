@@ -27,9 +27,11 @@ class FetchMoreHistoricalMessages extends CurrentChatroomEvent {
 
 class InitCurrentChatroom extends CurrentChatroomEvent {
   final String channelUUID;
+  final String inquirerUUID;
 
   const InitCurrentChatroom({
     this.channelUUID,
+    this.inquirerUUID,
   });
 }
 

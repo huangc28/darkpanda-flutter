@@ -13,32 +13,27 @@ class SendMessageState<E extends AppBaseException> extends Equatable {
     this.error,
   });
 
-  final SendMessageStatus status;
+  final AsyncLoadingStatus status;
   final E error;
 
-  SendMessageState.init()
-      : this._(
-          status: SendMessageStatus.initial,
-        );
+  SendMessageState.init() : this._(status: AsyncLoadingStatus.initial);
 
   SendMessageState.loading()
       : this._(
-          status: SendMessageStatus.loading,
+          status: AsyncLoadingStatus.loading,
         );
 
   SendMessageState.loadFailed(E error)
       : this._(
-          status: SendMessageStatus.loadFailed,
+          status: AsyncLoadingStatus.loading,
           error: error,
         );
 
   SendMessageState.loaded()
       : this._(
-          status: SendMessageStatus.loaded,
+          status: AsyncLoadingStatus.done,
         );
 
   @override
-  List<Object> get props => [
-        status,
-      ];
+  List<Object> get props => [status];
 }

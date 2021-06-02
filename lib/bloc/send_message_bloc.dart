@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 part 'send_message_event.dart';
 part 'send_message_state.dart';

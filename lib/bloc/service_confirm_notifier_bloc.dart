@@ -15,8 +15,6 @@ class ServiceConfirmNotifierBloc
   Stream<ServiceConfirmNotifierState> mapEventToState(
     ServiceConfirmNotifierEvent event,
   ) async* {
-    print('DEBUG trigger ServiceConfirmNotifierBloc');
-
     yield ServiceConfirmedNotify(event.message);
   }
 }

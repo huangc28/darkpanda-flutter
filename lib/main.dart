@@ -96,6 +96,7 @@ class DarkPandaApp extends StatelessWidget {
         BlocProvider(
           create: (context) => CurrentChatroomBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
+            userApis: UserApis(),
             inquiryChatroomsBloc:
                 BlocProvider.of<InquiryChatroomsBloc>(context),
             currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),

@@ -114,7 +114,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                           channelUUID: chatroom.channelUuid,
                           inquiryUUID: chatroom.inquiryUuid,
                           serviceType: 'sex',
-                          inquirerProfile: state.userProfile,
+                          // inquirerProfile: state.userProfile,
                           isInquiry: false,
                         ),
                       )

@@ -29,11 +29,9 @@ class UserApis extends BaseClient {
       buildUri('/v1/users/$uuid'),
     );
 
-    withAuthHeader(request);
+    await withTokenFromSecureStore(request);
 
-    final res = await sendWithResponse(request);
-
-    return res;
+    return sendWithResponse(request);
   }
 
   Future<http.Response> fetchUserImages(String uuid, int offset) async {
