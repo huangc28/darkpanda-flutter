@@ -17,6 +17,7 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/components/loading_icon.dart';
 
 import 'components/chat_bubble.dart';
 import 'components/confirmed_service_bubble.dart';
@@ -335,7 +336,14 @@ class _ChatroomState extends State<Chatroom>
                         },
                       ),
                     ),
-                    _doneInitChatroom ? _buildMessageBar() : Container(),
+                    _doneInitChatroom
+                        ? _buildMessageBar()
+                        : Center(
+                            child: Container(
+                              height: 50,
+                              child: LoadingIcon(),
+                            ),
+                          ),
                   ],
                 ),
               ),
