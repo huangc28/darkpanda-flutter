@@ -16,6 +16,6 @@ class ChatroomScreenArguments {
   })  : assert(channelUUID != null),
         assert(inquiryUUID != null),
         assert(counterPartUUID != null),
-        assert(serviceType != null),
-        assert(isInquiry != null);
+        assert(serviceType != null);
+  // assert(isInquiry != null);
 }

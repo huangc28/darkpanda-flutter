@@ -172,7 +172,7 @@ class _ChatroomState extends State<Chatroom>
             ),
           );
         },
-        onEditInquiry: widget.args.isInquiry ? _handleTapEditInquiry : null,
+        onEditInquiry: _handleTapEditInquiry,
       ),
     );
   }
@@ -194,22 +194,20 @@ class _ChatroomState extends State<Chatroom>
           },
         ),
         actions: <Widget>[
-          widget.args.isInquiry
-              ? Container()
-              : Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(MaterialPageRoute(
-                        builder: (context) => QrScanner(),
-                      ));
-                    },
-                    child: Icon(Icons.qr_code_scanner),
-                  ),
-                ),
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).push(MaterialPageRoute(
+                  builder: (context) => QrScanner(),
+                ));
+              },
+              child: Icon(Icons.qr_code_scanner),
+            ),
+          ),
         ],
       ),
       body: SafeArea(

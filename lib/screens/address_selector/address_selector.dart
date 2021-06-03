@@ -42,7 +42,6 @@ class AddressSelector extends StatelessWidget {
               ),
             ),
           ],
-          // Dispatch event to load inquiry position in coordinate. If position is not provided, use current position instead.
           child: AddressMap(
             address: initialAddress,
             onConfirmAddress: (address) {

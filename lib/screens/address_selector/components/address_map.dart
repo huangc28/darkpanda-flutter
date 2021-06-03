@@ -17,7 +17,6 @@ class AddressMap extends StatefulWidget {
 }
 
 class _AddressMapState extends State<AddressMap> {
-  GoogleMapController _mapController;
   TextEditingController _addressController = TextEditingController();
   String _address;
 
@@ -58,8 +57,6 @@ class _AddressMapState extends State<AddressMap> {
     setState(() {
       _markers[markerId] = marker;
     });
-
-    _mapController = controller;
   }
 
   Widget _buildGoogleMap(Location location) {

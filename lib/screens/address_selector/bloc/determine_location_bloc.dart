@@ -38,17 +38,9 @@ class DetermineLocationBloc
   Stream<DetermineLocationState> mapEventToState(
     DetermineLocationEvent event,
   ) async* {
-    if (event is DetermineCurrentLocation) {
-      yield* _mapDetermineCurrentLocationToState(event);
-    }
-
     if (event is DetermineLocationFromAddress) {
       yield* _mapDetermineLocationFromAddress(event);
     }
-
-    // if (event is DetermineAddressFromLocation) {
-    //   yield* _mapDetermineAddressFromLocationToState(event);
-    // }
   }
 
   /// When the location services are not enabled or permissions
@@ -90,63 +82,54 @@ class DetermineLocationBloc
     return await Geolocator.getCurrentPosition();
   }
 
-  Stream<DetermineLocationState> _mapDetermineCurrentLocationToState(
-      DetermineCurrentLocation event) async* {
-    yield DetermineLocationState.loading();
-
-    try {
-      final position = await _determineCurrentPosition();
-
-      yield DetermineLocationState.done(
-        Location(
-          longtitude: position.longitude,
-          latitude: position.latitude,
-        ),
-      );
-    } catch (e) {
-      // User denied to shared current location. we should have a default location to draw
-      // on the map.
-      developer.log(
-          'Failed to be granted location permission on device. Using default location instead');
-
-      yield DetermineLocationState.done(defaultLocation);
-    }
-  }
-
   Stream<DetermineLocationState> _mapDetermineLocationFromAddress(
       DetermineLocationFromAddress event) async* {
-    yield DetermineLocationState.loading();
     try {
-      final resp = await apiClient.getCoordinateFromAddress(event.address);
+      yield DetermineLocationState.loading();
 
-      if (resp.statusCode != HttpStatus.ok) {
-        final err = json.decode(resp.body);
-        throw APIException(message: err['error_message']);
-      }
+      Location loc;
 
-      final resMap = json.decode(resp.body);
-      final locations = resMap['results']
-          .map<Location>(
-            (res) => Location.fromMap(res['geometry']['location']),
-          )
-          .toList();
+      // What if the address provided is an empty string? We retrieve the current position of the device.
+      if (event.address.isEmpty) {
+        final pos = await _determineCurrentPosition();
 
-      // If result is an empty array, we throw an exception to notify the user that the address is not found.
-      if (locations.length == 0) {
-        developer.log(
-            'Address undetermined, location not found ${event.address}. Determining current location...');
+        loc = Location(
+          latitude: pos.latitude,
+          longtitude: pos.longitude,
+        );
+      } else {
+        final resp = await apiClient.getCoordinateFromAddress(event.address);
+        if (resp.statusCode != HttpStatus.ok) {
+          final err = json.decode(resp.body);
+          throw APIException(message: err['error_message']);
+        }
 
+        final resMap = json.decode(resp.body);
+        final locations = resMap['results']
+            .map<Location>(
+              (res) => Location.fromMap(res['geometry']['location']),
+            )
+            .toList();
+
+        // If result is an empty array, we throw an exception to notify the user that the address is not found.
         // We retrieve current location to initialize the map instead!
-        add(DetermineCurrentLocation());
+        if (locations.length == 0) {
+          developer.log(
+              'Address undetermined, location not found ${event.address}. Determining current location...');
 
-        throw AppBaseException(
-            message: 'Address undetermined, location not found');
+          final pos = await _determineCurrentPosition();
+
+          loc = Location(
+            longtitude: pos.longitude,
+            latitude: pos.latitude,
+          );
+        }
+
+        // If results is not an empty array, we retrieve the first element in the result array.
+        loc = locations[0];
       }
 
-      // If results is not an empty array, we retrieve the first element in the result array.
-      final location = locations[0];
-
-      yield DetermineLocationState.done(location);
+      yield DetermineLocationState.done(loc);
     } on APIException catch (e) {
       yield DetermineLocationState.error(e);
     } catch (e) {
