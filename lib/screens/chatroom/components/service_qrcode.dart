@@ -2,14 +2,15 @@ import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class ServiceQrCode extends StatefulWidget {
   const ServiceQrCode({
+    this.qrcodeUrl,
     this.controller,
     @required this.onTapClose,
   });
 
+  final String qrcodeUrl;
   final SlideUpController controller;
   final VoidCallback onTapClose;
 
@@ -72,10 +73,11 @@ class _ServiceQrCodeState extends State<ServiceQrCode> {
                 color: Color.fromRGBO(106, 109, 137, 1),
               ),
             ),
-            child: QrImage(
-              data: "123",
-              size: 200,
-            ),
+            child: widget.qrcodeUrl == null
+                ? SizedBox.shrink()
+                : Image(
+                    image: NetworkImage(widget.qrcodeUrl),
+                  ),
           ),
         ],
       ),

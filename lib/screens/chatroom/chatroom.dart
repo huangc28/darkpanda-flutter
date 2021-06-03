@@ -1,4 +1,7 @@
+import 'package:darkpanda_flutter/bloc/service_qrcode_bloc.dart';
+import 'package:darkpanda_flutter/enums/chatroom_types.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/qr_scanner.dart';
+import 'package:darkpanda_flutter/services/service_qrcode_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +30,7 @@ import 'components/chatroom_window.dart';
 import 'components/service_settings/service_settings.dart';
 
 import '../../models/service_settings.dart';
+import 'screen_arguments/qrscanner_screen_arguments.dart';
 
 part 'screen_arguments/chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
@@ -172,7 +176,9 @@ class _ChatroomState extends State<Chatroom>
             ),
           );
         },
-        onEditInquiry: widget.args.isInquiry ? _handleTapEditInquiry : null,
+        onEditInquiry: widget.args.chatroomType == ChatroomTypes.inquiry
+            ? _handleTapEditInquiry
+            : null,
       ),
     );
   }
@@ -194,7 +200,7 @@ class _ChatroomState extends State<Chatroom>
           },
         ),
         actions: <Widget>[
-          widget.args.isInquiry
+          widget.args.chatroomType == ChatroomTypes.inquiry
               ? Container()
               : Padding(
                   padding: EdgeInsets.only(right: 20.0),
@@ -204,7 +210,20 @@ class _ChatroomState extends State<Chatroom>
                         context,
                         rootNavigator: true,
                       ).push(MaterialPageRoute(
-                        builder: (context) => QrScanner(),
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => ServiceQrCodeBloc(
+                                serviceQrCodeApis: ServiceQrCodeAPIs(),
+                              ),
+                            ),
+                          ],
+                          child: QrScanner(
+                            args: QrscannerScreenArguments(
+                              serviceUuid: widget.args.serviceUUID,
+                            ),
+                          ),
+                        ),
                       ));
                     },
                     child: Icon(Icons.qr_code_scanner),

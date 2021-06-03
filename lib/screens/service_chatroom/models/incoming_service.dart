@@ -12,6 +12,7 @@ class IncomingService {
     this.avatarUrl,
     this.channelUuid,
     this.inquiryUuid,
+    this.inquirerUuid,
     this.messages,
   });
 
@@ -23,6 +24,7 @@ class IncomingService {
   String avatarUrl;
   String channelUuid;
   String inquiryUuid;
+  String inquirerUuid;
   final List<Message> messages;
 
   Map<String, dynamic> toMap() => {
@@ -34,6 +36,7 @@ class IncomingService {
         'avatar_url': avatarUrl,
         'channel_uuid': channelUuid,
         'inquiry_uuid': inquiryUuid,
+        'inquirer_uuid': inquirerUuid,
         'messages': messages,
       };
 
@@ -65,6 +68,7 @@ class IncomingService {
       avatarUrl: data['avatar_url'],
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
+      inquirerUuid: data['inquirer_uuid'],
       messages: messages,
     );
   }
