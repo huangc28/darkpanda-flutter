@@ -31,9 +31,9 @@ class InquiryChatroomsBloc
   final InquiryChatMessagesBloc inquiryChatMesssagesBloc;
   final InquiryChatroomApis inquiryChatroomApis;
 
-  /// We found that we will receive an initial event message we subscribe to firestore document.
-  /// This message is the first message in the chatroom and would override the latest message
-  /// we retrieved from the backend. It causes the chatroom list to display the first message instead
+  /// The app would receive a message from the subscription to the firestore document.
+  /// This message would override the latest message we retrieved from the backend.
+  /// It causes the chatroom list to display the first message instead
   /// of the latest message. `_chatFirstCreateMap` keeps track of initial creation of the scription.
   /// If a given channel has just created, we ignore the first event if the value is `true`. It then
   /// toggle the value to `false`. Any subsequent event would trigger the message handler.
@@ -65,7 +65,7 @@ class InquiryChatroomsBloc
         .snapshots()
         .listen(
       (QuerySnapshot snapshot) {
-        // Ignore the first event sent from firestore when the subscription first
+        // Ignore the first event sent from firestore when the subscription is first
         // created. It messes up the displaying the latest message on the chatroom
         // list.
         if (_chatFirstCreateMap[channelUUID] == false) {
