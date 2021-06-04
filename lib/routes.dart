@@ -9,11 +9,8 @@ import './screens/register/auth_navigator.dart';
 
 import 'screens/chatroom/screens/inquiry/chatroom.dart';
 import 'screens/chatroom/screens/service/service_chatroom.dart';
-import './app.dart';
 
-import './screens/chatroom/chatroom.dart';
 import './screens/female/female_app.dart';
-
 
 class MainRoutes extends BaseRoutes {
   static const login = '/';
