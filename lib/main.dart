@@ -14,15 +14,16 @@ import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/register_api_client.dart';
 
-import 'package:darkpanda_flutter/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/get_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
-import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
-import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 
 import './routes.dart';
 import './theme.dart';
@@ -106,6 +107,18 @@ class DarkPandaApp extends StatelessWidget {
         ),
 
         BlocProvider(
+          create: (context) => CurrentServiceChatroomBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+            userApis: UserApis(),
+            inquiryChatroomsBloc:
+                BlocProvider.of<InquiryChatroomsBloc>(context),
+            currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
+            serviceConfirmNotifierBloc:
+                BlocProvider.of<ServiceConfirmNotifierBloc>(context),
+          ),
+        ),
+
+        BlocProvider(
           create: (_) => SendMessageBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
           ),
@@ -144,6 +157,11 @@ class DarkPandaApp extends StatelessWidget {
               settings: settings,
               builder: (context) {
                 if (settings.name == MainRoutes.chatroom) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                } else if (settings.name == MainRoutes.serviceChatroom) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);
 

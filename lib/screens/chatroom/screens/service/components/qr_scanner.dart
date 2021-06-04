@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:darkpanda_flutter/bloc/service_qrcode_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/scan_qrcode.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screen_arguments/qrscanner_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_qrcode_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/screen_arguments/qrscanner_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';

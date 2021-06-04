@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_format/date_format.dart';
@@ -9,11 +10,11 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
-import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
+// import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
-import './slideup_controller.dart';
-import './slideup_provider.dart';
+import 'slideup_controller.dart';
+import 'slideup_provider.dart';
 
 part 'price_field.dart';
 part 'address_field.dart';

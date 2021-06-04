@@ -1,9 +1,11 @@
 import 'package:darkpanda_flutter/base_routes.dart';
+
 import 'package:flutter/widgets.dart';
 
 import './screens/login/login_navigator.dart';
 import './screens/register/auth_navigator.dart';
-import './screens/chatroom/chatroom.dart';
+import 'screens/chatroom/screens/inquiry/chatroom.dart';
+import 'screens/chatroom/screens/service/service_chatroom.dart';
 import './app.dart';
 
 class MainRoutes extends BaseRoutes {
@@ -11,6 +13,7 @@ class MainRoutes extends BaseRoutes {
   static const register = '/register';
   static const app = '/app';
   static const chatroom = '/chatroom';
+  static const serviceChatroom = '/service-chatroom';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
@@ -21,6 +24,11 @@ class MainRoutes extends BaseRoutes {
         final ChatroomScreenArguments chatroomArgs = args;
 
         return Chatroom(args: chatroomArgs);
+      },
+      MainRoutes.serviceChatroom: (context) {
+        final ServiceChatroomScreenArguments serviceChatroomArgs = args;
+
+        return ServiceChatroom(args: serviceChatroomArgs);
       }
     };
   }

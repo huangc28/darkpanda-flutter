@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 class SendMessageBar extends StatefulWidget {

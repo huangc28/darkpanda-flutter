@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/enums/chatroom_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -111,13 +111,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                       context,
                       rootNavigator: true,
                     ).pushNamed(
-                      MainRoutes.chatroom,
-                      arguments: ChatroomScreenArguments(
+                      MainRoutes.serviceChatroom,
+                      arguments: ServiceChatroomScreenArguments(
                         channelUUID: chatroom.channelUuid,
                         inquiryUUID: chatroom.inquiryUuid,
-                        counterPartUUID: chatroom.inquirerUuid,
-                        serviceType: chatroom.serviceUuid,
-                        chatroomType: ChatroomTypes.service,
+                        counterPartUUID: chatroom.chatPartnerUserUuid,
                         serviceUUID: chatroom.serviceUuid,
                       ),
                     );
