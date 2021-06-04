@@ -19,16 +19,16 @@ Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
   TabItem.settings: GlobalKey<NavigatorState>(),
 };
 
-class App extends StatefulWidget {
+class FemaleApp extends StatefulWidget {
   @override
-  _AppState createState() => _AppState();
+  _FemaleAppState createState() => _FemaleAppState();
 }
 
 // @TODO:
 //   - We need to check if user has logged in or not.
 //   - If user has not logged in, we need to navigate user
 //   - To perform login / registration process before proceeding
-class _AppState extends State<App> {
+class _FemaleAppState extends State<FemaleApp> {
   // TabItem _currentTab = TabItem.inquiryChats;
   TabItem _currentTab = TabItem.inquiries;
 

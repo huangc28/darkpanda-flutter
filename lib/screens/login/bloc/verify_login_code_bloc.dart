@@ -6,12 +6,15 @@ import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
 
 import '../services/login_api_client.dart';
 
@@ -74,16 +77,20 @@ class VerifyLoginCodeBloc
         );
       }
 
+      final authUser = AuthUser.copyFrom(
+        AuthUser.fromJson(json.decode(fetchUserResp.body)),
+        jwt: responseMap['jwt'],
+      );
+
       authUserBloc.add(
         PutUser(
-          authUser: AuthUser.copyFrom(
-            AuthUser.fromJson(json.decode(fetchUserResp.body)),
-            jwt: responseMap['jwt'],
-          ),
+          authUser: authUser,
         ),
       );
 
-      yield VerifyLoginCodeState.verified();
+      yield VerifyLoginCodeState.verified(
+        gender: authUser.gender,
+      );
     } on APIException catch (e) {
       yield VerifyLoginCodeState.verifyFailed(error: e);
     } catch (e) {

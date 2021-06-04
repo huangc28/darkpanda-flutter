@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/app.dart';
+import 'package:darkpanda_flutter/screens/female/female_app.dart';
+import 'package:darkpanda_flutter/screens/male/male_app.dart';
+
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
 import '../../bloc/verify_login_code_bloc.dart';
@@ -12,7 +15,6 @@ import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
 
 // @TODO
-//   - Redirect to app index page when login success.
 //   - Shake the pin code field and notify error if failed to verify.
 //     Add an bloc listener to subscribe to verify result from the server.
 //     Error shaking behavior would be triggered based on the result.
@@ -104,13 +106,14 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   listener: (context, state) {
                     // If verify success, redirect to application.
                     if (state.status == AsyncLoadingStatus.done) {
-                      // If login success redirect to app.
                       Navigator.of(
                         context,
                         rootNavigator: true,
                       ).push(
                         MaterialPageRoute(
-                          builder: (context) => App(),
+                          builder: (context) => state.gender == Gender.female
+                              ? FemaleApp()
+                              : MaleApp(),
                         ),
                       );
                     }

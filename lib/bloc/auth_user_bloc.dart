@@ -94,6 +94,8 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
   }
 
   Stream<AuthUserState> _mapPutUserToState(PutUser event) async* {
+    print('DEBUG _mapPutUserToState ${event.authUser}');
+
     yield AuthUserState.patchUser(
       state,
       user: event.authUser,

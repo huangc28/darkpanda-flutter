@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
 
 import '../services/apis.dart';
 
@@ -42,10 +44,8 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
 
   Stream<MobileVerifyState> _mapVerifyMobileToState(VerifyMobile event) async* {
     try {
-      // toggles loading
       yield MobileVerifyState.loading(MobileVerifyState.copyFrom(state));
 
-      // send request
       final resp = await dataProvider.verifyRegisterCode(
         mobile: event.mobileNumber,
         uuid: event.uuid,
@@ -62,22 +62,24 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
 
       await SecureStore().writeJwtToken(respMap['jwt']);
 
+      final authUserInfo = await userApis.fetchMe();
+
+      final authUser = AuthUser.copyFrom(
+        AuthUser.fromJson(json.decode(authUserInfo.body)),
+      );
+
+      authUserBloc.add(
+        PutUser(
+          authUser: authUser,
+        ),
+      );
+
       // store auth user jwt
       yield MobileVerifyState.done(
         MobileVerifyState.copyFrom(
           state,
           authToken: respMap['jwt'],
-        ),
-      );
-
-      final authUserInfo = await userApis.fetchMe();
-
-      authUserBloc.add(
-        PutUser(
-          authUser: AuthUser.copyFrom(
-            AuthUser.fromJson(json.decode(authUserInfo.body)),
-            jwt: respMap['jwt'],
-          ),
+          gender: authUser.gender,
         ),
       );
     } on APIException catch (e) {

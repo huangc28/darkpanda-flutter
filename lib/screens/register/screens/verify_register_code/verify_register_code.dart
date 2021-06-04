@@ -7,7 +7,10 @@ import 'package:darkpanda_flutter/screens/register/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/register/components/step_bar_image.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/app.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
+
+import 'package:darkpanda_flutter/screens/female/female_app.dart';
+import 'package:darkpanda_flutter/screens/male/male_app.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/send_sms_code_bloc.dart';
 
@@ -83,16 +86,19 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                           }
 
                           if (state.status == AsyncLoadingStatus.done) {
-                            /// Remove mobile verify async error string
                             _mobileVerifyErrStr = '';
 
-                            /// Redirect to app page.
                             Navigator.of(
                               context,
                               rootNavigator: true,
-                            ).push(MaterialPageRoute(
-                              builder: (context) => App(),
-                            ));
+                            ).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    state.gender == Gender.female
+                                        ? FemaleApp()
+                                        : MaleApp(),
+                              ),
+                            );
                           }
                         },
                         child: DPPinPut(
