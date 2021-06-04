@@ -1,8 +1,10 @@
-import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
-import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
-import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
+
+import 'package:darkpanda_flutter/enums/chatroom_types.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
+import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
@@ -21,7 +23,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   LoadIncomingServiceBloc loadIncomingServiceBloc =
       new LoadIncomingServiceBloc();
   TabController _tabController;
-  bool _hasDoneLoadingUserAndNavigate = false;
   List<IncomingService> incomingService;
 
   @override
@@ -41,16 +42,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     loadIncomingServiceBloc.add(ClearIncomingServiceState());
 
     super.dispose();
-  }
-
-  void _onEnterChat(
-    BuildContext context,
-    String inquirerUUID,
-  ) {
-    // Retrieve inquirer information here.
-    BlocProvider.of<LoadUserBloc>(context).add(
-      LoadUser(uuid: inquirerUUID),
-    );
   }
 
   @override
@@ -74,7 +65,21 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
   Widget comingTab() {
     return BlocConsumer<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-      listener: (BuildContext context, LoadIncomingServiceState state) {},
+      listener: (BuildContext context, LoadIncomingServiceState state) {
+        // Display error in snack bar.
+        if (state.status == AsyncLoadingStatus.error) {
+          developer.log(
+            'failed to fetch inquiry chatroom',
+            error: state.error,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+      },
       builder: (BuildContext context, LoadIncomingServiceState state) {
         if (state.status == AsyncLoadingStatus.initial ||
             state.status == AsyncLoadingStatus.loading) {
@@ -84,7 +89,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ],
           );
         } else if (state.status == AsyncLoadingStatus.done) {
-          incomingService = state.services;
+          // incomingService = state.services;
           return ServiceChatroomList(
             chatrooms: state.services,
             onRefresh: () {
@@ -96,71 +101,31 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             chatroomBuilder: (context, chatroom, ___) {
               final lastMsg = state.chatroomLastMessage[chatroom.channelUuid];
 
-              return BlocListener<LoadUserBloc, LoadUserState>(
-                listener: (context, state) {
-                  if (state.status == AsyncLoadingStatus.done) {
-                    if (!_hasDoneLoadingUserAndNavigate) {
-                      setState(() {
-                        _hasDoneLoadingUserAndNavigate = true;
-                      });
-
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      )
-                          .pushNamed(
-                        MainRoutes.chatroom,
-                        arguments: ChatroomScreenArguments(
-                          channelUUID: chatroom.channelUuid,
-                          inquiryUUID: chatroom.inquiryUuid,
-                          serviceType: 'sex',
-                          // inquirerProfile: state.userProfile,
-                          isInquiry: false,
-                        ),
-                      )
-                          .then((dynamic value) {
-                        setState(() {
-                          _hasDoneLoadingUserAndNavigate = false;
-                        });
-                      });
-                    }
-                  } else if (state.status == AsyncLoadingStatus.error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          state.error.message,
-                        ),
+              return Container(
+                margin: EdgeInsets.only(
+                  bottom: 20,
+                ),
+                child: ServiceChatroomGrid(
+                  onEnterChat: (chatroom) {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamed(
+                      MainRoutes.serviceChatroom,
+                      arguments: ServiceChatroomScreenArguments(
+                        channelUUID: chatroom.channelUuid,
+                        inquiryUUID: chatroom.inquiryUuid,
+                        counterPartUUID: chatroom.chatPartnerUserUuid,
+                        serviceUUID: chatroom.serviceUuid,
                       ),
                     );
-                  }
-                },
-                child: Container(
-                  margin: EdgeInsets.only(
-                    bottom: 20,
-                  ),
-                  child: ServiceChatroomGrid(
-                    onEnterChat: (chatroom) {
-                      return _onEnterChat(
-                        context,
-                        chatroom.userUuid,
-                      );
-                    },
-                    chatroom: chatroom,
-                    lastMessage: lastMsg == null ? "" : lastMsg.content,
-                  ),
+                  },
+                  chatroom: chatroom,
+                  lastMessage: lastMsg == null ? "" : lastMsg.content,
                 ),
               );
             },
           );
-          // SizedBox(
-          //   child: ListView.builder(
-          //     itemCount: incomingService.length,
-          //     itemBuilder: (context, index) => ChatCard(
-          //       chat: incomingService[index],
-          //       press: () {},
-          //     ),
-          //   ),
-          // );
         } else {
           return Container();
         }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,15 +22,15 @@ import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/bloc/current_service_bloc.dart';
-import 'package:darkpanda_flutter/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 
-part 'current_chatroom_event.dart';
-part 'current_chatroom_state.dart';
+part 'current_service_chatroom_event.dart';
+part 'current_service_chatroom_state.dart';
 
-class CurrentChatroomBloc
-    extends Bloc<CurrentChatroomEvent, CurrentChatroomState> {
-  CurrentChatroomBloc({
+class CurrentServiceChatroomBloc
+    extends Bloc<CurrentServiceChatroomEvent, CurrentServiceChatroomState> {
+  CurrentServiceChatroomBloc({
     this.inquiryChatroomApis,
     this.userApis,
     this.inquiryChatroomsBloc,
@@ -40,7 +41,7 @@ class CurrentChatroomBloc
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
-        super(CurrentChatroomState.init());
+        super(CurrentServiceChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
   final UserApis userApis;
@@ -50,24 +51,24 @@ class CurrentChatroomBloc
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
 
   @override
-  Stream<CurrentChatroomState> mapEventToState(
-    CurrentChatroomEvent event,
+  Stream<CurrentServiceChatroomState> mapEventToState(
+    CurrentServiceChatroomEvent event,
   ) async* {
-    if (event is InitCurrentChatroom) {
+    if (event is InitCurrentServiceChatroom) {
       yield* _mapInitCurrentChatroomToState(event);
     } else if (event is DispatchNewMessage) {
       yield* _mapDispatchNewMessageToState(event);
     } else if (event is FetchMoreHistoricalMessages) {
       yield* _mapFetchMoreHistoricalMessagesToState(event);
-    } else if (event is LeaveCurrentChatroom) {
+    } else if (event is LeaveCurrentServiceChatroom) {
       yield* _mapLeaveCurrentChatroomToState(event);
     }
   }
 
-  Stream<CurrentChatroomState> _mapFetchMoreHistoricalMessagesToState(
+  Stream<CurrentServiceChatroomState> _mapFetchMoreHistoricalMessagesToState(
       FetchMoreHistoricalMessages event) async* {
     try {
-      await CurrentChatroomState.loading(state);
+      await CurrentServiceChatroomState.loading(state);
 
       // Fetching historical messages.
       final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
@@ -93,15 +94,15 @@ class CurrentChatroomBloc
       final newMessages = List<Message>.from(state.historicalMessages)
         ..addAll(prevPageMessage);
 
-      yield CurrentChatroomState.loaded(
+      yield CurrentServiceChatroomState.loaded(
         state,
         historicalMessages: newMessages,
         page: state.page + 1,
       );
     } on APIException catch (e) {
-      yield CurrentChatroomState.loadFailed(state, e);
+      yield CurrentServiceChatroomState.loadFailed(state, e);
     } on Exception catch (e) {
-      yield CurrentChatroomState.loadFailed(
+      yield CurrentServiceChatroomState.loadFailed(
         state,
         AppGeneralExeption(
           message: e.toString(),
@@ -110,22 +111,22 @@ class CurrentChatroomBloc
     }
   }
 
-  Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
+  Stream<CurrentServiceChatroomState> _mapDispatchNewMessageToState(
       DispatchNewMessage event) async* {
     final messages = List<Message>.from(state.currentMessages)
       ..insert(0, event.message);
 
-    yield CurrentChatroomState.updateCurrentMessage(
+    yield CurrentServiceChatroomState.updateCurrentMessage(
       state,
       messages,
     );
   }
 
-  Stream<CurrentChatroomState> _mapInitCurrentChatroomToState(
-      InitCurrentChatroom event) async* {
+  Stream<CurrentServiceChatroomState> _mapInitCurrentChatroomToState(
+      InitCurrentServiceChatroom event) async* {
     try {
       // Fetch historical messages
-      yield CurrentChatroomState.loading(state);
+      yield CurrentServiceChatroomState.loading(state);
 
       final resp = await inquiryChatroomApis
           .fetchInquiryHistoricalMessages(event.channelUUID);
@@ -171,18 +172,18 @@ class CurrentChatroomBloc
         _handleCurrentMessage(data, event.channelUUID);
       });
 
-      yield CurrentChatroomState.loaded(
+      yield CurrentServiceChatroomState.loaded(
         state,
         inquirerProfile: inquirerProfile,
         historicalMessages: historicalMessages,
       );
     } on APIException catch (e) {
-      yield CurrentChatroomState.loadFailed(
+      yield CurrentServiceChatroomState.loadFailed(
         state,
         e,
       );
     } on Exception catch (e) {
-      yield CurrentChatroomState.loadFailed(
+      yield CurrentServiceChatroomState.loadFailed(
         state,
         AppGeneralExeption(
           message: e.toString(),
@@ -230,11 +231,11 @@ class CurrentChatroomBloc
     add(DispatchNewMessage(message: msg));
   }
 
-  Stream<CurrentChatroomState> _mapLeaveCurrentChatroomToState(
-      LeaveCurrentChatroom event) async* {
+  Stream<CurrentServiceChatroomState> _mapLeaveCurrentChatroomToState(
+      LeaveCurrentServiceChatroom event) async* {
     // Reset current chatroom messages.
     // Reset current chatroom historical messages.
     // Reset page number.
-    yield CurrentChatroomState.init();
+    yield CurrentServiceChatroomState.init();
   }
 }

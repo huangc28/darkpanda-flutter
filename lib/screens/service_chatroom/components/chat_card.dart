@@ -47,9 +47,9 @@ class _ChatCardState extends State<ChatCard> {
               ),
               CircleAvatar(
                 radius: 20,
-                backgroundImage: widget.chat.avatarUrl == ""
+                backgroundImage: widget.chat.chatPartnerAvatarUrl == ""
                     ? AssetImage("assets/logo.png")
-                    : NetworkImage(widget.chat.avatarUrl),
+                    : NetworkImage(widget.chat.chatPartnerAvatarUrl),
               ),
               Expanded(
                 child: Padding(
@@ -61,7 +61,7 @@ class _ChatCardState extends State<ChatCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.chat.username,
+                        widget.chat.chatPartnerUsername,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

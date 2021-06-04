@@ -35,7 +35,7 @@ class ServiceChatroomGrid extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: UserAvatar(chatroom.avatarUrl),
+                  child: UserAvatar(chatroom.chatPartnerAvatarUrl),
                 ),
                 Expanded(
                   flex: 3,
@@ -65,7 +65,7 @@ class ServiceChatroomGrid extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    chatroom.username,
+                    chatroom.chatPartnerUsername,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

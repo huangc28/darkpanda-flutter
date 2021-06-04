@@ -1,4 +1,4 @@
-part of './service_settings_sheet.dart';
+part of '../../../../screens/inquiry/components/service_settings/service_settings_sheet.dart';
 
 class ServiceDurationField extends StatelessWidget {
   const ServiceDurationField({

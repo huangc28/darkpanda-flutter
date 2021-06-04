@@ -1,14 +1,13 @@
-import 'package:darkpanda_flutter/screens/chatroom/components/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/services/service_qrcode_apis.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
@@ -19,30 +18,32 @@ import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 
-import 'components/chat_bubble.dart';
-import 'components/confirmed_service_bubble.dart';
-import 'components/update_inquiry_bubble.dart';
+import '../../components/chat_bubble.dart';
+import '../../components/confirmed_service_bubble.dart';
+import '../../components/update_inquiry_bubble.dart';
+import 'bloc/current_service_chatroom_bloc.dart';
+import 'bloc/service_qrcode_bloc.dart';
 import 'components/send_message_bar.dart';
-import 'components/chatroom_window.dart';
-import 'components/service_settings/service_settings.dart';
+import '../../components/chatroom_window.dart';
 
-import '../../models/service_settings.dart';
+import '../../../../models/service_settings.dart';
+import 'screen_arguments/qrscanner_screen_arguments.dart';
 
-part 'screen_arguments/chatroom_screen_arguments.dart';
+part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
 
-class Chatroom extends StatefulWidget {
-  const Chatroom({
+class ServiceChatroom extends StatefulWidget {
+  const ServiceChatroom({
     this.args,
   });
 
-  final ChatroomScreenArguments args;
+  final ServiceChatroomScreenArguments args;
 
   @override
-  _ChatroomState createState() => _ChatroomState();
+  _ServiceChatroomState createState() => _ServiceChatroomState();
 }
 
-class _ChatroomState extends State<Chatroom>
+class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -77,16 +78,16 @@ class _ChatroomState extends State<Chatroom>
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
-    BlocProvider.of<CurrentChatroomBloc>(context).add(
-      InitCurrentChatroom(
+    BlocProvider.of<CurrentServiceChatroomBloc>(context).add(
+      InitCurrentServiceChatroom(
           channelUUID: widget.args.channelUUID,
           inquirerUUID: widget.args.counterPartUUID),
     );
 
     // Fetch inquiry related inquiry if exists.
-    BlocProvider.of<GetInquiryBloc>(context).add(
-      GetInquiry(inquiryUuid: widget.args.inquiryUUID),
-    );
+    // BlocProvider.of<GetInquiryBloc>(context).add(
+    //   GetInquiry(inquiryUuid: widget.args.inquiryUUID),
+    // );
 
     _editMessageController.addListener(_handleEditMessage);
 
@@ -143,8 +144,8 @@ class _ChatroomState extends State<Chatroom>
 
   @override
   void deactivate() {
-    BlocProvider.of<CurrentChatroomBloc>(context).add(
-      LeaveCurrentChatroom(),
+    BlocProvider.of<CurrentServiceChatroomBloc>(context).add(
+      LeaveCurrentServiceChatroom(),
     );
 
     super.deactivate();
@@ -172,7 +173,6 @@ class _ChatroomState extends State<Chatroom>
             ),
           );
         },
-        onEditInquiry: _handleTapEditInquiry,
       ),
     );
   }
@@ -181,7 +181,8 @@ class _ChatroomState extends State<Chatroom>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
+        title: BlocBuilder<CurrentServiceChatroomBloc,
+            CurrentServiceChatroomState>(
           builder: (context, state) {
             return Text(
               state.status == AsyncLoadingStatus.done
@@ -202,7 +203,20 @@ class _ChatroomState extends State<Chatroom>
                   context,
                   rootNavigator: true,
                 ).push(MaterialPageRoute(
-                  builder: (context) => QrScanner(),
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => ServiceQrCodeBloc(
+                          serviceQrCodeApis: ServiceQrCodeAPIs(),
+                        ),
+                      ),
+                    ],
+                    child: QrScanner(
+                      args: QrscannerScreenArguments(
+                        serviceUuid: widget.args.serviceUUID,
+                      ),
+                    ),
+                  ),
                 ));
               },
               child: Icon(Icons.qr_code_scanner),
@@ -223,7 +237,8 @@ class _ChatroomState extends State<Chatroom>
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
                         onLoadMore: () {
-                          BlocProvider.of<CurrentChatroomBloc>(context).add(
+                          BlocProvider.of<CurrentServiceChatroomBloc>(context)
+                              .add(
                             FetchMoreHistoricalMessages(
                               channelUUID: widget.args.channelUUID,
                             ),
@@ -241,8 +256,8 @@ class _ChatroomState extends State<Chatroom>
                                     _serviceConfirmed = true;
                                   });
                                 },
-                                child: BlocConsumer<CurrentChatroomBloc,
-                                    CurrentChatroomState>(
+                                child: BlocConsumer<CurrentServiceChatroomBloc,
+                                    CurrentServiceChatroomState>(
                                   listener: (context, state) {
                                     if (state.status ==
                                         AsyncLoadingStatus.error) {
@@ -344,63 +359,9 @@ class _ChatroomState extends State<Chatroom>
                 ),
               ),
             ),
-
-            // Listen the loading status of `GetInquiryBloc`. If status is loading,
-            // display spinner on service settings sheet.
-            SlideTransition(
-              position: _offsetAnimation,
-              child: MultiBlocListener(
-                listeners: [
-                  BlocListener<GetInquiryBloc, GetInquiryState>(
-                    listener: (_, state) {
-                      if (state.status == AsyncLoadingStatus.done) {
-                        setState(() {
-                          _serviceSettings = state.serviceSettings;
-                        });
-                      }
-                    },
-                  ),
-                  BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
-                      listener: (_, state) {
-                    if (state.status == AsyncLoadingStatus.done) {
-                      _animationController.reverse();
-                    }
-                  }),
-                ],
-                child: ServiceSettingsSheet(
-                  serviceSettings: _serviceSettings,
-                  controller: _slideUpController,
-                  onTapClose: () {
-                    _animationController.reverse();
-                  },
-                  onUpdateInquiry: (ServiceSettings data) {
-                    setState(() {
-                      _serviceSettings = data;
-                    });
-
-                    /// Send inquiry settings message when done editing inquiry.
-                    BlocProvider.of<SendMessageBloc>(context).add(
-                      SendUpdateInquiryMessage(
-                        inquiryUUID: widget.args.inquiryUUID,
-                        channelUUID: widget.args.channelUUID,
-                        serviceSettings: data,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  _handleTapEditInquiry() {
-    if (_animationController.isDismissed) {
-      _animationController.forward();
-    } else {
-      _animationController.reverse();
-    }
   }
 }

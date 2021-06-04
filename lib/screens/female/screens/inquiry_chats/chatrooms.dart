@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/chatroom_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -5,7 +6,7 @@ import 'dart:developer' as developer;
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/chatroom.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -101,7 +102,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 inquiryUUID: chatroom.inquiryUUID,
                                 counterPartUUID: chatroom.inquirerUUID,
                                 serviceType: chatroom.serviceType,
-                                // isInquiry: true,
                               ),
                             );
                           },

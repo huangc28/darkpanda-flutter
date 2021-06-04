@@ -1,12 +1,22 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/scan_qrcode.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_qrcode_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/screen_arguments/qrscanner_screen_arguments.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'service_qrcode.dart';
 
 class QrScanner extends StatefulWidget {
+  const QrScanner({
+    this.args,
+  });
+
+  final QrscannerScreenArguments args;
   @override
   _QrScannerState createState() => _QrScannerState();
 }
@@ -21,6 +31,8 @@ class _QrScannerState extends State<QrScanner>
   AnimationController _animationController;
   Animation<Offset> _offsetAnimation;
   Animation<double> _fadeAnimation;
+
+  String qrcodeUrl;
 
   @override
   void initState() {
@@ -79,7 +91,7 @@ class _QrScannerState extends State<QrScanner>
     ));
   }
 
-  _handleMyQrCode() {
+  _handleServiceQrCode() {
     if (_animationController.isDismissed) {
       _animationController.forward();
     } else {
@@ -110,7 +122,7 @@ class _QrScannerState extends State<QrScanner>
                       left: 30,
                     ),
                     Positioned(
-                      child: buildMyQrCode(),
+                      child: buildServiceQrCode(),
                       bottom: 60,
                     ),
                   ],
@@ -119,11 +131,21 @@ class _QrScannerState extends State<QrScanner>
             ),
             SlideTransition(
               position: _offsetAnimation,
-              child: ServiceQrCode(
-                controller: _slideUpController,
-                onTapClose: () {
-                  _animationController.reverse();
+              child: BlocListener<ServiceQrCodeBloc, ServiceQrCodeState>(
+                listener: (context, state) {
+                  if (state.status == AsyncLoadingStatus.done) {
+                    setState(() {
+                      qrcodeUrl = state.serviceQrCode.qrcodeUrl;
+                    });
+                  }
                 },
+                child: ServiceQrCode(
+                  qrcodeUrl: qrcodeUrl,
+                  controller: _slideUpController,
+                  onTapClose: () {
+                    _animationController.reverse();
+                  },
+                ),
               ),
             )
           ],
@@ -152,12 +174,14 @@ class _QrScannerState extends State<QrScanner>
     );
   }
 
-  Widget buildMyQrCode() {
+  Widget buildServiceQrCode() {
     return Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: GestureDetector(
         onTap: () {
-          _handleMyQrCode();
+          _handleServiceQrCode();
+          BlocProvider.of<ServiceQrCodeBloc>(context)
+              .add(LoadServiceQrCode(serviceUuid: widget.args.serviceUuid));
         },
         child: Row(
           children: [
@@ -199,6 +223,11 @@ class _QrScannerState extends State<QrScanner>
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       setState(() {
+        // BlocProvider.of<ServiceQrCodeBloc>(context).add(ScanServiceQrCode(
+        //     scanQrCode: ScanQrCode(
+        //   qrCodeUuid: scanData.qrcode_uuid,
+        //   qrCodeSecret: scanData.qrcode_secret,
+        // )));
         print(scanData);
       });
     });

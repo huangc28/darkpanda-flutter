@@ -1,23 +1,23 @@
-part of 'service_settings_sheet.dart';
+part of '../../../../screens/inquiry/components/service_settings/service_settings_sheet.dart';
 
-class PriceField extends StatelessWidget {
-  const PriceField({
+class AddressField extends StatelessWidget {
+  const AddressField({
     Key key,
     this.controller,
     this.validator,
-    this.onSaved,
+    this.focusNode,
   }) : super(key: key);
 
   final TextEditingController controller;
   final ValueChanged<String> validator;
-  final ValueChanged<String> onSaved;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Bullet(
-          '價格(DP幣)',
+          '地址',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -25,15 +25,15 @@ class PriceField extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Container(
-          height: 70,
+          height: 44,
           child: DPTextFormField(
+            readOnly: true,
+            focusNode: focusNode,
             controller: controller,
             validator: validator,
-            onSaved: onSaved,
             textAlignVertical: TextAlignVertical.center,
             theme: DPTextFieldThemes.inquiryForm,
-            hintText: '請輸入價格',
-            keyboardType: TextInputType.number,
+            hintText: '請輸入地址',
           ),
         ),
       ],

@@ -1,0 +1,4 @@
+enum ChatroomTypes {
+  service,
+  inquiry,
+}
