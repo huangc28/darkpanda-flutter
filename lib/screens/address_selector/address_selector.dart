@@ -28,21 +28,18 @@ class AddressSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider(
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
               create: (_) => DetermineLocationBloc(
-                apiClient: AddressSelectorAPIClient(),
-              ),
-            ),
-            BlocProvider(
+                    apiClient: AddressSelectorAPIClient(),
+                  )),
+          BlocProvider(
               create: (_) => DetermineAddressBloc(
-                apiClient: AddressSelectorAPIClient(),
-              ),
-            ),
-          ],
-          // Dispatch event to load inquiry position in coordinate. If position is not provided, use current position instead.
+                    apiClient: AddressSelectorAPIClient(),
+                  )),
+        ],
+        child: SafeArea(
           child: AddressMap(
             address: initialAddress,
             onConfirmAddress: (address) {

@@ -2,6 +2,8 @@ part of '../address_selector.dart';
 
 /// We reference this article: https://stackoverflow.com/questions/53652573/fix-google-map-marker-in-center
 /// to center the marker at the middle of the map.
+/// TODO:
+///   - Extract the search action from this widget.
 class AddressMap extends StatefulWidget {
   AddressMap({
     Key key,
@@ -17,8 +19,17 @@ class AddressMap extends StatefulWidget {
 }
 
 class _AddressMapState extends State<AddressMap> {
-  GoogleMapController _mapController;
   TextEditingController _addressController = TextEditingController();
+
+  /// Keep track on the focus status of address text field. If address text field
+  /// is on focus, we should display  button to search address instead of confirm
+  /// address.
+  FocusNode _addressFieldFocusNode = FocusNode();
+
+  /// State to keep track on the focus status of address text field.
+  bool _addressFieldHasFocus = false;
+
+  /// Result address selected by the user.
   String _address;
 
   static const _markerId = 'currentPos';
@@ -41,6 +52,14 @@ class _AddressMapState extends State<AddressMap> {
     );
 
     _addressController.text = widget.address;
+
+    _addressFieldFocusNode.addListener(_onAddressFieldFocusChange);
+  }
+
+  void _onAddressFieldFocusChange() {
+    setState(() {
+      _addressFieldHasFocus = _addressFieldFocusNode.hasFocus;
+    });
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -58,8 +77,6 @@ class _AddressMapState extends State<AddressMap> {
     setState(() {
       _markers[markerId] = marker;
     });
-
-    _mapController = controller;
   }
 
   Widget _buildGoogleMap(Location location) {
@@ -127,14 +144,23 @@ class _AddressMapState extends State<AddressMap> {
                       if (state.status == AsyncLoadingStatus.done) {
                         setState(() {
                           _location = state.location;
+                          _address = _addressController.text;
                         });
+
+                        _addressFieldFocusNode.unfocus();
+                      }
+
+                      if (state.status == AsyncLoadingStatus.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('地址搜尋失敗'),
+                          ),
+                        );
+
+                        _addressFieldFocusNode.unfocus();
                       }
                     },
                     builder: (context, state) {
-                      if (state.status == AsyncLoadingStatus.error) {
-                        print('DEBUG error message ${state.error.message}');
-                      }
-
                       return Container(
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(243, 244, 246, 1),
@@ -207,6 +233,7 @@ class _AddressMapState extends State<AddressMap> {
                               child: Container(
                                 height: 36,
                                 child: DPTextFormField(
+                                  focusNode: _addressFieldFocusNode,
                                   theme: DPTextFieldThemes.inquiryForm,
                                   hintText: '請輸入地址',
                                   controller: _addressController,
@@ -220,9 +247,14 @@ class _AddressMapState extends State<AddressMap> {
                             DPTextButton(
                               theme: DPTextButtonThemes.purple,
                               onPressed: () {
-                                widget.onConfirmAddress(_address);
+                                _addressFieldHasFocus
+                                    ? BlocProvider.of<DetermineLocationBloc>(
+                                            context)
+                                        .add(DetermineLocationFromAddress(
+                                            address: _addressController.text))
+                                    : widget.onConfirmAddress(_address);
                               },
-                              text: '確認地址',
+                              text: _addressFieldHasFocus ? '搜尋' : '確認地址',
                             ),
                           ],
                         ),

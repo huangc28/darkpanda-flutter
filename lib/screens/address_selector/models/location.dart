@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 class Location {
   const Location({
     this.latitude,
