@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/app.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/screens/female/female_app.dart';
+import 'package:darkpanda_flutter/screens/male/male_app.dart';
 
-import './components/login_form.dart';
-// import '../../bloc/send_login_verify_code_bloc.dart';
-
-// TODOs:
-//   - Add a button to redirect user to register page.
 class Auth extends StatefulWidget {
   Auth({this.onPush});
 
@@ -21,24 +19,28 @@ class Auth extends StatefulWidget {
 class _AuthState extends State<Auth> {
   @override
 
-  /// If user has already logged in, navigate to `/app` route.
-  /// If not,  stay on this page and ask  user to `login/register`.
+  // If user has already logged in, determine the gender of the user and redirect the user to
+  // proper app based on user gender (male / female). stay on this page If not logged.
   void initState() {
+    super.initState();
+
     final authUser = BlocProvider.of<AuthUserBloc>(context).state.user;
 
     if (authUser != null) {
+      print('DEBUG ${authUser.gender}');
+
       SchedulerBinding.instance.addPostFrameCallback(
         (_) => Navigator.of(
           context,
           rootNavigator: true,
         ).push(
           MaterialPageRoute(
-            builder: (context) => App(),
+            builder: (context) =>
+                authUser.gender == Gender.female ? FemaleApp() : MaleApp(),
           ),
         ),
       );
     }
-    super.initState();
   }
 
   @override

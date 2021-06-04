@@ -47,7 +47,7 @@ class LoginNavigatorState extends State<LoginNavigator> {
               create: (context) => VerifyLoginCodeBloc(
                 loginAPIClient: LoginAPIClient(),
                 userApis: UserApis(),
-                authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+                authUserBloc: context.read<AuthUserBloc>(),
               ),
             ),
           ],

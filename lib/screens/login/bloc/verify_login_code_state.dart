@@ -1,19 +1,16 @@
 part of 'verify_login_code_bloc.dart';
 
-enum VerifyLoginCodeStatus {
-  initial,
-  verifying,
-  verifyFailed,
-  verified,
-}
-
 class VerifyLoginCodeState<E extends AppBaseException> extends Equatable {
   final AsyncLoadingStatus status;
   final E error;
 
+  /// We need this piece of information to direct user to proper app entry.
+  final Gender gender;
+
   const VerifyLoginCodeState._({
     this.status,
     this.error,
+    this.gender,
   });
 
   const VerifyLoginCodeState.initial()
@@ -32,11 +29,12 @@ class VerifyLoginCodeState<E extends AppBaseException> extends Equatable {
           error: error,
         );
 
-  const VerifyLoginCodeState.verified()
+  const VerifyLoginCodeState.verified({Gender gender})
       : this._(
           status: AsyncLoadingStatus.done,
+          gender: gender,
         );
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status, error, gender];
 }

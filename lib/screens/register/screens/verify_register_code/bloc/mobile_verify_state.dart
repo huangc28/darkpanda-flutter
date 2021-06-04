@@ -5,10 +5,14 @@ class MobileVerifyState<Error extends AppBaseException> extends Equatable {
   final Error error;
   final String authToken;
 
+  /// We need this information to direct the user to proper app entry.
+  final Gender gender;
+
   const MobileVerifyState._({
     this.status: AsyncLoadingStatus.initial,
     this.error,
     this.authToken,
+    this.gender,
   });
 
   const MobileVerifyState.initial()
@@ -43,10 +47,12 @@ class MobileVerifyState<Error extends AppBaseException> extends Equatable {
     MobileVerifyState state, {
     Error error,
     String authToken,
+    Gender gender,
   }) {
     return MobileVerifyState._(
       error: error ?? state.error,
       authToken: authToken ?? state.authToken,
+      gender: gender ?? state.gender,
     );
   }
 
@@ -55,5 +61,6 @@ class MobileVerifyState<Error extends AppBaseException> extends Equatable {
         status,
         error,
         authToken,
+        gender,
       ];
 }

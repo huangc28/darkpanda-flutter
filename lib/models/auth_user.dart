@@ -1,9 +1,14 @@
-class AuthUser {
+import 'package:equatable/equatable.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+
+import 'package:darkpanda_flutter/enums/gender.dart';
+
+class AuthUser extends Equatable {
   final String jwt;
   final String username;
   final String avatarUrl;
   final String uuid;
-  final String gender;
+  final Gender gender;
 
   AuthUser({
     this.jwt,
@@ -32,11 +37,18 @@ class AuthUser {
 
   factory AuthUser.fromJson(Map<String, dynamic> data) {
     return AuthUser(
-      jwt: data['jwt'],
-      username: data['username'],
-      avatarUrl: data['avatarUrl'],
-      uuid: data['uuid'],
-      gender: data['gender'],
-    );
+        jwt: data['jwt'],
+        username: data['username'],
+        avatarUrl: data['avatarUrl'],
+        uuid: data['uuid'],
+        gender: EnumToString.fromString(Gender.values, data['gender']));
   }
+  @override
+  List<Object> get props => [
+        jwt,
+        username,
+        avatarUrl,
+        uuid,
+        gender,
+      ];
 }
