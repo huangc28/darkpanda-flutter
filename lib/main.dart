@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/service_chatroom/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_chatroom/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
-import 'package:darkpanda_flutter/services/service_apis.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
@@ -106,12 +108,21 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
 
+        // Service chatroom
+        BlocProvider(
+          create: (context) => LoadIncomingServiceBloc(
+            inquiryChatMesssagesBloc:
+                BlocProvider.of<InquiryChatMessagesBloc>(context),
+            apiClient: ServiceChatroomClient(),
+          ),
+        ),
+
         BlocProvider(
           create: (context) => CurrentServiceChatroomBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
             userApis: UserApis(),
-            inquiryChatroomsBloc:
-                BlocProvider.of<InquiryChatroomsBloc>(context),
+            loadIncomingServiceBloc:
+                BlocProvider.of<LoadIncomingServiceBloc>(context),
             currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
             serviceConfirmNotifierBloc:
                 BlocProvider.of<ServiceConfirmNotifierBloc>(context),

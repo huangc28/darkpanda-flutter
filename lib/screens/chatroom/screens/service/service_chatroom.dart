@@ -7,7 +7,7 @@ import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
-import 'package:darkpanda_flutter/services/service_qrcode_apis.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';

@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:darkpanda_flutter/services/service_apis.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
