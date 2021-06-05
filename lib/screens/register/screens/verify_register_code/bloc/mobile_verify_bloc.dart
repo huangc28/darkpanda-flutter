@@ -74,8 +74,6 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
         ),
       );
 
-      print('DEBUG  gender 1 ${authUser.gender}');
-
       // store auth user jwt
       yield MobileVerifyState.done(
         MobileVerifyState.copyFrom(
