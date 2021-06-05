@@ -26,21 +26,18 @@ class TabNavigator extends StatelessWidget {
     this.currentTab,
   });
 
+  /// Navigator key that holds female app routing history.
   final GlobalKey<NavigatorState> navigatorKey;
 
   final TabItem tabItem;
-
   final TabItem currentTab;
 
   final InquiriesRoutes _inquiriesRoutes = InquiriesRoutes();
-
   final InquiryChatsRoutes _inquiryChatsRoutes = InquiryChatsRoutes();
-
   final ServiceChatroomRoutes _servicesRoutes = ServiceChatroomRoutes();
-
   final ProfileRoutes _profileRoutes = ProfileRoutes();
-
   final SettingRoutes _settingRoutes = SettingRoutes();
+
   // Retrieve route builders by current tab item.
   Map<String, WidgetBuilder> _getRouteBuildersByTab(context, TabItem tabItem) {
     if (tabItem == TabItem.inquiries) {
@@ -65,7 +62,7 @@ class TabNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tabItem == currentTab) {
-      final routeBuilders = _getRouteBuildersByTab(context, tabItem);
+      final routeBuilder = _getRouteBuildersByTab(context, tabItem);
 
       return Navigator(
           key: navigatorKey,
@@ -73,7 +70,7 @@ class TabNavigator extends StatelessWidget {
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
               settings: settings,
-              builder: (context) => routeBuilders[settings.name](context),
+              builder: (context) => routeBuilder[settings.name](context),
             );
           });
     }

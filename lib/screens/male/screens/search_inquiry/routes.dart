@@ -3,7 +3,7 @@ import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
 import 'package:flutter/material.dart';
 
-import 'waiting_inquiry/waiting_inquiry.dart';
+import '../waiting_inquiry/waiting_inquiry.dart';
 
 class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';
