@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/screens/service_chatroom/bloc/load_incoming_service_bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +22,6 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
-import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 
@@ -33,12 +33,12 @@ class CurrentServiceChatroomBloc
   CurrentServiceChatroomBloc({
     this.inquiryChatroomApis,
     this.userApis,
-    this.inquiryChatroomsBloc,
+    this.loadIncomingServiceBloc,
     this.currentServiceBloc,
     this.serviceConfirmNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(userApis != null),
-        assert(inquiryChatroomsBloc != null),
+        assert(loadIncomingServiceBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
         super(CurrentServiceChatroomState.init());
@@ -46,7 +46,7 @@ class CurrentServiceChatroomBloc
   final InquiryChatroomApis inquiryChatroomApis;
   final UserApis userApis;
 
-  final InquiryChatroomsBloc inquiryChatroomsBloc;
+  final LoadIncomingServiceBloc loadIncomingServiceBloc;
   final CurrentServiceBloc currentServiceBloc;
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
 
@@ -166,7 +166,7 @@ class CurrentServiceChatroomBloc
       // Grab chatroom subscription and listen to incoming messages. Push new message to
       // current message array.
       final subStream =
-          inquiryChatroomsBloc.state.privateChatStreamMap[event.channelUUID];
+          loadIncomingServiceBloc.state.privateChatStreamMap[event.channelUUID];
 
       subStream.onData((data) {
         _handleCurrentMessage(data, event.channelUUID);

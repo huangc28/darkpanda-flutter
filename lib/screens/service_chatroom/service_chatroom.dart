@@ -11,14 +11,14 @@ class ServiceChatroom extends StatefulWidget {
 
 class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
-  LoadIncomingServiceBloc loadIncomingServiceBloc;
+  // LoadIncomingServiceBloc loadIncomingServiceBloc;
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
 
-    loadIncomingServiceBloc = BlocProvider.of<LoadIncomingServiceBloc>(context);
+    // loadIncomingServiceBloc = BlocProvider.of<LoadIncomingServiceBloc>(context);
 
     _tabController = TabController(
       vsync: this,

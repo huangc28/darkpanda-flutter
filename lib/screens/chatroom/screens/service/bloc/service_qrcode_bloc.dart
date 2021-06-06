@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/models/scan_qrcode.dart';
 import 'package:darkpanda_flutter/models/service_qrcode.dart';
-import 'package:darkpanda_flutter/services/service_qrcode_apis.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';

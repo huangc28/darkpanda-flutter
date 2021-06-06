@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/scan_qrcode.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
@@ -33,6 +35,7 @@ class _QrScannerState extends State<QrScanner>
   Animation<double> _fadeAnimation;
 
   String qrcodeUrl;
+  bool isQrCodeFound = false;
 
   @override
   void initState() {
@@ -99,6 +102,14 @@ class _QrScannerState extends State<QrScanner>
     }
   }
 
+  _snackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -147,7 +158,28 @@ class _QrScannerState extends State<QrScanner>
                   },
                 ),
               ),
-            )
+            ),
+            Container(
+              child: BlocListener<ServiceQrCodeBloc, ServiceQrCodeState>(
+                listener: (context, state) {
+                  if (state.status == AsyncLoadingStatus.initial ||
+                      state.status == AsyncLoadingStatus.loading) {
+                    return Row(
+                      children: [
+                        LoadingScreen(),
+                      ],
+                    );
+                  } else if (state.status == AsyncLoadingStatus.error) {
+                    _snackBar(state.error.message);
+                    Navigator.pop(context);
+                  } else if (state.status == AsyncLoadingStatus.done) {
+                    _snackBar("Scan successfully!");
+                    Navigator.pop(context);
+                  }
+                },
+                child: SizedBox.shrink(),
+              ),
+            ),
           ],
         ),
       ),
@@ -221,15 +253,34 @@ class _QrScannerState extends State<QrScanner>
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
+    bool scanned = false;
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        // BlocProvider.of<ServiceQrCodeBloc>(context).add(ScanServiceQrCode(
-        //     scanQrCode: ScanQrCode(
-        //   qrCodeUuid: scanData.qrcode_uuid,
-        //   qrCodeSecret: scanData.qrcode_secret,
-        // )));
-        print(scanData);
-      });
+      if (!scanned) {
+        scanned = true;
+
+        if (scanData.code != "") {
+          try {
+            final scan = ScanQrCode.fromJson(jsonDecode(scanData.code));
+
+            if (scan.qrCodeSecret != "" && scan.qrCodeUuid != "") {
+              BlocProvider.of<ServiceQrCodeBloc>(context).add(
+                ScanServiceQrCode(
+                  scanQrCode: ScanQrCode(
+                    qrCodeUuid: scan.qrCodeUuid,
+                    qrCodeSecret: scan.qrCodeSecret,
+                  ),
+                ),
+              );
+            } else {
+              _snackBar("Invalid QR Code!");
+              Navigator.pop(context);
+            }
+          } catch (error) {
+            _snackBar("Invalid QR Code!");
+            Navigator.pop(context);
+          }
+        }
+      }
     });
   }
 }

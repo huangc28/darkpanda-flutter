@@ -10,17 +10,15 @@ import 'services/service_chatroom_api.dart';
 class ServiceChatroomRoutes extends BaseRoutes {
   static const root = '/';
 
-  Map<String, WidgetBuilder> routeBuilder(BuildContext context,
-          [Object args]) =>
-      {
-        ServiceChatroomRoutes.root: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                    create: (context) => LoadIncomingServiceBloc(
-                          apiClient: ServiceChatroomClient(),
-                        ))
-              ],
-              child: ServiceChatroom(),
-            ),
-      };
+  Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
+    return {
+      ServiceChatroomRoutes.root: (context) {
+        return BlocProvider.value(
+          value: BlocProvider.of<LoadIncomingServiceBloc>(context)
+            ..add(LoadIncomingService()),
+          child: ServiceChatroom(),
+        );
+      }
+    };
+  }
 }
