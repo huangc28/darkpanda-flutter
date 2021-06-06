@@ -1,5 +1,10 @@
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 class Body extends StatefulWidget {
   const Body({this.onPush});
@@ -38,7 +43,25 @@ class _BodyState extends State<Body> {
         child: GestureDetector(
           onTap: () {
             Navigator.of(context, rootNavigator: false).push(
-              MaterialPageRoute(builder: (context) => InquiryForm()),
+              MaterialPageRoute(
+                builder: (context) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => SearchInquiryFormBloc(
+                          searchInquiryAPIs: SearchInquiryAPIs(),
+                        ),
+                      ),
+                      BlocProvider(
+                        create: (context) => LoadServiceListBloc(
+                          searchInquiryAPIs: SearchInquiryAPIs(),
+                        ),
+                      ),
+                    ],
+                    child: InquiryForm(),
+                  );
+                },
+              ),
             );
           },
           child: Align(
@@ -49,10 +72,10 @@ class _BodyState extends State<Body> {
                 Container(
                   padding: EdgeInsets.only(top: 0, left: 20, right: 20),
                   child: Text(
-                    'Request',
+                    '去提需求',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 21.33,
+                      fontSize: 18,
                     ),
                   ),
                 ),
