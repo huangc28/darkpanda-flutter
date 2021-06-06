@@ -1,9 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
-import 'package:flutter/material.dart';
 
+import '../bloc/logout_bloc.dart';
 import 'topup_dp/screen_arguements/args.dart';
 
 class DemoMenu {
@@ -120,13 +125,26 @@ class _SettingState extends State<Setting> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: SizedBox(
-                          height: 44,
-                          child: DPTextButton(
-                            theme: DPTextButtonThemes.purple,
-                            onPressed: () {},
-                            text: '登出',
-                          ),
-                        ),
+                            height: 44,
+                            child: BlocListener<LogoutBloc, LogoutState>(
+                              listener: (context, state) {
+                                if (state.status == AsyncLoadingStatus.done) {
+                                  // Redirect back to login page.
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pushNamed(MainRoutes.login);
+                                }
+                              },
+                              child: DPTextButton(
+                                theme: DPTextButtonThemes.purple,
+                                onPressed: () {
+                                  BlocProvider.of<LogoutBloc>(context)
+                                      .add(Logout());
+                                },
+                                text: '登出',
+                              ),
+                            )),
                       ),
                     ),
                   ],

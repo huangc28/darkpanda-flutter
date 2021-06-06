@@ -20,4 +20,6 @@ class SecureStore {
       );
 
   Future<String> readJwtToken() => fsc.read(key: SecureStore.JwtTokenKey);
+
+  Future<void> delJwtToken() => fsc.delete(key: SecureStore.JwtTokenKey);
 }

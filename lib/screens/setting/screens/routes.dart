@@ -1,7 +1,10 @@
-import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/apis.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/blacklist.dart';
+
+import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/services/apis.dart';
@@ -9,8 +12,6 @@ import 'package:darkpanda_flutter/screens/setting/screens/setting.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'topup_dp/bloc/load_dp_package_bloc.dart';
 import 'topup_dp/bloc/load_my_dp_bloc.dart';
@@ -20,6 +21,9 @@ import 'topup_dp/services/apis.dart';
 
 import 'bank_account/bloc/load_bank_status_bloc.dart';
 import 'bank_account/bloc/verify_bank_bloc.dart';
+
+import '../bloc/logout_bloc.dart';
+import '../services/settings_apis.dart';
 
 class SettingRoutes extends BaseRoutes {
   static const root = '/';
@@ -31,9 +35,15 @@ class SettingRoutes extends BaseRoutes {
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
-      SettingRoutes.root: (context) => Setting(
-            onPush: (String routeName, TopUpDpArguments args) =>
-                this.push(context, routeName, args),
+      SettingRoutes.root: (context) => BlocProvider(
+            create: (context) => LogoutBloc(
+              authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+              settingsApi: SettingsAPIClient(),
+            ),
+            child: Setting(
+              onPush: (String routeName, TopUpDpArguments args) =>
+                  this.push(context, routeName, args),
+            ),
           ),
       SettingRoutes.blacklist: (context) {
         return MultiBlocProvider(
