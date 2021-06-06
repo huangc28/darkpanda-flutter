@@ -13,7 +13,6 @@ import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:darkpanda_flutter/screens/service_chatroom/services/service_chatroom_api.dart';
-import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 
 part 'load_incoming_service_event.dart';
 part 'load_incoming_service_state.dart';
@@ -23,14 +22,12 @@ class LoadIncomingServiceBloc
   LoadIncomingServiceBloc({
     this.apiClient,
     this.inquiryChatMesssagesBloc,
-    this.inquiryChatroomApis,
   }) : super(LoadIncomingServiceState.initial());
 
   final ServiceChatroomClient apiClient;
   Map<String, bool> _chatFirstCreateMap = {};
 
   final InquiryChatMessagesBloc inquiryChatMesssagesBloc;
-  final InquiryChatroomApis inquiryChatroomApis;
 
   @override
   Stream<LoadIncomingServiceState> mapEventToState(

@@ -23,4 +23,9 @@ class ScanQrCode {
       qrCodeUuid: data['qrcode_uuid'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'qrcode_secret': qrCodeSecret,
+        'qrcode_uuid': qrCodeUuid,
+      };
 }

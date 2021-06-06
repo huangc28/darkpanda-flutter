@@ -33,8 +33,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       vsync: this,
       length: 2,
     );
-    BlocProvider.of<LoadIncomingServiceBloc>(context)
-        .add(LoadIncomingService());
+    // BlocProvider.of<LoadIncomingServiceBloc>(context)
+    //     .add(LoadIncomingService());
   }
 
   @override

@@ -7,9 +7,6 @@ class IncomingService {
     this.serviceUuid,
     this.serviceStatus,
     this.appointmentTime,
-    // this.username,
-    // this.userUuid,
-    // this.avatarUrl,
     this.channelUuid,
     this.inquiryUuid,
     this.inquirerUuid,
@@ -17,14 +14,13 @@ class IncomingService {
     this.chatPartnerAvatarUrl,
     this.chatPartnerUsername,
     this.chatPartnerUserUuid,
+    // this.expiredAt,
+    // this.createdAt,
   });
 
   String serviceUuid;
   String serviceStatus;
   DateTime appointmentTime;
-  // String username;
-  // String userUuid;
-  // String avatarUrl;
   String channelUuid;
   String inquiryUuid;
   String inquirerUuid;
@@ -32,14 +28,13 @@ class IncomingService {
   String chatPartnerAvatarUrl;
   String chatPartnerUsername;
   String chatPartnerUserUuid;
+  // final DateTime expiredAt;
+  // final DateTime createdAt;
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
         'service_status': serviceStatus,
         'appointment_time': appointmentTime,
-        // 'username': username,
-        // 'user_uuid': userUuid,
-        // 'avatar_url': avatarUrl,
         'channel_uuid': channelUuid,
         'inquiry_uuid': inquiryUuid,
         'inquirer_uuid': inquirerUuid,
@@ -47,6 +42,8 @@ class IncomingService {
         'chat_partner_avatar_url': chatPartnerAvatarUrl,
         'chat_partner_username': chatPartnerUsername,
         'chat_partner_user_uuid': chatPartnerUserUuid,
+        // 'expired_at': expiredAt,
+        // 'created_at': createdAt,
       };
 
   factory IncomingService.fromMap(Map<String, dynamic> data) {
@@ -72,9 +69,6 @@ class IncomingService {
       serviceUuid: data['service_uuid'],
       serviceStatus: data['service_status'],
       appointmentTime: parsedAppointmentTime,
-      // username: data['username'],
-      // userUuid: data['user_uuid'],
-      // avatarUrl: data['avatar_url'],
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
       inquirerUuid: data['inquirer_uuid'],
@@ -82,6 +76,8 @@ class IncomingService {
       chatPartnerAvatarUrl: data['chat_partner_avatar_url'],
       chatPartnerUsername: data['chat_partner_username'],
       chatPartnerUserUuid: data['chat_partner_user_uuid'],
+      // expiredAt: DateTime.parse(data['expired_at']),
+      // createdAt: DateTime.parse(data['created_at']),
     );
   }
 }
