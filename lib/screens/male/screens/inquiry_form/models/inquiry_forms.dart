@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 class InquiryForms extends Equatable {
   InquiryForms({
-    // this.uuid,
     this.inquiryDate,
     this.inquiryTime,
     this.budget,
@@ -11,7 +10,6 @@ class InquiryForms extends Equatable {
     this.serviceType,
   });
 
-  // String uuid;
   DateTime inquiryDate;
   TimeOfDay inquiryTime;
   double budget;
@@ -36,14 +34,4 @@ class InquiryForms extends Equatable {
         inquiryTime.hour,
         inquiryTime.minute,
       ];
-
-  // Map<String, dynamic> toJson() => {
-  //       'card_number': cardNumber,
-  //       'name': name,
-  //       'month': month,
-  //       'year': year,
-  //       'cvv': cvv,
-  //       'prime': prime,
-  //       'package_id': packageId,
-  //     };
 }
