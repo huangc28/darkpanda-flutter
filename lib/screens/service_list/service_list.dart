@@ -87,15 +87,6 @@ class _ServiceListState extends State<ServiceList>
               _status = state.status;
             });
           }),
-
-          // BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-          //     listener: (context, state) {
-          //   if (state.status == AsyncLoadingStatus.done) {
-          //     setState(() {
-          //       _incomingService = state.services;
-          //     });
-          //   }
-          // }),
         ],
         child: Body(
           incomingServices: _incomingServices,
