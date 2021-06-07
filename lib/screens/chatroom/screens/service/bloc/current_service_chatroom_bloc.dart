@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/screens/service_chatroom/bloc/load_incoming_service_bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +23,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 
 part 'current_service_chatroom_event.dart';
 part 'current_service_chatroom_state.dart';

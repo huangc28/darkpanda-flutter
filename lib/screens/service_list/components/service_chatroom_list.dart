@@ -1,7 +1,8 @@
-import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+
+import '../models/incoming_service.dart';
 
 typedef ChatroomBuilder = Widget Function(
     BuildContext context, IncomingService chatroom, int index);

@@ -1,5 +1,3 @@
-import 'package:darkpanda_flutter/screens/service_chatroom/bloc/load_incoming_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_chatroom/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +24,9 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_i
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 
 import './routes.dart';
 import './theme.dart';

@@ -14,8 +14,6 @@ class IncomingService {
     this.chatPartnerAvatarUrl,
     this.chatPartnerUsername,
     this.chatPartnerUserUuid,
-    // this.expiredAt,
-    // this.createdAt,
   });
 
   String serviceUuid;
@@ -28,8 +26,6 @@ class IncomingService {
   String chatPartnerAvatarUrl;
   String chatPartnerUsername;
   String chatPartnerUserUuid;
-  // final DateTime expiredAt;
-  // final DateTime createdAt;
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
@@ -42,8 +38,6 @@ class IncomingService {
         'chat_partner_avatar_url': chatPartnerAvatarUrl,
         'chat_partner_username': chatPartnerUsername,
         'chat_partner_user_uuid': chatPartnerUserUuid,
-        // 'expired_at': expiredAt,
-        // 'created_at': createdAt,
       };
 
   factory IncomingService.fromMap(Map<String, dynamic> data) {

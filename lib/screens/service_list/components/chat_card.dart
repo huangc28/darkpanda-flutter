@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'package:darkpanda_flutter/screens/service_chatroom/models/Chat.dart';
-import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
 import 'package:intl/intl.dart';
+
+import '../models/Chat.dart';
+import '../models/incoming_service.dart';
 
 class ChatCard extends StatefulWidget {
   final IncomingService chat;

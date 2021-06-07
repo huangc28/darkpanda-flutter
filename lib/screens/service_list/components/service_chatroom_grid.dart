@@ -1,8 +1,9 @@
-import 'package:darkpanda_flutter/screens/service_chatroom/models/incoming_service.dart';
-import 'package:darkpanda_flutter/util/time_remaining_since_date.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/util/time_remaining_since_date.dart';
+
+import '../models/incoming_service.dart';
 
 class ServiceChatroomGrid extends StatelessWidget {
   const ServiceChatroomGrid({

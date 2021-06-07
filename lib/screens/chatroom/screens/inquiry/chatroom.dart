@@ -15,16 +15,16 @@ import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 
-import '../../components/chat_bubble.dart';
-import '../../components/confirmed_service_bubble.dart';
-import '../../components/update_inquiry_bubble.dart';
 import 'bloc/current_chatroom_bloc.dart';
 import 'bloc/get_inquiry_bloc.dart';
 import 'bloc/update_inquiry_bloc.dart';
 import 'components/send_message_bar.dart';
-import '../../components/chatroom_window.dart';
 import 'components/service_settings/service_settings.dart';
 
+import '../../components/chat_bubble.dart';
+import '../../components/confirmed_service_bubble.dart';
+import '../../components/update_inquiry_bubble.dart';
+import '../../components/chatroom_window.dart';
 import '../../../../models/service_settings.dart';
 
 part 'screen_arguments/chatroom_screen_arguments.dart';
