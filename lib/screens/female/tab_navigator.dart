@@ -4,7 +4,6 @@ import './bottom_navigation.dart';
 
 import './screens/inquiry_list/routes.dart';
 import './screens/inquiry_chats/routes.dart';
-import './screens/service_list/routes.dart';
 
 import '../profile/screens/routes.dart';
 import '../setting/screens/routes.dart';
@@ -14,7 +13,6 @@ import '../service_list/routes.dart';
 final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
   TabItem.inquiryChats: InquiryChatsRoutes.root,
-  TabItem.manage: ServiceRoutes.root,
   TabItem.settings: SettingRoutes.root,
   TabItem.profile: ProfileRoutes.root,
 };
