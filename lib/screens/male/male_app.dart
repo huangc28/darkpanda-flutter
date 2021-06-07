@@ -53,6 +53,7 @@ class _MaleAppState extends State<MaleApp> {
     return Stack(
       children: [
         _buildOffstageNavigator(MaleAppTabItem.waitingInquiry),
+        _buildOffstageNavigator(MaleAppTabItem.settings),
       ],
     );
   }
