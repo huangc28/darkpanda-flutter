@@ -1,8 +1,17 @@
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
 
 class InquiryForm extends StatefulWidget {
+  const InquiryForm({
+    this.onPush,
+  });
+
+  final Function(String) onPush;
+
   @override
   State<InquiryForm> createState() => _InquiryFormState();
 }
@@ -24,7 +33,22 @@ class _InquiryFormState extends State<InquiryForm> {
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       ),
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-      body: Body(),
+      body: BlocConsumer<SearchInquiryFormBloc, SearchInquiryFormState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error.message),
+              ),
+            );
+          } else if (state.status == AsyncLoadingStatus.done) {
+            Navigator.of(context).pop(null);
+          }
+        },
+        builder: (context, state) {
+          return Body();
+        },
+      ),
     );
   }
 }

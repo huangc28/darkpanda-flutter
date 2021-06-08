@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
@@ -18,9 +19,13 @@ class SearchInquiryFormBloc
     extends Bloc<SearchInquiryFormEvent, SearchInquiryFormState> {
   SearchInquiryFormBloc({
     this.searchInquiryAPIs,
-  }) : super(SearchInquiryFormState.initial());
+    this.loadInquiryBloc,
+  })  : assert(searchInquiryAPIs != null),
+        assert(loadInquiryBloc != null),
+        super(SearchInquiryFormState.initial());
 
   final SearchInquiryAPIs searchInquiryAPIs;
+  final LoadInquiryBloc loadInquiryBloc;
 
   @override
   Stream<SearchInquiryFormState> mapEventToState(
@@ -34,7 +39,7 @@ class SearchInquiryFormBloc
   Stream<SearchInquiryFormState> _mapSubmitSearchInquiryFormToState(
       SubmitSearchInquiryForm event) async* {
     try {
-      yield SearchInquiryFormState.loading();
+      yield SearchInquiryFormState.loading(state);
 
       final resp = await searchInquiryAPIs.searchInquiry(
         event.inquiryForms,
@@ -42,18 +47,16 @@ class SearchInquiryFormBloc
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
-          json.decode(
-            resp.body,
-          ),
+          json.decode(resp.body),
         );
       }
 
       yield SearchInquiryFormState.done();
-    } on APIException catch (e) {
-      yield SearchInquiryFormState.error(e);
+    } on APIException catch (err) {
+      yield SearchInquiryFormState.error(state, err: err);
     } catch (e) {
-      yield SearchInquiryFormState.error(
-          new AppGeneralExeption(message: e.toString()));
+      yield SearchInquiryFormState.error(state,
+          err: new AppGeneralExeption(message: e.toString()));
     }
   }
 }

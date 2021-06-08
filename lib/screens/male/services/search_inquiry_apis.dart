@@ -58,4 +58,63 @@ class SearchInquiryAPIs extends BaseClient {
       );
     }
   }
+
+  Future<http.Response> fetchInquiry() async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/inquiries/active-inquiry'),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
+
+  Future<http.Response> cancelInquiry(String inquiryUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'inquiry_uuid': inquiryUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/inquiries/cancel'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  Future<http.Response> agreeInquiry(String inquiryUuid) async {
+    try {
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/inquiries/agree-to-chat?inquiry_uuid=$inquiryUuid'),
+      );
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
 }
