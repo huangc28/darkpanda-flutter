@@ -8,7 +8,6 @@ import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/setting.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
@@ -22,6 +21,8 @@ import 'screens/topup_dp/services/apis.dart';
 
 import 'screens/bank_account/bloc/load_bank_status_bloc.dart';
 import 'screens/bank_account/bloc/verify_bank_bloc.dart';
+import 'screens/female/settings.dart';
+import 'screens/male/settings.dart';
 
 import 'bloc/logout_bloc.dart';
 import 'services/settings_apis.dart';
@@ -42,7 +43,7 @@ class SettingRoutes extends BaseRoutes {
             authUserBloc: BlocProvider.of<AuthUserBloc>(context),
             settingsApi: SettingsAPIClient(),
           ),
-          child: Setting(
+          child: FemaleSettings(
             onPush: (String routeName, TopUpDpArguments args) =>
                 this.push(context, routeName, args),
           ),
@@ -50,18 +51,21 @@ class SettingRoutes extends BaseRoutes {
   }
 
   WidgetBuilder _buildMaleSettingPage() {
-    return (context) => Center(
-          child:
-              Text('male settings page', style: TextStyle(color: Colors.white)),
+    return (context) => BlocProvider(
+          create: (context) => LogoutBloc(
+            authUserBloc: BlocProvider.of<AuthUserBloc>(context),
+            settingsApi: SettingsAPIClient(),
+          ),
+          child: MaleSettings(
+            onPushTopupDP: (TopUpDpArguments args) =>
+                this.push(context, SettingRoutes.topup_dp, args),
+          ),
         );
   }
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
-    print('DEBUG spot **');
     // Display proper settings page by determining gender from auth user.
     final gender = BlocProvider.of<AuthUserBloc>(context).state.user.gender;
-
-    print('DEBUG gender ~~ ${gender}');
 
     return {
       SettingRoutes.root: gender == Gender.female

@@ -12,43 +12,18 @@ import '../verify_phone/verify_phone.dart';
 import '../../bloc/logout_bloc.dart';
 import '../topup_dp/screen_arguements/args.dart';
 
-class DemoMenu {
-  final String image;
+class MaleSettings extends StatefulWidget {
+  const MaleSettings({
+    this.onPushTopupDP,
+  });
 
-  DemoMenu({this.image});
-}
-
-List demoMenuList = [
-  DemoMenu(
-    image: "lib/screens/setting/assets/phone_authenticate.png",
-  ),
-  DemoMenu(
-    image: "lib/screens/setting/assets/recommend_management.png",
-  ),
-  DemoMenu(
-    image: "lib/screens/setting/assets/bank_account.png",
-  ),
-  DemoMenu(
-    image: "lib/screens/setting/assets/block_list.png",
-  ),
-  DemoMenu(
-    image: "lib/screens/setting/assets/2x/feedback.png",
-  ),
-];
-
-class FemaleSettings extends StatefulWidget {
-  FemaleSettings({
-    Key key,
-    this.onPush,
-  }) : super(key: key);
-
-  final Function(String, TopUpDpArguments) onPush;
+  final Function(TopUpDpArguments) onPushTopupDP;
 
   @override
-  _FemaleSettingsState createState() => _FemaleSettingsState();
+  _MaleSettingsState createState() => _MaleSettingsState();
 }
 
-class _FemaleSettingsState extends State<FemaleSettings> {
+class _MaleSettingsState extends State<MaleSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,10 +70,10 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                         InkWell(
                           child: Image(
                             image: AssetImage(
-                                "lib/screens/setting/assets/bank_account.png"),
+                                "lib/screens/setting/assets/buy_dp.png"),
                           ),
                           onTap: () {
-                            widget.onPush('/bank-account', null);
+                            widget.onPushTopupDP(TopUpDpArguments(amount: 200));
                           },
                         ),
                         InkWell(
@@ -107,7 +82,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
                           onTap: () {
-                            widget.onPush('/blacklist', null);
+                            // widget.onPush('/blacklist', null);
                           },
                         ),
                       ],
@@ -118,7 +93,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             "lib/screens/setting/assets/feedback.png"),
                       ),
                       onTap: () {
-                        widget.onPush('/topup-dp', null);
+                        // widget.onPush('/topup-dp', null);
                       },
                     ),
                     Padding(
