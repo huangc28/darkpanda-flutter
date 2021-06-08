@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
-class Body extends StatefulWidget {
-  const Body({this.onPush});
+class CreateInquiry extends StatefulWidget {
+  const CreateInquiry({this.onPush});
 
   final Function(String) onPush;
 
   @override
-  _BodyState createState() => _BodyState();
+  _CreateInquiryState createState() => _CreateInquiryState();
 }
 
-class _BodyState extends State<Body> {
+class _CreateInquiryState extends State<CreateInquiry> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -42,14 +43,21 @@ class _BodyState extends State<Body> {
         elevation: 7,
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context, rootNavigator: false).push(
+            Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (context) {
                   return MultiBlocProvider(
                     providers: [
                       BlocProvider(
+                        create: (context) => LoadInquiryBloc(
+                          searchInquiryAPIs: SearchInquiryAPIs(),
+                        ),
+                      ),
+                      BlocProvider(
                         create: (context) => SearchInquiryFormBloc(
                           searchInquiryAPIs: SearchInquiryAPIs(),
+                          loadInquiryBloc:
+                              BlocProvider.of<LoadInquiryBloc>(context),
                         ),
                       ),
                       BlocProvider(
@@ -62,7 +70,11 @@ class _BodyState extends State<Body> {
                   );
                 },
               ),
-            );
+            ).then((value) {
+              setState(() {
+                BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry());
+              });
+            });
           },
           child: Align(
             alignment: Alignment.centerLeft,

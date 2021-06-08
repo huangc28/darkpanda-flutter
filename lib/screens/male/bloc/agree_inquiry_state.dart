@@ -1,32 +1,32 @@
-part of 'search_inquiry_form_bloc.dart';
+part of 'agree_inquiry_bloc.dart';
 
-class SearchInquiryFormState<E extends AppBaseException> extends Equatable {
+class AgreeInquiryState<E extends AppBaseException> extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
 
-  const SearchInquiryFormState._({
+  const AgreeInquiryState._({
     this.error,
     this.status,
   });
 
   /// Bloc yields following states
-  const SearchInquiryFormState.initial()
+  const AgreeInquiryState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
         );
 
-  const SearchInquiryFormState.loading(SearchInquiryFormState state)
+  const AgreeInquiryState.loading()
       : this._(
           status: AsyncLoadingStatus.loading,
         );
 
-  const SearchInquiryFormState.error(SearchInquiryFormState state, {E err})
+  const AgreeInquiryState.error(E err)
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const SearchInquiryFormState.done()
+  const AgreeInquiryState.done()
       : this._(
           status: AsyncLoadingStatus.done,
         );

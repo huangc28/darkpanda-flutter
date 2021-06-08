@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 
 import 'cancel_inquiry_confirmation_dialog.dart';
 
-class Body extends StatefulWidget {
+class WaitingInquiry extends StatefulWidget {
+  const WaitingInquiry({
+    this.onPush,
+    this.activeInquiry,
+  });
+
+  final Function(String) onPush;
+  final ActiveInquiry activeInquiry;
+
   @override
-  _BodyState createState() => _BodyState();
+  _WaitingInquiryState createState() => _WaitingInquiryState();
 }
 
-class _BodyState extends State<Body> {
+class _WaitingInquiryState extends State<WaitingInquiry> {
+  // ActiveInquiry activeInquiry = new ActiveInquiry();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: <Widget>[
           _buildHeader(),
+          SizedBox(height: 10),
           _countdown(),
           SizedBox(height: 10),
           _actionButton(),
@@ -86,7 +101,11 @@ class _BodyState extends State<Body> {
                             return CancelInquiryConfirmationDialog();
                           },
                         ).then((value) {
-                          if (value) {}
+                          if (value) {
+                            BlocProvider.of<CancelInquiryBloc>(context).add(
+                              CancelInquiry(widget.activeInquiry.uuid),
+                            );
+                          }
                         });
                       },
                       child: Align(
