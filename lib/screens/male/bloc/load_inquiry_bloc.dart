@@ -175,13 +175,6 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
     }
 
     ActiveInquiry updateInquiry = new ActiveInquiry();
-    // if (state.activeInquiry.uuid == event.inquiryUuid) {
-    //   updateInquiry = state.activeInquiry.
-    // }
-
-    // final filteredInquiries = state.inquiries
-    //     .where((inquiry) => inquiry.uuid != event.inquiryUuid)
-    //     .toList();
 
     yield LoadInquiryState.putInquiries(
       state,

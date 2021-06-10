@@ -9,10 +9,10 @@ abstract class InquiryChatroomsEvent extends Equatable {
 
 class FetchChatrooms extends InquiryChatroomsEvent {}
 
-class AddMaleChatroom extends InquiryChatroomsEvent {
-  final Chatroom maleChatroom;
+class AddChatroom extends InquiryChatroomsEvent {
+  final Chatroom chatroom;
 
-  const AddMaleChatroom({this.maleChatroom}) : assert(maleChatroom != null);
+  const AddChatroom({this.chatroom}) : assert(chatroom != null);
 }
 
 class LeaveMaleChatroom extends InquiryChatroomsEvent {

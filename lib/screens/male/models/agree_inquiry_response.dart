@@ -1,4 +1,6 @@
-class AgreeInquiryResponse {
+import 'package:equatable/equatable.dart';
+
+class AgreeInquiryResponse extends Equatable {
   AgreeInquiryResponse({
     this.picker,
     this.inquirer,
@@ -27,6 +29,15 @@ class AgreeInquiryResponse {
         'service_type': serviceType,
         'inquiry_status': inquiryStatus,
       };
+
+  @override
+  List<Object> get props => [
+        picker,
+        inquirer,
+        channelUuid,
+        serviceType,
+        inquiryStatus,
+      ];
 }
 
 class Picker {

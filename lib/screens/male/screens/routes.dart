@@ -18,6 +18,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import 'male_chatroom/bloc/disagree_inquiry_bloc.dart';
+import 'male_chatroom/bloc/exit_chatroom_bloc.dart';
+
 class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';
   static const inquiry_form = '/inquiry-form';
@@ -43,6 +46,18 @@ class SearchInquiryRoutes extends BaseRoutes {
                 create: (context) => CancelInquiryBloc(
                   searchInquiryAPIs: SearchInquiryAPIs(),
                   loadInquiryBloc: LoadInquiryBloc(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => ExitChatroomBloc(
+                  searchInquiryAPIs: SearchInquiryAPIs(),
+                  inquiryChatroomsBloc:
+                      BlocProvider.of<InquiryChatroomsBloc>(context),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => DisagreeInquiryBloc(
+                  searchInquiryAPIs: SearchInquiryAPIs(),
                 ),
               ),
             ],

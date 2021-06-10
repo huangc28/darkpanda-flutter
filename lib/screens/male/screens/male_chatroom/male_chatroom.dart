@@ -19,6 +19,8 @@ import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/disagree_inquiry_bloc.dart';
+import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
@@ -90,7 +92,7 @@ class _MaleChatroomState extends State<MaleChatroom>
           },
         ).then((value) {
           if (value) {
-            BlocProvider.of<CancelInquiryBloc>(context).add(
+            BlocProvider.of<ExitChatroomBloc>(context).add(
               QuitChatroom(widget.args.channelUUID),
             );
           }
@@ -98,7 +100,7 @@ class _MaleChatroomState extends State<MaleChatroom>
         });
         return result;
       },
-      child: BlocListener<CancelInquiryBloc, CancelInquiryState>(
+      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.done) {
             Navigator.of(context).pop();
@@ -224,7 +226,8 @@ class _MaleChatroomState extends State<MaleChatroom>
                                   }
                                   // Reject
                                   else {
-                                    BlocProvider.of<CancelInquiryBloc>(context)
+                                    BlocProvider.of<DisagreeInquiryBloc>(
+                                            context)
                                         .add(
                                       DisagreeInquiry(widget.args.channelUUID),
                                     );
@@ -271,7 +274,7 @@ class _MaleChatroomState extends State<MaleChatroom>
             },
           ).then((value) {
             if (value) {
-              BlocProvider.of<CancelInquiryBloc>(context).add(
+              BlocProvider.of<ExitChatroomBloc>(context).add(
                 QuitChatroom(widget.args.channelUUID),
               );
             }

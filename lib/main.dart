@@ -1,5 +1,7 @@
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
@@ -105,8 +107,18 @@ class DarkPandaApp extends StatelessWidget {
           create: (context) => CancelInquiryBloc(
             searchInquiryAPIs: SearchInquiryAPIs(),
             loadInquiryBloc: BlocProvider.of<LoadInquiryBloc>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ExitChatroomBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
             inquiryChatroomsBloc:
                 BlocProvider.of<InquiryChatroomsBloc>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => DisagreeInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
           ),
         ),
 

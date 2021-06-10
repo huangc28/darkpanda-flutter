@@ -52,34 +52,13 @@ class AgreeInquiryBloc extends Bloc<AgreeInquiryEvent, AgreeInquiryState> {
         );
       }
 
-      // {
-      //   "picker":{
-      //     "username":"yap3",
-      //     "avatar_url":"",
-      //     "uuid":"hWCzl8qGg",
-      //     "rating":0,
-      //     "description":""
-      //   },
-      //   "inquirer":{
-      //     "username":"yap2",
-      //     "avatar_url":"",
-      //     "uuid":"mD4ew83Mg",
-      //     "rating":0,
-      //     "description":""
-      //   },
-      //   "channel_uuid":"private_chat:leVwjr6Mg",
-      //   "service_type":"chat",
-      //   "inquiry_status":"chatting",
-      //   "created_at":"2021-06-10T05:15:09.09379Z"
-      // }
-
       final AgreeInquiryResponse agreeInquiry = AgreeInquiryResponse.fromMap(
         json.decode(resp.body),
       );
 
       await inquiryChatroomsBloc.add(
-        AddMaleChatroom(
-          maleChatroom: Chatroom(
+        AddChatroom(
+          chatroom: Chatroom(
             serviceType: agreeInquiry.serviceType,
             inquiryStatus: agreeInquiry.inquiryStatus,
             inquirerUUID: agreeInquiry.inquirer.uuid,

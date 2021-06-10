@@ -53,8 +53,8 @@ class InquiryChatroomsBloc
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearInquiryChatList) {
       yield* _mapClearInquiryChatListToState(event);
-    } else if (event is AddMaleChatroom) {
-      yield* _mapAddMaleChatroomsToState(event);
+    } else if (event is AddChatroom) {
+      yield* _mapAddChatroomToState(event);
     }
     if (event is LeaveMaleChatroom) {
       yield* _mapLeaveMaleChatroomToState(event);
@@ -84,22 +84,22 @@ class InquiryChatroomsBloc
     );
   }
 
-  Stream<InquiryChatroomsState> _mapAddMaleChatroomsToState(
-      AddMaleChatroom event) async* {
+  Stream<InquiryChatroomsState> _mapAddChatroomToState(
+      AddChatroom event) async* {
     // if channel uuid exists in the current map.
     // Channel uuid does not exists in map, initiate subscription stream.
     // Store the stream in `privateChatStreamMap`.
     final streamSub =
-        _createChatroomSubscriptionStream(event.maleChatroom.channelUUID);
+        _createChatroomSubscriptionStream(event.chatroom.channelUUID);
 
     // Put a flag to indicate that the channel has just been created. Ignore
     // the first event from firestore subscription.
-    _chatFirstCreateMap[event.maleChatroom.channelUUID] = true;
+    _chatFirstCreateMap[event.chatroom.channelUUID] = true;
 
-    state.privateChatStreamMap[event.maleChatroom.channelUUID] = streamSub;
+    state.privateChatStreamMap[event.chatroom.channelUUID] = streamSub;
 
     // Insert new chatroom at the start of the chatroom array.
-    state.chatrooms.insert(0, event.maleChatroom);
+    state.chatrooms.insert(0, event.chatroom);
 
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
