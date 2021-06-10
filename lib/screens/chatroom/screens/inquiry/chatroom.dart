@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -288,6 +290,13 @@ class _ChatroomState extends State<Chatroom>
                                                 // Slideup inquiry pannel.
                                                 _animationController.forward();
                                               },
+                                            );
+                                          } else if (message
+                                              is DisagreeInquiryMessage) {
+                                            return DisagreeInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
                                             );
                                           } else {
                                             return ChatBubble(

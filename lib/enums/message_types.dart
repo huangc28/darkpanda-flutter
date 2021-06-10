@@ -3,6 +3,7 @@ enum MessageType {
   text,
   confirmed_service,
   update_inquiry_detail,
+  disagree_inquiry,
 }
 
 extension MessageTypeExtension on MessageType {
@@ -16,6 +17,8 @@ extension MessageTypeExtension on MessageType {
         return 'confirmed_service';
       case MessageType.update_inquiry_detail:
         return 'update_inquiry_detail';
+      case MessageType.disagree_inquiry:
+        return 'disagree_inquiry';
       default:
         return null;
     }

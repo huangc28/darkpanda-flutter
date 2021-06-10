@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

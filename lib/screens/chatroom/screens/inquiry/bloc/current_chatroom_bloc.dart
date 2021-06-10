@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +24,8 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';
@@ -155,6 +156,8 @@ class CurrentChatroomBloc
           return ServiceConfirmedMessage.fromMap(data);
         } else if (data['type'] == MessageType.update_inquiry_detail.name) {
           return UpdateInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.disagree_inquiry.name) {
+          return DisagreeInquiryMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -209,6 +212,8 @@ class CurrentChatroomBloc
         (String type) => type == MessageType.confirmed_service.name;
     final isUpdateInquiryDetailMsg =
         (String type) => type == MessageType.update_inquiry_detail.name;
+    final isDisagreeInquiryMsg =
+        (String type) => type == MessageType.disagree_inquiry.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -230,6 +235,8 @@ class CurrentChatroomBloc
       msg = UpdateInquiryMessage.fromMap(rawMsg);
 
       updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
+    } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
+      msg = DisagreeInquiryMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }
