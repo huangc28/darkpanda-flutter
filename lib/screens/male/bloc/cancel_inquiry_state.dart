@@ -15,7 +15,7 @@ class CancelInquiryState<E extends AppBaseException> extends Equatable {
           status: AsyncLoadingStatus.initial,
         );
 
-  const CancelInquiryState.loading()
+  const CancelInquiryState.loading(CancelInquiryState state)
       : this._(
           status: AsyncLoadingStatus.loading,
         );
@@ -26,7 +26,7 @@ class CancelInquiryState<E extends AppBaseException> extends Equatable {
           error: err,
         );
 
-  const CancelInquiryState.done()
+  const CancelInquiryState.done(CancelInquiryState state)
       : this._(
           status: AsyncLoadingStatus.done,
         );

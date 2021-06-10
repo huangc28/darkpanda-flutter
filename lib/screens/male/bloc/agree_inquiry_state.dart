@@ -3,32 +3,39 @@ part of 'agree_inquiry_bloc.dart';
 class AgreeInquiryState<E extends AppBaseException> extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
+  final AgreeInquiryResponse agreeInquiry;
 
   const AgreeInquiryState._({
     this.error,
     this.status,
+    this.agreeInquiry,
   });
 
   /// Bloc yields following states
-  const AgreeInquiryState.initial()
+  AgreeInquiryState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
+          agreeInquiry: null,
         );
 
-  const AgreeInquiryState.loading()
+  AgreeInquiryState.loading(AgreeInquiryState state)
       : this._(
           status: AsyncLoadingStatus.loading,
+          agreeInquiry: state.agreeInquiry,
         );
 
-  const AgreeInquiryState.error(E err)
+  AgreeInquiryState.error(E err)
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const AgreeInquiryState.done()
-      : this._(
+  AgreeInquiryState.done(
+    AgreeInquiryState state, {
+    AgreeInquiryResponse agreeInquiry,
+  }) : this._(
           status: AsyncLoadingStatus.done,
+          agreeInquiry: agreeInquiry ?? state.agreeInquiry,
         );
 
   @override

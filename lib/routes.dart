@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/male_chatroom.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 
@@ -26,6 +28,8 @@ class MainRoutes extends BaseRoutes {
   static const chatroom = '/chatroom';
   static const serviceChatroom = '/service-chatroom';
 
+  static const maleChatroom = '/male-chatroom';
+
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
       MainRoutes.login: (context) => BlocProvider.value(
@@ -44,6 +48,11 @@ class MainRoutes extends BaseRoutes {
         final ServiceChatroomScreenArguments serviceChatroomArgs = args;
 
         return ServiceChatroom(args: serviceChatroomArgs);
+      },
+      MainRoutes.maleChatroom: (context) {
+        final MaleChatroomScreenArguments maleChatroomArgs = args;
+
+        return MaleChatroom(args: maleChatroomArgs);
       }
     };
   }

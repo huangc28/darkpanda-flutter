@@ -53,6 +53,11 @@ class InquiryChatroomsBloc
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearInquiryChatList) {
       yield* _mapClearInquiryChatListToState(event);
+    } else if (event is AddMaleChatroom) {
+      yield* _mapAddMaleChatroomsToState(event);
+    }
+    if (event is LeaveMaleChatroom) {
+      yield* _mapLeaveMaleChatroomToState(event);
     }
   }
 
@@ -76,6 +81,31 @@ class InquiryChatroomsBloc
         // handler `_handlePrivateChatEvent`.
         _chatFirstCreateMap[channelUUID] = false;
       },
+    );
+  }
+
+  Stream<InquiryChatroomsState> _mapAddMaleChatroomsToState(
+      AddMaleChatroom event) async* {
+    // if channel uuid exists in the current map.
+    // Channel uuid does not exists in map, initiate subscription stream.
+    // Store the stream in `privateChatStreamMap`.
+    final streamSub =
+        _createChatroomSubscriptionStream(event.maleChatroom.channelUUID);
+
+    // Put a flag to indicate that the channel has just been created. Ignore
+    // the first event from firestore subscription.
+    _chatFirstCreateMap[event.maleChatroom.channelUUID] = true;
+
+    state.privateChatStreamMap[event.maleChatroom.channelUUID] = streamSub;
+
+    // Insert new chatroom at the start of the chatroom array.
+    state.chatrooms.insert(0, event.maleChatroom);
+
+    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
+
+    yield InquiryChatroomsState.updateChatrooms(
+      state,
+      privateChatStreamMap: newPrivateChatStreamMap,
     );
   }
 
@@ -174,6 +204,28 @@ class InquiryChatroomsBloc
     }
 
     yield null;
+  }
+
+  Stream<InquiryChatroomsState> _mapLeaveMaleChatroomToState(
+      LeaveMaleChatroom event) async* {
+    // Unsubscribe specified private chat stream.
+    if (state.privateChatStreamMap.containsKey(event.channelUUID)) {
+      final stream = state.privateChatStreamMap[event.channelUUID];
+
+      stream.cancel();
+
+      state.privateChatStreamMap.remove(event.channelUUID);
+
+      state.chatrooms
+          .removeWhere((element) => element.channelUUID == event.channelUUID);
+
+      yield InquiryChatroomsState.updateChatrooms(state);
+    } else {
+      developer.log(
+        'Stream intends to unsubscribe is\'t exist for the given  channel UUID',
+        name: 'private_chat:unsubscribe_stream',
+      );
+    }
   }
 
   Stream<InquiryChatroomsState> _mapFetchChatroomToState(

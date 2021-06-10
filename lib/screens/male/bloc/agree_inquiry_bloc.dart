@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +18,13 @@ part 'agree_inquiry_state.dart';
 
 class AgreeInquiryBloc extends Bloc<AgreeInquiryEvent, AgreeInquiryState> {
   AgreeInquiryBloc({
+    this.inquiryChatroomsBloc,
     this.searchInquiryAPIs,
-  }) : super(AgreeInquiryState.initial());
+  })  : assert(searchInquiryAPIs != null),
+        assert(inquiryChatroomsBloc != null),
+        super(AgreeInquiryState.initial());
 
+  final InquiryChatroomsBloc inquiryChatroomsBloc;
   final SearchInquiryAPIs searchInquiryAPIs;
 
   @override
@@ -25,16 +32,17 @@ class AgreeInquiryBloc extends Bloc<AgreeInquiryEvent, AgreeInquiryState> {
     AgreeInquiryEvent event,
   ) async* {
     if (event is AgreeInquiry) {
-      yield* _mapSubmitSearchInquiryFormToState(event);
+      yield* _mapAgreeInquiryFormToState(event);
     }
   }
 
-  Stream<AgreeInquiryState> _mapSubmitSearchInquiryFormToState(
+  Stream<AgreeInquiryState> _mapAgreeInquiryFormToState(
       AgreeInquiry event) async* {
     try {
-      yield AgreeInquiryState.loading();
+      yield AgreeInquiryState.loading(state);
 
-      final resp = await searchInquiryAPIs.agreeInquiry(event.inquiryUuid);
+      final resp =
+          await searchInquiryAPIs.agreeToChatInquiry(event.inquiryUuid);
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -44,7 +52,48 @@ class AgreeInquiryBloc extends Bloc<AgreeInquiryEvent, AgreeInquiryState> {
         );
       }
 
-      yield AgreeInquiryState.done();
+      // {
+      //   "picker":{
+      //     "username":"yap3",
+      //     "avatar_url":"",
+      //     "uuid":"hWCzl8qGg",
+      //     "rating":0,
+      //     "description":""
+      //   },
+      //   "inquirer":{
+      //     "username":"yap2",
+      //     "avatar_url":"",
+      //     "uuid":"mD4ew83Mg",
+      //     "rating":0,
+      //     "description":""
+      //   },
+      //   "channel_uuid":"private_chat:leVwjr6Mg",
+      //   "service_type":"chat",
+      //   "inquiry_status":"chatting",
+      //   "created_at":"2021-06-10T05:15:09.09379Z"
+      // }
+
+      final AgreeInquiryResponse agreeInquiry = AgreeInquiryResponse.fromMap(
+        json.decode(resp.body),
+      );
+
+      await inquiryChatroomsBloc.add(
+        AddMaleChatroom(
+          maleChatroom: Chatroom(
+            serviceType: agreeInquiry.serviceType,
+            inquiryStatus: agreeInquiry.inquiryStatus,
+            inquirerUUID: agreeInquiry.inquirer.uuid,
+            username: agreeInquiry.picker.username,
+            avatarURL: agreeInquiry.picker.avatarUrl,
+            channelUUID: agreeInquiry.channelUuid,
+          ),
+        ),
+      );
+
+      yield AgreeInquiryState.done(
+        state,
+        agreeInquiry: agreeInquiry,
+      );
     } on APIException catch (e) {
       yield AgreeInquiryState.error(e);
     } catch (e) {

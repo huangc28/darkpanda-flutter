@@ -1,4 +1,10 @@
 import 'package:darkpanda_flutter/base_routes.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
@@ -7,6 +13,7 @@ import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dar
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -14,19 +21,28 @@ import 'package:provider/provider.dart';
 class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';
   static const inquiry_form = '/inquiry-form';
+  static const inquirerProfile = '/inquirer-profile';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
       SearchInquiryRoutes.root: (contect) => MultiProvider(
             providers: [
               BlocProvider(
-                create: (context) => CancelInquiryBloc(
+                create: (context) => LoadInquiryBloc(
                   searchInquiryAPIs: SearchInquiryAPIs(),
                 ),
               ),
               BlocProvider(
-                create: (context) => LoadInquiryBloc(
+                create: (context) => AgreeInquiryBloc(
                   searchInquiryAPIs: SearchInquiryAPIs(),
+                  inquiryChatroomsBloc:
+                      BlocProvider.of<InquiryChatroomsBloc>(context),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => CancelInquiryBloc(
+                  searchInquiryAPIs: SearchInquiryAPIs(),
+                  loadInquiryBloc: LoadInquiryBloc(),
                 ),
               ),
             ],
@@ -65,6 +81,28 @@ class SearchInquiryRoutes extends BaseRoutes {
           ),
         );
       },
+      SearchInquiryRoutes.inquirerProfile: (context) {
+        final screenArgs = args as InquirerProfileArguments;
+
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => LoadUserImagesBloc(
+                userApi: UserApis(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => LoadHistoricalServicesBloc(
+                userApi: UserApis(),
+              ),
+            ),
+          ],
+          child: InquirerProfile(
+            loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+            args: screenArgs,
+          ),
+        );
+      }
     };
   }
 }

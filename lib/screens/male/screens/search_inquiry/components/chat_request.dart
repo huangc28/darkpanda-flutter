@@ -1,18 +1,35 @@
-import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/inquiry_detail_dialog.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 
 import 'cancel_inquiry_confirmation_dialog.dart';
 
 class ChatRequest extends StatefulWidget {
-  const ChatRequest({this.onPush});
+  const ChatRequest({
+    this.onPush,
+    this.activeInquiry,
+  });
 
   final Function(String) onPush;
+  final ActiveInquiry activeInquiry;
 
   @override
   _ChatRequestState createState() => _ChatRequestState();
 }
 
 class _ChatRequestState extends State<ChatRequest> {
+  AgreeInquiryResponse agreeInquiryResponse = new AgreeInquiryResponse();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,120 +56,161 @@ class _ChatRequestState extends State<ChatRequest> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Expanded(
-                child: SizedBox(
-                  child: Container(
-                    padding: EdgeInsets.only(right: 15),
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: 0, left: 20, right: 12),
-                                child: Image.asset(
-                                    "lib/screens/male/assets/editButton.png"),
-                              ),
-                              Container(
-                                padding:
-                                    EdgeInsets.only(top: 0, left: 0, right: 20),
-                                child: Text(
-                                  '查看檔案',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SizedBox(
-                  child: Container(
-                    padding: EdgeInsets.only(right: 15),
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext context) {
-                              // return CancelInquiryConfirmationDialog();
-                            },
-                          ).then((value) {
-                            if (value) {}
-                          });
-                        },
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: 0, left: 20, right: 12),
-                                child: Image.asset(
-                                    "lib/screens/male/assets/deleteButton.png"),
-                              ),
-                              Container(
-                                padding:
-                                    EdgeInsets.only(top: 0, left: 0, right: 20),
-                                child: Text(
-                                  '馬上聊聊',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                child: InkWell(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    child:
-                        Image.asset("lib/screens/male/assets/cancelButton.png"),
-                  ),
-                  onTap: () {
-                    showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CancelInquiryConfirmationDialog();
-                      },
-                    ).then((value) {
-                      if (value) {}
-                    });
-                  },
-                ),
-              ),
+              _onTapViewProfile(),
+              _onTapChat(),
+              _onTapCancel(),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _onTapCancel() {
+    return SizedBox(
+      child: InkWell(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: Image.asset("lib/screens/male/assets/cancelButton.png"),
+        ),
+        onTap: () {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return CancelInquiryConfirmationDialog();
+            },
+          ).then((value) {
+            if (value) {
+              if (value) {
+                BlocProvider.of<CancelInquiryBloc>(context).add(
+                  SkipInquiry(widget.activeInquiry.uuid),
+                );
+              }
+            }
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _onTapViewProfile() {
+    return Expanded(
+      child: SizedBox(
+        child: Container(
+          padding: EdgeInsets.only(right: 15),
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: Material(
+            borderRadius: BorderRadius.circular(20),
+            color: Color.fromRGBO(255, 255, 255, 0.18),
+            child: GestureDetector(
+              onTap: () {
+                // widget.onPush(
+                //           '/inquirer-profile',
+                //           InquirerProfileArguments(
+                //             uuid: userUuid,
+                //           ),
+                //         );
+              },
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(top: 0, left: 20, right: 12),
+                      child:
+                          Image.asset("lib/screens/male/assets/editButton.png"),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 0, left: 0, right: 20),
+                      child: Text(
+                        '查看檔案',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _onTapChat() {
+    return BlocConsumer<AgreeInquiryBloc, AgreeInquiryState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        } else if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            agreeInquiryResponse = state.agreeInquiry;
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamed(
+              MainRoutes.maleChatroom,
+              arguments: MaleChatroomScreenArguments(
+                channelUUID: agreeInquiryResponse.channelUuid,
+                inquiryUUID: agreeInquiryResponse.picker.uuid,
+                counterPartUUID: agreeInquiryResponse.picker.uuid,
+              ),
+            );
+          });
+        }
+      },
+      builder: (context, state) {
+        return Expanded(
+          child: SizedBox(
+            child: Container(
+              padding: EdgeInsets.only(right: 15),
+              height: MediaQuery.of(context).size.height * 0.06,
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                color: Color.fromRGBO(255, 255, 255, 0.18),
+                child: GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<AgreeInquiryBloc>(context)
+                        .add(AgreeInquiry(widget.activeInquiry.uuid));
+                  },
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(top: 0, left: 20, right: 12),
+                          child: Image.asset(
+                              "lib/screens/male/assets/deleteButton.png"),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 0, left: 0, right: 20),
+                          child: Text(
+                            '馬上聊聊',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

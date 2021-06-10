@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/search_inquiry/routes.dart';
+import 'screens/routes.dart';
 
 import './bottom_navigation.dart';
 

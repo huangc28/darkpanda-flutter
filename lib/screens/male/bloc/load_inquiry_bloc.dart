@@ -34,6 +34,8 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
       yield* _mapUpdateLoadInquiryStatusToState(event);
     } else if (event is AddLoadInquirySubscription) {
       yield* _mapAddLoadInquirySubscriptionToState(event);
+    } else if (event is RemoveLoadInquiry) {
+      yield* _mapRemoveLoadInquiryToState(event);
     }
   }
 
@@ -81,7 +83,7 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
 
   Stream<LoadInquiryState> _mapUpdateLoadInquiryStatusToState(
       UpdateLoadInquiryStatus event) async* {
-    // Iterate through current inquiries try to find the one that matches
+    // To find the one that matches
     // the `uuid`. Update it's status.
 
     ActiveInquiry updateInquiry = new ActiveInquiry();
@@ -152,6 +154,38 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
     yield LoadInquiryState.putInquiryStreamMap(
       state,
       inquiryStreamMap: state.inquiryStreamMap,
+    );
+  }
+
+  Stream<LoadInquiryState> _mapRemoveLoadInquiryToState(
+      RemoveLoadInquiry event) async* {
+    // Remove inquiry subscription on firestore if the key exists.
+    if (state.inquiryStreamMap.containsKey(event.inquiryUuid)) {
+      developer.log('remove inqiury subscription: ${event.inquiryUuid}');
+
+      // Stop subscribing to firestore document of that inquiry.
+      state.inquiryStreamMap[event.inquiryUuid].cancel();
+
+      state.inquiryStreamMap.remove(event.inquiryUuid);
+
+      yield LoadInquiryState.putInquiryStreamMap(
+        state,
+        inquiryStreamMap: state.inquiryStreamMap,
+      );
+    }
+
+    ActiveInquiry updateInquiry = new ActiveInquiry();
+    // if (state.activeInquiry.uuid == event.inquiryUuid) {
+    //   updateInquiry = state.activeInquiry.
+    // }
+
+    // final filteredInquiries = state.inquiries
+    //     .where((inquiry) => inquiry.uuid != event.inquiryUuid)
+    //     .toList();
+
+    yield LoadInquiryState.putInquiries(
+      state,
+      activeInquiry: updateInquiry,
     );
   }
 }

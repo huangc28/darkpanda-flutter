@@ -70,7 +70,8 @@ class _SearchInquiryState extends State<SearchInquiry> {
             }
 
             // 3. Inquiry status == asking, go to Chat Request screen
-            return ChatRequest(onPush: widget.onPush);
+            return ChatRequest(
+                onPush: widget.onPush, activeInquiry: activeInquiry);
           }
 
           // Male does not has active inquiry, go to Create Inquiry screen
