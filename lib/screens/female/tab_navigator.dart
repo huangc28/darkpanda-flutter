@@ -6,7 +6,7 @@ import './screens/inquiry_list/routes.dart';
 import './screens/inquiry_chats/routes.dart';
 
 import '../profile/screens/routes.dart';
-import '../setting/screens/routes.dart';
+import '../setting/routes.dart';
 import '../service_list/routes.dart';
 
 // Each tag keeps it's own navigator instance to track navigation history.

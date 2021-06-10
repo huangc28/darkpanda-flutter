@@ -25,7 +25,7 @@ class _TopupDpState extends State<TopupDp> {
         title: Text('購買DP幣'),
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: Color.fromRGBO(106, 109, 137, 1), //change your color here
+          color: Color.fromRGBO(106, 109, 137, 1),
         ),
       ),
       body: Body(onPush: widget.onPush),
