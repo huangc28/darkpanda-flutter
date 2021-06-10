@@ -1,3 +1,9 @@
+import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,6 +79,10 @@ class DarkPandaApp extends StatelessWidget {
             dataProvider: UserApis(),
           ),
         ),
+
+        BlocProvider(
+          create: (context) => UpdateInquiryNotifierBloc(),
+        ),
         // Inquiry chatroom related blocs
         BlocProvider(
           create: (context) => InquiryChatMessagesBloc(),
@@ -86,6 +96,30 @@ class DarkPandaApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => LoadUserBloc(userApis: UserApis()),
+        ),
+
+        BlocProvider(
+          create: (context) => LoadInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CancelInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+            loadInquiryBloc: BlocProvider.of<LoadInquiryBloc>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ExitChatroomBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+            inquiryChatroomsBloc:
+                BlocProvider.of<InquiryChatroomsBloc>(context),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => DisagreeInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+          ),
         ),
 
         // Current chatroom related blocs
@@ -106,6 +140,8 @@ class DarkPandaApp extends StatelessWidget {
             currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
             serviceConfirmNotifierBloc:
                 BlocProvider.of<ServiceConfirmNotifierBloc>(context),
+            updateInquiryNotifierBloc:
+                BlocProvider.of<UpdateInquiryNotifierBloc>(context),
           ),
         ),
 
@@ -174,6 +210,11 @@ class DarkPandaApp extends StatelessWidget {
 
                   return routeBuilder[settings.name](context);
                 } else if (settings.name == MainRoutes.serviceChatroom) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                } else if (settings.name == MainRoutes.maleChatroom) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);
 

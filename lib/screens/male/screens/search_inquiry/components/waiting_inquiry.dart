@@ -20,8 +20,6 @@ class WaitingInquiry extends StatefulWidget {
 }
 
 class _WaitingInquiryState extends State<WaitingInquiry> {
-  // ActiveInquiry activeInquiry = new ActiveInquiry();
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -52,9 +50,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                     borderRadius: BorderRadius.circular(20),
                     color: Color.fromRGBO(255, 255, 255, 0.18),
                     child: GestureDetector(
-                      onTap: () {
-                        // Navigator.pushNamed(context, MessageScreen.routeName);
-                      },
+                      onTap: () {},
                       child: Align(
                         alignment: Alignment.center,
                         child: Row(

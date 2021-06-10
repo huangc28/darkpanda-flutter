@@ -1,32 +1,32 @@
-part of 'cancel_inquiry_bloc.dart';
+part of 'exit_chatroom_bloc.dart';
 
-class CancelInquiryState<E extends AppBaseException> extends Equatable {
+class ExitChatroomState<E extends AppBaseException> extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
 
-  const CancelInquiryState._({
+  const ExitChatroomState._({
     this.error,
     this.status,
   });
 
   /// Bloc yields following states
-  const CancelInquiryState.initial()
+  const ExitChatroomState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
         );
 
-  const CancelInquiryState.loading(CancelInquiryState state)
+  const ExitChatroomState.loading(ExitChatroomState state)
       : this._(
           status: AsyncLoadingStatus.loading,
         );
 
-  const CancelInquiryState.error(E err)
+  const ExitChatroomState.error(E err)
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const CancelInquiryState.done(CancelInquiryState state)
+  const ExitChatroomState.done(ExitChatroomState state)
       : this._(
           status: AsyncLoadingStatus.done,
         );

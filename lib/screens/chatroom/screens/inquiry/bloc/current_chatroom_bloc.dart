@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,11 +37,13 @@ class CurrentChatroomBloc
     this.inquiryChatroomsBloc,
     this.currentServiceBloc,
     this.serviceConfirmNotifierBloc,
+    this.updateInquiryNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(userApis != null),
         assert(inquiryChatroomsBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
+        assert(updateInquiryNotifierBloc != null),
         super(CurrentChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
@@ -49,6 +52,7 @@ class CurrentChatroomBloc
   final InquiryChatroomsBloc inquiryChatroomsBloc;
   final CurrentServiceBloc currentServiceBloc;
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
+  final UpdateInquiryNotifierBloc updateInquiryNotifierBloc;
 
   @override
   Stream<CurrentChatroomState> mapEventToState(
@@ -224,6 +228,8 @@ class CurrentChatroomBloc
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
       msg = UpdateInquiryMessage.fromMap(rawMsg);
+
+      updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
     } else {
       msg = Message.fromMap(rawMsg);
     }

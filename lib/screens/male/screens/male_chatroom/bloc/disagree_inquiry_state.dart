@@ -1,32 +1,32 @@
-part of 'cancel_inquiry_bloc.dart';
+part of 'disagree_inquiry_bloc.dart';
 
-class CancelInquiryState<E extends AppBaseException> extends Equatable {
+class DisagreeInquiryState<E extends AppBaseException> extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
 
-  const CancelInquiryState._({
+  const DisagreeInquiryState._({
     this.error,
     this.status,
   });
 
   /// Bloc yields following states
-  const CancelInquiryState.initial()
+  const DisagreeInquiryState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
         );
 
-  const CancelInquiryState.loading(CancelInquiryState state)
+  const DisagreeInquiryState.loading(DisagreeInquiryState state)
       : this._(
           status: AsyncLoadingStatus.loading,
         );
 
-  const CancelInquiryState.error(E err)
+  const DisagreeInquiryState.error(E err)
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const CancelInquiryState.done(CancelInquiryState state)
+  const DisagreeInquiryState.done(DisagreeInquiryState state)
       : this._(
           status: AsyncLoadingStatus.done,
         );

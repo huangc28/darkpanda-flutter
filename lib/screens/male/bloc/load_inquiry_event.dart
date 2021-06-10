@@ -32,3 +32,11 @@ class AddLoadInquirySubscription extends LoadInquiryEvent {
     this.uuid,
   });
 }
+
+class RemoveLoadInquiry extends LoadInquiryEvent {
+  final String inquiryUuid;
+
+  const RemoveLoadInquiry({
+    this.inquiryUuid,
+  });
+}

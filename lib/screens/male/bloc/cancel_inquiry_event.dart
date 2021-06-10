@@ -15,3 +15,12 @@ class CancelInquiry extends CancelInquiryEvent {
   @override
   List<Object> get props => [this.inquiryUuid];
 }
+
+class SkipInquiry extends CancelInquiryEvent {
+  const SkipInquiry(this.inquiryUuid);
+
+  final String inquiryUuid;
+
+  @override
+  List<Object> get props => [this.inquiryUuid];
+}

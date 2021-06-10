@@ -98,12 +98,118 @@ class SearchInquiryAPIs extends BaseClient {
     }
   }
 
-  Future<http.Response> agreeInquiry(String inquiryUuid) async {
+  Future<http.Response> skipInquiry(String inquiryUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'inquiry_uuid': inquiryUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/inquiries/skip'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  Future<http.Response> agreeToChatInquiry(String inquiryUuid) async {
     try {
       final request = http.Request(
         'POST',
-        buildUri('/v1/inquiries/agree-to-chat?inquiry_uuid=$inquiryUuid'),
+        buildUri('/v1/inquiries/agree-to-chat', {
+          "inquiry_uuid": inquiryUuid,
+        }),
       );
+
+      await withTokenFromSecureStore(request);
+      // withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  Future<http.Response> disagreeInquiry(String channelUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'channel_uuid': channelUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/disagree'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  Future<http.Response> quitChatroom(String channelUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'channel_uuid': channelUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/quit-chatroom'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  Future<http.Response> emitServiceComfirmedMessage(String inquiryUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'inquiry_uuid': inquiryUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/emit-service-confirmed-message'),
+      );
+
+      request.body = jsonBody;
 
       await withTokenFromSecureStore(request);
       withApplicationJsonHeader(request);
