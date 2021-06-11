@@ -4,6 +4,7 @@ enum MessageType {
   confirmed_service,
   update_inquiry_detail,
   disagree_inquiry,
+  quit_chatroomt,
 }
 
 extension MessageTypeExtension on MessageType {
@@ -19,6 +20,8 @@ extension MessageTypeExtension on MessageType {
         return 'update_inquiry_detail';
       case MessageType.disagree_inquiry:
         return 'disagree_inquiry';
+      case MessageType.quit_chatroomt:
+        return 'quit_chatroomt';
       default:
         return null;
     }

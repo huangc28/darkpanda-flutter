@@ -61,6 +61,8 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         json.decode(res.body),
       );
 
+      // if (activeInquiry.inquiryStatus)
+
       yield LoadInquiryState.loaded(
         state,
         activeInquiry: activeInquiry,
@@ -111,7 +113,8 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
       _createInquirySubscriptionStreamMap(ActiveInquiry inquiry) {
     Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
 
-    if (inquiry.inquiryStatus == InquiryStatus.inquiring) {
+    if (inquiry.inquiryStatus == InquiryStatus.inquiring ||
+        inquiry.inquiryStatus == InquiryStatus.asking) {
       _streamMap[inquiry.uuid] = _createInquirySubscriptionStream(inquiry.uuid);
     }
 
@@ -139,6 +142,7 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
 
     if (iqStatus == InquiryStatus.asking.name) {
       iqPickerUuid = snapshot['picker_uuid'] as String;
+      loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
     }
 
     developer.log(
@@ -152,9 +156,9 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
       ),
     );
 
-    if (iqStatus == InquiryStatus.asking.name) {
-      loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
-    }
+    // if (iqStatus == InquiryStatus.asking.name) {
+    //   loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
+    // }
   }
 
   Stream<LoadInquiryState> _mapAddLoadInquirySubscriptionToState(

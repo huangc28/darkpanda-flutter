@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 
-class DisagreeInquiryBubble extends StatelessWidget {
-  const DisagreeInquiryBubble({
+class QuitChatroomBubble extends StatelessWidget {
+  const QuitChatroomBubble({
     this.message,
     this.isMe = false,
   });
 
-  final DisagreeInquiryMessage message;
+  final QuitChatroomMessage message;
   final bool isMe;
 
   @override
@@ -22,7 +22,7 @@ class DisagreeInquiryBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Brat 已拒絕邀請',
+            '對方已離開聊天室',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),

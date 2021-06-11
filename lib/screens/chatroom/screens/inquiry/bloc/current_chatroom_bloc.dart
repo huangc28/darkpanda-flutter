@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -158,6 +159,8 @@ class CurrentChatroomBloc
           return UpdateInquiryMessage.fromMap(data);
         } else if (data['type'] == MessageType.disagree_inquiry.name) {
           return DisagreeInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.quit_chatroomt.name) {
+          return QuitChatroomMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -214,6 +217,8 @@ class CurrentChatroomBloc
         (String type) => type == MessageType.update_inquiry_detail.name;
     final isDisagreeInquiryMsg =
         (String type) => type == MessageType.disagree_inquiry.name;
+    final isQuitChatroomMsg =
+        (String type) => type == MessageType.quit_chatroomt.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -237,6 +242,8 @@ class CurrentChatroomBloc
       updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
     } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
       msg = DisagreeInquiryMessage.fromMap(rawMsg);
+    } else if (isQuitChatroomMsg(rawMsg['type'])) {
+      msg = QuitChatroomMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }
