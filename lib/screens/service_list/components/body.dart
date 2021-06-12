@@ -37,11 +37,6 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(

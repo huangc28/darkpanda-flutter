@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 
@@ -9,7 +8,6 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/models/message.dart';
 
 import '../models/historical_service.dart';
 import '../services/service_chatroom_api.dart';
@@ -44,10 +42,6 @@ class LoadHistoricalServiceBloc
 
       // request API
       final res = await apiClient.fetchOverdueService();
-
-      print(
-        json.decode(res.body),
-      );
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
