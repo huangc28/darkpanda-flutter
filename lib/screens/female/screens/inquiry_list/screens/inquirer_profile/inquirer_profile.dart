@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -76,9 +77,12 @@ class _InquirerProfileState extends State<InquirerProfile>
             if (state.status == AsyncLoadingStatus.done) {
               return AppBar(
                 flexibleSpace: Image(
-                  image: NetworkImage(
-                    state.userProfile.avatarUrl,
-                  ),
+                  image: state.userProfile.avatarUrl == null
+                      ? NetworkImage(
+                          state.userProfile.avatarUrl,
+                        )
+                      : NetworkImage(
+                          'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg'),
                   fit: BoxFit.fill,
                 ),
               );
@@ -100,7 +104,11 @@ class _InquirerProfileState extends State<InquirerProfile>
             // If is loading user profile, display loading page.
             if (state.status == AsyncLoadingStatus.loading ||
                 state.status == AsyncLoadingStatus.initial) {
-              return LoadingScreen();
+              return Row(
+                children: [
+                  LoadingScreen(),
+                ],
+              );
             }
 
             if (state.status == AsyncLoadingStatus.error) {

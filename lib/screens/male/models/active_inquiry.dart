@@ -9,6 +9,7 @@ class ActiveInquiry {
     this.duration,
     this.address,
     this.inquiryStatus,
+    this.pickerUuid,
   });
 
   String uuid;
@@ -18,6 +19,7 @@ class ActiveInquiry {
   int duration;
   String address;
   InquiryStatus inquiryStatus;
+  String pickerUuid;
 
   ActiveInquiry.fromMap(Map<String, dynamic> data)
       : uuid = data['uuid'],
@@ -26,7 +28,8 @@ class ActiveInquiry {
         price = data['price'],
         duration = data['duration'],
         address = data['address'],
-        inquiryStatus = data['inquiry_status'].toString().toInquiryStatusEnum();
+        inquiryStatus = data['inquiry_status'].toString().toInquiryStatusEnum(),
+        pickerUuid = data['picker_uuid'];
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -36,6 +39,7 @@ class ActiveInquiry {
         'duration': duration,
         'address': address,
         'inquiry_status': inquiryStatus,
+        'picker_uuid': pickerUuid,
       };
 
   ActiveInquiry copyWith({
@@ -46,6 +50,7 @@ class ActiveInquiry {
     DateTime appointmentTime,
     InquiryStatus inquiryStatus,
     String address,
+    String pickerUuid,
   }) {
     return ActiveInquiry(
       uuid: uuid ?? this.uuid,
@@ -55,6 +60,7 @@ class ActiveInquiry {
       appointmentTime: appointmentTime ?? this.appointmentTime,
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
       address: address ?? this.address,
+      pickerUuid: pickerUuid ?? this.pickerUuid,
     );
   }
 }

@@ -18,10 +18,12 @@ class ClearLoadInquiryState extends LoadInquiryEvent {
 class UpdateLoadInquiryStatus extends LoadInquiryEvent {
   final String inquiryUuid;
   final InquiryStatus inquiryStatus;
+  final String pickerUuid;
 
   const UpdateLoadInquiryStatus({
     this.inquiryUuid,
     this.inquiryStatus,
+    this.pickerUuid,
   });
 }
 

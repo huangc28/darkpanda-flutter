@@ -89,18 +89,20 @@ class InquirerCommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       child: Container(
         padding: EdgeInsets.symmetric(
           vertical: 22,
           horizontal: 12,
         ),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(31, 30, 56, 1),
           border: Border.all(
-            width: 1,
+            style: BorderStyle.solid,
+            width: 0.5,
             color: Color.fromRGBO(106, 109, 137, 1),
           ),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          color: Color.fromRGBO(31, 30, 56, 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

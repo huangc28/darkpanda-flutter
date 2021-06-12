@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 
 enum InquiryStatus {
   inquiring,
@@ -13,5 +13,9 @@ enum InquiryStatus {
 /// Make an extension to convert string to enum.
 extension EnumEx on String {
   InquiryStatus toInquiryStatusEnum() =>
-      InquiryStatus.values.firstWhere((d) => describeEnum(d) == toLowerCase());
+      EnumToString.fromString(InquiryStatus.values, toLowerCase());
+}
+
+extension InquiryStatusTypeExtension on InquiryStatus {
+  String get name => EnumToString.convertToString(this);
 }

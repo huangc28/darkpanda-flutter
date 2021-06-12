@@ -33,6 +33,7 @@ class SearchInquiryRoutes extends BaseRoutes {
               BlocProvider(
                 create: (context) => LoadInquiryBloc(
                   searchInquiryAPIs: SearchInquiryAPIs(),
+                  loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
                 ),
               ),
               BlocProvider(
@@ -62,7 +63,8 @@ class SearchInquiryRoutes extends BaseRoutes {
               ),
             ],
             child: SearchInquiry(
-              onPush: (String routeName) => this.push(context, routeName, args),
+              onPush: (String routeName, InquirerProfileArguments args) =>
+                  this.push(context, routeName, args),
             ),
           ),
       SearchInquiryRoutes.inquiry_form: (context) {
