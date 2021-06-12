@@ -1,3 +1,5 @@
+import 'package:enum_to_string/enum_to_string.dart';
+
 enum MessageType {
   service_detail,
   text,
@@ -8,22 +10,5 @@ enum MessageType {
 }
 
 extension MessageTypeExtension on MessageType {
-  String get name {
-    switch (this) {
-      case MessageType.service_detail:
-        return 'service_detail';
-      case MessageType.text:
-        return 'text';
-      case MessageType.confirmed_service:
-        return 'confirmed_service';
-      case MessageType.update_inquiry_detail:
-        return 'update_inquiry_detail';
-      case MessageType.disagree_inquiry:
-        return 'disagree_inquiry';
-      case MessageType.quit_chatroomt:
-        return 'quit_chatroomt';
-      default:
-        return null;
-    }
-  }
+  String get name => EnumToString.convertToString(this);
 }
