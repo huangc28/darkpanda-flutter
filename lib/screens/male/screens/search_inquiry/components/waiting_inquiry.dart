@@ -1,9 +1,7 @@
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/edit_inquiry_form.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +13,9 @@ import 'cancel_inquiry_confirmation_dialog.dart';
 
 class WaitingInquiry extends StatefulWidget {
   const WaitingInquiry({
-    this.onPush,
     this.activeInquiry,
   });
 
-  final Function(String) onPush;
   final ActiveInquiry activeInquiry;
 
   @override

@@ -1,9 +1,11 @@
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/inquiry_detail_dialog.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +16,16 @@ import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 
 import 'cancel_inquiry_confirmation_dialog.dart';
 
+typedef OnPushInquiryDetail = void Function(
+    String routeName, InquirerProfileArguments args);
+
 class ChatRequest extends StatefulWidget {
   const ChatRequest({
     this.onPush,
     this.activeInquiry,
   });
 
-  final Function(String) onPush;
+  final OnPushInquiryDetail onPush;
   final ActiveInquiry activeInquiry;
 
   @override
@@ -29,6 +34,7 @@ class ChatRequest extends StatefulWidget {
 
 class _ChatRequestState extends State<ChatRequest> {
   AgreeInquiryResponse agreeInquiryResponse = new AgreeInquiryResponse();
+  UserProfile userProfile = new UserProfile();
 
   @override
   Widget build(BuildContext context) {
@@ -105,12 +111,12 @@ class _ChatRequestState extends State<ChatRequest> {
             color: Color.fromRGBO(255, 255, 255, 0.18),
             child: GestureDetector(
               onTap: () {
-                // widget.onPush(
-                //           '/inquirer-profile',
-                //           InquirerProfileArguments(
-                //             uuid: userUuid,
-                //           ),
-                //         );
+                widget.onPush(
+                  '/inquirer-profile',
+                  InquirerProfileArguments(
+                    uuid: userProfile.uuid,
+                  ),
+                );
               },
               child: Align(
                 alignment: Alignment.center,
@@ -215,114 +221,118 @@ class _ChatRequestState extends State<ChatRequest> {
   }
 
   Widget _femaleProfile() {
-    return Container(
-      child: Column(
-        children: [
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: <Widget>[
-              Container(
-                height: 300,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-              ),
-              Positioned(
-                bottom: 20,
-                right: 20,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          "lib/screens/male/assets/smallPending.png"),
-                    ),
-                  ),
-                  width: 100,
-                  height: 100,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      Text(
-                        '26',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+    return BlocConsumer<LoadUserBloc, LoadUserState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state.status == AsyncLoadingStatus.loading ||
+            state.status == AsyncLoadingStatus.initial) {
+          return Row(
+            children: [
+              LoadingScreen(),
             ],
-          ),
-          Container(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  topLeft: Radius.circular(20),
-                ),
-                color: Color.fromRGBO(31, 30, 56, 1),
-              ),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                child: Column(
+          );
+        }
+
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+
+          return Container();
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          userProfile = state.userProfile;
+          return Container(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              'Jenny',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            IconTheme(
-                              data: IconThemeData(
-                                color: Colors.amber,
-                                size: 18,
-                              ),
-                              child: StarDisplay(value: 3),
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              '4.2/5',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
                     Container(
+                      height: 300,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20),
+                      ),
+                      color: Color.fromRGBO(31, 30, 56, 1),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
                       child: Column(
                         children: <Widget>[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              '本人擅長唱歌跳舞，業餘時間也會做做烹飪，喜歡一切美的東西，歡迎大家在Drank panda上找我嘮嗑呀...',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    userProfile.username,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  IconTheme(
+                                    data: IconThemeData(
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    child: StarDisplay(value: 3),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    '3/5',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            child: Column(
+                              children: <Widget>[
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    userProfile.description == null ||
+                                            userProfile.description.isEmpty
+                                        ? '沒有內容'
+                                        : userProfile.description,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        return SizedBox.fromSize();
+      },
     );
   }
 

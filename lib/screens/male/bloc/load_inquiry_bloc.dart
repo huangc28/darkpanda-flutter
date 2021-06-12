@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
@@ -18,9 +19,11 @@ part 'load_inquiry_state.dart';
 class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
   LoadInquiryBloc({
     this.searchInquiryAPIs,
+    this.loadUserBloc,
   }) : super(LoadInquiryState.initial());
 
   final SearchInquiryAPIs searchInquiryAPIs;
+  final LoadUserBloc loadUserBloc;
 
   @override
   Stream<LoadInquiryState> mapEventToState(
@@ -58,6 +61,8 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         json.decode(res.body),
       );
 
+      // if (activeInquiry.inquiryStatus)
+
       yield LoadInquiryState.loaded(
         state,
         activeInquiry: activeInquiry,
@@ -93,6 +98,7 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
 
       updateInquiry = state.activeInquiry.copyWith(
         inquiryStatus: event.inquiryStatus,
+        pickerUuid: event.pickerUuid,
       );
     }
 
@@ -107,8 +113,8 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
       _createInquirySubscriptionStreamMap(ActiveInquiry inquiry) {
     Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
 
-    if (inquiry.inquiryStatus == InquiryStatus.asking ||
-        inquiry.inquiryStatus == InquiryStatus.inquiring) {
+    if (inquiry.inquiryStatus == InquiryStatus.inquiring ||
+        inquiry.inquiryStatus == InquiryStatus.asking) {
       _streamMap[inquiry.uuid] = _createInquirySubscriptionStream(inquiry.uuid);
     }
 
@@ -132,6 +138,12 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
     String iqStatus = snapshot['status'] as String;
+    String iqPickerUuid = "";
+
+    if (iqStatus == InquiryStatus.asking.name) {
+      iqPickerUuid = snapshot['picker_uuid'] as String;
+      loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
+    }
 
     developer.log(
         'firestore inquiry changes recieved: ${snapshot.data().toString()}');
@@ -140,8 +152,13 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
       UpdateLoadInquiryStatus(
         inquiryUuid: inquiryUuid,
         inquiryStatus: iqStatus.toInquiryStatusEnum(),
+        pickerUuid: iqPickerUuid,
       ),
     );
+
+    // if (iqStatus == InquiryStatus.asking.name) {
+    //   loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
+    // }
   }
 
   Stream<LoadInquiryState> _mapAddLoadInquirySubscriptionToState(

@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
@@ -11,11 +12,10 @@ import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier
 import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
-// import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -184,7 +184,6 @@ class _MaleChatroomState extends State<MaleChatroom>
                                         );
                                       } else if (message
                                           is UpdateInquiryMessage) {
-                                        // _isUpdateInquiry = true;
                                         return UpdateInquiryBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
@@ -193,8 +192,13 @@ class _MaleChatroomState extends State<MaleChatroom>
                                             // _animationController.forward();
                                           },
                                         );
+                                      } else if (message
+                                          is DisagreeInquiryMessage) {
+                                        return DisagreeInquiryBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
                                       } else {
-                                        print(message);
                                         return ChatBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
