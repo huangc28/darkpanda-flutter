@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 
 enum InquiryStatus {
