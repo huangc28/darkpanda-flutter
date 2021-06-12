@@ -33,6 +33,8 @@ class SearchInquiryFormBloc
   ) async* {
     if (event is SubmitSearchInquiryForm) {
       yield* _mapSubmitSearchInquiryFormToState(event);
+    } else if (event is SubmitEditSearchInquiryForm) {
+      yield* _mapSubmitEditSearchInquiryFormToState(event);
     }
   }
 
@@ -42,6 +44,30 @@ class SearchInquiryFormBloc
       yield SearchInquiryFormState.loading(state);
 
       final resp = await searchInquiryAPIs.searchInquiry(
+        event.inquiryForms,
+      );
+
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+
+      yield SearchInquiryFormState.done();
+    } on APIException catch (err) {
+      yield SearchInquiryFormState.error(state, err: err);
+    } catch (e) {
+      yield SearchInquiryFormState.error(state,
+          err: new AppGeneralExeption(message: e.toString()));
+    }
+  }
+
+  Stream<SearchInquiryFormState> _mapSubmitEditSearchInquiryFormToState(
+      SubmitEditSearchInquiryForm event) async* {
+    try {
+      yield SearchInquiryFormState.loading(state);
+
+      final resp = await searchInquiryAPIs.updateInquiry(
         event.inquiryForms,
       );
 

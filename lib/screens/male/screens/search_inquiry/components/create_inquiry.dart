@@ -1,4 +1,3 @@
-import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,10 +8,6 @@ import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 class CreateInquiry extends StatefulWidget {
-  const CreateInquiry({this.onPush});
-
-  final Function(String) onPush;
-
   @override
   _CreateInquiryState createState() => _CreateInquiryState();
 }

@@ -1,3 +1,10 @@
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/edit_inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,7 +57,44 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                     borderRadius: BorderRadius.circular(20),
                     color: Color.fromRGBO(255, 255, 255, 0.18),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                    create: (context) => LoadInquiryBloc(
+                                      searchInquiryAPIs: SearchInquiryAPIs(),
+                                    ),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => SearchInquiryFormBloc(
+                                      searchInquiryAPIs: SearchInquiryAPIs(),
+                                      loadInquiryBloc:
+                                          BlocProvider.of<LoadInquiryBloc>(
+                                              context),
+                                    ),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => LoadServiceListBloc(
+                                      searchInquiryAPIs: SearchInquiryAPIs(),
+                                    ),
+                                  ),
+                                ],
+                                child: EditInquiryForm(
+                                  activeInquiry: widget.activeInquiry,
+                                ),
+                              );
+                            },
+                          ),
+                        ).then((value) {
+                          setState(() {
+                            BlocProvider.of<LoadInquiryBloc>(context)
+                                .add(LoadInquiry());
+                          });
+                        });
+                      },
                       child: Align(
                         alignment: Alignment.center,
                         child: Row(

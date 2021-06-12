@@ -15,3 +15,12 @@ class SubmitSearchInquiryForm extends SearchInquiryFormEvent {
   @override
   List<Object> get props => [this.inquiryForms];
 }
+
+class SubmitEditSearchInquiryForm extends SearchInquiryFormEvent {
+  const SubmitEditSearchInquiryForm(this.inquiryForms);
+
+  final InquiryForms inquiryForms;
+
+  @override
+  List<Object> get props => [this.inquiryForms];
+}

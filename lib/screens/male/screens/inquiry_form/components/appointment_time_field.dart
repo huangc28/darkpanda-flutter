@@ -9,6 +9,8 @@ class AppointmentTimeField extends StatelessWidget {
     this.onSelectTime,
     this.validator,
     this.focusNode,
+    this.dateValue,
+    this.timeValue,
   }) : super(key: key);
 
   final TextEditingController dateController;
@@ -17,12 +19,15 @@ class AppointmentTimeField extends StatelessWidget {
   final Function(TimeOfDay) onSelectTime;
   final ValueChanged<String> validator;
   final FocusNode focusNode;
+  final DateTime dateValue;
+  final TimeOfDay timeValue;
 
   _handleTapDate(BuildContext context) async {
+    final selectedDate = dateValue;
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: selectedDate,
+      firstDate: selectedDate,
       lastDate: DateTime.now().add(
         Duration(days: 60),
       ),
@@ -40,10 +45,11 @@ class AppointmentTimeField extends StatelessWidget {
   }
 
   _handleTapTime(BuildContext context) async {
+    final selectedTime = timeValue;
     final pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: selectedTime,
     );
 
     if (pickedTime != null) {

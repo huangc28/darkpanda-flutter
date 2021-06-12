@@ -59,6 +59,40 @@ class SearchInquiryAPIs extends BaseClient {
     }
   }
 
+  Future<http.Response> updateInquiry(InquiryForms inquiryForms) async {
+    final appointmentTime = DateTime(
+      inquiryForms.inquiryDate.year,
+      inquiryForms.inquiryDate.month,
+      inquiryForms.inquiryDate.day,
+      inquiryForms.inquiryTime.hour,
+      inquiryForms.inquiryTime.minute,
+    );
+
+    final body = inquiryForms;
+
+    final jsonBody = jsonEncode({
+      'budget': body.budget,
+      'service_type': body.serviceType,
+      'AppointmentTime': '${appointmentTime.toIso8601String()}Z',
+      'ServiceDuration': body.duration.inMinutes,
+    });
+
+    final request = http.Request(
+      'PATCH',
+      buildUri(
+        '/v1/inquiries/${inquiryForms.uuid}',
+      ),
+    );
+
+    request.body = jsonBody;
+
+    withApplicationJsonHeader(request);
+
+    withTokenFromSecureStore(request);
+
+    return sendWithResponse(request);
+  }
+
   Future<http.Response> fetchInquiry() async {
     final request = http.Request(
       'GET',

@@ -66,7 +66,7 @@ class _SearchInquiryState extends State<SearchInquiry> {
             // 2. Inquiry status == cancelled, go to Create Inquiry screen
             else if (state.activeInquiry.inquiryStatus ==
                 InquiryStatus.canceled) {
-              return CreateInquiry(onPush: widget.onPush);
+              return CreateInquiry();
             }
 
             // 3. Inquiry status == asking, go to Chat Request screen
@@ -76,11 +76,11 @@ class _SearchInquiryState extends State<SearchInquiry> {
 
           // Male does not has active inquiry, go to Create Inquiry screen
           else if (state.status == AsyncLoadingStatus.error) {
-            return CreateInquiry(onPush: widget.onPush);
+            return CreateInquiry();
           }
 
           // Default go to Create Inquiry screen
-          return CreateInquiry(onPush: widget.onPush);
+          return CreateInquiry();
         },
       ),
     );

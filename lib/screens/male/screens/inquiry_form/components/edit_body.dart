@@ -1,35 +1,51 @@
-import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/male_app.dart';
+import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/service_list.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/components/waiting_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-part 'appointment_time_field.dart';
+import 'body.dart';
 
-class Body extends StatefulWidget {
+class EditBody extends StatefulWidget {
+  const EditBody({
+    this.activeInquiry,
+  });
+
+  final ActiveInquiry activeInquiry;
+
   @override
-  _BodyState createState() => _BodyState();
+  _EditBodyState createState() => _EditBodyState();
 }
 
-class _BodyState extends State<Body> {
+class _EditBodyState extends State<EditBody> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int selectedIndexServiceType = 0;
   int selectedIndexPeriod = 0;
 
-  List<String> periodLst = ["一個小時", "一個半小時", "兩個小時", "兩個半小時"];
+  List periodLst = [
+    {
+      "name": "一個小時",
+      "value": "60",
+    },
+    {
+      "name": "一個半小時",
+      "value": "90",
+    },
+    {
+      "name": "兩個小時",
+      "value": "120",
+    },
+    {
+      "name": "兩個半小時",
+      "value": "150",
+    },
+  ];
 
   TextEditingController _budgetController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
@@ -57,12 +73,29 @@ class _BodyState extends State<Body> {
     super.initState();
     BlocProvider.of<LoadServiceListBloc>(context).add(LoadServiceList());
 
-    _dateController.text = _formatDate(_inquiryForms.inquiryDate);
-    _timeController.text = _formatTime(
-      _inquiryForms.inquiryTime,
-    );
+    _inquiryForms.uuid = widget.activeInquiry.uuid;
+    _budgetController.text = widget.activeInquiry.budget == null
+        ? '0'
+        : widget.activeInquiry.budget.toString();
 
-    _periodController.text = '1';
+    // DateTime dateTime = DateTime.now();
+    // TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
+    // Convert string date into Date format
+    if (widget.activeInquiry.appointmentTime != null) {
+      String date = widget.activeInquiry.appointmentTime;
+      dateTime = DateTime.parse(date);
+      timeOfDay = TimeOfDay.fromDateTime(dateTime);
+    }
+
+    _dateController.text = widget.activeInquiry.appointmentTime == null
+        ? _formatDate(_inquiryForms.inquiryDate)
+        : _formatDate(dateTime);
+
+    _timeController.text = widget.activeInquiry.appointmentTime == null
+        ? _formatTime(timeOfDay)
+        : _formatTime(timeOfDay);
+    ;
+
     serviceList.serviceNames = [];
   }
 
@@ -94,11 +127,25 @@ class _BodyState extends State<Body> {
         SizedBox(
           child: Padding(
             padding: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
-            child: _customPeriodRadio(periodLst[i], i),
+            child: _customPeriodRadio(periodLst[i]['name'], i),
           ),
         ),
       );
     }
+
+    final periodIndex = periodLst.indexWhere(
+      (element) =>
+          element['value'] ==
+          (widget.activeInquiry.duration == null
+              ? '60'
+              : widget.activeInquiry.duration.toString()),
+    );
+
+    _periodController.text = widget.activeInquiry.duration == null
+        ? '60'
+        : widget.activeInquiry.duration.toString();
+
+    changeIndexPeriod(periodIndex);
   }
 
   void changeIndexServiceType(int index) {
@@ -113,8 +160,9 @@ class _BodyState extends State<Body> {
     });
   }
 
-  String _formatDate(DateTime dateTime) =>
-      DateFormat.yMd().format(_inquiryForms.inquiryDate);
+  String _formatDate(DateTime dateTime) {
+    return DateFormat.yMd().format(dateTime);
+  }
 
   String _formatTime(TimeOfDay time) {
     final now = DateTime.now();
@@ -188,12 +236,12 @@ class _BodyState extends State<Body> {
             }
             _formKey.currentState.save();
             BlocProvider.of<SearchInquiryFormBloc>(context).add(
-              SubmitSearchInquiryForm(_inquiryForms),
+              SubmitEditSearchInquiryForm(_inquiryForms),
             );
           },
           child: Center(
             child: Text(
-              '提交需求',
+              '编织',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -251,8 +299,25 @@ class _BodyState extends State<Body> {
         if (state.status == AsyncLoadingStatus.done) {
           setState(() {
             serviceList = state.serviceList;
-            _serviceTypeController.text = serviceList.serviceNames[0].name;
+            // _serviceTypeController.text = serviceList.serviceNames[0].name;
+            // _inquiryForms.serviceType = _serviceTypeController.text;
+
+            // To get index of selected value from widget.activeInquiry.serviceType
+            // If widget.activeInquiry.serviceType is null, get the first index
+            final index = serviceList.serviceNames.indexWhere((element) =>
+                element.name ==
+                (widget.activeInquiry.serviceType == null
+                    ? serviceList.serviceNames[0].name
+                    : widget.activeInquiry.serviceType));
+
+            _serviceTypeController.text =
+                widget.activeInquiry.serviceType == null
+                    ? serviceList.serviceNames[0].name
+                    : widget.activeInquiry.serviceType;
+
             _inquiryForms.serviceType = _serviceTypeController.text;
+
+            changeIndexServiceType(index);
           });
         }
       },
