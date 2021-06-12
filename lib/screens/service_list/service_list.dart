@@ -31,7 +31,8 @@ class _ServiceListState extends State<ServiceList>
   List<IncomingService> _incomingServices = [];
   List<HistoricalService> _historicalServices = [];
 
-  AsyncLoadingStatus _status = AsyncLoadingStatus.initial;
+  AsyncLoadingStatus _incomingServicesStatus = AsyncLoadingStatus.initial;
+  AsyncLoadingStatus _historicalServicesStatus = AsyncLoadingStatus.initial;
 
   @override
   void initState() {
@@ -90,7 +91,7 @@ class _ServiceListState extends State<ServiceList>
             }
 
             setState(() {
-              _status = state.status;
+              _incomingServicesStatus = state.status;
             });
           }),
           BlocListener<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
@@ -110,14 +111,15 @@ class _ServiceListState extends State<ServiceList>
             }
 
             setState(() {
-              _status = state.status;
+              _historicalServicesStatus = state.status;
             });
           }),
         ],
         child: Body(
           incomingServices: _incomingServices,
           historicalServices: _historicalServices,
-          loadingStatus: _status,
+          incomingServicesStatus: _incomingServicesStatus,
+          historicalServicesStatus: _historicalServicesStatus,
           tabController: _tabController,
         ),
       ),

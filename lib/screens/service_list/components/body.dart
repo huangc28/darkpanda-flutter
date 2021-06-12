@@ -11,7 +11,6 @@ import '../models/incoming_service.dart';
 import '../bloc/load_incoming_service_bloc.dart';
 
 import '../models/historical_service.dart';
-import '../bloc/load_historical_service_bloc.dart';
 
 import 'service_chatroom_list.dart';
 import 'service_chatroom_grid.dart';
@@ -20,13 +19,16 @@ import 'service_historical_list.dart';
 class Body extends StatefulWidget {
   const Body({
     this.tabController,
-    this.loadingStatus,
+    this.incomingServicesStatus,
+    this.historicalServicesStatus,
     this.incomingServices = const [],
     this.historicalServices = const [],
   });
 
   final TabController tabController;
-  final AsyncLoadingStatus loadingStatus;
+
+  final AsyncLoadingStatus incomingServicesStatus;
+  final AsyncLoadingStatus historicalServicesStatus;
 
   final List<IncomingService> incomingServices;
   final List<HistoricalService> historicalServices;
@@ -72,7 +74,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         );
       }
     }, builder: (BuildContext context, LoadIncomingServiceState state) {
-      return widget.loadingStatus == AsyncLoadingStatus.loading
+      return widget.incomingServicesStatus == AsyncLoadingStatus.loading
           ? LoadingScreen()
           : ServiceChatroomList(
               chatrooms: widget.incomingServices,
@@ -114,7 +116,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget historicalTab() {
-    return widget.loadingStatus == AsyncLoadingStatus.loading
+    return widget.historicalServicesStatus == AsyncLoadingStatus.loading
         ? LoadingScreen()
         : ServiceHistoricalList(
             historicalService: widget.historicalServices,
