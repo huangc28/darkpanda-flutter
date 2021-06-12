@@ -114,33 +114,16 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget historicalTab() {
-    return BlocConsumer<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
-        listener: (BuildContext context, LoadHistoricalServiceState state) {
-      // Display error in snack bar.
-      if (state.status == AsyncLoadingStatus.error) {
-        developer.log(
-          'failed to fetch inquiry chatroom',
-          error: state.error,
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.error.message),
-          ),
-        );
-      }
-    }, builder: (BuildContext context, LoadHistoricalServiceState state) {
-      return widget.loadingStatus == AsyncLoadingStatus.loading
-          ? LoadingScreen()
-          : ServiceHistoricalList(
-              historicalService: widget.historicalServices,
-              onRefresh: () {
-                print('DEBUG trigger onRefresh');
-              },
-              onLoadMore: () {
-                print('DEBUG trigger onLoadMore');
-              },
-            );
-    });
+    return widget.loadingStatus == AsyncLoadingStatus.loading
+        ? LoadingScreen()
+        : ServiceHistoricalList(
+            historicalService: widget.historicalServices,
+            onRefresh: () {
+              print('DEBUG trigger onRefresh');
+            },
+            onLoadMore: () {
+              print('DEBUG trigger onLoadMore');
+            },
+          );
   }
 }

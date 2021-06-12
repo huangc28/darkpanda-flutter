@@ -96,13 +96,18 @@ class _ServiceListState extends State<ServiceList>
           BlocListener<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
               listener: (context, state) {
             if (state.status == AsyncLoadingStatus.done) {
-              print('here');
               setState(() {
                 _historicalServices = state.services;
               });
             }
 
-            print(state.status);
+            if (state.status == AsyncLoadingStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error.message),
+                ),
+              );
+            }
 
             setState(() {
               _status = state.status;
