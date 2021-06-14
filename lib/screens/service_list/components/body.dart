@@ -10,22 +10,28 @@ import 'package:darkpanda_flutter/components/loading_screen.dart';
 import '../models/incoming_service.dart';
 import '../bloc/load_incoming_service_bloc.dart';
 
+import '../models/historical_service.dart';
+
 import 'service_chatroom_list.dart';
 import 'service_chatroom_grid.dart';
+import 'service_historical_list.dart';
 
 class Body extends StatefulWidget {
   const Body({
     this.tabController,
-    this.loadingStatus,
+    this.incomingServicesStatus,
+    this.historicalServicesStatus,
     this.incomingServices = const [],
     this.historicalServices = const [],
   });
 
   final TabController tabController;
-  final AsyncLoadingStatus loadingStatus;
+
+  final AsyncLoadingStatus incomingServicesStatus;
+  final AsyncLoadingStatus historicalServicesStatus;
 
   final List<IncomingService> incomingServices;
-  final List<IncomingService> historicalServices;
+  final List<HistoricalService> historicalServices;
 
   @override
   _BodyState createState() => _BodyState();
@@ -42,8 +48,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               controller: widget.tabController,
               children: <Widget>[
                 comingTab(),
-                Text('456', style: TextStyle(color: Colors.white)),
-                // Text("456"),
+                historicalTab(),
               ],
             ),
           ),
@@ -69,7 +74,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         );
       }
     }, builder: (BuildContext context, LoadIncomingServiceState state) {
-      return widget.loadingStatus == AsyncLoadingStatus.loading
+      return widget.incomingServicesStatus == AsyncLoadingStatus.loading
           ? LoadingScreen()
           : ServiceChatroomList(
               chatrooms: widget.incomingServices,
@@ -108,5 +113,19 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               },
             );
     });
+  }
+
+  Widget historicalTab() {
+    return widget.historicalServicesStatus == AsyncLoadingStatus.loading
+        ? LoadingScreen()
+        : ServiceHistoricalList(
+            historicalService: widget.historicalServices,
+            onRefresh: () {
+              print('DEBUG trigger onRefresh');
+            },
+            onLoadMore: () {
+              print('DEBUG trigger onLoadMore');
+            },
+          );
   }
 }

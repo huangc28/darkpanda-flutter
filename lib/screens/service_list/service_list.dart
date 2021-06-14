@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import './bloc/load_incoming_service_bloc.dart';
+import 'bloc/load_historical_service_bloc.dart';
 import './models/incoming_service.dart';
+import 'models/historical_service.dart';
 import 'components/body.dart';
 
 enum ServiceListTabs {
@@ -27,9 +29,10 @@ class _ServiceListState extends State<ServiceList>
   ];
 
   List<IncomingService> _incomingServices = [];
-  List<IncomingService> _historicalServices = [];
+  List<HistoricalService> _historicalServices = [];
 
-  AsyncLoadingStatus _status = AsyncLoadingStatus.initial;
+  AsyncLoadingStatus _incomingServicesStatus = AsyncLoadingStatus.initial;
+  AsyncLoadingStatus _historicalServicesStatus = AsyncLoadingStatus.initial;
 
   @override
   void initState() {
@@ -39,6 +42,9 @@ class _ServiceListState extends State<ServiceList>
       vsync: this,
       length: 2,
     );
+
+    BlocProvider.of<LoadIncomingServiceBloc>(context)
+        .add(LoadIncomingService());
   }
 
   @override
@@ -53,7 +59,8 @@ class _ServiceListState extends State<ServiceList>
             }
 
             if (_tabs[index] == ServiceListTabs.historical) {
-              print('DEBUG load historical services');
+              BlocProvider.of<LoadHistoricalServiceBloc>(context)
+                  .add(LoadHistoricalService());
             }
           },
           controller: _tabController,
@@ -84,14 +91,35 @@ class _ServiceListState extends State<ServiceList>
             }
 
             setState(() {
-              _status = state.status;
+              _incomingServicesStatus = state.status;
+            });
+          }),
+          BlocListener<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
+              listener: (context, state) {
+            if (state.status == AsyncLoadingStatus.done) {
+              setState(() {
+                _historicalServices = state.services;
+              });
+            }
+
+            if (state.status == AsyncLoadingStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error.message),
+                ),
+              );
+            }
+
+            setState(() {
+              _historicalServicesStatus = state.status;
             });
           }),
         ],
         child: Body(
           incomingServices: _incomingServices,
           historicalServices: _historicalServices,
-          loadingStatus: _status,
+          incomingServicesStatus: _incomingServicesStatus,
+          historicalServicesStatus: _historicalServicesStatus,
           tabController: _tabController,
         ),
       ),
