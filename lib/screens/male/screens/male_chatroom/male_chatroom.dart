@@ -285,7 +285,9 @@ class _MaleChatroomState extends State<MaleChatroom>
                                               ),
                                             ),
                                           ],
-                                          child: TopupDp(),
+                                          child: TopupDp(
+                                            args: message,
+                                          ),
                                         );
                                       },
                                     ),

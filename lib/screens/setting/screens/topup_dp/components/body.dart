@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
@@ -18,7 +20,7 @@ class Body extends StatefulWidget {
     this.onPush,
   });
 
-  final TopUpDpArguments args;
+  final UpdateInquiryMessage args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override
@@ -47,7 +49,7 @@ class _BodyState extends State<Body> {
   }
 
   // write this way is to call inistate after pop from Buy DP page
-  void navigateBuyDpPage(amount, id) {
+  void navigateBuyDpPage(amount, id, args) {
     Route route = MaterialPageRoute(
       builder: (BuildContext context) {
         return MultiBlocProvider(
@@ -61,6 +63,7 @@ class _BodyState extends State<Body> {
           child: TopupPayment(
             amount: amount,
             packageId: id,
+            args: args,
           ),
         );
       },
@@ -81,14 +84,14 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            myDpBalance(),
+            _myDpBalance(),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
                   InputTextLabel(label: "充值金額"),
                   SizedBox(height: 30.0),
-                  topupPackage(),
+                  _topupPackage(),
                   SizedBox(height: 30),
                   Row(
                     children: [
@@ -110,7 +113,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget topupPackage() {
+  Widget _topupPackage() {
     return BlocConsumer<LoadDpPackageBloc, LoadDpPackageState>(
       listener: (context, state) {
         if (state.status == AsyncLoadingStatus.done) {
@@ -141,8 +144,11 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                   onPressed: () {
-                    navigateBuyDpPage(dpPackageList.packages[index].cost,
-                        dpPackageList.packages[index].id);
+                    navigateBuyDpPage(
+                      dpPackageList.packages[index].cost,
+                      dpPackageList.packages[index].id,
+                      widget.args,
+                    );
                   },
                   child: Row(
                     children: <Widget>[
@@ -188,7 +194,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget myDpBalance() {
+  Widget _myDpBalance() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -204,7 +210,14 @@ class _BodyState extends State<Body> {
             SizedBox(width: 30),
             BlocListener<LoadMyDpBloc, LoadMyDpState>(
               listener: (context, state) {
-                if (state.status == AsyncLoadingStatus.done) {
+                if (state.status == AsyncLoadingStatus.initial ||
+                    state.status == AsyncLoadingStatus.loading) {
+                  return Row(
+                    children: [
+                      LoadingScreen(),
+                    ],
+                  );
+                } else if (state.status == AsyncLoadingStatus.done) {
                   setState(() {
                     myDp = state.myDp;
                   });
@@ -228,7 +241,7 @@ class _BodyState extends State<Body> {
                   Row(
                     children: <Widget>[
                       Text(
-                        myDp.balance.toString(),
+                        myDp.balance == null ? "0" : myDp.balance.toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 50,

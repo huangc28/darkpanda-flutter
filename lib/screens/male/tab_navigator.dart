@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/profile/screens/routes.dart';
+import 'package:darkpanda_flutter/screens/service_list/routes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/screens/setting/routes.dart';
@@ -9,6 +11,8 @@ import './bottom_navigation.dart';
 // Each tag keeps it's own navigator instance to track navigation history.
 final Map<MaleAppTabItem, String> _initialRouteMap = {
   MaleAppTabItem.waitingInquiry: SearchInquiryRoutes.root,
+  MaleAppTabItem.settings: SettingRoutes.root,
+  MaleAppTabItem.profile: ProfileRoutes.root,
 };
 
 class TabNavigator extends StatelessWidget {
@@ -24,7 +28,9 @@ class TabNavigator extends StatelessWidget {
   final MaleAppTabItem currentTab;
 
   final SearchInquiryRoutes _searchInquiryRoutes = SearchInquiryRoutes();
+  final ServiceChatroomRoutes _servicesRoutes = ServiceChatroomRoutes();
   final SettingRoutes _settingRoutes = SettingRoutes();
+  final ProfileRoutes _profileRoutes = ProfileRoutes();
 
   Map<String, WidgetBuilder> _getRouteBuildersByTab(
       BuildContext context, MaleAppTabItem tabItem) {
@@ -32,8 +38,16 @@ class TabNavigator extends StatelessWidget {
       return _searchInquiryRoutes.routeBuilder(context);
     }
 
+    if (tabItem == MaleAppTabItem.manage) {
+      return _servicesRoutes.routeBuilder(context);
+    }
+
     if (tabItem == MaleAppTabItem.settings) {
       return _settingRoutes.routeBuilder(context);
+    }
+
+    if (tabItem == MaleAppTabItem.profile) {
+      return _profileRoutes.routeBuilder(context);
     }
 
     return {

@@ -38,15 +38,6 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
           privateChatStreamMap: state.privateChatStreamMap,
         );
 
-  // LoadIncomingServiceState.loaded({
-  //   LoadIncomingServiceState state,
-  //   List<IncomingService> services,
-  // }) : this._(
-  //         status: AsyncLoadingStatus.done,
-  //         services: services,
-  //         // chatroomLastMessage: state.chatroomLastMessage,
-  //       );
-
   LoadIncomingServiceState.updateChatrooms(
     LoadIncomingServiceState state, {
     List<IncomingService> services,
