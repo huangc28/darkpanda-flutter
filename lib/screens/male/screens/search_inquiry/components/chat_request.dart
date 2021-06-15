@@ -167,7 +167,7 @@ class _ChatRequestState extends State<ChatRequest> {
               MainRoutes.maleChatroom,
               arguments: MaleChatroomScreenArguments(
                 channelUUID: agreeInquiryResponse.channelUuid,
-                inquiryUUID: agreeInquiryResponse.picker.uuid,
+                inquiryUUID: widget.activeInquiry.uuid,
                 counterPartUUID: agreeInquiryResponse.picker.uuid,
               ),
             );

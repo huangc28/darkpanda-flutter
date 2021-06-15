@@ -239,7 +239,7 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '12/18/20，00：20AM',
+                  message.serviceTime.toString(),
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),
@@ -270,7 +270,7 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '1小時',
+                  message.duration.toString(),
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),

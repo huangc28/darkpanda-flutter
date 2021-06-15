@@ -6,7 +6,7 @@ enum MessageType {
   confirmed_service,
   update_inquiry_detail,
   disagree_inquiry,
-  quit_chatroomt,
+  quit_chatroom,
 }
 
 extension MessageTypeExtension on MessageType {

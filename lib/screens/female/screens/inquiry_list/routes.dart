@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,6 +57,11 @@ class InquiriesRoutes extends BaseRoutes {
             BlocProvider(
               create: (context) => LoadHistoricalServicesBloc(
                 userApi: UserApis(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => LoadRateBloc(
+                rateApiClient: RateApiClient(),
               ),
             ),
           ],

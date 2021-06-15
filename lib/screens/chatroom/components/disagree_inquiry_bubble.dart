@@ -22,7 +22,7 @@ class DisagreeInquiryBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Brat 已拒絕邀請',
+            'Brat 拒絕邀請',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),
