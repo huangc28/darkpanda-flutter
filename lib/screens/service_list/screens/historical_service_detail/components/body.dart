@@ -1,17 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/util/time_remaining_since_date.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer' as developer;
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 
-import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/components/loading_screen.dart';
 import '../../../models/historical_service.dart';
-import 'package:date_format/date_format.dart';
-import 'package:intl/intl.dart';
 
 class Body extends StatefulWidget {
   final HistoricalService historicalService;
@@ -224,6 +218,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         DPTextButton(
           onPressed: () {
             print('評價對方');
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (context) => Rate(),
+              ),
+            );
           },
           text: '評價對方',
           theme: DPTextButtonThemes.pink,
