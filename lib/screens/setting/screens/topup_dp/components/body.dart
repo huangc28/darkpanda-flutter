@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
@@ -100,6 +102,20 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                     ],
+                  ),
+                  DPTextButton(
+                    theme: DPTextButtonThemes.purple,
+                    onPressed: () {
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).push(
+                        MaterialPageRoute(
+                          builder: (context) => BuyService(),
+                        ),
+                      );
+                    },
+                    text: '購買服務',
                   ),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:flutter/material.dart';
 
 class InquiryDetailDialog extends StatelessWidget {
@@ -48,7 +49,11 @@ class InquiryDetailDialog extends StatelessWidget {
       child: DPTextButton(
         theme: DPTextButtonThemes.purple,
         onPressed: () async {
-          Navigator.pop(context, true);
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (context) => BuyService(),
+            ),
+          );
         },
         text: '去支付',
       ),
