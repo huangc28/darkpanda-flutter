@@ -117,20 +117,16 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget historicalTab() {
-    return BlocBuilder<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
-      builder: (context, state) {
-        return widget.historicalServicesStatus == AsyncLoadingStatus.loading
-            ? LoadingScreen()
-            : ServiceHistoricalList(
-                historicalService: widget.historicalServices,
-                onRefresh: () {
-                  print('DEBUG trigger onRefresh');
-                },
-                onLoadMore: () {
-                  print('DEBUG trigger onLoadMore');
-                },
-              );
-      },
-    );
+    return widget.historicalServicesStatus == AsyncLoadingStatus.loading
+        ? LoadingScreen()
+        : ServiceHistoricalList(
+            historicalService: widget.historicalServices,
+            onRefresh: () {
+              print('DEBUG trigger onRefresh');
+            },
+            onLoadMore: () {
+              print('DEBUG trigger onLoadMore');
+            },
+          );
   }
 }
