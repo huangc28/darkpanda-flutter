@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 import 'package:darkpanda_flutter/util/time_remaining_since_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -224,6 +225,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         DPTextButton(
           onPressed: () {
             print('評價對方');
+            Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (context) => Rate(),
+              ),
+            );
           },
           text: '評價對方',
           theme: DPTextButtonThemes.pink,

@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -116,16 +117,20 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget historicalTab() {
-    return widget.historicalServicesStatus == AsyncLoadingStatus.loading
-        ? LoadingScreen()
-        : ServiceHistoricalList(
-            historicalService: widget.historicalServices,
-            onRefresh: () {
-              print('DEBUG trigger onRefresh');
-            },
-            onLoadMore: () {
-              print('DEBUG trigger onLoadMore');
-            },
-          );
+    return BlocBuilder<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
+      builder: (context, state) {
+        return widget.historicalServicesStatus == AsyncLoadingStatus.loading
+            ? LoadingScreen()
+            : ServiceHistoricalList(
+                historicalService: widget.historicalServices,
+                onRefresh: () {
+                  print('DEBUG trigger onRefresh');
+                },
+                onLoadMore: () {
+                  print('DEBUG trigger onLoadMore');
+                },
+              );
+      },
+    );
   }
 }
