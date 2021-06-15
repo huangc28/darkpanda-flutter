@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
@@ -16,20 +19,28 @@ import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_b
 import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
+import 'bloc/send_emit_service_confirm_message_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 
 class MaleChatroom extends StatefulWidget {
-  MaleChatroom({this.args});
+  MaleChatroom({
+    this.args,
+    this.onPush,
+  });
 
   final MaleChatroomScreenArguments args;
+  final Function(String, TopUpDpArguments) onPush;
 
   @override
   _MaleChatroomState createState() => _MaleChatroomState();
@@ -50,7 +61,7 @@ class _MaleChatroomState extends State<MaleChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  // bool _isUpdateInquiry = false;
+  UpdateInquiryMessage message = UpdateInquiryMessage();
 
   @override
   void initState() {
@@ -217,6 +228,7 @@ class _MaleChatroomState extends State<MaleChatroom>
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
+                                message = state.message;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
@@ -227,8 +239,15 @@ class _MaleChatroomState extends State<MaleChatroom>
                                 ).then((value) {
                                   // Go to payment
                                   if (value) {
+                                    BlocProvider.of<
+                                                SendEmitServiceConfirmMessageBloc>(
+                                            context)
+                                        .add(
+                                      EmitServiceConfirmMessage(
+                                          widget.args.inquiryUUID),
+                                    );
                                   }
-                                  // Reject
+                                  // Reject inquiry
                                   else {
                                     BlocProvider.of<DisagreeInquiryBloc>(
                                             context)
@@ -238,6 +257,56 @@ class _MaleChatroomState extends State<MaleChatroom>
                                   }
                                 });
                               });
+                            },
+                            child: SizedBox.shrink(),
+                          ),
+
+                          // Load my darkpanda coin balance
+                          // If enough balance will go to service payment screen
+                          // else go to topup dp screen
+                          BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.done) {
+                                if (message.price > state.myDp.balance) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (context) => LoadMyDpBloc(
+                                                apiClient: TopUpClient(),
+                                              ),
+                                            ),
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  LoadDpPackageBloc(
+                                                apiClient: TopUpClient(),
+                                              ),
+                                            ),
+                                          ],
+                                          child: TopupDp(),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  print('go to payment screen');
+                                }
+                              }
+                            },
+                            child: SizedBox.shrink(),
+                          ),
+
+                          // Send emit service confirm message
+                          BlocListener<SendEmitServiceConfirmMessageBloc,
+                              SendEmitServiceConfirmMessageState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.done) {
+                                BlocProvider.of<LoadMyDpBloc>(context).add(
+                                  LoadMyDp(),
+                                );
+                              }
                             },
                             child: SizedBox.shrink(),
                           ),

@@ -13,6 +13,13 @@ import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dar
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +32,7 @@ class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';
   static const inquiry_form = '/inquiry-form';
   static const inquirerProfile = '/inquirer-profile';
+  static const topup_dp = '/topup-dp';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
@@ -113,13 +121,38 @@ class SearchInquiryRoutes extends BaseRoutes {
                 userApi: UserApis(),
               ),
             ),
+            BlocProvider(
+              create: (context) => LoadRateBloc(
+                rateApiClient: RateApiClient(),
+              ),
+            ),
           ],
           child: InquirerProfile(
             loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
             args: screenArgs,
           ),
         );
-      }
+      },
+      SearchInquiryRoutes.topup_dp: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => LoadMyDpBloc(
+                apiClient: TopUpClient(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => LoadDpPackageBloc(
+                apiClient: TopUpClient(),
+              ),
+            ),
+          ],
+          child: TopupDp(
+            onPush: (String routeName, TopUpDpArguments args) =>
+                this.push(context, routeName, args),
+          ),
+        );
+      },
     };
   }
 }

@@ -1,9 +1,3 @@
-import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +24,15 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_i
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
@@ -83,6 +86,11 @@ class DarkPandaApp extends StatelessWidget {
         BlocProvider(
           create: (context) => UpdateInquiryNotifierBloc(),
         ),
+        BlocProvider(
+          create: (context) => LoadMyDpBloc(
+            apiClient: TopUpClient(),
+          ),
+        ),
         // Inquiry chatroom related blocs
         BlocProvider(
           create: (context) => InquiryChatMessagesBloc(),
@@ -118,6 +126,11 @@ class DarkPandaApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DisagreeInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => SendEmitServiceConfirmMessageBloc(
             searchInquiryAPIs: SearchInquiryAPIs(),
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 
 import './models/historical_service.dart';
 // import './bloc/load_user_images_bloc.dart';
@@ -61,6 +63,9 @@ class _InquirerProfileState extends State<InquirerProfile>
         uuid: widget.args.uuid,
       ),
     );
+
+    BlocProvider.of<LoadRateBloc>(context)
+        .add(LoadRate(uuid: widget.args.uuid));
 
     super.initState();
   }
@@ -121,18 +126,40 @@ class _InquirerProfileState extends State<InquirerProfile>
               return Container();
             }
 
-            return Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.0),
-                  topRight: Radius.circular(12.0),
-                ),
-              ),
-              child: InquirerProfilePage(
-                userProfile: state.userProfile,
-              ),
+            return BlocBuilder<LoadRateBloc, LoadRateState>(
+              builder: (context, rateState) {
+                if (state.status == AsyncLoadingStatus.loading ||
+                    state.status == AsyncLoadingStatus.initial) {
+                  return Row(
+                    children: [
+                      LoadingScreen(),
+                    ],
+                  );
+                }
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+
+                  return Container();
+                }
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12.0),
+                      topRight: Radius.circular(12.0),
+                    ),
+                  ),
+                  child: InquirerProfilePage(
+                    userProfile: state.userProfile,
+                    userRating: rateState.userRating,
+                  ),
+                );
+              },
             );
           },
         ),

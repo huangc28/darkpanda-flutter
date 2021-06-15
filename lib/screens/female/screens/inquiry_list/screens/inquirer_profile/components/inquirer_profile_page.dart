@@ -3,9 +3,11 @@ part of '../inquirer_profile.dart';
 class InquirerProfilePage extends StatelessWidget {
   const InquirerProfilePage({
     this.userProfile,
+    this.userRating,
   });
 
   final UserProfile userProfile;
+  final UserRating userRating;
 
   @override
   Widget build(BuildContext context) {

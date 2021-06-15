@@ -1,21 +1,30 @@
 class UserRating {
   final String username;
   final int rate;
-  final DateTime rateDate;
+  final DateTime createdAt;
   final String comment;
+  final String avatarUrl;
 
-  UserRating({this.username, this.rate, this.rateDate, this.comment});
+  UserRating({
+    this.username,
+    this.rate,
+    this.createdAt,
+    this.comment,
+    this.avatarUrl,
+  });
 
   UserRating.fromJson(Map<String, dynamic> data)
       : username = data['username'],
-        rate = data['rate'],
-        rateDate = data['rateDate'],
-        comment = data['comment'];
+        rate = data['rating'],
+        createdAt = DateTime.parse(data['created_at']),
+        comment = data['comments'],
+        avatarUrl = data['avatar_url'];
 
   Map<String, dynamic> toJson() => {
         'username': username,
-        'rate': rate,
-        'rateDate': rateDate.toIso8601String(),
-        'comment': comment,
+        'rating': rate,
+        'created_at': createdAt.toIso8601String(),
+        'comments': comment,
+        'avatar_url': avatarUrl,
       };
 }
