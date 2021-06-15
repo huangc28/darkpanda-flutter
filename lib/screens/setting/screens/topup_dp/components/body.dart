@@ -103,20 +103,6 @@ class _BodyState extends State<Body> {
                       ),
                     ],
                   ),
-                  DPTextButton(
-                    theme: DPTextButtonThemes.purple,
-                    onPressed: () {
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(
-                        MaterialPageRoute(
-                          builder: (context) => BuyService(),
-                        ),
-                      );
-                    },
-                    text: '購買服務',
-                  ),
                 ],
               ),
             ),
