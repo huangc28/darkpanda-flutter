@@ -1,7 +1,6 @@
-import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_number_input_formatter.dart';
@@ -18,10 +17,12 @@ class TopupPayment extends StatefulWidget {
   const TopupPayment({
     this.amount,
     this.packageId,
+    this.args,
   });
 
   final int amount;
   final int packageId;
+  final UpdateInquiryMessage args;
 
   @override
   _TopupPaymentState createState() => _TopupPaymentState();
@@ -129,7 +130,13 @@ class _TopupPaymentState extends State<TopupPayment> {
                 _showInSnackBar(state.error.message);
               } else if (state.status == AsyncLoadingStatus.done) {
                 _showInSnackBar('充值成功！');
-                Navigator.pop(context, true);
+                // If args is null, means topup is from chatting
+                // else is not enough DP which is from male accept and pay inquiry
+                if (widget.args == null) {
+                  Navigator.pop(context, true);
+                } else {
+                  // Go to payment screen
+                }
               }
             },
             child: Column(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+
 import 'components/body.dart';
 import 'screen_arguements/args.dart';
 
@@ -9,7 +11,7 @@ class TopupDp extends StatefulWidget {
     this.onPush,
   });
 
-  final TopUpDpArguments args;
+  final UpdateInquiryMessage args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override
@@ -28,7 +30,10 @@ class _TopupDpState extends State<TopupDp> {
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
       ),
-      body: Body(onPush: widget.onPush),
+      body: Body(
+        onPush: widget.onPush,
+        args: widget.args,
+      ),
     );
   }
 }

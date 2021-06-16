@@ -26,9 +26,9 @@ class LoadIncomingServiceBloc
   }) : super(LoadIncomingServiceState.initial());
 
   final ServiceChatroomClient apiClient;
-  Map<String, bool> _chatFirstCreateMap = {};
-
   final InquiryChatMessagesBloc inquiryChatMesssagesBloc;
+
+  Map<String, bool> _chatFirstCreateMap = {};
 
   @override
   Stream<LoadIncomingServiceState> mapEventToState(

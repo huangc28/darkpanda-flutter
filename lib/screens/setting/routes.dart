@@ -15,12 +15,12 @@ import 'package:darkpanda_flutter/enums/gender.dart';
 
 import 'screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'screens/topup_dp/bloc/load_my_dp_bloc.dart';
-import 'screens/topup_dp/components/body.dart';
 import 'screens/topup_dp/screen_arguements/args.dart';
 import 'screens/topup_dp/services/apis.dart';
 
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+
 import 'screens/bank_account/bloc/load_bank_status_bloc.dart';
-import 'screens/bank_account/bloc/verify_bank_bloc.dart';
 import 'screens/female/settings.dart';
 import 'screens/male/settings.dart';
 
@@ -108,7 +108,7 @@ class SettingRoutes extends BaseRoutes {
         );
       },
       SettingRoutes.topup_payment: (context) {
-        final screenArgs = args as TopUpDpArguments;
+        final screenArgs = args as UpdateInquiryMessage;
         return MultiBlocProvider(
           providers: [
             BlocProvider(
