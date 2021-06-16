@@ -1,9 +1,14 @@
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
 
 import 'components/body.dart';
 
 class BuyService extends StatefulWidget {
-  const BuyService();
+  const BuyService({
+    this.args,
+  });
+
+  final InquiryDetail args;
 
   @override
   _BuyServiceState createState() => _BuyServiceState();

@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +32,7 @@ import 'bloc/update_inquitry_notifier_bloc.dart';
 import 'bloc/send_emit_service_confirm_message_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
+import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 
 class MaleChatroom extends StatefulWidget {
@@ -62,6 +64,7 @@ class _MaleChatroomState extends State<MaleChatroom>
   UserProfile _inquirerProfile = UserProfile();
 
   UpdateInquiryMessage message = UpdateInquiryMessage();
+  InquiryDetail inquiryDetail = InquiryDetail();
 
   @override
   void initState() {
@@ -294,6 +297,20 @@ class _MaleChatroomState extends State<MaleChatroom>
                                   );
                                 } else {
                                   print('go to payment screen');
+                                  inquiryDetail.updateInquiryMessage = message;
+                                  inquiryDetail.balance = state.myDp.balance;
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [],
+                                          child: BuyService(
+                                            args: inquiryDetail,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
                                 }
                               }
                             },
