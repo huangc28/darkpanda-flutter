@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +32,7 @@ import 'screen_arguments/qrscanner_screen_arguments.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
+part 'components/unpaid_info.dart';
 
 class ServiceChatroom extends StatefulWidget {
   const ServiceChatroom({
@@ -233,6 +235,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               child: Container(
                 child: Column(
                   children: [
+                    if (_sender.gender == Gender.male)
+                      UnpaidInfo(
+                        inquirerProfile: _inquirerProfile,
+                      ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
