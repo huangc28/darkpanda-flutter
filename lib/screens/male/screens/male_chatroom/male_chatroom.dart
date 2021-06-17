@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +64,7 @@ class _MaleChatroomState extends State<MaleChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  UpdateInquiryMessage message = UpdateInquiryMessage();
+  UpdateInquiryMessage messages = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
 
   @override
@@ -225,19 +226,21 @@ class _MaleChatroomState extends State<MaleChatroom>
                             ),
                           ),
 
-                          // When male receive inquiry from female, a
+                          // 1. When male receive inquiry from female, a
                           // inquiry detail dialog will pop up
                           BlocListener<UpdateInquiryNotifierBloc,
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                message = state.message;
+                                messages = state.message;
+                                inquiryDetail.updateInquiryMessage = messages;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (BuildContext context) {
                                     return InquiryDetailDialog(
-                                        message: state.message);
+                                      inquiryDetail: inquiryDetail,
+                                    );
                                   },
                                 ).then((value) {
                                   // Go to payment
@@ -264,13 +267,24 @@ class _MaleChatroomState extends State<MaleChatroom>
                             child: SizedBox.shrink(),
                           ),
 
-                          // Load my darkpanda coin balance
+                          // 2. Load my darkpanda coin balance
                           // If enough balance will go to service payment screen
                           // else go to topup dp screen
                           BlocListener<LoadMyDpBloc, LoadMyDpState>(
                             listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.initial ||
+                                  state.status == AsyncLoadingStatus.loading) {
+                                return Row(
+                                  children: [
+                                    LoadingScreen(),
+                                  ],
+                                );
+                              }
                               if (state.status == AsyncLoadingStatus.done) {
-                                if (message.price > state.myDp.balance) {
+                                inquiryDetail.balance = state.myDp.balance;
+
+                                // Go to Top Up screen
+                                if (messages.price > state.myDp.balance) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) {
@@ -289,26 +303,20 @@ class _MaleChatroomState extends State<MaleChatroom>
                                             ),
                                           ],
                                           child: TopupDp(
-                                            args: message,
+                                            args: inquiryDetail,
                                           ),
                                         );
                                       },
                                     ),
                                   );
-                                } else {
-                                  print('go to payment screen');
-                                  inquiryDetail.updateInquiryMessage = message;
-                                  inquiryDetail.balance = state.myDp.balance;
-                                  Navigator.of(context).pushReplacement(
+                                }
+                                // Go to Payment screen
+                                else {
+                                  Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) {
-                                        return MultiBlocProvider(
-                                          providers: [],
-                                          child: BuyService(
-                                            args: inquiryDetail,
-                                          ),
-                                        );
-                                      },
+                                      builder: (context) => BuyService(
+                                        args: inquiryDetail,
+                                      ),
                                     ),
                                   );
                                 }
@@ -317,10 +325,18 @@ class _MaleChatroomState extends State<MaleChatroom>
                             child: SizedBox.shrink(),
                           ),
 
-                          // Send emit service confirm message
+                          // 3. Send emit service confirm message
                           BlocListener<SendEmitServiceConfirmMessageBloc,
                               SendEmitServiceConfirmMessageState>(
                             listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.initial ||
+                                  state.status == AsyncLoadingStatus.loading) {
+                                return Row(
+                                  children: [
+                                    LoadingScreen(),
+                                  ],
+                                );
+                              }
                               if (state.status == AsyncLoadingStatus.done) {
                                 BlocProvider.of<LoadMyDpBloc>(context).add(
                                   LoadMyDp(),
@@ -375,6 +391,7 @@ class _MaleChatroomState extends State<MaleChatroom>
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
+          inquiryDetail.username = state.userProfile.username ?? '';
           return Text(
             state.status == AsyncLoadingStatus.done
                 ? state.userProfile.username

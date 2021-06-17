@@ -9,6 +9,7 @@ class UpdateInquiryMessage extends Message {
     this.duration,
     this.serviceTime,
     this.serviceType,
+    this.address,
   }) : super(
           content: content,
           from: from,
@@ -19,6 +20,7 @@ class UpdateInquiryMessage extends Message {
   final int duration;
   final DateTime serviceTime;
   final String serviceType;
+  final String address;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
     return UpdateInquiryMessage(
@@ -30,6 +32,7 @@ class UpdateInquiryMessage extends Message {
       duration: data['duration'],
       serviceTime:
           DateTime.fromMicrosecondsSinceEpoch(data['appointment_time']),
+      address: data['address'],
     );
   }
 }

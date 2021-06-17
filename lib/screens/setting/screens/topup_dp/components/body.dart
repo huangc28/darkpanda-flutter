@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
@@ -20,7 +21,7 @@ class Body extends StatefulWidget {
     this.onPush,
   });
 
-  final UpdateInquiryMessage args;
+  final InquiryDetail args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override

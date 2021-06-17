@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 
 import 'components/body.dart';
 import 'screen_arguements/args.dart';
@@ -11,7 +11,7 @@ class TopupDp extends StatefulWidget {
     this.onPush,
   });
 
-  final UpdateInquiryMessage args;
+  final InquiryDetail args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override
@@ -29,6 +29,13 @@ class _TopupDpState extends State<TopupDp> {
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
+        // leading: IconButton(
+        //   icon: Icon(
+        //     Icons.arrow_back,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {},
+        // ),
       ),
       body: Body(
         onPush: widget.onPush,

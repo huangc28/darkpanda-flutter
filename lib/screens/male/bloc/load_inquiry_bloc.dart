@@ -155,10 +155,6 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         pickerUuid: iqPickerUuid,
       ),
     );
-
-    // if (iqStatus == InquiryStatus.asking.name) {
-    //   loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
-    // }
   }
 
   Stream<LoadInquiryState> _mapAddLoadInquirySubscriptionToState(

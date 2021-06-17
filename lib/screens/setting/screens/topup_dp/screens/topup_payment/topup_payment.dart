@@ -1,6 +1,7 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_number_input_formatter.dart';
@@ -22,7 +23,7 @@ class TopupPayment extends StatefulWidget {
 
   final int amount;
   final int packageId;
-  final UpdateInquiryMessage args;
+  final InquiryDetail args;
 
   @override
   _TopupPaymentState createState() => _TopupPaymentState();
@@ -136,6 +137,13 @@ class _TopupPaymentState extends State<TopupPayment> {
                   Navigator.pop(context, true);
                 } else {
                   // Go to payment screen
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => BuyService(
+                        args: widget.args,
+                      ),
+                    ),
+                  );
                 }
               }
             },

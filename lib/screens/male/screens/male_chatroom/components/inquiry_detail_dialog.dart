@@ -1,12 +1,15 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
 
 class InquiryDetailDialog extends StatelessWidget {
-  const InquiryDetailDialog({Key key, this.message}) : super(key: key);
+  const InquiryDetailDialog({
+    Key key,
+    this.inquiryDetail,
+  }) : super(key: key);
 
-  final UpdateInquiryMessage message;
+  final InquiryDetail inquiryDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +21,11 @@ class InquiryDetailDialog extends StatelessWidget {
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              titleText(),
+              _titleText(),
               SizedBox(height: 16),
-              inquiryDetail(),
+              _inquiryDetail(),
               SizedBox(height: 16),
-              inquiryAmountDetail(),
+              _inquiryAmountDetail(),
             ],
           ),
         ),
@@ -32,9 +35,9 @@ class InquiryDetailDialog extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                rejectButton(context),
+                _rejectButton(context),
                 SizedBox(width: 16),
-                payButton(context),
+                _payButton(context),
               ],
             ),
           ),
@@ -43,24 +46,20 @@ class InquiryDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget payButton(context) {
+  Widget _payButton(context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.3,
       child: DPTextButton(
         theme: DPTextButtonThemes.purple,
         onPressed: () async {
-          Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(
-              builder: (context) => BuyService(),
-            ),
-          );
+          Navigator.pop(context, true);
         },
         text: '去支付',
       ),
     );
   }
 
-  Widget rejectButton(context) {
+  Widget _rejectButton(context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.3,
       child: DPTextButton(
@@ -73,7 +72,7 @@ class InquiryDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget inquiryAmountDetail() {
+  Widget _inquiryAmountDetail() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -105,7 +104,7 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  message.price.toString() + 'DP',
+                  inquiryDetail.updateInquiryMessage.price.toString() + 'DP',
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),
@@ -181,7 +180,7 @@ class InquiryDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget inquiryDetail() {
+  Widget _inquiryDetail() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -244,7 +243,7 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  message.serviceTime.toString(),
+                  inquiryDetail.updateInquiryMessage.serviceTime.toString(),
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),
@@ -275,7 +274,7 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  message.duration.toString(),
+                  inquiryDetail.updateInquiryMessage.duration.toString(),
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),
@@ -289,9 +288,9 @@ class InquiryDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget titleText() {
+  Widget _titleText() {
     return Text(
-      'Jenny已向你發送請求',
+      inquiryDetail.username + '已向你發送請求',
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,

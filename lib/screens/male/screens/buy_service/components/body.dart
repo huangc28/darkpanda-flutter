@@ -4,8 +4,14 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/screens/complete_buy_service/complete_buy_service.dart';
 
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+
 class Body extends StatefulWidget {
-  const Body();
+  const Body({
+    this.args,
+  });
+
+  final InquiryDetail args;
 
   @override
   _BodyState createState() => _BodyState();
@@ -76,7 +82,8 @@ class _BodyState extends State<Body> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Jenny',
+                    // 'Jneey',
+                    widget.args.username ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -85,7 +92,8 @@ class _BodyState extends State<Body> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Dec 2, 2020 at 00:20 AM',
+                    widget.args.updateInquiryMessage.serviceTime.toString(),
+                    // 'Dec 2, 2020 at 00:20 AM',
                     // '${DateFormat("yMMMMd").format()}',
                     maxLines: 1,
                     // overflow: TextOverflow.ellipsis,
@@ -145,11 +153,23 @@ class _BodyState extends State<Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('place.png', '地址', '臺中市北屯區豐樂路二段158'),
+          _buildEachText(
+            'place.png',
+            '地址',
+            '臺中市北屯區豐樂路二段158',
+          ),
           SizedBox(height: 15),
-          _buildEachText('clock.png', '時間', '12/18/20，00：20AM'),
+          _buildEachText(
+            'clock.png',
+            '時間',
+            widget.args.updateInquiryMessage.serviceTime.toString(),
+          ),
           SizedBox(height: 15),
-          _buildEachText('countDown.png', '期限', '1小時'),
+          _buildEachText(
+            'countDown.png',
+            '期限',
+            widget.args.updateInquiryMessage.duration.toString(),
+          ),
         ],
       ),
     );
@@ -171,7 +191,8 @@ class _BodyState extends State<Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '120DP'),
+          _buildEachText('pie.png', '小計',
+              widget.args.updateInquiryMessage.price.toString()),
           SizedBox(height: 15),
           _buildEachText('heart.png', '服務費', '10DP'),
           SizedBox(height: 20),
@@ -199,7 +220,7 @@ class _BodyState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '我的DP幣：2000DP',
+            '我的DP幣：' + widget.args.balance.toString() + 'DP',
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,

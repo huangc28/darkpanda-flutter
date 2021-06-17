@@ -29,7 +29,10 @@ class _BuyServiceState extends State<BuyService> {
                 color: Color.fromRGBO(106, 109, 137, 1),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                int count = 0;
+                Navigator.popUntil(context, (route) {
+                  return count++ == 2;
+                });
               },
             ),
             Text(
@@ -65,7 +68,7 @@ class _BuyServiceState extends State<BuyService> {
           SizedBox(width: 20),
         ],
       ),
-      body: Body(),
+      body: Body(args: widget.args),
     );
   }
 }
