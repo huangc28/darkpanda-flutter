@@ -382,7 +382,6 @@ class _ChatroomState extends State<Chatroom>
                     /// Send inquiry settings message when done editing inquiry.
                     BlocProvider.of<SendMessageBloc>(context).add(
                       SendUpdateInquiryMessage(
-                        inquiryUUID: widget.args.inquiryUUID,
                         channelUUID: widget.args.channelUUID,
                         serviceSettings: data,
                       ),

@@ -10,7 +10,6 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
-// import 'package:darkpanda_flutter/bloc/update_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'slideup_controller.dart';
@@ -93,7 +92,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
 
     setState(() {
       _addressController.text = addr;
-      _serviceSetting.address = addr;
+
+      _serviceSetting = _serviceSetting.copyWith(address: addr);
     });
   }
 
@@ -119,7 +119,9 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
         : '${_serviceSetting.price}';
 
     // Initialize service type.
-    _serviceSetting.serviceType = _serviceSetting.serviceType;
+    _serviceSetting = _serviceSetting.copyWith(
+      serviceType: _serviceSetting.serviceType,
+    );
 
     // Initialize service address
     _addressController.text = _serviceSetting.address;
@@ -200,7 +202,9 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                               : null;
                         },
                         onSaved: (String v) {
-                          _serviceSetting.price = double.tryParse(v);
+                          _serviceSetting = _serviceSetting.copyWith(
+                            price: double.tryParse(v),
+                          );
                         },
                       ),
                       SizedBox(height: 10),
@@ -224,7 +228,9 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           onSelectDate: (DateTime dateTime) {
                             // We need to update the appointment time of current service settings.
                             setState(() {
-                              _serviceSetting.serviceDate = dateTime;
+                              _serviceSetting = _serviceSetting.copyWith(
+                                serviceDate: dateTime,
+                              );
 
                               // Format the date text to be aligned with the newly selected date.
                               _dateController = TextEditingController()
@@ -234,7 +240,10 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           },
                           onSelectTime: (TimeOfDay time) {
                             setState(() {
-                              _serviceSetting.serviceTime = time;
+                              _serviceSetting = _serviceSetting.copyWith(
+                                serviceTime: time,
+                              );
+
                               _timeController = TextEditingController()
                                 ..text = _formatTime(time);
                             });
@@ -269,10 +278,15 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                         },
                         onSaved: (String v) {
                           // Convert duration value to Duration instance.
-                          setState(() {
-                            _serviceSetting.duration =
-                                Duration(minutes: int.tryParse(v));
-                          });
+                          setState(
+                            () {
+                              _serviceSetting = _serviceSetting.copyWith(
+                                duration: Duration(
+                                  minutes: int.tryParse(v),
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
                     ],
