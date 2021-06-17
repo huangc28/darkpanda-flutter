@@ -13,7 +13,7 @@ class RateDetail {
   String raterAvatarUrl;
   int rating;
   String comments;
-  DateTime createdAt;
+  String createdAt;
 
   Map<String, dynamic> toMap() => {
         'rater_username': raterUsername,
