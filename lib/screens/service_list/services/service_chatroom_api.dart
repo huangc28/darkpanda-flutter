@@ -37,4 +37,38 @@ class ServiceChatroomClient extends BaseClient {
       throw AppGeneralExeption(message: err.toString());
     }
   }
+
+  Future<http.Response> fetchPaymentDetail(String serviceUuid) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/services/$serviceUuid/payment-details'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } on Exception catch (err) {
+      throw AppGeneralExeption(message: err.toString());
+    }
+  }
+
+  Future<http.Response> fetchRateDetail(String serviceUuid) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/rate/$serviceUuid'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } on Exception catch (err) {
+      throw AppGeneralExeption(message: err.toString());
+    }
+  }
 }
