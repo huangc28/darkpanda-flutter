@@ -13,11 +13,11 @@ import 'screens/chatroom/screens/inquiry/chatroom.dart';
 import 'screens/chatroom/screens/service/service_chatroom.dart';
 
 import './screens/female/female_app.dart';
+import './screens/male/male_app.dart';
 
 class MainRoutes extends BaseRoutes {
   static const login = '/';
   static const register = '/register';
-  // static const app = '/app';
 
   // App routes to serve female user.
   static const female = '/female';
@@ -37,8 +37,7 @@ class MainRoutes extends BaseRoutes {
           child: LoginNavigator()),
       MainRoutes.register: (context) => AuthNavigator(),
       MainRoutes.female: (context) => FemaleApp(),
-      // MainRoutes.male: (context) => MaleApp(),
-
+      MainRoutes.male: (context) => MaleApp(),
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 
