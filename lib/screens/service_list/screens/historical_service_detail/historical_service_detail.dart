@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_payment_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_rate_detail_bloc.dart';
+
 import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import '../../models/historical_service.dart';
 import 'components/body.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
 
 class OrderDetail extends StatefulWidget {
   final HistoricalService historicalService;
@@ -32,6 +33,11 @@ class _OrderDetailState extends State<OrderDetail>
     super.initState();
     BlocProvider.of<LoadPaymentDetailBloc>(context).add(
         LoadPaymentDetail(serviceUuid: widget.historicalService.serviceUuid));
+    BlocProvider.of<LoadRateDetailBloc>(context)
+        .add(LoadRateDetail(serviceUuid: widget.historicalService.serviceUuid));
+  }
+
+  void _onRefreshRateDetail() {
     BlocProvider.of<LoadRateDetailBloc>(context)
         .add(LoadRateDetail(serviceUuid: widget.historicalService.serviceUuid));
   }
@@ -111,12 +117,12 @@ class _OrderDetailState extends State<OrderDetail>
           }),
         ],
         child: Body(
-          historicalService: widget.historicalService,
-          paymentDetail: _paymentDetail,
-          rateDetail: _rateDetail,
-          paymentDetailStatus: _paymentDetailStatus,
-          rateDetailStatus: _rateDetailStatus,
-        ),
+            historicalService: widget.historicalService,
+            paymentDetail: _paymentDetail,
+            rateDetail: _rateDetail,
+            paymentDetailStatus: _paymentDetailStatus,
+            rateDetailStatus: _rateDetailStatus,
+            onRefreshRateDetail: _onRefreshRateDetail),
       ),
     );
   }

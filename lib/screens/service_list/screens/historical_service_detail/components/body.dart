@@ -1,4 +1,7 @@
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
@@ -16,6 +19,7 @@ class Body extends StatefulWidget {
   final RateDetail rateDetail;
   final AsyncLoadingStatus paymentDetailStatus;
   final AsyncLoadingStatus rateDetailStatus;
+  final Function onRefreshRateDetail;
   const Body({
     Key key,
     @required this.historicalService,
@@ -23,6 +27,7 @@ class Body extends StatefulWidget {
     @required this.paymentDetailStatus,
     this.rateDetail,
     this.rateDetailStatus,
+    this.onRefreshRateDetail,
   }) : super(key: key);
 
   @override
@@ -52,10 +57,12 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                           children: [
                             Expanded(
                               flex: 1,
-                              child: UserAvatar(
-                                  widget.paymentDetail.pickerAvatarUrl != null
-                                      ? widget.paymentDetail.pickerAvatarUrl
-                                      : ''),
+                              child: UserAvatar(widget.historicalService
+                                          .chatPartnerAvatarUrl !=
+                                      null
+                                  ? widget
+                                      .historicalService.chatPartnerAvatarUrl
+                                  : ''),
                             ),
                             Expanded(
                               flex: 3,
@@ -92,8 +99,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.paymentDetail.pickerUsername != null
-                        ? widget.paymentDetail.pickerUsername
+                    widget.historicalService.chatPartnerUsername != null
+                        ? widget.historicalService.chatPartnerUsername
                         : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -302,18 +309,36 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           theme: DPTextButtonThemes.purple,
         ),
         SizedBox(height: 15),
-        DPTextButton(
-          onPressed: () {
-            print('評價對方');
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => Rate(),
-              ),
-            );
-          },
-          text: '評價對方',
-          theme: DPTextButtonThemes.pink,
-        ),
+        if (widget.rateDetail == null)
+          DPTextButton(
+            onPressed: () {
+              print('評價對方');
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                builder: (context) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => SendRateBloc(
+                          apiClient: ServiceChatroomClient(),
+                        ),
+                      ),
+                    ],
+                    child: Rate(
+                      historicalService: widget.historicalService,
+                    ),
+                  );
+                },
+              )).then((refresh) {
+                if (refresh != null) {
+                  if (refresh == true) {
+                    widget.onRefreshRateDetail();
+                  }
+                }
+              });
+            },
+            text: '評價對方',
+            theme: DPTextButtonThemes.pink,
+          ),
         SizedBox(height: 10),
         GestureDetector(
           onTap: () {
@@ -334,7 +359,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget _buildEachText(String iconName, String title, String value,
       {Color titleColor, double titleSize, double valueSize}) {
     return Container(
-      // height: 30,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

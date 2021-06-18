@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import '../services/service_chatroom_api.dart';
+import '../../../services/service_chatroom_api.dart';
 
 part 'load_rate_detail_event.dart';
 part 'load_rate_detail_state.dart';

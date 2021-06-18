@@ -1,7 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import '../../../models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
 
 class TypeSelection {
   String name;
@@ -15,8 +21,13 @@ class TypeSelection {
 
 class Body extends StatefulWidget {
   final Function onPressComplete;
+  final HistoricalService historicalService;
   final GlobalKey<FormState> formKey;
-  const Body({this.formKey, this.onPressComplete});
+  const Body({
+    this.formKey,
+    this.historicalService,
+    this.onPressComplete,
+  });
 
   @override
   _BodyState createState() => _BodyState();
@@ -24,10 +35,11 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool loading = false;
   bool _disableSend = true;
   double _rateInput = 0;
-  String _commentInput;
   List<TypeSelection> _typeSelection = [];
+  final _commentController = TextEditingController();
 
   @override
   void initState() {
@@ -60,8 +72,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      UserAvatar(
-                          'https://www.w3schools.com/howto/img_avatar.png'),
+                      UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
                     ],
                   ),
                   Padding(
@@ -71,7 +82,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                     ),
                     child: Container(
                       child: Text(
-                        'Jenny',
+                        widget.historicalService.chatPartnerUsername,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -100,7 +111,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '你覺得Fei的服務怎麼樣？',
+            '你覺得${widget.historicalService.chatPartnerUsername}的服務怎麼樣？',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -120,30 +131,39 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildRateForm() {
-    return Form(
-      onChanged: () {
-        setState(() {
-          _disableSend = !_formKey.currentState.validate();
-        });
+    return BlocListener<SendRateBloc, SendRateState>(
+      listener: (context, state) {
+        loading = state.status == AsyncLoadingStatus.loading;
+        //user done send rating.
+        if (state.status == AsyncLoadingStatus.done) {
+          widget.onPressComplete();
+        }
       },
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _bulidRateInput(),
-          if (_rateInput > 0)
-            Column(
-              children: [
-                SizedBox(height: 20),
-                _buildSelectionInput(),
-                SizedBox(height: 20),
-                _buildCommentTextField(),
-                SizedBox(height: 20),
-              ],
-            ),
-          _buildSendButton(),
-          SizedBox(height: 10),
-        ],
+      child: Form(
+        onChanged: () {
+          setState(() {
+            _disableSend = !_formKey.currentState.validate();
+          });
+        },
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _bulidRateInput(),
+            if (_rateInput > 0)
+              Column(
+                children: [
+                  SizedBox(height: 20),
+                  _buildSelectionInput(),
+                  SizedBox(height: 20),
+                  _buildCommentTextField(),
+                  SizedBox(height: 20),
+                ],
+              ),
+            _buildSendButton(),
+            SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -167,8 +187,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               }
 
               _formKey.currentState.save();
-              print('送出評價');
-              widget.onPressComplete();
+
+              Rating rating = new Rating(
+                serviceUuid: widget.historicalService.serviceUuid,
+                rating: _rateInput.toInt(),
+                comment: _commentController.text,
+              );
+
+              BlocProvider.of<SendRateBloc>(context)
+                  .add(SendRate(rating: rating));
             },
             text: '送出評價',
             theme: DPTextButtonThemes.purple,
@@ -242,6 +269,14 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                               _typeSelection[index].select == true
                                   ? false
                                   : true;
+
+                          var concatenate = StringBuffer();
+                          _typeSelection.forEach((element) {
+                            if (element.select == true) {
+                              concatenate.write(element.name + ' ');
+                            }
+                          });
+                          _commentController.text = concatenate.toString();
                         });
                       },
                       child: Text(
@@ -270,11 +305,12 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         Container(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: TextFormField(
+            controller: _commentController,
             validator: (String v) {
               return null;
             },
             onSaved: (String v) {
-              _commentInput = v;
+              _commentController.text = v;
             },
             keyboardType: TextInputType.multiline,
             maxLines: 6,
