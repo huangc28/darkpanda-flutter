@@ -10,6 +10,7 @@ class ServiceDetailMessage extends Message {
     this.duration,
     this.serviceTime,
     this.serviceType,
+    this.address,
   }) : super(
           content: content,
           from: from,
@@ -21,6 +22,7 @@ class ServiceDetailMessage extends Message {
   final int duration;
   final DateTime serviceTime;
   final String serviceType;
+  final String address;
 
   factory ServiceDetailMessage.fromMap(Map<String, dynamic> data) {
     return ServiceDetailMessage(
@@ -32,6 +34,7 @@ class ServiceDetailMessage extends Message {
       price: data['price'].toDouble() ?? 0,
       duration: data['duration'],
       serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['service_time']),
+      address: data['address'],
     );
   }
 }

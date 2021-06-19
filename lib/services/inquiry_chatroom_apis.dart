@@ -105,6 +105,7 @@ class InquiryChatroomApis extends BaseClient {
     int serviceDuration,
     double price,
     String serviceType,
+    String address,
   }) async {
     final request = http.Request(
       'POST',
@@ -118,6 +119,7 @@ class InquiryChatroomApis extends BaseClient {
       'duration': serviceDuration,
       'price': price,
       'service_type': serviceType,
+      'address': address,
     });
 
     withApplicationJsonHeader(request);

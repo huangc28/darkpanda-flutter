@@ -4,39 +4,47 @@ class SendEmitServiceConfirmMessageState<E extends AppBaseException>
     extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
+  final EmitServiceConfirmMessageResponse emitServiceConfirmMessageResponse;
 
   const SendEmitServiceConfirmMessageState._({
     this.error,
     this.status,
+    this.emitServiceConfirmMessageResponse,
   });
 
   /// Bloc yields following states
-  const SendEmitServiceConfirmMessageState.initial()
+  SendEmitServiceConfirmMessageState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
+          emitServiceConfirmMessageResponse: null,
         );
 
-  const SendEmitServiceConfirmMessageState.loading(
+  SendEmitServiceConfirmMessageState.loading(
       SendEmitServiceConfirmMessageState state)
       : this._(
           status: AsyncLoadingStatus.loading,
+          emitServiceConfirmMessageResponse:
+              state.emitServiceConfirmMessageResponse,
         );
 
-  const SendEmitServiceConfirmMessageState.error(E err)
+  SendEmitServiceConfirmMessageState.error(E err)
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const SendEmitServiceConfirmMessageState.done(
-      SendEmitServiceConfirmMessageState state)
-      : this._(
+  SendEmitServiceConfirmMessageState.done(
+    SendEmitServiceConfirmMessageState state, {
+    EmitServiceConfirmMessageResponse emitServiceConfirmMessageResponse,
+  }) : this._(
           status: AsyncLoadingStatus.done,
+          emitServiceConfirmMessageResponse: emitServiceConfirmMessageResponse,
         );
 
   @override
   List<Object> get props => [
         error,
         status,
+        emitServiceConfirmMessageResponse,
       ];
 }

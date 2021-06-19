@@ -1,5 +1,8 @@
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,8 +39,8 @@ import 'components/inquiry_detail_dialog.dart';
 import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 
-class MaleChatroom extends StatefulWidget {
-  MaleChatroom({
+class InquiryChatroom extends StatefulWidget {
+  InquiryChatroom({
     this.args,
     this.onPush,
   });
@@ -46,10 +49,10 @@ class MaleChatroom extends StatefulWidget {
   final Function(String, TopUpDpArguments) onPush;
 
   @override
-  _MaleChatroomState createState() => _MaleChatroomState();
+  _InquiryChatroomState createState() => _InquiryChatroomState();
 }
 
-class _MaleChatroomState extends State<MaleChatroom>
+class _InquiryChatroomState extends State<InquiryChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -70,6 +73,10 @@ class _MaleChatroomState extends State<MaleChatroom>
   @override
   void initState() {
     super.initState();
+
+    inquiryDetail.channelUuid = widget.args.channelUUID;
+    inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
+    inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -312,7 +319,7 @@ class _MaleChatroomState extends State<MaleChatroom>
                                 }
                                 // Go to Payment screen
                                 else {
-                                  Navigator.of(context).push(
+                                  Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) => BuyService(
                                         args: inquiryDetail,
@@ -338,6 +345,9 @@ class _MaleChatroomState extends State<MaleChatroom>
                                 );
                               }
                               if (state.status == AsyncLoadingStatus.done) {
+                                inquiryDetail.serviceUuid = state
+                                    .emitServiceConfirmMessageResponse
+                                    .serviceChannelUuid;
                                 BlocProvider.of<LoadMyDpBloc>(context).add(
                                   LoadMyDp(),
                                 );

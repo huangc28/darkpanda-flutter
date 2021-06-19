@@ -94,6 +94,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     setState(() {
       _addressController.text = addr;
       _serviceSetting.address = addr;
+
+      // _serviceSetting = _serviceSetting.copyWith(address: addr);
     });
   }
 

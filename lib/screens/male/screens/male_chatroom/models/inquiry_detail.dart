@@ -8,11 +8,19 @@ class InquiryDetail extends Equatable {
     this.updateInquiryMessage,
     this.balance,
     this.username,
+    this.channelUuid,
+    this.inquiryUuid,
+    this.counterPartUuid,
+    this.serviceUuid,
   });
 
   UpdateInquiryMessage updateInquiryMessage;
   int balance;
   String username;
+  String channelUuid;
+  String inquiryUuid;
+  String counterPartUuid;
+  String serviceUuid;
 
   static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
 
@@ -22,6 +30,10 @@ class InquiryDetail extends Equatable {
           UpdateInquiryMessage.fromMap(data['updateInquiryMessage']),
       balance: data['balance'] ?? 0,
       username: data['username'] ?? '',
+      channelUuid: data['channelUuid'] ?? '',
+      inquiryUuid: data['inquiryUuid'] ?? '',
+      counterPartUuid: data['counterPartUuid'] ?? '',
+      serviceUuid: data['serviceUuid'] ?? '',
     );
   }
 
@@ -30,5 +42,9 @@ class InquiryDetail extends Equatable {
         updateInquiryMessage,
         balance,
         username,
+        channelUuid,
+        inquiryUuid,
+        counterPartUuid,
+        serviceUuid,
       ];
 }

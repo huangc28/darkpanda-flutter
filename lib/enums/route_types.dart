@@ -1,0 +1,4 @@
+enum RouteTypes {
+  fromIncomingService,
+  fromBuyService,
+}

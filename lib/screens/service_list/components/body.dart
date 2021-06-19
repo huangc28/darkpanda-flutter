@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,60 +61,68 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
   Widget comingTab() {
     return BlocConsumer<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-        listener: (BuildContext context, LoadIncomingServiceState state) {
-      // Display error in snack bar.
-      if (state.status == AsyncLoadingStatus.error) {
-        developer.log(
-          'failed to fetch inquiry chatroom',
-          error: state.error,
-        );
+      listener: (BuildContext context, LoadIncomingServiceState state) {
+        // Display error in snack bar.
+        if (state.status == AsyncLoadingStatus.error) {
+          developer.log(
+            'failed to fetch inquiry chatroom',
+            error: state.error,
+          );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.error.message),
-          ),
-        );
-      }
-    }, builder: (BuildContext context, LoadIncomingServiceState state) {
-      return widget.incomingServicesStatus == AsyncLoadingStatus.loading
-          ? LoadingScreen()
-          : ServiceChatroomList(
-              chatrooms: widget.incomingServices,
-              onRefresh: () {
-                print('DEBUG trigger onRefresh');
-              },
-              onLoadMore: () {
-                print('DEBUG trigger onLoadMore');
-              },
-              chatroomBuilder: (context, chatroom, ___) {
-                final lastMsg = state.chatroomLastMessage[chatroom.channelUuid];
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+      },
+      builder: (BuildContext context, LoadIncomingServiceState state) {
+        return widget.incomingServicesStatus == AsyncLoadingStatus.loading
+            ? Row(
+                children: [
+                  LoadingScreen(),
+                ],
+              )
+            : ServiceChatroomList(
+                chatrooms: widget.incomingServices,
+                onRefresh: () {
+                  print('DEBUG trigger onRefresh');
+                },
+                onLoadMore: () {
+                  print('DEBUG trigger onLoadMore');
+                },
+                chatroomBuilder: (context, chatroom, ___) {
+                  final lastMsg =
+                      state.chatroomLastMessage[chatroom.channelUuid];
 
-                return Container(
-                  margin: EdgeInsets.only(
-                    bottom: 20,
-                  ),
-                  child: ServiceChatroomGrid(
-                    onEnterChat: (chatroom) {
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).pushNamed(
-                        MainRoutes.serviceChatroom,
-                        arguments: ServiceChatroomScreenArguments(
-                          channelUUID: chatroom.channelUuid,
-                          inquiryUUID: chatroom.inquiryUuid,
-                          counterPartUUID: chatroom.chatPartnerUserUuid,
-                          serviceUUID: chatroom.serviceUuid,
-                        ),
-                      );
-                    },
-                    chatroom: chatroom,
-                    lastMessage: lastMsg == null ? "" : lastMsg.content,
-                  ),
-                );
-              },
-            );
-    });
+                  return Container(
+                    margin: EdgeInsets.only(
+                      bottom: 20,
+                    ),
+                    child: ServiceChatroomGrid(
+                      onEnterChat: (chatroom) {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushNamed(
+                          MainRoutes.serviceChatroom,
+                          arguments: ServiceChatroomScreenArguments(
+                            channelUUID: chatroom.channelUuid,
+                            inquiryUUID: chatroom.inquiryUuid,
+                            counterPartUUID: chatroom.chatPartnerUserUuid,
+                            serviceUUID: chatroom.serviceUuid,
+                            routeTypes: RouteTypes.fromIncomingService,
+                          ),
+                        );
+                      },
+                      chatroom: chatroom,
+                      lastMessage: lastMsg == null ? "" : lastMsg.content,
+                    ),
+                  );
+                },
+              );
+      },
+    );
   }
 
   Widget historicalTab() {

@@ -1,5 +1,12 @@
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
 
@@ -29,10 +36,8 @@ class _BuyServiceState extends State<BuyService> {
                 color: Color.fromRGBO(106, 109, 137, 1),
               ),
               onPressed: () {
-                int count = 0;
-                Navigator.popUntil(context, (route) {
-                  return count++ == 2;
-                });
+                BlocProvider.of<LoadIncomingServiceBloc>(context)
+                    .add(LoadIncomingService());
               },
             ),
             Text(
@@ -68,7 +73,35 @@ class _BuyServiceState extends State<BuyService> {
           SizedBox(width: 20),
         ],
       ),
-      body: Body(args: widget.args),
+      body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.loading ||
+              state.status == AsyncLoadingStatus.initial) {
+            return Row(
+              children: [
+                LoadingScreen(),
+              ],
+            );
+          }
+
+          if (state.status == AsyncLoadingStatus.done) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamed(
+              MainRoutes.serviceChatroom,
+              arguments: ServiceChatroomScreenArguments(
+                channelUUID: widget.args.channelUuid,
+                inquiryUUID: widget.args.inquiryUuid,
+                counterPartUUID: widget.args.counterPartUuid,
+                serviceUUID: widget.args.serviceUuid,
+                routeTypes: RouteTypes.fromBuyService,
+              ),
+            );
+          }
+        },
+        child: Body(args: widget.args),
+      ),
     );
   }
 }

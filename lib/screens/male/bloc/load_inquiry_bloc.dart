@@ -61,8 +61,6 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         json.decode(res.body),
       );
 
-      // if (activeInquiry.inquiryStatus)
-
       yield LoadInquiryState.loaded(
         state,
         activeInquiry: activeInquiry,

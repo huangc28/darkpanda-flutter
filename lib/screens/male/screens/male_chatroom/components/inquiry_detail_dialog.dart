@@ -211,11 +211,14 @@ class InquiryDetailDialog extends StatelessWidget {
                     color: Color.fromRGBO(141, 145, 155, 1),
                   ),
                 ),
-                Text(
-                  '臺中市北屯區豐樂路二段158...',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
+                Flexible(
+                  child: Text(
+                    inquiryDetail.updateInquiryMessage.address,
+                    // '臺中市北屯區豐樂路二段158...',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromRGBO(49, 50, 53, 1),
+                    ),
                   ),
                 ),
               ],

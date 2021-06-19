@@ -1,3 +1,7 @@
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/male/male_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -181,6 +185,35 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // If is female, use pop
+            if (_sender.gender == Gender.female) {
+              Navigator.of(context).pop();
+            }
+            // If is male, go to MaleApp()
+            else {
+              // To avoid Duplicate GlobalKey issue
+              if (widget.args.routeTypes == RouteTypes.fromIncomingService) {
+                Navigator.of(context).pop();
+              } else {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => MaleApp(
+                      selectedTab: MaleAppTabItem.manage,
+                    ),
+                  ),
+                  ModalRoute.withName('/'),
+                );
+              }
+            }
+          },
+        ),
         title: BlocBuilder<CurrentServiceChatroomBloc,
             CurrentServiceChatroomState>(
           builder: (context, state) {

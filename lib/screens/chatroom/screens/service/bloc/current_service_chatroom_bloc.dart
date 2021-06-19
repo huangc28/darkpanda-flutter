@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -151,6 +152,8 @@ class CurrentServiceChatroomBloc
           return ServiceConfirmedMessage.fromMap(data);
         } else if (data['type'] == MessageType.update_inquiry_detail.name) {
           return UpdateInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.completed_payment.name) {
+          return PaymentCompletedMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -205,6 +208,8 @@ class CurrentServiceChatroomBloc
         (String type) => type == MessageType.confirmed_service.name;
     final isUpdateInquiryDetailMsg =
         (String type) => type == MessageType.update_inquiry_detail.name;
+    final isCompletedPaymentMsg =
+        (String type) => type == MessageType.completed_payment.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -224,6 +229,8 @@ class CurrentServiceChatroomBloc
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
       msg = UpdateInquiryMessage.fromMap(rawMsg);
+    } else if (isCompletedPaymentMsg(rawMsg['type'])) {
+      msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

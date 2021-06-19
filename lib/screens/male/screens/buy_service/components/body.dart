@@ -156,7 +156,8 @@ class _BodyState extends State<Body> {
           _buildEachText(
             'place.png',
             '地址',
-            '臺中市北屯區豐樂路二段158',
+            // '臺中市北屯區豐樂路二段158',
+            widget.args.updateInquiryMessage.address,
           ),
           SizedBox(height: 15),
           _buildEachText(

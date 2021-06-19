@@ -79,6 +79,7 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
       serviceDuration: serviceSettings.duration.inMinutes,
       price: serviceSettings.price,
       serviceType: serviceSettings.serviceType,
+      address: serviceSettings.address,
     );
 
     developer.log(
