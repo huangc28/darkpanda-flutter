@@ -94,6 +94,15 @@ class _InquiryChatroomState extends State<InquiryChatroom>
     _editMessageController.dispose();
   }
 
+  @override
+  void deactivate() {
+    BlocProvider.of<CurrentChatroomBloc>(context).add(
+      LeaveCurrentChatroom(),
+    );
+
+    super.deactivate();
+  }
+
   _handleEditMessage() {
     setState(() {
       _message = _editMessageController.value.text;
@@ -123,8 +132,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.done) {
-            BlocProvider.of<CurrentChatroomBloc>(context)
-                .add(LeaveCurrentChatroom());
             Navigator.of(context).pop();
           }
         },

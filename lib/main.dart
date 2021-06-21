@@ -238,6 +238,13 @@ class DarkPandaApp extends StatelessWidget {
                   return routeBuilder[settings.name](context);
                 }
 
+                if (settings.name == MainRoutes.male) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                }
+
                 return mainRoutes.routeBuilder(context)[settings.name](context);
               },
             );

@@ -285,13 +285,15 @@ class _BodyState extends State<Body> {
             ),
           ),
           SizedBox(width: 10),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: valueSize != null ? valueSize : 15,
+          Flexible(
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: valueSize != null ? valueSize : 15,
+              ),
             ),
           ),
         ],

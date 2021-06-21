@@ -38,7 +38,9 @@ class MainRoutes extends BaseRoutes {
           child: LoginNavigator()),
       MainRoutes.register: (context) => AuthNavigator(),
       MainRoutes.female: (context) => FemaleApp(),
-      MainRoutes.male: (context) => MaleApp(),
+      MainRoutes.male: (context) {
+        return MaleApp(selectedTab: args);
+      },
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 
