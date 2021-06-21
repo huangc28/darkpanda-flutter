@@ -1,6 +1,3 @@
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_payment_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_rate_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,6 +5,9 @@ import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import '../models/historical_service.dart';
 import '../screens/historical_service_detail/historical_service_detail.dart';
 import 'history_card.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 
 class ServiceHistoricalList extends StatelessWidget {
   const ServiceHistoricalList({

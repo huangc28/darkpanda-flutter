@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import '../services/service_chatroom_api.dart';
+import '../../../services/service_chatroom_api.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 
 part 'load_payment_detail_event.dart';
