@@ -1,8 +1,4 @@
-import 'package:darkpanda_flutter/components/loading_screen.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +25,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -109,7 +107,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
         final result = await showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (BuildContext context) {
+          builder: (_) {
             return ExitChatroomConfirmationDialog();
           },
         ).then((value) {
@@ -125,6 +123,8 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.done) {
+            BlocProvider.of<CurrentChatroomBloc>(context)
+                .add(LeaveCurrentChatroom());
             Navigator.of(context).pop();
           }
         },
@@ -244,7 +244,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
-                                  builder: (BuildContext context) {
+                                  builder: (_) {
                                     return InquiryDetailDialog(
                                       inquiryDetail: inquiryDetail,
                                     );
@@ -383,11 +383,11 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
-        onPressed: () {
-          showDialog(
+        onPressed: () async {
+          await showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (BuildContext context) {
+            builder: (_) {
               return ExitChatroomConfirmationDialog();
             },
           ).then((value) {
