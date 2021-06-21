@@ -100,7 +100,6 @@ class InquiryChatroomApis extends BaseClient {
 
   Future<http.Response> sendInquiryUpdateMessage({
     String channelUUID,
-    String inquiryUUID,
     DateTime serviceTime,
     int serviceDuration,
     double price,
@@ -114,7 +113,6 @@ class InquiryChatroomApis extends BaseClient {
 
     request.body = json.encode({
       'channel_uuid': channelUUID,
-      'inquiry_uuid': inquiryUUID,
       'appointment_time': '${serviceTime.toIso8601String()}Z',
       'duration': serviceDuration,
       'price': price,

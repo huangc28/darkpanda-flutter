@@ -17,14 +17,14 @@ class ServiceSettings extends Equatable {
     this.address,
   });
 
-  String uuid;
-  DateTime serviceDate;
-  TimeOfDay serviceTime;
-  double price;
-  double budget;
-  Duration duration;
-  String serviceType;
-  String address;
+  final String uuid;
+  final DateTime serviceDate;
+  final TimeOfDay serviceTime;
+  final double price;
+  final double budget;
+  final Duration duration;
+  final String serviceType;
+  final String address;
 
   @override
   List<Object> get props => [
@@ -50,12 +50,36 @@ class ServiceSettings extends Equatable {
   @override
   bool get stringify => true;
 
-  ServiceSettings.fromServiceDetailMessage(ServiceDetailMessage msg)
-      : price = msg.price,
-        duration = Duration(minutes: msg.duration),
-        serviceDate = msg.serviceTime,
-        serviceTime = TimeOfDay.fromDateTime(msg.serviceTime),
-        serviceType = msg.serviceType;
+  ServiceSettings copyWith({
+    String uuid,
+    DateTime serviceDate,
+    TimeOfDay serviceTime,
+    double price,
+    double budget,
+    Duration duration,
+    String serviceType,
+    String address,
+  }) {
+    return ServiceSettings(
+      uuid: uuid ?? this.uuid,
+      serviceDate: serviceDate ?? this.serviceDate,
+      serviceTime: serviceTime ?? this.serviceTime,
+      price: price ?? this.price,
+      budget: budget ?? this.budget,
+      duration: duration ?? this.duration,
+      serviceType: serviceType ?? this.serviceType,
+      address: address ?? this.address,
+    );
+  }
+
+  factory ServiceSettings.fromServiceDetailMessage(ServiceDetailMessage msg) =>
+      ServiceSettings(
+        price: msg.price,
+        duration: Duration(minutes: msg.duration),
+        serviceDate: msg.serviceTime,
+        serviceTime: TimeOfDay.fromDateTime(msg.serviceTime),
+        serviceType: msg.serviceType,
+      );
 
   factory ServiceSettings.fromInquiry(Inquiry inquiry) => ServiceSettings(
         uuid: inquiry.uuid,

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-
-import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import '../models/historical_service.dart';
 import '../screens/historical_service_detail/historical_service_detail.dart';
 import 'history_card.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 
 class ServiceHistoricalList extends StatelessWidget {
   const ServiceHistoricalList({
@@ -39,11 +41,27 @@ class ServiceHistoricalList extends StatelessWidget {
             itemBuilder: (BuildContext context, int idx) => HistoryCard(
                 historicalService: historicalService[idx],
                 press: () async {
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (context) => HistoricalOrderDetail(
-                            historicalService: historicalService[idx])),
-                  );
+                  Navigator.of(context, rootNavigator: true)
+                      .push(MaterialPageRoute(
+                    builder: (context) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => LoadPaymentDetailBloc(
+                              apiClient: ServiceChatroomClient(),
+                            ),
+                          ),
+                          BlocProvider(
+                            create: (context) => LoadRateDetailBloc(
+                              apiClient: ServiceChatroomClient(),
+                            ),
+                          ),
+                        ],
+                        child: OrderDetail(
+                            historicalService: historicalService[idx]),
+                      );
+                    },
+                  ));
                 }),
             separatorBuilder: (BuildContext context, int index) =>
                 const Divider(

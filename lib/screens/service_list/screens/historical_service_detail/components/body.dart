@@ -1,17 +1,33 @@
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
-
 import '../../../models/historical_service.dart';
 
 class Body extends StatefulWidget {
   final HistoricalService historicalService;
+  final PaymentDetail paymentDetail;
+  final RateDetail rateDetail;
+  final AsyncLoadingStatus paymentDetailStatus;
+  final AsyncLoadingStatus rateDetailStatus;
+  final Function onRefreshRateDetail;
   const Body({
     Key key,
     @required this.historicalService,
+    @required this.paymentDetail,
+    @required this.paymentDetailStatus,
+    this.rateDetail,
+    this.rateDetailStatus,
+    this.onRefreshRateDetail,
   }) : super(key: key);
 
   @override
@@ -20,43 +36,49 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Color.fromRGBO(31, 30, 56, 1),
+            if (widget.paymentDetailStatus == AsyncLoadingStatus.done)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color.fromRGBO(31, 30, 56, 1),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 15),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: UserAvatar(widget.historicalService
+                                          .chatPartnerAvatarUrl !=
+                                      null
+                                  ? widget
+                                      .historicalService.chatPartnerAvatarUrl
+                                  : ''),
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: _buildUserInfo(),
+                            ),
+                          ],
+                        ),
+                        if (widget.rateDetailStatus == AsyncLoadingStatus.done)
+                          _buildRateDetail(),
+                        SizedBox(height: 20),
+                        _buildServiceDetail(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                children: [
-                  SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: UserAvatar(
-                            widget.historicalService.chatPartnerAvatarUrl),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: _buildUserInfo(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  _buildServiceDetail(),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -77,7 +99,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.historicalService.chatPartnerUsername,
+                    widget.historicalService.chatPartnerUsername != null
+                        ? widget.historicalService.chatPartnerUsername
+                        : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -88,7 +112,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   Text(
                     '${DateFormat("yMMMMd").format(widget.historicalService.appointmentTime)} at ${DateFormat.jm().format(widget.historicalService.appointmentTime)}',
                     maxLines: 1,
-                    // overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
                       color: Color.fromRGBO(106, 109, 137, 1),
@@ -100,6 +123,57 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildRateDetail() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 25, top: 10, right: 25),
+      padding: EdgeInsets.fromLTRB(12, 15, 12, 15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Color.fromRGBO(31, 30, 56, 1),
+        border: Border.all(
+          style: BorderStyle.solid,
+          width: 0.5,
+          color: Color.fromRGBO(106, 109, 137, 1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '您給予 ${widget.rateDetail.raterUsername} 的評價',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 8),
+          RatingBar(
+            initialRating: double.parse(widget.rateDetail.rating.toString()),
+            direction: Axis.horizontal,
+            allowHalfRating: false,
+            itemCount: 5,
+            itemSize: 14,
+            ratingWidget: RatingWidget(
+              full: Image.asset(
+                'lib/screens/service_list/assets/rate.png',
+              ),
+              half: Image.asset(
+                'lib/screens/service_list/assets/rate.png',
+              ),
+              empty: Image.asset(
+                'lib/screens/service_list/assets/unrate.png',
+              ),
+            ),
+            itemPadding: EdgeInsets.symmetric(horizontal: 2),
+            onRatingUpdate: null,
+          ),
+        ],
+      ),
     );
   }
 
@@ -152,6 +226,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildAddressTimeCardInfo() {
+    final durationSplit = widget.paymentDetail.duration.toString().split(':');
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -167,11 +242,30 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('place.png', '地址', '臺中市北屯區豐樂路二段158'),
+          _buildEachText(
+              'place.png',
+              '地址',
+              widget.paymentDetail.address != null
+                  ? widget.paymentDetail.address
+                  : ''),
           SizedBox(height: 15),
-          _buildEachText('clock.png', '時間', '12/18/20，00：20AM'),
+          _buildEachText(
+              'clock.png',
+              '時間',
+              widget.paymentDetail.startTime != null
+                  ? '${DateFormat("MM/dd/yy, hh: mm a").format(widget.paymentDetail.startTime)}'
+                  : ''),
           SizedBox(height: 15),
-          _buildEachText('countDown.png', '期限', '1小時'),
+          if (durationSplit.length > 0)
+            _buildEachText(
+              'countDown.png',
+              '期限',
+              widget.paymentDetail.duration > Duration(hours: 0, minutes: 1) &&
+                      widget.paymentDetail.duration <=
+                          Duration(hours: 0, minutes: 59)
+                  ? '${durationSplit[1]} 分'
+                  : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
+            ),
         ],
       ),
     );
@@ -193,11 +287,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '120DP'),
+          _buildEachText('pie.png', '小計', '${widget.paymentDetail.price}DP'),
           SizedBox(height: 15),
-          _buildEachText('heart.png', '服務費', '10DP'),
+          _buildEachText('heart.png', '服務費', '0DP'),
           SizedBox(height: 20),
-          _buildEachText('coin.png', '合計', '130DP',
+          _buildEachText('coin.png', '合計', '${widget.paymentDetail.price}DP',
               titleColor: Colors.white, titleSize: 15, valueSize: 16),
         ],
       ),
@@ -215,18 +309,36 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           theme: DPTextButtonThemes.purple,
         ),
         SizedBox(height: 15),
-        DPTextButton(
-          onPressed: () {
-            print('評價對方');
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => Rate(),
-              ),
-            );
-          },
-          text: '評價對方',
-          theme: DPTextButtonThemes.pink,
-        ),
+        if (widget.rateDetail == null)
+          DPTextButton(
+            onPressed: () {
+              print('評價對方');
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                builder: (context) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => SendRateBloc(
+                          apiClient: ServiceChatroomClient(),
+                        ),
+                      ),
+                    ],
+                    child: Rate(
+                      historicalService: widget.historicalService,
+                    ),
+                  );
+                },
+              )).then((refresh) {
+                if (refresh != null) {
+                  if (refresh == true) {
+                    widget.onRefreshRateDetail();
+                  }
+                }
+              });
+            },
+            text: '評價對方',
+            theme: DPTextButtonThemes.pink,
+          ),
         SizedBox(height: 10),
         GestureDetector(
           onTap: () {
@@ -247,7 +359,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget _buildEachText(String iconName, String title, String value,
       {Color titleColor, double titleSize, double valueSize}) {
     return Container(
-      // height: 30,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

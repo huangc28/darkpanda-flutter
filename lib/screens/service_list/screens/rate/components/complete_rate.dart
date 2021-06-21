@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:flutter/material.dart';
 
 class CompleteRate extends StatefulWidget {
   const CompleteRate({
@@ -56,7 +57,7 @@ class _CompleteRateState extends State<CompleteRate>
               child: DPTextButton(
                 onPressed: () {
                   print('回到項目管理');
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
                 text: '回到項目管理',
                 theme: DPTextButtonThemes.purple,

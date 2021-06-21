@@ -1,5 +1,5 @@
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 import '../models/historical_service.dart';
@@ -25,41 +25,27 @@ class _HistoryCardState extends State<HistoryCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.press,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 20 * 0.40,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: Color.fromRGBO(255, 255, 255, 0.1),
-            border: Border.all(
-              style: BorderStyle.solid,
-              width: 0.5,
-              color: Color.fromRGBO(106, 109, 137, 1),
-            ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(31, 30, 56, 1),
+          border: Border.all(
+            width: 0.5,
+            color: Color.fromRGBO(106, 109, 137, 1),
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              CircleAvatar(
-                radius: 20,
-                backgroundImage:
-                    widget.historicalService.chatPartnerAvatarUrl == ""
-                        ? AssetImage("assets/logo.png")
-                        : NetworkImage(
-                            widget.historicalService.chatPartnerAvatarUrl),
-              ),
-              Expanded(
-                flex: 6,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child:
+                      UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
+                ),
+                Expanded(
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -86,54 +72,9 @@ class _HistoryCardState extends State<HistoryCard> {
                     ],
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 5,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        "200DP",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      RatingBar(
-                        initialRating: 3,
-                        direction: Axis.horizontal,
-                        allowHalfRating: false,
-                        itemCount: 5,
-                        itemSize: 14,
-                        ratingWidget: RatingWidget(
-                          full: Image.asset(
-                            'lib/screens/service_list/assets/rate.png',
-                          ),
-                          half: Image.asset(
-                            'lib/screens/service_list/assets/rate.png',
-                          ),
-                          empty: Image.asset(
-                            'lib/screens/service_list/assets/unrate.png',
-                          ),
-                        ),
-                        itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                        onRatingUpdate: null,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );

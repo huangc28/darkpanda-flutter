@@ -68,7 +68,6 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
 
     final resp = await inquiryChatroomApis.sendInquiryUpdateMessage(
       channelUUID: event.channelUUID,
-      inquiryUUID: event.inquiryUUID,
       serviceTime: new DateTime(
         serviceSettings.serviceDate.year,
         serviceSettings.serviceDate.month,
