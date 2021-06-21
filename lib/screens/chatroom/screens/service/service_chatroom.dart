@@ -5,6 +5,7 @@ import 'package:darkpanda_flutter/screens/male/male_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
@@ -201,15 +202,19 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               if (widget.args.routeTypes == RouteTypes.fromIncomingService) {
                 Navigator.of(context).pop();
               } else {
-                Navigator.pushAndRemoveUntil(
+                Navigator.of(
                   context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => MaleApp(
-                      selectedTab: MaleAppTabItem.manage,
-                    ),
-                  ),
-                  ModalRoute.withName('/'),
-                );
+                  rootNavigator: true,
+                ).pushNamed(MainRoutes.male);
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (BuildContext context) => MaleApp(
+                //       selectedTab: MaleAppTabItem.manage,
+                //     ),
+                //   ),
+                //   ModalRoute.withName('/'),
+                // );
               }
             }
           },

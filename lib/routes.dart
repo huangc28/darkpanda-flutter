@@ -14,16 +14,16 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_cha
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 
 import './screens/female/female_app.dart';
+import './screens/male/male_app.dart';
 
 class MainRoutes extends BaseRoutes {
   static const login = '/';
   static const register = '/register';
-  // static const app = '/app';
 
-  // App routes to serve female user.
+  ///  App routes to serve female user.
   static const female = '/female';
 
-  // App routes to serve male user.
+  /// App routes to serve male user.
   static const male = '/male';
 
   static const chatroom = '/chatroom';
@@ -38,8 +38,7 @@ class MainRoutes extends BaseRoutes {
           child: LoginNavigator()),
       MainRoutes.register: (context) => AuthNavigator(),
       MainRoutes.female: (context) => FemaleApp(),
-      // MainRoutes.male: (context) => MaleApp(),
-
+      MainRoutes.male: (context) => MaleApp(),
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 
