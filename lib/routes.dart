@@ -1,5 +1,3 @@
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/male_chatroom.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,6 +10,9 @@ import './screens/register/auth_navigator.dart';
 import 'screens/chatroom/screens/inquiry/chatroom.dart';
 import 'screens/chatroom/screens/service/service_chatroom.dart';
 
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_chatroom.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+
 import './screens/female/female_app.dart';
 import './screens/male/male_app.dart';
 
@@ -19,10 +20,10 @@ class MainRoutes extends BaseRoutes {
   static const login = '/';
   static const register = '/register';
 
-  // App routes to serve female user.
+  ///  App routes to serve female user.
   static const female = '/female';
 
-  // App routes to serve male user.
+  /// App routes to serve male user.
   static const male = '/male';
 
   static const chatroom = '/chatroom';
@@ -37,7 +38,9 @@ class MainRoutes extends BaseRoutes {
           child: LoginNavigator()),
       MainRoutes.register: (context) => AuthNavigator(),
       MainRoutes.female: (context) => FemaleApp(),
-      MainRoutes.male: (context) => MaleApp(),
+      MainRoutes.male: (context) {
+        return MaleApp(selectedTab: args);
+      },
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 
@@ -51,7 +54,7 @@ class MainRoutes extends BaseRoutes {
       MainRoutes.maleChatroom: (context) {
         final MaleChatroomScreenArguments maleChatroomArgs = args;
 
-        return MaleChatroom(args: maleChatroomArgs);
+        return InquiryChatroom(args: maleChatroomArgs);
       }
     };
   }

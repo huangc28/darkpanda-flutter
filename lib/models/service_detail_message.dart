@@ -34,6 +34,7 @@ class ServiceDetailMessage extends Message {
       price: data['price'].toDouble() ?? 0,
       duration: data['duration'],
       serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['service_time']),
+      address: data['address'],
     );
   }
 }

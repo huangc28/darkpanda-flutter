@@ -2,8 +2,13 @@ import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
@@ -183,6 +188,34 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // If is female, use pop
+            if (_sender.gender == Gender.female) {
+              Navigator.of(context).pop();
+            }
+            // If is male, go to MaleApp()
+            else {
+              // To avoid Duplicate GlobalKey issue
+              if (widget.args.routeTypes == RouteTypes.fromIncomingService) {
+                Navigator.of(context).pop();
+              } else {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pushNamedAndRemoveUntil(
+                  MainRoutes.male,
+                  ModalRoute.withName('/'),
+                  arguments: MaleAppTabItem.manage,
+                );
+              }
+            }
+          },
+        ),
         title: BlocBuilder<CurrentServiceChatroomBloc,
             CurrentServiceChatroomState>(
           builder: (context, state) {

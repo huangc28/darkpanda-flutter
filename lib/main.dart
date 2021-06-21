@@ -222,12 +222,23 @@ class DarkPandaApp extends StatelessWidget {
                       mainRoutes.routeBuilder(context, settings.arguments);
 
                   return routeBuilder[settings.name](context);
-                } else if (settings.name == MainRoutes.serviceChatroom) {
+                }
+
+                if (settings.name == MainRoutes.serviceChatroom) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);
 
                   return routeBuilder[settings.name](context);
-                } else if (settings.name == MainRoutes.maleChatroom) {
+                }
+
+                if (settings.name == MainRoutes.maleChatroom) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                }
+
+                if (settings.name == MainRoutes.male) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);
 

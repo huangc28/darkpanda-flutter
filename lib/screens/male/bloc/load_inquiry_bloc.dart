@@ -61,8 +61,6 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         json.decode(res.body),
       );
 
-      // if (activeInquiry.inquiryStatus)
-
       yield LoadInquiryState.loaded(
         state,
         activeInquiry: activeInquiry,
@@ -155,10 +153,6 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
         pickerUuid: iqPickerUuid,
       ),
     );
-
-    // if (iqStatus == InquiryStatus.asking.name) {
-    //   loadUserBloc.add(LoadUser(uuid: iqPickerUuid));
-    // }
   }
 
   Stream<LoadInquiryState> _mapAddLoadInquirySubscriptionToState(

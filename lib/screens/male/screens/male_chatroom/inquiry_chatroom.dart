@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +25,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -31,10 +34,11 @@ import 'bloc/update_inquitry_notifier_bloc.dart';
 import 'bloc/send_emit_service_confirm_message_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
+import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 
-class MaleChatroom extends StatefulWidget {
-  MaleChatroom({
+class InquiryChatroom extends StatefulWidget {
+  InquiryChatroom({
     this.args,
     this.onPush,
   });
@@ -43,10 +47,10 @@ class MaleChatroom extends StatefulWidget {
   final Function(String, TopUpDpArguments) onPush;
 
   @override
-  _MaleChatroomState createState() => _MaleChatroomState();
+  _InquiryChatroomState createState() => _InquiryChatroomState();
 }
 
-class _MaleChatroomState extends State<MaleChatroom>
+class _InquiryChatroomState extends State<InquiryChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -61,11 +65,16 @@ class _MaleChatroomState extends State<MaleChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  UpdateInquiryMessage message = UpdateInquiryMessage();
+  UpdateInquiryMessage messages = UpdateInquiryMessage();
+  InquiryDetail inquiryDetail = InquiryDetail();
 
   @override
   void initState() {
     super.initState();
+
+    inquiryDetail.channelUuid = widget.args.channelUUID;
+    inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
+    inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -85,6 +94,15 @@ class _MaleChatroomState extends State<MaleChatroom>
     _editMessageController.dispose();
   }
 
+  @override
+  void deactivate() {
+    BlocProvider.of<CurrentChatroomBloc>(context).add(
+      LeaveCurrentChatroom(),
+    );
+
+    super.deactivate();
+  }
+
   _handleEditMessage() {
     setState(() {
       _message = _editMessageController.value.text;
@@ -98,7 +116,7 @@ class _MaleChatroomState extends State<MaleChatroom>
         final result = await showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (BuildContext context) {
+          builder: (_) {
             return ExitChatroomConfirmationDialog();
           },
         ).then((value) {
@@ -222,19 +240,21 @@ class _MaleChatroomState extends State<MaleChatroom>
                             ),
                           ),
 
-                          // When male receive inquiry from female, a
+                          // 1. When male receive inquiry from female, a
                           // inquiry detail dialog will pop up
                           BlocListener<UpdateInquiryNotifierBloc,
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                message = state.message;
+                                messages = state.message;
+                                inquiryDetail.updateInquiryMessage = messages;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
-                                  builder: (BuildContext context) {
+                                  builder: (_) {
                                     return InquiryDetailDialog(
-                                        message: state.message);
+                                      inquiryDetail: inquiryDetail,
+                                    );
                                   },
                                 ).then((value) {
                                   // Go to payment
@@ -261,13 +281,24 @@ class _MaleChatroomState extends State<MaleChatroom>
                             child: SizedBox.shrink(),
                           ),
 
-                          // Load my darkpanda coin balance
+                          // 2. Load my darkpanda coin balance
                           // If enough balance will go to service payment screen
                           // else go to topup dp screen
                           BlocListener<LoadMyDpBloc, LoadMyDpState>(
                             listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.initial ||
+                                  state.status == AsyncLoadingStatus.loading) {
+                                return Row(
+                                  children: [
+                                    LoadingScreen(),
+                                  ],
+                                );
+                              }
                               if (state.status == AsyncLoadingStatus.done) {
-                                if (message.price > state.myDp.balance) {
+                                inquiryDetail.balance = state.myDp.balance;
+
+                                // Go to Top Up screen
+                                if (messages.price > state.myDp.balance) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) {
@@ -286,25 +317,44 @@ class _MaleChatroomState extends State<MaleChatroom>
                                             ),
                                           ],
                                           child: TopupDp(
-                                            args: message,
+                                            args: inquiryDetail,
                                           ),
                                         );
                                       },
                                     ),
                                   );
-                                } else {
-                                  print('go to payment screen');
+                                }
+                                // Go to Payment screen
+                                else {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => BuyService(
+                                        args: inquiryDetail,
+                                      ),
+                                    ),
+                                  );
                                 }
                               }
                             },
                             child: SizedBox.shrink(),
                           ),
 
-                          // Send emit service confirm message
+                          // 3. Send emit service confirm message
                           BlocListener<SendEmitServiceConfirmMessageBloc,
                               SendEmitServiceConfirmMessageState>(
                             listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.initial ||
+                                  state.status == AsyncLoadingStatus.loading) {
+                                return Row(
+                                  children: [
+                                    LoadingScreen(),
+                                  ],
+                                );
+                              }
                               if (state.status == AsyncLoadingStatus.done) {
+                                inquiryDetail.serviceUuid = state
+                                    .emitServiceConfirmMessageResponse
+                                    .serviceChannelUuid;
                                 BlocProvider.of<LoadMyDpBloc>(context).add(
                                   LoadMyDp(),
                                 );
@@ -340,11 +390,11 @@ class _MaleChatroomState extends State<MaleChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
-        onPressed: () {
-          showDialog(
+        onPressed: () async {
+          await showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (BuildContext context) {
+            builder: (_) {
               return ExitChatroomConfirmationDialog();
             },
           ).then((value) {
@@ -358,6 +408,7 @@ class _MaleChatroomState extends State<MaleChatroom>
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
+          inquiryDetail.username = state.userProfile.username ?? '';
           return Text(
             state.status == AsyncLoadingStatus.done
                 ? state.userProfile.username

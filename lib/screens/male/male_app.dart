@@ -11,14 +11,26 @@ Map<MaleAppTabItem, GlobalKey<NavigatorState>> _tabGlobalKeyMap = {
 };
 
 class MaleApp extends StatefulWidget {
-  const MaleApp({Key key}) : super(key: key);
+  const MaleApp({
+    Key key,
+    this.selectedTab = MaleAppTabItem.waitingInquiry,
+  }) : super(key: key);
+
+  final MaleAppTabItem selectedTab;
 
   @override
   _MaleAppState createState() => _MaleAppState();
 }
 
 class _MaleAppState extends State<MaleApp> {
-  MaleAppTabItem _currentTab = MaleAppTabItem.waitingInquiry;
+  MaleAppTabItem _currentTab;
+
+  @override
+  void initState() {
+    _currentTab = widget.selectedTab;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

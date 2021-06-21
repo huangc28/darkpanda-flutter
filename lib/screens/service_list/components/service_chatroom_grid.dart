@@ -33,7 +33,7 @@ class ServiceChatroomGrid extends StatelessWidget {
           GestureDetector(
             onTap: () => onEnterChat(chatroom),
             child: Row(
-              children: [
+              children: <Widget>[
                 Expanded(
                   flex: 1,
                   child: UserAvatar(chatroom.chatPartnerAvatarUrl),
