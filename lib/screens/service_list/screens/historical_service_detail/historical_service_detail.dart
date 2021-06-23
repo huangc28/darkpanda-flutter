@@ -31,8 +31,10 @@ class _OrderDetailState extends State<OrderDetail>
   @override
   void initState() {
     super.initState();
+
     BlocProvider.of<LoadPaymentDetailBloc>(context).add(
         LoadPaymentDetail(serviceUuid: widget.historicalService.serviceUuid));
+
     BlocProvider.of<LoadRateDetailBloc>(context)
         .add(LoadRateDetail(serviceUuid: widget.historicalService.serviceUuid));
   }

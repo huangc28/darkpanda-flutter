@@ -257,4 +257,30 @@ class SearchInquiryAPIs extends BaseClient {
       );
     }
   }
+
+  Future<http.Response> buyService(String serviceUuid) async {
+    try {
+      final jsonBody = jsonEncode({
+        'service_uuid': serviceUuid,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/payments'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
 }

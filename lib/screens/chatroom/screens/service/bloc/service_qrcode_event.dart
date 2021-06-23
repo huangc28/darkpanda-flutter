@@ -14,8 +14,6 @@ class LoadServiceQrCode extends ServiceQrCodeEvent {
 }
 
 class ScanServiceQrCode extends ServiceQrCodeEvent {
-  // final String qrCodeSecret;
-  // final String qrCodeUuid;
   final ScanQrCode scanQrCode;
 
   const ScanServiceQrCode({this.scanQrCode});

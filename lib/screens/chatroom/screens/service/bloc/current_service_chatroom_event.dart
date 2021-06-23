@@ -49,3 +49,13 @@ class DispatchNewMessage extends CurrentServiceChatroomEvent {
 class LeaveCurrentServiceChatroom extends CurrentServiceChatroomEvent {
   const LeaveCurrentServiceChatroom();
 }
+
+class UpdateServiceStatus extends CurrentServiceChatroomEvent {
+  final String serviceUuid;
+  final ServiceStatus serviceStatus;
+
+  const UpdateServiceStatus({
+    this.serviceUuid,
+    this.serviceStatus,
+  });
+}

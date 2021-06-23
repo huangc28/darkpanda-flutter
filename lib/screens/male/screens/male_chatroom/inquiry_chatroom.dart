@@ -1,4 +1,3 @@
-import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +26,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -328,9 +329,22 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                 else {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
-                                      builder: (context) => BuyService(
-                                        args: inquiryDetail,
-                                      ),
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  BuyServiceBloc(
+                                                searchInquiryAPIs:
+                                                    SearchInquiryAPIs(),
+                                              ),
+                                            ),
+                                          ],
+                                          child: BuyService(
+                                            args: inquiryDetail,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
                                 }

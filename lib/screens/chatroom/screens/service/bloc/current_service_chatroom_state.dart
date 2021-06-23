@@ -9,6 +9,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
     this.userProfile,
     this.page,
     this.error,
+    this.serviceStreamMap,
+    this.service,
   });
 
   final AsyncLoadingStatus status;
@@ -17,6 +19,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
   final UserProfile userProfile;
   final int page;
   final E error;
+  final Map<String, StreamSubscription> serviceStreamMap;
+  final IncomingService service;
 
   CurrentServiceChatroomState.init()
       : this._(
@@ -25,6 +29,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           historicalMessages: [],
           currentMessages: [],
           userProfile: UserProfile(),
+          serviceStreamMap: {},
+          service: null,
         );
 
   CurrentServiceChatroomState.loading(CurrentServiceChatroomState state)
@@ -34,6 +40,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           historicalMessages: state.historicalMessages,
           currentMessages: state.currentMessages,
           userProfile: state.userProfile,
+          serviceStreamMap: state.serviceStreamMap,
+          service: state.service,
         );
 
   CurrentServiceChatroomState.loadFailed(
@@ -45,6 +53,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           currentMessages: state.currentMessages,
           error: error,
           userProfile: state.userProfile,
+          serviceStreamMap: state.serviceStreamMap,
+          service: state.service,
         );
 
   CurrentServiceChatroomState.loaded(
@@ -52,12 +62,16 @@ class CurrentServiceChatroomState<E extends AppBaseException>
     UserProfile inquirerProfile,
     List<Message> historicalMessages,
     int page,
+    Map<String, StreamSubscription<DocumentSnapshot>> serviceStreamMap,
+    IncomingService service,
   }) : this._(
           status: AsyncLoadingStatus.done,
           historicalMessages: historicalMessages ?? state.historicalMessages,
           currentMessages: state.currentMessages,
           page: page ?? state.page,
           userProfile: inquirerProfile ?? state.userProfile,
+          serviceStreamMap: serviceStreamMap ?? state.serviceStreamMap,
+          service: service ?? state.service,
         );
 
   CurrentServiceChatroomState.updateCurrentMessage(
@@ -69,6 +83,33 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           historicalMessages: state.historicalMessages,
           userProfile: state.userProfile,
           currentMessages: currentMessages,
+          serviceStreamMap: state.serviceStreamMap,
+          service: state.service,
+        );
+
+  CurrentServiceChatroomState.putService(CurrentServiceChatroomState state,
+      {IncomingService service})
+      : this._(
+          page: state.page,
+          status: state.status,
+          historicalMessages: state.historicalMessages,
+          userProfile: state.userProfile,
+          currentMessages: state.currentMessages,
+          serviceStreamMap: state.serviceStreamMap,
+          service: service ?? state.service,
+        );
+
+  CurrentServiceChatroomState.putServiceStreamMap(
+    CurrentServiceChatroomState state, {
+    Map<String, StreamSubscription> serviceStreamMap,
+  }) : this._(
+          page: state.page,
+          status: state.status,
+          historicalMessages: state.historicalMessages,
+          userProfile: state.userProfile,
+          currentMessages: state.currentMessages,
+          serviceStreamMap: serviceStreamMap ?? state.serviceStreamMap,
+          service: state.service,
         );
 
   List<Message> get messages {
@@ -82,5 +123,7 @@ class CurrentServiceChatroomState<E extends AppBaseException>
         historicalMessages,
         currentMessages,
         messages,
+        serviceStreamMap,
+        service,
       ];
 }

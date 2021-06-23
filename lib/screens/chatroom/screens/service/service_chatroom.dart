@@ -1,39 +1,51 @@
-import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_detail.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
+
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 
+import 'bloc/current_service_chatroom_bloc.dart';
+import 'bloc/load_service_detail_bloc.dart';
+import 'bloc/service_qrcode_bloc.dart';
+import 'components/send_message_bar.dart';
+import 'screen_arguments/qrscanner_screen_arguments.dart';
 import '../../components/chat_bubble.dart';
 import '../../components/confirmed_service_bubble.dart';
 import '../../components/update_inquiry_bubble.dart';
-import 'bloc/current_service_chatroom_bloc.dart';
-import 'bloc/service_qrcode_bloc.dart';
-import 'components/send_message_bar.dart';
 import '../../components/chatroom_window.dart';
-
-import '../../../../models/service_settings.dart';
-import 'screen_arguments/qrscanner_screen_arguments.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
@@ -49,6 +61,13 @@ class ServiceChatroom extends StatefulWidget {
   @override
   _ServiceChatroomState createState() => _ServiceChatroomState();
 }
+
+// @TODO:
+//   - Init current chatroom - load history messages.
+//   - Go to service qrcode scanner.
+//   - If is male,
+//      - Load dp balance.
+//      - If service status is unpaid, show unpaid banner.
 
 class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
@@ -70,18 +89,22 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  /// Animations controllers.
-  /// TODO: slide animation should be extract to a mixin or parent widget.
-  AnimationController _animationController;
-  Animation<Offset> _offsetAnimation;
-  Animation<double> _fadeAnimation;
+  /// If male user service is paid, the unpaid banner will be hide
+  bool _servicePaid = true;
 
-  /// [ServiceSettings] model to be passed down to service settings sheet.
-  ServiceSettings _serviceSettings;
+  int _balance = 0;
+  InquiryDetail _inquiryDetail = InquiryDetail();
+  ServiceDetail _serviceDetail = ServiceDetail();
+  UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
 
   @override
   void initState() {
     super.initState();
+
+    _inquiryDetail.channelUuid = widget.args.channelUUID;
+    _inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
+    _inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
+    _inquiryDetail.serviceUuid = widget.args.serviceUUID;
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -91,48 +114,18 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           inquirerUUID: widget.args.counterPartUUID),
     );
 
-    // Fetch inquiry related inquiry if exists.
-    // BlocProvider.of<GetInquiryBloc>(context).add(
-    //   GetInquiry(inquiryUuid: widget.args.inquiryUUID),
-    // );
+    // Only male user to get dp balance
+    if (_sender.gender == Gender.male) {
+      BlocProvider.of<LoadMyDpBloc>(context).add(
+        LoadMyDp(),
+      );
+
+      BlocProvider.of<LoadServiceDetailBloc>(context).add(
+        LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+      );
+    }
 
     _editMessageController.addListener(_handleEditMessage);
-
-    // Initialize slideup panel animation.
-    _initSlideUpAnimation();
-  }
-
-  _initSlideUpAnimation() {
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
-
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset(0, 1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.decelerate,
-      ),
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.forward) {
-          // Start animation at begin
-          _slideUpController.toggle();
-        } else if (status == AnimationStatus.dismissed) {
-          // To hide widget, we need complete animation first
-          _slideUpController.toggle();
-        }
-      });
-
-    _fadeAnimation = Tween<double>(
-      begin: 1,
-      end: 0.6,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.decelerate,
-    ));
   }
 
   @override
@@ -140,7 +133,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     super.dispose();
 
     _editMessageController.dispose();
-    _animationController.dispose();
   }
 
   _handleEditMessage() {
@@ -219,6 +211,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         title: BlocBuilder<CurrentServiceChatroomBloc,
             CurrentServiceChatroomState>(
           builder: (context, state) {
+            if (state.status == AsyncLoadingStatus.done) {
+              _inquiryDetail.username = state.userProfile.username;
+            }
+
             return Text(
               state.status == AsyncLoadingStatus.done
                   ? state.userProfile.username
@@ -263,139 +259,232 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: Container(
-                child: Column(
-                  children: [
-                    if (_sender.gender == Gender.male)
-                      UnpaidInfo(
-                        inquirerProfile: _inquirerProfile,
-                      ),
-                    Expanded(
-                      child: LoadMoreScrollable(
-                        scrollController: _scrollController,
-                        onLoadMore: () {
-                          BlocProvider.of<CurrentServiceChatroomBloc>(context)
-                              .add(
-                            FetchMoreHistoricalMessages(
-                              channelUUID: widget.args.channelUUID,
-                            ),
-                          );
-                        },
-                        builder: (context, scrollController) {
-                          return Stack(
-                            children: [
-                              BlocListener<ServiceConfirmNotifierBloc,
-                                  ServiceConfirmNotifierState>(
-                                listener: (context, state) {
-                                  setState(() {
-                                    // If male user confirmed the service, toggle the _serviceConfirmed to be true.
-                                    // so that the female user can not edit the service anymore.
-                                    _serviceConfirmed = true;
-                                  });
-                                },
-                                child: BlocConsumer<CurrentServiceChatroomBloc,
-                                    CurrentServiceChatroomState>(
-                                  listener: (context, state) {
-                                    if (state.status ==
-                                        AsyncLoadingStatus.error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(state.error.message),
-                                        ),
-                                      );
-                                    }
+            Container(
+              child: Column(
+                children: [
+                  if (_sender.gender == Gender.male)
+                    MultiBlocListener(
+                      listeners: [
+                        BlocListener<LoadServiceDetailBloc,
+                            LoadServiceDetailState>(
+                          listener: (context, state) {
+                            if (state.status == AsyncLoadingStatus.error) {
+                              developer.log(
+                                'failed to fetch service detail',
+                                error: state.error,
+                              );
 
-                                    // Enable message bar once done initializing.
-                                    if (state.status ==
-                                        AsyncLoadingStatus.done) {
-                                      setState(() {
-                                        _doneInitChatroom = true;
-
-                                        _inquirerProfile = state.userProfile;
-                                      });
-                                    }
-                                  },
-                                  builder: (context, state) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        // Dismiss inquiry detail pannel.
-                                        if (!_animationController.isDismissed) {
-                                          _animationController.reverse();
-                                        }
-
-                                        FocusScopeNode currentFocus =
-                                            FocusScope.of(context);
-
-                                        // Dismiss keyboard when user clicks on chat window.
-                                        if (!currentFocus.hasPrimaryFocus) {
-                                          currentFocus.unfocus();
-                                        }
-                                      },
-                                      child: ChatroomWindow(
-                                        scrollController: scrollController,
-                                        historicalMessages:
-                                            state.historicalMessages,
-                                        currentMessages: state.currentMessages,
-                                        builder:
-                                            (BuildContext context, message) {
-                                          // Render different chat bubble based on message type.
-                                          if (message
-                                              is ServiceConfirmedMessage) {
-                                            return ConfirmedServiceBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is UpdateInquiryMessage) {
-                                            return UpdateInquiryBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                              onTapMessage: (message) {
-                                                // Slideup inquiry pannel.
-                                                _animationController.forward();
-                                              },
-                                            );
-                                          } else {
-                                            return ChatBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  },
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.error.message),
                                 ),
-                              ),
+                              );
+                            }
 
-                              // When we receive service confirmed message, we will
-                              // display this top notification banner.
-                              _serviceConfirmed
-                                  ? NotificationBanner(
-                                      avatarUrl: _inquirerProfile.avatarUrl,
-                                    )
-                                  : Container(),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    _doneInitChatroom
-                        ? _buildMessageBar()
-                        : Center(
-                            child: Container(
-                              height: 50,
-                              child: LoadingIcon(),
+                            if (state.status == AsyncLoadingStatus.done) {
+                              setState(() {
+                                _serviceDetail = state.serviceDetail;
+                                _updateInquiryMessage.duration =
+                                    _serviceDetail.duration;
+                                _updateInquiryMessage.address =
+                                    _serviceDetail.address;
+                                _updateInquiryMessage.serviceTime =
+                                    _serviceDetail.appointmentTime;
+                                _updateInquiryMessage.matchingFee =
+                                    _serviceDetail.matchingFee;
+
+                                _inquiryDetail.updateInquiryMessage =
+                                    _updateInquiryMessage;
+                              });
+                            }
+                          },
+                        ),
+                        BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                          listener: (context, state) {
+                            if (state.status == AsyncLoadingStatus.error) {
+                              developer.log(
+                                'failed to fetch dp balance',
+                                error: state.error,
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.error.message),
+                                ),
+                              );
+                            }
+
+                            if (state.status == AsyncLoadingStatus.done) {
+                              setState(() {
+                                _balance = state.myDp.balance;
+                                _inquiryDetail.balance = _balance;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                      child: _servicePaid
+                          ? SizedBox.shrink()
+                          : UnpaidInfo(
+                              inquirerProfile: _inquirerProfile,
+                              serviceDetail: _serviceDetail,
+                              onGoToPayment: () {
+                                if (_serviceDetail.matchingFee > _balance) {
+                                  print("Go to Top up dp");
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (context) => LoadMyDpBloc(
+                                                apiClient: TopUpClient(),
+                                              ),
+                                            ),
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  LoadDpPackageBloc(
+                                                apiClient: TopUpClient(),
+                                              ),
+                                            ),
+                                          ],
+                                          child: TopupDp(
+                                            args: _inquiryDetail,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  print("Go to Payment");
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  BuyServiceBloc(
+                                                searchInquiryAPIs:
+                                                    SearchInquiryAPIs(),
+                                              ),
+                                            ),
+                                          ],
+                                          child: BuyService(
+                                            args: _inquiryDetail,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
                             ),
+                    ),
+                  Expanded(
+                    child: LoadMoreScrollable(
+                      scrollController: _scrollController,
+                      onLoadMore: () {
+                        BlocProvider.of<CurrentServiceChatroomBloc>(context)
+                            .add(
+                          FetchMoreHistoricalMessages(
+                            channelUUID: widget.args.channelUUID,
                           ),
-                  ],
-                ),
+                        );
+                      },
+                      builder: (context, scrollController) {
+                        return Stack(
+                          children: [
+                            BlocConsumer<CurrentServiceChatroomBloc,
+                                CurrentServiceChatroomState>(
+                              listener: (context, state) {
+                                if (state.status == AsyncLoadingStatus.error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error.message),
+                                    ),
+                                  );
+                                }
+
+                                // Enable message bar once done initializing.
+                                if (state.status == AsyncLoadingStatus.done) {
+                                  setState(() {
+                                    _doneInitChatroom = true;
+
+                                    _inquirerProfile = state.userProfile;
+
+                                    if (state.service.serviceStatus ==
+                                        ServiceStatus.unpaid.name) {
+                                      _servicePaid = false;
+                                    } else if (state.service.serviceStatus ==
+                                        ServiceStatus.to_be_fulfilled.name) {
+                                      _servicePaid = true;
+                                    }
+                                  });
+                                }
+                              },
+                              builder: (context, state) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    FocusScopeNode currentFocus =
+                                        FocusScope.of(context);
+
+                                    // Dismiss keyboard when user clicks on chat window.
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                  },
+                                  child: ChatroomWindow(
+                                    scrollController: scrollController,
+                                    historicalMessages:
+                                        state.historicalMessages,
+                                    currentMessages: state.currentMessages,
+                                    builder: (BuildContext context, message) {
+                                      // Render different chat bubble based on message type.
+                                      if (message is ServiceConfirmedMessage) {
+                                        return ConfirmedServiceBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
+                                      } else if (message
+                                          is UpdateInquiryMessage) {
+                                        return UpdateInquiryBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                          onTapMessage: (message) {},
+                                        );
+                                      } else if (message
+                                          is PaymentCompletedMessage) {
+                                        return PaymentCompletedBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                          onTapMessage: (message) {},
+                                        );
+                                      } else {
+                                        return ChatBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  _doneInitChatroom
+                      ? _buildMessageBar()
+                      : Center(
+                          child: Container(
+                            height: 50,
+                            child: LoadingIcon(),
+                          ),
+                        ),
+                ],
               ),
             ),
           ],

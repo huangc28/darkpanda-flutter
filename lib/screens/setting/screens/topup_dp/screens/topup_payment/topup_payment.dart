@@ -1,7 +1,9 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_number_input_formatter.dart';
@@ -131,17 +133,28 @@ class _TopupPaymentState extends State<TopupPayment> {
                 _showInSnackBar(state.error.message);
               } else if (state.status == AsyncLoadingStatus.done) {
                 _showInSnackBar('充值成功！');
-                // If args is null, means topup is from chatting
-                // else is not enough DP which is from male accept and pay inquiry
+                // If args is null, means topup is from settings
+                // Else if not enough DP which is from male accept and pay inquiry
                 if (widget.args == null) {
                   Navigator.pop(context, true);
                 } else {
                   // Go to payment screen
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => BuyService(
-                        args: widget.args,
-                      ),
+                      builder: (context) {
+                        return MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => BuyServiceBloc(
+                                searchInquiryAPIs: SearchInquiryAPIs(),
+                              ),
+                            ),
+                          ],
+                          child: BuyService(
+                            args: widget.args,
+                          ),
+                        );
+                      },
                     ),
                   );
                 }

@@ -4,9 +4,13 @@ class UnpaidInfo extends StatelessWidget {
   const UnpaidInfo({
     Key key,
     this.inquirerProfile,
+    this.serviceDetail,
+    @required this.onGoToPayment,
   }) : super(key: key);
 
   final UserProfile inquirerProfile;
+  final ServiceDetail serviceDetail;
+  final VoidCallback onGoToPayment;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +60,7 @@ class UnpaidInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    '143',
+                    serviceDetail.matchingFee.toStringAsFixed(0),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 38,
@@ -144,9 +148,7 @@ class UnpaidInfo extends StatelessWidget {
                 ),
               ),
             ),
-            onPressed: () {
-              print('前往付款');
-            },
+            onPressed: onGoToPayment,
             child: Text(
               '前往付款',
               style: TextStyle(

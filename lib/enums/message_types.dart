@@ -7,7 +7,7 @@ enum MessageType {
   update_inquiry_detail,
   disagree_inquiry,
   quit_chatroom,
-  completed_payment,
+  complete_payment,
 }
 
 extension MessageTypeExtension on MessageType {

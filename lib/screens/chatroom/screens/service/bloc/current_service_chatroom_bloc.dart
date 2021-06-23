@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,6 +63,8 @@ class CurrentServiceChatroomBloc
       yield* _mapDispatchNewMessageToState(event);
     } else if (event is FetchMoreHistoricalMessages) {
       yield* _mapFetchMoreHistoricalMessagesToState(event);
+    } else if (event is UpdateServiceStatus) {
+      yield* _mapUpdateServiceStatusToState(event);
     } else if (event is LeaveCurrentServiceChatroom) {
       yield* _mapLeaveCurrentChatroomToState(event);
     }
@@ -152,7 +156,7 @@ class CurrentServiceChatroomBloc
           return ServiceConfirmedMessage.fromMap(data);
         } else if (data['type'] == MessageType.update_inquiry_detail.name) {
           return UpdateInquiryMessage.fromMap(data);
-        } else if (data['type'] == MessageType.completed_payment.name) {
+        } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
@@ -175,10 +179,16 @@ class CurrentServiceChatroomBloc
         _handleCurrentMessage(data, event.channelUUID);
       });
 
+      final service = loadIncomingServiceBloc.state.services
+          .where((element) => element.channelUuid == event.channelUUID)
+          .toList();
+
       yield CurrentServiceChatroomState.loaded(
         state,
         inquirerProfile: inquirerProfile,
         historicalMessages: historicalMessages,
+        service: service[0],
+        serviceStreamMap: _createServiceSubscriptionStreamMap(service[0]),
       );
     } on APIException catch (e) {
       yield CurrentServiceChatroomState.loadFailed(
@@ -209,7 +219,7 @@ class CurrentServiceChatroomBloc
     final isUpdateInquiryDetailMsg =
         (String type) => type == MessageType.update_inquiry_detail.name;
     final isCompletedPaymentMsg =
-        (String type) => type == MessageType.completed_payment.name;
+        (String type) => type == MessageType.complete_payment.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -244,5 +254,68 @@ class CurrentServiceChatroomBloc
     // Reset current chatroom historical messages.
     // Reset page number.
     yield CurrentServiceChatroomState.init();
+  }
+
+  Map<String, StreamSubscription<DocumentSnapshot>>
+      _createServiceSubscriptionStreamMap(IncomingService service) {
+    Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
+
+    if (service.serviceStatus == ServiceStatus.unpaid.name ||
+        service.serviceStatus == ServiceStatus.to_be_fulfilled.name) {
+      _streamMap[service.serviceUuid] =
+          _createServiceSubscriptionStream(service.serviceUuid);
+    }
+
+    return _streamMap;
+  }
+
+  StreamSubscription<DocumentSnapshot> _createServiceSubscriptionStream(
+      String serviceUuid) {
+    return FirebaseFirestore.instance
+        .collection('services')
+        .doc(serviceUuid)
+        .snapshots()
+        .listen(
+      (DocumentSnapshot snapshot) {
+        // If male user alter the inquiry to either `unpaid` or `to_be_fulfiiled`, We need to update
+        // the service status in the app to reflect on the screen.
+        _handleServiceStatusChange(serviceUuid, snapshot);
+      },
+    );
+  }
+
+  _handleServiceStatusChange(String serviceUuid, DocumentSnapshot snapshot) {
+    String serviceStatus = snapshot['service_status'] as String;
+
+    developer.log(
+        'firestore service changes received: ${snapshot.data().toString()}');
+
+    add(
+      UpdateServiceStatus(
+        serviceUuid: serviceUuid,
+        serviceStatus: serviceStatus.toServiceStatusEnum(),
+      ),
+    );
+  }
+
+  Stream<CurrentServiceChatroomState> _mapUpdateServiceStatusToState(
+      UpdateServiceStatus event) async* {
+    // To find the one that matches
+    // the `uuid`. Update it's status.
+
+    IncomingService service = new IncomingService();
+    // if (state.service.serviceUuid == event.serviceUuid) {
+    developer.log(
+        'Service found: ${event.serviceUuid}, updating status: ${event.serviceStatus.toString()}');
+
+    service = service.copyWith(
+      serviceStatus: event.serviceStatus.name,
+    );
+
+    // Replace current service list witht updated list.
+    yield CurrentServiceChatroomState.putService(
+      state,
+      service: service,
+    );
   }
 }
