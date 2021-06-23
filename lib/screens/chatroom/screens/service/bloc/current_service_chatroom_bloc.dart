@@ -300,11 +300,7 @@ class CurrentServiceChatroomBloc
 
   Stream<CurrentServiceChatroomState> _mapUpdateServiceStatusToState(
       UpdateServiceStatus event) async* {
-    // To find the one that matches
-    // the `uuid`. Update it's status.
-
     IncomingService service = new IncomingService();
-    // if (state.service.serviceUuid == event.serviceUuid) {
     developer.log(
         'Service found: ${event.serviceUuid}, updating status: ${event.serviceStatus.toString()}');
 
