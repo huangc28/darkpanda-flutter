@@ -162,7 +162,7 @@ class CurrentChatroomBloc
           return DisagreeInquiryMessage.fromMap(data);
         } else if (data['type'] == MessageType.quit_chatroom.name) {
           return QuitChatroomMessage.fromMap(data);
-        } else if (data['type'] == MessageType.completed_payment.name) {
+        } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
@@ -223,7 +223,7 @@ class CurrentChatroomBloc
     final isQuitChatroomMsg =
         (String type) => type == MessageType.quit_chatroom.name;
     final isCompletedPaymentMsg =
-        (String type) => type == MessageType.completed_payment.name;
+        (String type) => type == MessageType.complete_payment.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -83,37 +84,39 @@ class _ServiceListState extends State<ServiceList>
       body: MultiBlocListener(
         listeners: [
           BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-              listener: (context, state) {
-            if (state.status == AsyncLoadingStatus.done) {
-              setState(() {
-                _incomingServices = state.services;
-              });
-            }
+            listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.done) {
+                setState(() {
+                  _incomingServices = state.services;
+                });
+              }
 
-            setState(() {
-              _incomingServicesStatus = state.status;
-            });
-          }),
+              setState(() {
+                _incomingServicesStatus = state.status;
+              });
+            },
+          ),
           BlocListener<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
-              listener: (context, state) {
-            if (state.status == AsyncLoadingStatus.done) {
+            listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.done) {
+                setState(() {
+                  _historicalServices = state.services;
+                });
+              }
+
+              if (state.status == AsyncLoadingStatus.error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error.message),
+                  ),
+                );
+              }
+
               setState(() {
-                _historicalServices = state.services;
+                _historicalServicesStatus = state.status;
               });
-            }
-
-            if (state.status == AsyncLoadingStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error.message),
-                ),
-              );
-            }
-
-            setState(() {
-              _historicalServicesStatus = state.status;
-            });
-          }),
+            },
+          ),
         ],
         child: Body(
           incomingServices: _incomingServices,

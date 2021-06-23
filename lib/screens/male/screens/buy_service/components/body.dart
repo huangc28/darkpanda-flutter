@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:developer' as developer;
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/screens/complete_buy_service/complete_buy_service.dart';
-
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 
 class Body extends StatefulWidget {
@@ -82,7 +88,6 @@ class _BodyState extends State<Body> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // 'Jneey',
                     widget.args.username ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -92,11 +97,8 @@ class _BodyState extends State<Body> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    widget.args.updateInquiryMessage.serviceTime.toString(),
-                    // 'Dec 2, 2020 at 00:20 AM',
-                    // '${DateFormat("yMMMMd").format()}',
+                    '${DateFormat("yMMMMd").format(widget.args.updateInquiryMessage?.serviceTime)} at ${DateFormat("jm").format(widget.args.updateInquiryMessage?.serviceTime)}',
                     maxLines: 1,
-                    // overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 13,
                       color: Color.fromRGBO(106, 109, 137, 1),
@@ -156,20 +158,19 @@ class _BodyState extends State<Body> {
           _buildEachText(
             'place.png',
             '地址',
-            // '臺中市北屯區豐樂路二段158',
-            widget.args.updateInquiryMessage.address,
+            widget.args.updateInquiryMessage?.address,
           ),
           SizedBox(height: 15),
           _buildEachText(
             'clock.png',
             '時間',
-            widget.args.updateInquiryMessage.serviceTime.toString(),
+            '${DateFormat("MM/dd/yy").format(widget.args.updateInquiryMessage?.serviceTime)}, ${DateFormat("jm").format(widget.args.updateInquiryMessage?.serviceTime)}',
           ),
           SizedBox(height: 15),
           _buildEachText(
             'countDown.png',
             '期限',
-            widget.args.updateInquiryMessage.duration.toString(),
+            widget.args.updateInquiryMessage?.duration.toString(),
           ),
         ],
       ),
@@ -192,13 +193,11 @@ class _BodyState extends State<Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計',
-              widget.args.updateInquiryMessage.price.toString()),
-          SizedBox(height: 15),
-          _buildEachText('heart.png', '服務費', '10DP'),
-          SizedBox(height: 20),
-          _buildEachText('coin.png', '合計', '130DP',
-              titleColor: Colors.white, titleSize: 15, valueSize: 16),
+          _buildEachText(
+              'pie.png',
+              '小計',
+              widget.args.updateInquiryMessage.matchingFee.toStringAsFixed(0) +
+                  'DP'),
         ],
       ),
     );
@@ -233,29 +232,55 @@ class _BodyState extends State<Body> {
   }
 
   Widget _buildButton() {
-    return Column(
-      children: [
-        DPTextButton(
-          onPressed: () {
-            print('購買服務');
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) => CompleteBuyService(),
-              ),
-            );
-          },
-          text: '購買服務',
-          theme: DPTextButtonThemes.purple,
-        ),
-        SizedBox(height: 15),
-        DPTextButton(
-          onPressed: () {
-            print('取消交易');
-          },
-          text: '取消交易',
-          theme: DPTextButtonThemes.pink,
-        ),
-      ],
+    return BlocListener<BuyServiceBloc, BuyServiceState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.initial ||
+            state.status == AsyncLoadingStatus.loading) {
+          return LoadingScreen();
+        }
+
+        if (state.status == AsyncLoadingStatus.error) {
+          developer.log(
+            'failed to fetch dp balance',
+            error: state.error,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (context) => CompleteBuyService(args: widget.args),
+            ),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          DPTextButton(
+            onPressed: () {
+              print('購買服務');
+              BlocProvider.of<BuyServiceBloc>(context)
+                  .add(CreatePayment(serviceUuid: widget.args.serviceUuid));
+            },
+            text: '購買服務',
+            theme: DPTextButtonThemes.purple,
+          ),
+          SizedBox(height: 15),
+          DPTextButton(
+            onPressed: () {
+              print('取消交易');
+            },
+            text: '取消交易',
+            theme: DPTextButtonThemes.pink,
+          ),
+        ],
+      ),
     );
   }
 
@@ -288,8 +313,6 @@ class _BodyState extends State<Body> {
           Flexible(
             child: Text(
               value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,

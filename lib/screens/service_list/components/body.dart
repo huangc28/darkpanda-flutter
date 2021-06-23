@@ -65,7 +65,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         // Display error in snack bar.
         if (state.status == AsyncLoadingStatus.error) {
           developer.log(
-            'failed to fetch inquiry chatroom',
+            'failed to fetch load imcoming service',
             error: state.error,
           );
 
@@ -127,7 +127,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
   Widget historicalTab() {
     return widget.historicalServicesStatus == AsyncLoadingStatus.loading
-        ? LoadingScreen()
+        ? Row(
+            children: [
+              LoadingScreen(),
+            ],
+          )
         : ServiceHistoricalList(
             historicalService: widget.historicalServices,
             onRefresh: () {

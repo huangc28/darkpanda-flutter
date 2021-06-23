@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 
 class Body extends StatefulWidget {
   const Body({
     Key key,
+    this.args,
+    this.onGoToServiceChatroom,
   }) : super(key: key);
+
+  final InquiryDetail args;
+  final VoidCallback onGoToServiceChatroom;
 
   @override
   _BodyState createState() => _BodyState();
@@ -44,7 +51,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ),
             SizedBox(height: 10),
             Text(
-              '你與Jenny的交易已成功！',
+              '你與${widget.args.username}的交易已成功！',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -53,7 +60,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ),
             SizedBox(height: 10),
             Text(
-              '見面時間：Dec 2, 2020 at 00:20 AM',
+              '見面時間：${DateFormat("MM/dd/yy").format(widget.args.updateInquiryMessage?.serviceTime)}, ${DateFormat("jm").format(widget.args.updateInquiryMessage?.serviceTime)}',
               style: TextStyle(
                 color: Color.fromRGBO(106, 109, 137, 1),
                 fontSize: 13,
@@ -66,9 +73,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 right: 20,
               ),
               child: DPTextButton(
-                onPressed: () {
-                  print('繼續聊天');
-                },
+                onPressed: widget.onGoToServiceChatroom,
                 text: '繼續聊天',
                 theme: DPTextButtonThemes.purple,
               ),

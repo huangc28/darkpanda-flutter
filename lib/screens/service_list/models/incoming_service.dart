@@ -74,6 +74,32 @@ class IncomingService {
       // createdAt: DateTime.parse(data['created_at']),
     );
   }
+
+  IncomingService copyWith({
+    String serviceUuid,
+    String serviceStatus,
+    DateTime appointmentTime,
+    String channelUuid,
+    String inquiryUuid,
+    String inquirerUuid,
+    final List<Message> messages,
+    String chatPartnerAvatarUrl,
+    String chatPartnerUsername,
+    String chatPartnerUserUuid,
+  }) {
+    return IncomingService(
+      serviceUuid: serviceUuid ?? this.serviceUuid,
+      serviceStatus: serviceStatus ?? this.serviceStatus,
+      appointmentTime: appointmentTime ?? this.appointmentTime,
+      channelUuid: channelUuid ?? this.channelUuid,
+      inquiryUuid: inquiryUuid ?? this.inquiryUuid,
+      inquirerUuid: inquirerUuid ?? this.inquirerUuid,
+      messages: messages ?? this.messages,
+      chatPartnerAvatarUrl: chatPartnerAvatarUrl ?? this.chatPartnerAvatarUrl,
+      chatPartnerUsername: chatPartnerUsername ?? this.chatPartnerUsername,
+      chatPartnerUserUuid: chatPartnerUserUuid ?? this.chatPartnerUserUuid,
+    );
+  }
 }
 
 class IncomingServiceList {

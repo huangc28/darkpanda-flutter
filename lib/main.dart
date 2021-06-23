@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,18 +84,16 @@ class DarkPandaApp extends StatelessWidget {
           ),
         ),
 
-        BlocProvider(
-          create: (context) => UpdateInquiryNotifierBloc(),
-        ),
+        BlocProvider(create: (context) => UpdateInquiryNotifierBloc()),
+
         BlocProvider(
           create: (context) => LoadMyDpBloc(
             apiClient: TopUpClient(),
           ),
         ),
         // Inquiry chatroom related blocs
-        BlocProvider(
-          create: (context) => InquiryChatMessagesBloc(),
-        ),
+        BlocProvider(create: (context) => InquiryChatMessagesBloc()),
+
         BlocProvider(
           create: (context) => InquiryChatroomsBloc(
             inquiryChatMesssagesBloc:
@@ -164,6 +163,12 @@ class DarkPandaApp extends StatelessWidget {
             inquiryChatMesssagesBloc:
                 BlocProvider.of<InquiryChatMessagesBloc>(context),
             apiClient: ServiceChatroomClient(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => LoadServiceDetailBloc(
+            serviceAPIs: ServiceAPIs(),
           ),
         ),
 

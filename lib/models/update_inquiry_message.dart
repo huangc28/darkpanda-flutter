@@ -10,17 +10,19 @@ class UpdateInquiryMessage extends Message {
     this.serviceTime,
     this.serviceType,
     this.address,
+    this.matchingFee,
   }) : super(
           content: content,
           from: from,
           createdAt: createdAt,
         );
 
-  final double price;
-  final int duration;
-  final DateTime serviceTime;
-  final String serviceType;
-  final String address;
+  double price;
+  Duration duration;
+  DateTime serviceTime;
+  String serviceType;
+  String address;
+  double matchingFee;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
     return UpdateInquiryMessage(
@@ -28,11 +30,14 @@ class UpdateInquiryMessage extends Message {
       content: data['content'],
       from: data['from'],
       createdAt: Message.fieldToDateTime(data['created_at']),
-      price: data['price'].toDouble() ?? 0,
-      duration: data['duration'],
+      price: data['price']?.toDouble(),
+      duration: Duration(
+        minutes: data['duration'] ?? 0,
+      ),
       serviceTime:
           DateTime.fromMicrosecondsSinceEpoch(data['appointment_time']),
       address: data['address'],
+      matchingFee: data['matching_fee']?.toDouble(),
     );
   }
 }

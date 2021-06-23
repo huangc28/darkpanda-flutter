@@ -17,4 +17,19 @@ class ServiceAPIs extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> fetchServiceDetail(String serviceUuid) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/services/${serviceUuid}'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
