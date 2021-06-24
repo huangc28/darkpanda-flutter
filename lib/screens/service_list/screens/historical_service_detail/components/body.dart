@@ -288,11 +288,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildEachText('pie.png', '小計', '${widget.paymentDetail.price}DP'),
-          SizedBox(height: 15),
-          _buildEachText('heart.png', '服務費', '0DP'),
-          SizedBox(height: 20),
-          _buildEachText('coin.png', '合計', '${widget.paymentDetail.price}DP',
-              titleColor: Colors.white, titleSize: 15, valueSize: 16),
         ],
       ),
     );
@@ -309,7 +304,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           theme: DPTextButtonThemes.purple,
         ),
         SizedBox(height: 15),
-        if (widget.rateDetail == null)
+        if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
             onPressed: () {
               print('評價對方');
@@ -381,13 +376,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ),
           ),
           SizedBox(width: 10),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: valueSize != null ? valueSize : 15,
+          Flexible(
+            child: Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: valueSize != null ? valueSize : 15,
+              ),
             ),
           ),
         ],

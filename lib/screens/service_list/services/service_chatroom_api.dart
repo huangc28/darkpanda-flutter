@@ -62,7 +62,7 @@ class ServiceChatroomClient extends BaseClient {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/rate/$serviceUuid'),
+        buildUri('/v1/services/$serviceUuid/rating'),
       );
 
       await withTokenFromSecureStore(request);
@@ -83,7 +83,7 @@ class ServiceChatroomClient extends BaseClient {
       final request = http.Request(
         'POST',
         buildUri(
-          '/v1/rate',
+          '/v1/services/${rating.serviceUuid}/rating',
         ),
       );
 

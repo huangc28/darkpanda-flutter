@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import '../../../services/service_chatroom_api.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
 
 part 'send_rate_event.dart';
 part 'send_rate_state.dart';
