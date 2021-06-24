@@ -1,5 +1,4 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
 
@@ -104,71 +103,10 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  inquiryDetail.updateInquiryMessage.price.toString() + 'DP',
+                  inquiryDetail.updateInquiryMessage.matchingFee.toString() +
+                      'DP',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6),
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(141, 145, 155, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '服務費：',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(141, 145, 155, 1),
-                  ),
-                ),
-                Text(
-                  '10DP',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6),
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(49, 50, 53, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '合計：',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromRGBO(49, 50, 53, 1),
-                  ),
-                ),
-                Text(
-                  '130DP',
-                  style: TextStyle(
-                    fontSize: 16,
                     color: Color.fromRGBO(49, 50, 53, 1),
                   ),
                 ),

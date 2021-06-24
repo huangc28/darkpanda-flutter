@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
@@ -37,7 +37,9 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
+
     BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
+
     BlocProvider.of<LoadDpPackageBloc>(context).add(LoadDpPackage());
   }
 
@@ -196,35 +198,28 @@ class _BodyState extends State<Body> {
   }
 
   Widget _myDpBalance() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Color.fromRGBO(31, 30, 56, 1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
-        child: Row(
-          children: <Widget>[
-            Image(
-              image: AssetImage("lib/screens/setting/assets/big_coin.png"),
-            ),
-            SizedBox(width: 30),
-            BlocListener<LoadMyDpBloc, LoadMyDpState>(
-              listener: (context, state) {
-                if (state.status == AsyncLoadingStatus.initial ||
-                    state.status == AsyncLoadingStatus.loading) {
-                  return Row(
-                    children: [
-                      LoadingScreen(),
-                    ],
-                  );
-                } else if (state.status == AsyncLoadingStatus.done) {
-                  setState(() {
-                    myDp = state.myDp;
-                  });
-                }
-              },
-              child: Column(
+    return BlocListener<LoadMyDpBloc, LoadMyDpState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            myDp = state.myDp;
+          });
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(31, 30, 56, 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
+          child: Row(
+            children: <Widget>[
+              Image(
+                image: AssetImage("lib/screens/setting/assets/big_coin.png"),
+              ),
+              SizedBox(width: 30),
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -260,8 +255,8 @@ class _BodyState extends State<Body> {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

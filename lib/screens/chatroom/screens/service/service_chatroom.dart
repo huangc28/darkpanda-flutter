@@ -226,33 +226,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           },
         ),
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).push(MaterialPageRoute(
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => ServiceQrCodeBloc(
-                          serviceQrCodeApis: ServiceQrCodeAPIs(),
-                        ),
-                      ),
-                    ],
-                    child: QrScanner(
-                      args: QrscannerScreenArguments(
-                        serviceUuid: widget.args.serviceUUID,
-                      ),
-                    ),
-                  ),
-                ));
-              },
-              child: Icon(Icons.qr_code_scanner),
-            ),
-          ),
+          _serviceDetailButton(),
+          SizedBox(width: 20),
+          _qrcodeScannerButton(),
         ],
       ),
       body: SafeArea(
@@ -489,6 +465,53 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _serviceDetailButton() {
+    return Align(
+      child: GestureDetector(
+        onTap: () {
+          print('交易明細');
+        },
+        child: Text(
+          '交易明細',
+          style: TextStyle(
+            color: Color.fromRGBO(255, 255, 255, 1),
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _qrcodeScannerButton() {
+    return Padding(
+      padding: EdgeInsets.only(right: 20.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => ServiceQrCodeBloc(
+                    serviceQrCodeApis: ServiceQrCodeAPIs(),
+                  ),
+                ),
+              ],
+              child: QrScanner(
+                args: QrscannerScreenArguments(
+                  serviceUuid: widget.args.serviceUUID,
+                ),
+              ),
+            ),
+          ));
+        },
+        child: Icon(Icons.qr_code_scanner),
       ),
     );
   }
