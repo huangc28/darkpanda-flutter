@@ -10,6 +10,7 @@ class PaymentDetail {
     this.pickerUuid,
     this.pickerUsername,
     this.pickerAvatarUrl,
+    this.hasCommented,
   });
 
   int price;
@@ -19,8 +20,8 @@ class PaymentDetail {
   Duration duration;
   String pickerUuid;
   String pickerUsername;
-
   String pickerAvatarUrl;
+  bool hasCommented;
 
   Map<String, dynamic> toMap() => {
         'price': price,
@@ -31,6 +32,7 @@ class PaymentDetail {
         'picker_uuid': pickerUuid,
         'picker_username': pickerUsername,
         'picker_avatar_url': pickerAvatarUrl,
+        'has_commented': hasCommented,
       };
 
   factory PaymentDetail.fromMap(Map<String, dynamic> data) {
@@ -43,6 +45,7 @@ class PaymentDetail {
       pickerUuid: data['picker_uuid'],
       pickerUsername: data['picker_username'],
       pickerAvatarUrl: data['picker_avatar_url'],
+      hasCommented: data['has_commented'],
     );
   }
 
@@ -80,6 +83,7 @@ class PaymentDetail {
       pickerUuid: data['picker_uuid'],
       pickerUsername: data['picker_username'],
       pickerAvatarUrl: data['picker_avatar_url'],
+      hasCommented: data['has_commented'],
     );
   }
 }

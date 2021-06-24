@@ -623,7 +623,24 @@ class ProfilePicture extends StatelessWidget {
       alignment: Alignment.center,
       child: CircleAvatar(
         radius: 50,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
+        child: Align(
+          alignment: Alignment.topRight,
+          child: CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.grey[400],
+            child: IconButton(
+              onPressed: () {
+                print('pet edit');
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.black,
+                size: 16,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

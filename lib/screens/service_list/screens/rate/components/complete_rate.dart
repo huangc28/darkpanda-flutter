@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
@@ -57,7 +59,15 @@ class _CompleteRateState extends State<CompleteRate>
               child: DPTextButton(
                 onPressed: () {
                   print('回到項目管理');
-                  Navigator.of(context).pop(true);
+                  // Navigator.of(context).pop(true);
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamedAndRemoveUntil(
+                    MainRoutes.male,
+                    ModalRoute.withName('/'),
+                    arguments: MaleAppTabItem.manage,
+                  );
                 },
                 text: '回到項目管理',
                 theme: DPTextButtonThemes.purple,
