@@ -10,13 +10,13 @@ enum LoadRateStatus {
 class LoadRateState<E extends AppBaseException> extends Equatable {
   const LoadRateState._({
     this.status,
-    this.userRating,
+    this.userRatings,
     this.error,
   });
 
   final AsyncLoadingStatus status;
 
-  final UserRating userRating;
+  final UserRatings userRatings;
 
   final E error;
 
@@ -37,15 +37,15 @@ class LoadRateState<E extends AppBaseException> extends Equatable {
         );
 
   const LoadRateState.loaded({
-    UserRating userRating,
+    UserRatings userRatings,
   }) : this._(
           status: AsyncLoadingStatus.done,
-          userRating: userRating,
+          userRatings: userRatings,
         );
 
   const LoadRateState.clearState()
       : this._(
-          userRating: null,
+          userRatings: null,
           status: AsyncLoadingStatus.initial,
         );
 

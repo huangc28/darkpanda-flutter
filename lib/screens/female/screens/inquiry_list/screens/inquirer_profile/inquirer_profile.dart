@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/components/review.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,16 +9,12 @@ import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-// import 'package:darkpanda_flutter/components/image_gallery.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 
 import './models/historical_service.dart';
-// import './bloc/load_user_images_bloc.dart';
-// import './bloc/load_historical_services_bloc.dart';
-import './components/Tag.dart';
 import '../../screen_arguments/args.dart';
 
 part 'components/inquirer_profile_status_bar.dart';
@@ -56,12 +53,12 @@ class _InquirerProfileState extends State<InquirerProfile>
     with SingleTickerProviderStateMixin {
   String appBarUserame = '';
 
+  UserRatings userRatings = UserRatings();
+
   @override
   void initState() {
     widget.loadUserBloc.add(
-      LoadUser(
-        uuid: widget.args.uuid,
-      ),
+      LoadUser(uuid: widget.args.uuid),
     );
 
     BlocProvider.of<LoadRateBloc>(context)
@@ -128,27 +125,27 @@ class _InquirerProfileState extends State<InquirerProfile>
 
             return BlocBuilder<LoadRateBloc, LoadRateState>(
               builder: (context, rateState) {
-                if (state.status == AsyncLoadingStatus.loading ||
-                    state.status == AsyncLoadingStatus.initial) {
+                if (rateState.status == AsyncLoadingStatus.loading ||
+                    rateState.status == AsyncLoadingStatus.initial) {
                   return Row(
                     children: [
                       LoadingScreen(),
                     ],
                   );
                 }
-                if (state.status == AsyncLoadingStatus.error) {
+                if (rateState.status == AsyncLoadingStatus.error) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(state.error.message),
+                      content: Text(rateState.error.message),
                     ),
                   );
 
                   return Container();
                 }
+
                 return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.black,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12.0),
                       topRight: Radius.circular(12.0),
@@ -156,7 +153,7 @@ class _InquirerProfileState extends State<InquirerProfile>
                   ),
                   child: InquirerProfilePage(
                     userProfile: state.userProfile,
-                    userRating: rateState.userRating,
+                    userRatings: rateState.userRatings,
                   ),
                 );
               },

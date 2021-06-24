@@ -299,7 +299,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                 inquiryDetail.balance = state.myDp.balance;
 
                                 // Go to Top Up screen
-                                if (messages.price > state.myDp.balance) {
+                                if (messages.matchingFee > state.myDp.balance) {
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) {

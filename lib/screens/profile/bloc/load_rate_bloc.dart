@@ -33,9 +33,9 @@ class LoadRateBloc extends Bloc<LoadRateEvent, LoadRateState> {
     try {
       yield LoadRateState.loading();
 
-      final jwt = await SecureStore().fsc.read(key: 'jwt');
+      // final jwt = await SecureStore().fsc.read(key: 'jwt');
 
-      rateApiClient.jwtToken = jwt;
+      // rateApiClient.jwtToken = jwt;
       final resp = await rateApiClient.fetchUserRate(event.uuid);
 
       if (resp.statusCode != HttpStatus.ok) {
@@ -44,12 +44,12 @@ class LoadRateBloc extends Bloc<LoadRateEvent, LoadRateState> {
         );
       }
 
-      final userRating = UserRating.fromJson(
+      final userRatings = UserRatings.fromMap(
         json.decode(resp.body),
       );
 
       yield LoadRateState.loaded(
-        userRating: userRating,
+        userRatings: userRatings,
       );
     } on APIException catch (e) {
       yield LoadRateState.loadFailed(e);

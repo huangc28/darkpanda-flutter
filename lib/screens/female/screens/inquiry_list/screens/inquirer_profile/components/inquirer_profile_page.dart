@@ -3,11 +3,11 @@ part of '../inquirer_profile.dart';
 class InquirerProfilePage extends StatelessWidget {
   const InquirerProfilePage({
     this.userProfile,
-    this.userRating,
+    this.userRatings,
   });
 
   final UserProfile userProfile;
-  final UserRating userRating;
+  final UserRatings userRatings;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,6 @@ class InquirerProfilePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 25),
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
                   height: 7.0,
@@ -137,7 +136,7 @@ class InquirerProfilePage extends StatelessWidget {
                 SizedBox(width: 5),
                 Container(
                   child: Text(
-                    '評價(13)',
+                    '評價(${userRatings.userRatings.length})',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -150,14 +149,17 @@ class InquirerProfilePage extends StatelessWidget {
 
           SizedBox(height: 22),
           Column(
-            children: [
-              Container(
-                child: InquirerCommentCard(),
-              ),
-              Container(
-                child: InquirerCommentCard(),
-              ),
-            ],
+            children: List.generate(userRatings.userRatings.length, (index) {
+              return Review(review: userRatings.userRatings[index]);
+            }),
+            // [
+            // Container(
+            //   child: InquirerCommentCard(),
+            // ),
+            // Container(
+            //   child: InquirerCommentCard(),
+            // ),
+            // ],
           ),
         ],
       ),

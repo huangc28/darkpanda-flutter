@@ -1,12 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'edit_profile/edit_profile.dart';
 import 'profile.dart';
@@ -23,6 +26,11 @@ class ProfileRoutes extends BaseRoutes {
               BlocProvider(
                 create: (context) => LoadUserImagesBloc(
                   userApi: UserApis(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => LoadRateBloc(
+                  rateApiClient: RateApiClient(),
                 ),
               ),
             ],

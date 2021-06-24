@@ -7,11 +7,11 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arg
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 
 import 'cancel_inquiry_confirmation_dialog.dart';
@@ -291,7 +291,7 @@ class _ChatRequestState extends State<ChatRequest> {
                                       color: Colors.amber,
                                       size: 18,
                                     ),
-                                    child: StarDisplay(value: 3),
+                                    child: ReviewStar(value: 3),
                                   ),
                                   SizedBox(width: 6),
                                   Text(
