@@ -95,15 +95,6 @@ class _BodyState extends State<Body> {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    '${DateFormat("yMMMMd").format(widget.args.updateInquiryMessage?.serviceTime)} at ${DateFormat("jm").format(widget.args.updateInquiryMessage?.serviceTime)}',
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Color.fromRGBO(106, 109, 137, 1),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -140,6 +131,8 @@ class _BodyState extends State<Body> {
   }
 
   Widget _buildAddressTimeCardInfo() {
+    final durationSplit =
+        widget.args.updateInquiryMessage.duration.toString().split(':');
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -170,7 +163,12 @@ class _BodyState extends State<Body> {
           _buildEachText(
             'countDown.png',
             '期限',
-            widget.args.updateInquiryMessage?.duration.toString(),
+            widget.args.updateInquiryMessage.duration >
+                        Duration(hours: 0, minutes: 1) &&
+                    widget.args.updateInquiryMessage.duration <=
+                        Duration(hours: 0, minutes: 59)
+                ? '${durationSplit[1]} 分'
+                : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
           ),
         ],
       ),
@@ -193,11 +191,8 @@ class _BodyState extends State<Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText(
-              'pie.png',
-              '小計',
-              widget.args.updateInquiryMessage.matchingFee.toStringAsFixed(0) +
-                  'DP'),
+          _buildEachText('pie.png', '小計',
+              widget.args.updateInquiryMessage.matchingFee.toString() + 'DP'),
         ],
       ),
     );

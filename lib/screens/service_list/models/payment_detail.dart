@@ -11,6 +11,7 @@ class PaymentDetail {
     this.pickerUsername,
     this.pickerAvatarUrl,
     this.hasCommented,
+    this.matchingFee,
   });
 
   int price;
@@ -22,6 +23,7 @@ class PaymentDetail {
   String pickerUsername;
   String pickerAvatarUrl;
   bool hasCommented;
+  int matchingFee;
 
   Map<String, dynamic> toMap() => {
         'price': price,
@@ -33,6 +35,7 @@ class PaymentDetail {
         'picker_username': pickerUsername,
         'picker_avatar_url': pickerAvatarUrl,
         'has_commented': hasCommented,
+        'matching_fee': matchingFee,
       };
 
   factory PaymentDetail.fromMap(Map<String, dynamic> data) {
@@ -46,6 +49,7 @@ class PaymentDetail {
       pickerUsername: data['picker_username'],
       pickerAvatarUrl: data['picker_avatar_url'],
       hasCommented: data['has_commented'],
+      matchingFee: data['matching_fee'],
     );
   }
 
@@ -84,6 +88,7 @@ class PaymentDetail {
       pickerUsername: data['picker_username'],
       pickerAvatarUrl: data['picker_avatar_url'],
       hasCommented: data['has_commented'],
+      matchingFee: data['matching_fee'],
     );
   }
 }

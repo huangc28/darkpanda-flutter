@@ -119,6 +119,8 @@ class InquiryDetailDialog extends StatelessWidget {
   }
 
   Widget _inquiryDetail() {
+    final durationSplit =
+        inquiryDetail.updateInquiryMessage.duration.toString().split(':');
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -215,7 +217,12 @@ class InquiryDetailDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  inquiryDetail.updateInquiryMessage.duration.toString(),
+                  inquiryDetail.updateInquiryMessage.duration >
+                              Duration(hours: 0, minutes: 1) &&
+                          inquiryDetail.updateInquiryMessage.duration <=
+                              Duration(hours: 0, minutes: 59)
+                      ? '${durationSplit[1]} 分'
+                      : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
                   style: TextStyle(
                     fontSize: 14,
                     color: Color.fromRGBO(49, 50, 53, 1),

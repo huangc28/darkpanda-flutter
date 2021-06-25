@@ -1,7 +1,5 @@
 import 'dart:developer' as developer;
 
-import 'package:darkpanda_flutter/models/message.dart';
-
 class HistoricalService {
   HistoricalService({
     this.serviceUuid,

@@ -22,7 +22,7 @@ class UpdateInquiryMessage extends Message {
   DateTime serviceTime;
   String serviceType;
   String address;
-  double matchingFee;
+  int matchingFee;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
     return UpdateInquiryMessage(
@@ -37,7 +37,7 @@ class UpdateInquiryMessage extends Message {
       serviceTime:
           DateTime.fromMicrosecondsSinceEpoch(data['appointment_time']),
       address: data['address'],
-      matchingFee: data['matching_fee']?.toDouble(),
+      matchingFee: data['matching_fee'],
     );
   }
 }

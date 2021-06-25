@@ -6,7 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_detail.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 
 part 'load_service_detail_event.dart';
@@ -44,12 +44,12 @@ class LoadServiceDetailBloc
         );
       }
 
-      final serviceDetail = ServiceDetail.fromMap(
+      final serviceDetails = ServiceDetails.fromMap(
         json.decode(resp.body),
       );
 
       yield LoadServiceDetailState.loaded(
-        serviceDetail: serviceDetail,
+        serviceDetails: serviceDetails,
       );
     } on APIException catch (e) {
       yield LoadServiceDetailState.loadFailed(e);

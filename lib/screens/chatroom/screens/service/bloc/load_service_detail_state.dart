@@ -3,13 +3,13 @@ part of 'load_service_detail_bloc.dart';
 class LoadServiceDetailState<E extends AppBaseException> extends Equatable {
   const LoadServiceDetailState._({
     this.status,
-    this.serviceDetail,
+    this.serviceDetails,
     this.error,
   });
 
   final AsyncLoadingStatus status;
 
-  final ServiceDetail serviceDetail;
+  final ServiceDetails serviceDetails;
 
   final E error;
 
@@ -30,15 +30,15 @@ class LoadServiceDetailState<E extends AppBaseException> extends Equatable {
         );
 
   const LoadServiceDetailState.loaded({
-    ServiceDetail serviceDetail,
+    ServiceDetails serviceDetails,
   }) : this._(
           status: AsyncLoadingStatus.done,
-          serviceDetail: serviceDetail,
+          serviceDetails: serviceDetails,
         );
 
   const LoadServiceDetailState.clearState()
       : this._(
-          serviceDetail: null,
+          serviceDetails: null,
           status: AsyncLoadingStatus.initial,
         );
 
@@ -46,6 +46,6 @@ class LoadServiceDetailState<E extends AppBaseException> extends Equatable {
   List<Object> get props => [
         status,
         error,
-        serviceDetail,
+        serviceDetails,
       ];
 }
