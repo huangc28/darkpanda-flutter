@@ -26,8 +26,6 @@ class ServiceQrCodeBloc extends Bloc<ServiceQrCodeEvent, ServiceQrCodeState> {
   ) async* {
     if (event is LoadServiceQrCode) {
       yield* _mapLoadServiceQrCodeToState(event);
-    } else if (event is ScanServiceQrCode) {
-      yield* _mapScanServiceQrCodeToState(event);
     } else if (event is ClearServiceQrCodeState) {
       yield* _mapClearServiceQrCodeStateToState(event);
     }
@@ -40,35 +38,6 @@ class ServiceQrCodeBloc extends Bloc<ServiceQrCodeEvent, ServiceQrCodeState> {
 
       final resp = await serviceQrCodeApis
           .fetchServiceQrCodeByServiceUUID(event.serviceUuid);
-
-      if (resp.statusCode != HttpStatus.ok) {
-        throw APIException.fromJson(
-          json.decode(resp.body),
-        );
-      }
-
-      final serviceQrCode = ServiceQrCode.fromJson(
-        json.decode(resp.body),
-      );
-
-      yield ServiceQrCodeState.loaded(
-        serviceQrCode: serviceQrCode,
-      );
-    } on APIException catch (e) {
-      yield ServiceQrCodeState.loadFailed(e);
-    } catch (e) {
-      yield ServiceQrCodeState.loadFailed(
-        AppGeneralExeption(message: e.toString()),
-      );
-    }
-  }
-
-  Stream<ServiceQrCodeState> _mapScanServiceQrCodeToState(
-      ScanServiceQrCode event) async* {
-    try {
-      yield ServiceQrCodeState.loading();
-
-      final resp = await serviceQrCodeApis.scanServiceQrCode(event.scanQrCode);
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

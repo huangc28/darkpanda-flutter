@@ -13,12 +13,6 @@ class LoadServiceQrCode extends ServiceQrCodeEvent {
   const LoadServiceQrCode({this.serviceUuid});
 }
 
-class ScanServiceQrCode extends ServiceQrCodeEvent {
-  final ScanQrCode scanQrCode;
-
-  const ScanServiceQrCode({this.scanQrCode});
-}
-
 class ClearServiceQrCodeState extends ServiceQrCodeEvent {
   const ClearServiceQrCodeState();
 }

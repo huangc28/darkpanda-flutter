@@ -47,6 +47,7 @@ import 'package:darkpanda_flutter/components/loading_icon.dart';
 
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
+import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
 import 'components/send_message_bar.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
@@ -533,6 +534,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               providers: [
                 BlocProvider(
                   create: (context) => ServiceQrCodeBloc(
+                    serviceQrCodeApis: ServiceQrCodeAPIs(),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => ScanServiceQrCodeBloc(
                     serviceQrCodeApis: ServiceQrCodeAPIs(),
                   ),
                 ),

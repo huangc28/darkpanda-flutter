@@ -5,6 +5,7 @@ import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/scan_qrcode.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/scan_service_qrcode_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_qrcode_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/screen_arguments/qrscanner_screen_arguments.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +161,8 @@ class _QrScannerState extends State<QrScanner>
               ),
             ),
             Container(
-              child: BlocListener<ServiceQrCodeBloc, ServiceQrCodeState>(
+              child:
+                  BlocListener<ScanServiceQrCodeBloc, ScanServiceQrCodeState>(
                 listener: (context, state) {
                   if (state.status == AsyncLoadingStatus.initial ||
                       state.status == AsyncLoadingStatus.loading) {
@@ -263,7 +265,7 @@ class _QrScannerState extends State<QrScanner>
             final scan = ScanQrCode.fromJson(jsonDecode(scanData.code));
 
             if (scan.qrCodeSecret != "" && scan.qrCodeUuid != "") {
-              BlocProvider.of<ServiceQrCodeBloc>(context).add(
+              BlocProvider.of<ScanServiceQrCodeBloc>(context).add(
                 ScanServiceQrCode(
                   scanQrCode: ScanQrCode(
                     qrCodeUuid: scan.qrCodeUuid,
