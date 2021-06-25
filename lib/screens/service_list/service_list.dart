@@ -30,10 +30,8 @@ class _ServiceListState extends State<ServiceList>
   ];
 
   List<IncomingService> _incomingServices = [];
-  List<HistoricalService> _historicalServices = [];
 
   AsyncLoadingStatus _incomingServicesStatus = AsyncLoadingStatus.initial;
-  AsyncLoadingStatus _historicalServicesStatus = AsyncLoadingStatus.initial;
 
   @override
   void initState() {
@@ -81,48 +79,21 @@ class _ServiceListState extends State<ServiceList>
           ],
         ),
       ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-            listener: (context, state) {
-              if (state.status == AsyncLoadingStatus.done) {
-                setState(() {
-                  _incomingServices = state.services;
-                });
-              }
+      body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.done) {
+            setState(() {
+              _incomingServices = state.services;
+            });
+          }
 
-              setState(() {
-                _incomingServicesStatus = state.status;
-              });
-            },
-          ),
-          BlocListener<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
-            listener: (context, state) {
-              if (state.status == AsyncLoadingStatus.done) {
-                setState(() {
-                  _historicalServices = state.services;
-                });
-              }
-
-              if (state.status == AsyncLoadingStatus.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error.message),
-                  ),
-                );
-              }
-
-              setState(() {
-                _historicalServicesStatus = state.status;
-              });
-            },
-          ),
-        ],
+          setState(() {
+            _incomingServicesStatus = state.status;
+          });
+        },
         child: Body(
           incomingServices: _incomingServices,
-          historicalServices: _historicalServices,
           incomingServicesStatus: _incomingServicesStatus,
-          historicalServicesStatus: _historicalServicesStatus,
           tabController: _tabController,
         ),
       ),

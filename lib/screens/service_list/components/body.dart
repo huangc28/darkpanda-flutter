@@ -12,8 +12,6 @@ import 'package:darkpanda_flutter/components/loading_screen.dart';
 import '../models/incoming_service.dart';
 import '../bloc/load_incoming_service_bloc.dart';
 
-import '../models/historical_service.dart';
-
 import 'service_chatroom_list.dart';
 import 'service_chatroom_grid.dart';
 import 'service_historical_list.dart';
@@ -22,18 +20,14 @@ class Body extends StatefulWidget {
   const Body({
     this.tabController,
     this.incomingServicesStatus,
-    this.historicalServicesStatus,
     this.incomingServices = const [],
-    this.historicalServices = const [],
   });
 
   final TabController tabController;
 
   final AsyncLoadingStatus incomingServicesStatus;
-  final AsyncLoadingStatus historicalServicesStatus;
 
   final List<IncomingService> incomingServices;
-  final List<HistoricalService> historicalServices;
 
   @override
   _BodyState createState() => _BodyState();
@@ -126,20 +120,39 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget historicalTab() {
-    return widget.historicalServicesStatus == AsyncLoadingStatus.loading
-        ? Row(
-            children: [
-              LoadingScreen(),
-            ],
-          )
-        : ServiceHistoricalList(
-            historicalService: widget.historicalServices,
-            onRefresh: () {
-              print('DEBUG trigger onRefresh');
-            },
-            onLoadMore: () {
-              print('DEBUG trigger onLoadMore');
-            },
+    return BlocConsumer<LoadHistoricalServiceBloc, LoadHistoricalServiceState>(
+      listener: (BuildContext context, LoadHistoricalServiceState state) {
+        // Display error in snack bar.
+        if (state.status == AsyncLoadingStatus.error) {
+          developer.log(
+            'failed to fetch load historaical service',
+            error: state.error,
           );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+      },
+      builder: (BuildContext context, LoadHistoricalServiceState state) {
+        return state.status == AsyncLoadingStatus.loading
+            ? Row(
+                children: [
+                  LoadingScreen(),
+                ],
+              )
+            : ServiceHistoricalList(
+                historicalService: state.services,
+                onRefresh: () {
+                  print('DEBUG trigger onRefresh');
+                },
+                onLoadMore: () {
+                  print('DEBUG trigger onLoadMore');
+                },
+              );
+      },
+    );
   }
 }
