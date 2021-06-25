@@ -1,3 +1,11 @@
+import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/screens/service_detail.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/historical_service_detail.dart';
+import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -13,7 +21,7 @@ import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_detail.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
@@ -94,7 +102,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   int _balance = 0;
   InquiryDetail _inquiryDetail = InquiryDetail();
-  ServiceDetail _serviceDetail = ServiceDetail();
+  ServiceDetails _serviceDetails = ServiceDetails();
   UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
 
   @override
@@ -119,11 +127,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       BlocProvider.of<LoadMyDpBloc>(context).add(
         LoadMyDp(),
       );
-
-      BlocProvider.of<LoadServiceDetailBloc>(context).add(
-        LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
-      );
     }
+
+    BlocProvider.of<LoadServiceDetailBloc>(context).add(
+      LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+    );
 
     _editMessageController.addListener(_handleEditMessage);
   }
@@ -238,74 +246,70 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             Container(
               child: Column(
                 children: [
+                  BlocListener<LoadServiceDetailBloc, LoadServiceDetailState>(
+                    listener: (context, state) {
+                      if (state.status == AsyncLoadingStatus.error) {
+                        developer.log(
+                          'failed to fetch service detail',
+                          error: state.error,
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error.message),
+                          ),
+                        );
+                      }
+
+                      if (state.status == AsyncLoadingStatus.done) {
+                        setState(() {
+                          _serviceDetails = state.serviceDetails;
+                          _updateInquiryMessage.duration =
+                              _serviceDetails.duration;
+                          _updateInquiryMessage.address =
+                              _serviceDetails.address;
+                          _updateInquiryMessage.serviceTime =
+                              _serviceDetails.appointmentTime;
+                          _updateInquiryMessage.matchingFee =
+                              _serviceDetails.matchingFee;
+
+                          _inquiryDetail.updateInquiryMessage =
+                              _updateInquiryMessage;
+                        });
+                      }
+                    },
+                    child: SizedBox.shrink(),
+                  ),
                   if (_sender.gender == Gender.male)
-                    MultiBlocListener(
-                      listeners: [
-                        BlocListener<LoadServiceDetailBloc,
-                            LoadServiceDetailState>(
-                          listener: (context, state) {
-                            if (state.status == AsyncLoadingStatus.error) {
-                              developer.log(
-                                'failed to fetch service detail',
-                                error: state.error,
-                              );
+                    BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                      listener: (context, state) {
+                        if (state.status == AsyncLoadingStatus.error) {
+                          developer.log(
+                            'failed to fetch dp balance',
+                            error: state.error,
+                          );
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(state.error.message),
-                                ),
-                              );
-                            }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error.message),
+                            ),
+                          );
+                        }
 
-                            if (state.status == AsyncLoadingStatus.done) {
-                              setState(() {
-                                _serviceDetail = state.serviceDetail;
-                                _updateInquiryMessage.duration =
-                                    _serviceDetail.duration;
-                                _updateInquiryMessage.address =
-                                    _serviceDetail.address;
-                                _updateInquiryMessage.serviceTime =
-                                    _serviceDetail.appointmentTime;
-                                _updateInquiryMessage.matchingFee =
-                                    _serviceDetail.matchingFee;
-
-                                _inquiryDetail.updateInquiryMessage =
-                                    _updateInquiryMessage;
-                              });
-                            }
-                          },
-                        ),
-                        BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                          listener: (context, state) {
-                            if (state.status == AsyncLoadingStatus.error) {
-                              developer.log(
-                                'failed to fetch dp balance',
-                                error: state.error,
-                              );
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(state.error.message),
-                                ),
-                              );
-                            }
-
-                            if (state.status == AsyncLoadingStatus.done) {
-                              setState(() {
-                                _balance = state.myDp.balance;
-                                _inquiryDetail.balance = _balance;
-                              });
-                            }
-                          },
-                        ),
-                      ],
+                        if (state.status == AsyncLoadingStatus.done) {
+                          setState(() {
+                            _balance = state.myDp.balance;
+                            _inquiryDetail.balance = _balance;
+                          });
+                        }
+                      },
                       child: _servicePaid
                           ? SizedBox.shrink()
                           : UnpaidInfo(
                               inquirerProfile: _inquirerProfile,
-                              serviceDetail: _serviceDetail,
+                              serviceDetails: _serviceDetails,
                               onGoToPayment: () {
-                                if (_serviceDetail.matchingFee > _balance) {
+                                if (_serviceDetails.matchingFee > _balance) {
                                   print("Go to Top up dp");
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
@@ -430,6 +434,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                           onTapMessage: (message) {},
                                         );
                                       } else if (message
+                                          is DisagreeInquiryMessage) {
+                                        return DisagreeInquiryBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
+                                      } else if (message
                                           is PaymentCompletedMessage) {
                                         return PaymentCompletedBubble(
                                           isMe: _sender.uuid == message.from,
@@ -474,6 +484,30 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       child: GestureDetector(
         onTap: () {
           print('交易明細');
+          HistoricalService historicalService = HistoricalService(
+            serviceUuid: widget.args.serviceUUID,
+            chatPartnerUsername: _inquiryDetail.username,
+            appointmentTime: _inquiryDetail.updateInquiryMessage.serviceTime,
+          );
+          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+            builder: (context) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => LoadPaymentDetailBloc(
+                      apiClient: ServiceChatroomClient(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => LoadRateDetailBloc(
+                      apiClient: ServiceChatroomClient(),
+                    ),
+                  ),
+                ],
+                child: ServiceDetail(historicalService: historicalService),
+              );
+            },
+          ));
         },
         child: Text(
           '交易明細',

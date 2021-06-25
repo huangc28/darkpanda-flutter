@@ -1,35 +1,21 @@
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/components/complete_rate.dart';
-import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dart';
-import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
-import '../../../models/historical_service.dart';
-import 'block_user_confirmation_dialog.dart';
 
 class Body extends StatefulWidget {
   final HistoricalService historicalService;
   final PaymentDetail paymentDetail;
-  final RateDetail rateDetail;
   final AsyncLoadingStatus paymentDetailStatus;
-  final AsyncLoadingStatus rateDetailStatus;
-  final Function onRefreshRateDetail;
   const Body({
     Key key,
     @required this.historicalService,
     @required this.paymentDetail,
     @required this.paymentDetailStatus,
-    this.rateDetail,
-    this.rateDetailStatus,
-    this.onRefreshRateDetail,
   }) : super(key: key);
 
   @override
@@ -72,8 +58,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                             ),
                           ],
                         ),
-                        if (widget.rateDetailStatus == AsyncLoadingStatus.done)
-                          _buildRateDetail(),
                         SizedBox(height: 20),
                         _buildServiceDetail(),
                       ],
@@ -116,57 +100,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildRateDetail() {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(left: 25, top: 10, right: 25),
-      padding: EdgeInsets.fromLTRB(12, 15, 12, 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Color.fromRGBO(31, 30, 56, 1),
-        border: Border.all(
-          style: BorderStyle.solid,
-          width: 0.5,
-          color: Color.fromRGBO(106, 109, 137, 1),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '您給予 ${widget.rateDetail.raterUsername} 的評價',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 8),
-          RatingBar(
-            initialRating: double.parse(widget.rateDetail.rating.toString()),
-            direction: Axis.horizontal,
-            allowHalfRating: false,
-            itemCount: 5,
-            itemSize: 14,
-            ratingWidget: RatingWidget(
-              full: Image.asset(
-                'lib/screens/service_list/assets/rate.png',
-              ),
-              half: Image.asset(
-                'lib/screens/service_list/assets/rate.png',
-              ),
-              empty: Image.asset(
-                'lib/screens/service_list/assets/unrate.png',
-              ),
-            ),
-            itemPadding: EdgeInsets.symmetric(horizontal: 2),
-            onRatingUpdate: null,
-          ),
-        ],
-      ),
     );
   }
 
@@ -280,7 +213,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '${widget.paymentDetail.price}DP'),
+          _buildEachText(
+              'pie.png', '小計', '${widget.paymentDetail.matchingFee}DP'),
         ],
       ),
     );
@@ -289,69 +223,14 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget _buildButton() {
     return Column(
       children: [
-        DPTextButton(
-          onPressed: () {
-            print('收據？');
-          },
-          text: '收據？',
-          theme: DPTextButtonThemes.purple,
-        ),
-        SizedBox(height: 15),
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
             onPressed: () {
-              print('評價對方');
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).push(MaterialPageRoute(
-                builder: (context) {
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => SendRateBloc(
-                          apiClient: ServiceChatroomClient(),
-                        ),
-                      ),
-                    ],
-                    child: Rate(
-                      historicalService: widget.historicalService,
-                    ),
-                  );
-                },
-              )).then((refresh) {
-                if (refresh != null) {
-                  if (refresh == true) {
-                    widget.onRefreshRateDetail();
-                  }
-                }
-              });
+              print('取消交易');
             },
-            text: '評價對方',
-            theme: DPTextButtonThemes.pink,
+            text: '取消交易',
+            theme: DPTextButtonThemes.purple,
           ),
-        SizedBox(height: 10),
-        GestureDetector(
-          onTap: () {
-            print('封鎖他');
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return BlockUserConfirmationDialog();
-              },
-            ).then((value) {
-              if (value) {}
-            });
-          },
-          child: Text(
-            '封鎖他',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        )
       ],
     );
   }

@@ -57,7 +57,7 @@ class ServiceHistoricalList extends StatelessWidget {
                             ),
                           ),
                         ],
-                        child: OrderDetail(
+                        child: HistoricalServiceDetail(
                             historicalService: historicalService[idx]),
                       );
                     },

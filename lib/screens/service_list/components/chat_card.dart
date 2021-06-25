@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/Chat.dart';
 import '../models/incoming_service.dart';
 
 class ChatCard extends StatefulWidget {

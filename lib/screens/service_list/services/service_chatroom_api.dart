@@ -98,4 +98,19 @@ class ServiceChatroomClient extends BaseClient {
       throw AppGeneralExeption(message: err.toString());
     }
   }
+
+  Future<http.Response> blockUser(
+    String uuid,
+  ) async {
+    final request = http.Request(
+      'Post',
+      buildUri('/v1/block'),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
 }

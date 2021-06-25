@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/util/try_parse_to_date_time.dart';
 
-class ServiceDetail extends Equatable {
-  ServiceDetail({
+class ServiceDetails extends Equatable {
+  ServiceDetails({
     this.uuid,
     this.price,
     this.duration,
@@ -26,7 +25,7 @@ class ServiceDetail extends Equatable {
   final String address;
   final DateTime startTime;
   final DateTime endTime;
-  final double matchingFee;
+  final int matchingFee;
 
   @override
   List<Object> get props => [
@@ -46,7 +45,7 @@ class ServiceDetail extends Equatable {
   @override
   bool get stringify => true;
 
-  ServiceDetail copyWith({
+  ServiceDetails copyWith({
     String uuid,
     double price,
     Duration duration,
@@ -56,9 +55,9 @@ class ServiceDetail extends Equatable {
     String address,
     DateTime startTime,
     DateTime endTime,
-    double matchingFee,
+    int matchingFee,
   }) {
-    return ServiceDetail(
+    return ServiceDetails(
       uuid: uuid ?? this.uuid,
       price: price ?? this.price,
       duration: duration ?? this.duration,
@@ -72,12 +71,12 @@ class ServiceDetail extends Equatable {
     );
   }
 
-  factory ServiceDetail.fromMap(Map<String, dynamic> data) {
+  factory ServiceDetails.fromMap(Map<String, dynamic> data) {
     final DateTime at = tryParseToDateTime(data['appointment_time']);
     final DateTime st = tryParseToDateTime(data['start_time']);
     final DateTime et = tryParseToDateTime(data['end_time']);
 
-    return ServiceDetail(
+    return ServiceDetails(
       uuid: data['uuid'] ?? '',
       price: data['price']?.toDouble(),
       duration: Duration(
@@ -89,7 +88,7 @@ class ServiceDetail extends Equatable {
       address: data['address'] ?? '',
       startTime: st,
       endTime: et,
-      matchingFee: data['matching_fee']?.toDouble(),
+      matchingFee: data['matching_fee'],
     );
   }
 }

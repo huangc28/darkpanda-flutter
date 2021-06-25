@@ -4,12 +4,12 @@ class UnpaidInfo extends StatelessWidget {
   const UnpaidInfo({
     Key key,
     this.inquirerProfile,
-    this.serviceDetail,
+    this.serviceDetails,
     @required this.onGoToPayment,
   }) : super(key: key);
 
   final UserProfile inquirerProfile;
-  final ServiceDetail serviceDetail;
+  final ServiceDetails serviceDetails;
   final VoidCallback onGoToPayment;
 
   @override
@@ -60,7 +60,7 @@ class UnpaidInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    serviceDetail.matchingFee.toStringAsFixed(0),
+                    serviceDetails.matchingFee.toStringAsFixed(0),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 38,

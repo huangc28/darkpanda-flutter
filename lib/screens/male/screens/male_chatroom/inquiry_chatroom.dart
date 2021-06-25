@@ -217,10 +217,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                         return UpdateInquiryBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
-                                          onTapMessage: (message) {
-                                            // Slideup inquiry pannel.
-                                            // _animationController.forward();
-                                          },
+                                          onTapMessage: (message) {},
                                         );
                                       } else if (message
                                           is DisagreeInquiryMessage) {
