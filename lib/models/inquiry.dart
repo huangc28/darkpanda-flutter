@@ -66,7 +66,7 @@ class Inquiry extends Equatable {
       serviceType: data['service_type'],
       price: data['price'].toDouble(),
       duration: parsedDuration,
-      appointmentTime: parsedAppointmentTime,
+      appointmentTime: parsedAppointmentTime.toLocal(),
       lng: data['lng'].toDouble(),
       lat: data['lat'].toDouble(),
       inquiryStatus: iqStatus.toInquiryStatusEnum(),

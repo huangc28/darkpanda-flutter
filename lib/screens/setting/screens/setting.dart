@@ -115,9 +115,7 @@ class _SettingState extends State<Setting> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
-                      onTap: () {
-                        widget.onPush('/topup-dp', null);
-                      },
+                      onTap: () {},
                     ),
                     Padding(
                       padding:

@@ -34,8 +34,8 @@ class UpdateInquiryMessage extends Message {
       duration: Duration(
         minutes: data['duration'] ?? 0,
       ),
-      serviceTime:
-          DateTime.fromMicrosecondsSinceEpoch(data['appointment_time']),
+      serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['appointment_time'])
+          .toLocal(),
       address: data['address'],
       matchingFee: data['matching_fee'],
     );

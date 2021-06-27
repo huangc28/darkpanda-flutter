@@ -51,7 +51,7 @@ class HistoricalService {
     return HistoricalService(
       serviceUuid: data['service_uuid'],
       serviceStatus: data['service_status'],
-      appointmentTime: parsedAppointmentTime,
+      appointmentTime: parsedAppointmentTime.toLocal(),
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
       chatPartnerAvatarUrl: data['chat_partner_avatar_url'],

@@ -31,6 +31,10 @@ class InquiryAPIClient extends BaseClient {
       serviceSettings.serviceTime.hour,
       serviceSettings.serviceTime.minute,
     );
+
+    String appointmentToUtcToIsoString =
+        appointmentTime.toUtc().toIso8601String();
+
     final request = http.Request(
       'PATCH',
       buildUri(
@@ -40,7 +44,7 @@ class InquiryAPIClient extends BaseClient {
 
     request.body = json.encode({
       'uuid': serviceSettings.uuid,
-      'appointment_time': '${appointmentTime.toIso8601String()}Z',
+      'appointment_time': appointmentToUtcToIsoString,
       'price': serviceSettings.price,
       'duration': serviceSettings.duration.inMinutes,
       'service_type': serviceSettings.serviceType,

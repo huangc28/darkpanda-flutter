@@ -13,7 +13,7 @@ class InquiryDetail extends StatelessWidget {
 
     return Bullet(
       // '時間: 12.18 at 00:20 AM',
-      '時間: ${inquiry.appointmentTime.month}/${inquiry.appointmentTime.day} at ${timeWithJM} AM',
+      '時間: ${inquiry.appointmentTime.month}/${inquiry.appointmentTime.day} at ${timeWithJM}',
       style: TextStyle(
         color: Colors.white,
         height: 1.3,

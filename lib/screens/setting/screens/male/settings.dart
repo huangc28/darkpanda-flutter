@@ -92,9 +92,7 @@ class _MaleSettingsState extends State<MaleSettings> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
-                      onTap: () {
-                        // widget.onPush('/topup-dp', null);
-                      },
+                      onTap: () {},
                     ),
                     Padding(
                       padding:

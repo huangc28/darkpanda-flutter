@@ -72,6 +72,9 @@ class InquiryChatroomApis extends BaseClient {
     String serviceType,
   }) async {
     try {
+      String appointmentToUtcToIsoString =
+          serviceTime.toUtc().toIso8601String();
+
       final request = http.Request(
         'POST',
         buildUri(
@@ -82,7 +85,7 @@ class InquiryChatroomApis extends BaseClient {
       request.body = json.encode({
         'channel_uuid': channelUUID,
         'inquiry_uuid': inquiryUUID,
-        'service_time': serviceTime.toUtc().toIso8601String(),
+        'service_time': appointmentToUtcToIsoString,
         'service_duration': '$serviceDuration',
         'price': '$price',
         'service_type': serviceType,
@@ -106,6 +109,8 @@ class InquiryChatroomApis extends BaseClient {
     String serviceType,
     String address,
   }) async {
+    String appointmentToUtcToIsoString = serviceTime.toUtc().toIso8601String();
+
     final request = http.Request(
       'POST',
       buildUri('/v1/chat/emit-inquiry-updated-message'),
@@ -113,7 +118,7 @@ class InquiryChatroomApis extends BaseClient {
 
     request.body = json.encode({
       'channel_uuid': channelUUID,
-      'appointment_time': '${serviceTime.toIso8601String()}Z',
+      'appointment_time': appointmentToUtcToIsoString,
       'duration': serviceDuration,
       'price': price,
       'service_type': serviceType,

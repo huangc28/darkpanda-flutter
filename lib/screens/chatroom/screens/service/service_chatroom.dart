@@ -237,7 +237,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         actions: <Widget>[
           _serviceDetailButton(),
           SizedBox(width: 20),
-          _qrcodeScannerButton(),
+          _serviceDetails.serviceStatus == ServiceStatus.to_be_fulfilled.name
+              ? _qrcodeScannerButton()
+              : SizedBox.shrink(),
         ],
       ),
       body: SafeArea(

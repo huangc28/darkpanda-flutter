@@ -117,9 +117,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
-                      onTap: () {
-                        widget.onPush('/topup-dp', null);
-                      },
+                      onTap: () {},
                     ),
                     Padding(
                       padding:

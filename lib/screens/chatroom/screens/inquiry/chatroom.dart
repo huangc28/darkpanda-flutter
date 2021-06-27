@@ -1,6 +1,8 @@
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -306,6 +308,14 @@ class _ChatroomState extends State<Chatroom>
                                               isMe:
                                                   _sender.uuid == message.from,
                                               message: message,
+                                            );
+                                          } else if (message
+                                              is PaymentCompletedMessage) {
+                                            return PaymentCompletedBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onTapMessage: (message) {},
                                             );
                                           } else {
                                             return ChatBubble(

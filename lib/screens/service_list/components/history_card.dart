@@ -61,7 +61,7 @@ class _HistoryCardState extends State<HistoryCard> {
                         height: 8,
                       ),
                       Text(
-                        '${DateFormat("yMMMMd").format(widget.historicalService.appointmentTime)} at ${DateFormat.jm().format(widget.historicalService.appointmentTime)}',
+                        '${DateFormat("yMMMMd").format(widget.historicalService.appointmentTime.toLocal())} at ${DateFormat.jm().format(widget.historicalService.appointmentTime.toLocal())}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

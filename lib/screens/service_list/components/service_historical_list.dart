@@ -38,7 +38,11 @@ class ServiceHistoricalList extends StatelessWidget {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: historicalService.length,
-            itemBuilder: (BuildContext context, int idx) => HistoryCard(
+            itemBuilder: (BuildContext context, int idx) => Container(
+              padding: EdgeInsets.only(
+                bottom: 20,
+              ),
+              child: HistoryCard(
                 historicalService: historicalService[idx],
                 press: () async {
                   Navigator.of(context, rootNavigator: true)
@@ -62,7 +66,9 @@ class ServiceHistoricalList extends StatelessWidget {
                       );
                     },
                   ));
-                }),
+                },
+              ),
+            ),
             separatorBuilder: (BuildContext context, int index) =>
                 const Divider(
               height: 1,

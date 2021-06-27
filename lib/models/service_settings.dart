@@ -76,7 +76,7 @@ class ServiceSettings extends Equatable {
       ServiceSettings(
         price: msg.price,
         duration: Duration(minutes: msg.duration),
-        serviceDate: msg.serviceTime,
+        serviceDate: msg.serviceTime.toLocal(),
         serviceTime: TimeOfDay.fromDateTime(msg.serviceTime),
         serviceType: msg.serviceType,
       );
@@ -87,8 +87,8 @@ class ServiceSettings extends Equatable {
         price: inquiry.price,
         budget: inquiry.budget,
         duration: inquiry.duration,
-        serviceDate: inquiry.appointmentTime,
-        serviceTime: TimeOfDay.fromDateTime(inquiry.appointmentTime),
+        serviceDate: inquiry.appointmentTime.toLocal(),
+        serviceTime: TimeOfDay.fromDateTime(inquiry.appointmentTime.toLocal()),
         address: inquiry.address,
       );
 
@@ -103,7 +103,7 @@ class ServiceSettings extends Equatable {
         minutes: data['duration'] ?? 0,
       ),
       serviceDate: ap,
-      serviceTime: TimeOfDay.fromDateTime(ap),
+      serviceTime: TimeOfDay.fromDateTime(ap.toLocal()),
     );
   }
 }

@@ -30,13 +30,15 @@ class SearchInquiryAPIs extends BaseClient {
         inquiryForms.inquiryTime.minute,
       );
 
-      final body = inquiryForms;
+      String appointmentToUtcToIsoString =
+          appointmentTime.toUtc().toIso8601String();
 
+      final body = inquiryForms;
       final jsonBody = jsonEncode({
         'budget': body.budget,
         'service_type': body.serviceType,
-        'AppointmentTime': '${appointmentTime.toIso8601String()}Z',
-        'ServiceDuration': body.duration.inMinutes,
+        'appointment_time': appointmentToUtcToIsoString,
+        'service_duration': body.duration.inMinutes,
       });
 
       final request = http.Request(
@@ -67,14 +69,15 @@ class SearchInquiryAPIs extends BaseClient {
       inquiryForms.inquiryTime.hour,
       inquiryForms.inquiryTime.minute,
     );
+    String appointmentToUtcToIsoString =
+        appointmentTime.toUtc().toIso8601String();
 
     final body = inquiryForms;
-
     final jsonBody = jsonEncode({
       'budget': body.budget,
       'service_type': body.serviceType,
-      'AppointmentTime': '${appointmentTime.toIso8601String()}Z',
-      'ServiceDuration': body.duration.inMinutes,
+      'appointment_time': appointmentToUtcToIsoString,
+      'service_duration': body.duration.inMinutes,
     });
 
     final request = http.Request(
@@ -168,7 +171,6 @@ class SearchInquiryAPIs extends BaseClient {
       );
 
       await withTokenFromSecureStore(request);
-      // withApplicationJsonHeader(request);
 
       final res = await sendWithResponse(request);
 
