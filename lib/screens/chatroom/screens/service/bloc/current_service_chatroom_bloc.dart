@@ -5,7 +5,9 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
 
 import 'package:equatable/equatable.dart';
@@ -156,6 +158,10 @@ class CurrentServiceChatroomBloc
           return ServiceConfirmedMessage.fromMap(data);
         } else if (data['type'] == MessageType.update_inquiry_detail.name) {
           return UpdateInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.disagree_inquiry.name) {
+          return DisagreeInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.quit_chatroom.name) {
+          return QuitChatroomMessage.fromMap(data);
         } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
         } else {
@@ -218,6 +224,10 @@ class CurrentServiceChatroomBloc
         (String type) => type == MessageType.confirmed_service.name;
     final isUpdateInquiryDetailMsg =
         (String type) => type == MessageType.update_inquiry_detail.name;
+    final isDisagreeInquiryMsg =
+        (String type) => type == MessageType.disagree_inquiry.name;
+    final isQuitChatroomMsg =
+        (String type) => type == MessageType.quit_chatroom.name;
     final isCompletedPaymentMsg =
         (String type) => type == MessageType.complete_payment.name;
 
@@ -239,6 +249,10 @@ class CurrentServiceChatroomBloc
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
       msg = UpdateInquiryMessage.fromMap(rawMsg);
+    } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
+      msg = DisagreeInquiryMessage.fromMap(rawMsg);
+    } else if (isQuitChatroomMsg(rawMsg['type'])) {
+      msg = QuitChatroomMessage.fromMap(rawMsg);
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else {

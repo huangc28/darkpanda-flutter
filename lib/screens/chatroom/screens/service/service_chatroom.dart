@@ -1,5 +1,7 @@
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/screens/service_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
@@ -439,6 +441,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                       } else if (message
                                           is DisagreeInquiryMessage) {
                                         return DisagreeInquiryBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
+                                      } else if (message
+                                          is QuitChatroomMessage) {
+                                        return QuitChatroomBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
                                         );
