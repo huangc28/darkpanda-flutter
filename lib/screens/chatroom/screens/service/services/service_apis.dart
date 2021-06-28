@@ -32,4 +32,19 @@ class ServiceAPIs extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> cancelService(String serviceUuid) async {
+    try {
+      final request = http.Request(
+        'PUT',
+        buildUri('/v1/services/${serviceUuid}/cancel'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
