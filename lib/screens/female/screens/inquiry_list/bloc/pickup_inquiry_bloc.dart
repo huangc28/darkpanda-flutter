@@ -34,10 +34,6 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
     if (event is PickupInquiry) {
       yield* _mapPickupInquiryToState(event);
     }
-
-    // if (event is RemovePickedupInquiry) {
-    //   yield* _removePickedupInquiry(event);
-    // }
   }
 
   Stream<PickupInquiryState> _mapPickupInquiryToState(
