@@ -1,4 +1,3 @@
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
@@ -22,6 +22,7 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
+
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
@@ -34,6 +35,8 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
@@ -205,17 +208,31 @@ class DarkPandaApp extends StatelessWidget {
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
         child: MaterialApp(
-          supportedLocales: [
-            Locale.fromSubtags(languageCode: 'zh'),
-          ],
+          /// Set the app language to be chinese TW.
+          locale: Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
 
           /// CupertinoLocalization: https://github.com/flutter/flutter/issues/13452
           localizationsDelegates: [
             GlobalCupertinoLocalizations.delegate,
-            CountryLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
+            CountryLocalizations.delegate,
+            AppLocalizations.delegate,
           ],
+
+          supportedLocales: [
+            Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hant',
+              countryCode: 'TW',
+            ),
+            Locale.fromSubtags(languageCode: 'en'),
+          ],
+
           theme: ThemeManager.getTheme(),
           initialRoute: MainRoutes.login,
           onGenerateRoute: (settings) {

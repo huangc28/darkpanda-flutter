@@ -1,0 +1,7 @@
+{
+    "helloWorld": "你好世界",
+    
+    "register": "註冊",
+    "insertUsername": "請輸入用戶名",
+    "login": "登入"
+}

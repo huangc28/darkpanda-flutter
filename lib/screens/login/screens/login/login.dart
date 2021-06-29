@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
@@ -78,7 +79,7 @@ class _LoginState extends State<Login> {
                   _buildLogoImage(),
                   SizedBox(height: 26),
                   _buildTitleText(),
-                  SizedBox(height: 60),
+                  SizedBox(height: 30),
                   BlocListener<SendLoginVerifyCodeBloc,
                       SendLoginVerifyCodeState>(
                     listener: (context, state) {
@@ -139,7 +140,7 @@ class _LoginState extends State<Login> {
                               ),
                             );
                           },
-                          text: '註冊',
+                          text: AppLocalizations.of(context).register,
                         ),
                       ),
                     ),
@@ -147,12 +148,6 @@ class _LoginState extends State<Login> {
                   SizedBox(height: 24),
                 ],
               ),
-            ),
-          ),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/login_background.png'),
-              fit: BoxFit.cover,
             ),
           ),
         ),

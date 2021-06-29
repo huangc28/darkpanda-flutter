@@ -37,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            height: 112,
+            height: 105,
             child:
                 BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
               listener: (context, state) {
@@ -66,7 +66,7 @@ class _LoginFormState extends State<LoginForm> {
                 onSaved: (String v) {
                   _username = v;
                 },
-                hintText: '請輸入您的用戶名',
+                hintText: AppLocalizations.of(context).insertUsername,
                 theme: DPTextFieldThemes.white,
               ),
             ),
@@ -75,7 +75,7 @@ class _LoginFormState extends State<LoginForm> {
             height: 44,
             child: DPTextButton(
               loading: widget.loading,
-              text: '登入',
+              text: AppLocalizations.of(context).login,
               onPressed: _submit,
             ),
           ),
@@ -105,7 +105,7 @@ class _LoginFormState extends State<LoginForm> {
             ],
           ),
           SizedBox(
-            height: 26,
+            height: 16,
           ),
           _buildForm(),
         ],
