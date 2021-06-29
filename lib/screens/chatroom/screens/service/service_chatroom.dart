@@ -116,6 +116,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     _inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     _inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
     _inquiryDetail.serviceUuid = widget.args.serviceUUID;
+    _inquiryDetail.routeTypes = RouteTypes.fromServiceChatroom;
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -316,7 +317,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                               onGoToPayment: () {
                                 if (_serviceDetails.matchingFee > _balance) {
                                   print("Go to Top up dp");
-                                  Navigator.of(context).pushReplacement(
+                                  Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
                                         return MultiBlocProvider(
@@ -342,7 +343,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   );
                                 } else {
                                   print("Go to Payment");
-                                  Navigator.of(context).pushReplacement(
+                                  Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) {
                                         return MultiBlocProvider(
