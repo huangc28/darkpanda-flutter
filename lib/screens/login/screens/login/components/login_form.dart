@@ -9,7 +9,9 @@ class LoginForm extends StatefulWidget {
   }) : super(key: key);
 
   final ValueChanged<String> onLogin;
+
   final GlobalKey<FormState> formKey;
+
   final bool loading;
 
   @override
