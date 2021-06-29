@@ -1,5 +1,5 @@
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 
 import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
@@ -72,14 +73,7 @@ class _LoginState extends State<Login> {
             left: 30,
             right: 30,
           ),
-          child: GestureDetector(
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-            },
+          child: UnfocusPrimary(
             child: SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height,
