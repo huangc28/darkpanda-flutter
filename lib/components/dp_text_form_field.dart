@@ -118,6 +118,8 @@ class DPTextFormField extends StatelessWidget {
     this.focusNode,
     this.readOnly = false,
     this.decoration,
+    this.hintStyle,
+    this.contentPadding,
   }) : super(key: key);
 
   final BoxDecoration decoration;
@@ -131,12 +133,16 @@ class DPTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final FocusNode focusNode;
   final bool readOnly;
+  final TextStyle hintStyle;
+  final EdgeInsetsGeometry contentPadding;
 
   @override
   Widget build(BuildContext context) {
     final chosenTheme = themes[theme];
     final textFieldDecoration = chosenTheme.decoration.copyWith(
       hintText: hintText,
+      hintStyle: hintStyle,
+      contentPadding: contentPadding,
     );
 
     return TextFormField(

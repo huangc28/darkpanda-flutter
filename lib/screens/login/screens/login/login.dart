@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -62,6 +63,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       body: SystemUiOverlayLayout(
         child: Container(
@@ -71,15 +74,16 @@ class _LoginState extends State<Login> {
           ),
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height,
+              // height: MediaQuery.of(context).size.height,
+              height: SizeConfig.screenHeight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 92),
+                  SizedBox(height: SizeConfig.screenHeight * 0.12),
                   _buildLogoImage(),
-                  SizedBox(height: 26),
+                  SizedBox(height: SizeConfig.screenHeight * 0.05),
                   _buildTitleText(),
-                  SizedBox(height: 30),
+                  SizedBox(height: SizeConfig.screenHeight * 0.08),
                   BlocListener<SendLoginVerifyCodeBloc,
                       SendLoginVerifyCodeState>(
                     listener: (context, state) {
@@ -127,7 +131,7 @@ class _LoginState extends State<Login> {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: SizedBox(
-                        height: 44,
+                        height: SizeConfig.screenHeight * 0.08,
                         child: DPTextButton(
                           theme: DPTextButtonThemes.purple,
                           onPressed: () {
@@ -145,7 +149,9 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.04,
+                  ),
                 ],
               ),
             ),
