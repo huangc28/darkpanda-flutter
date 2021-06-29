@@ -39,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            height: 105,
+            height: SizeConfig.screenHeight * 0.13,
             child:
                 BlocListener<SendLoginVerifyCodeBloc, SendLoginVerifyCodeState>(
               listener: (context, state) {
@@ -69,12 +69,21 @@ class _LoginFormState extends State<LoginForm> {
                   _username = v;
                 },
                 hintText: AppLocalizations.of(context).insertUsername,
+                hintStyle: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromRGBO(203, 205, 214, 1),
+                ),
                 theme: DPTextFieldThemes.white,
+                contentPadding: EdgeInsets.only(
+                  left: 14.0,
+                  bottom: 8.0,
+                  top: SizeConfig.screenHeight * 0.04,
+                ),
               ),
             ),
           ),
           SizedBox(
-            height: 44,
+            height: SizeConfig.screenHeight * 0.08,
             child: DPTextButton(
               loading: widget.loading,
               text: AppLocalizations.of(context).login,
@@ -107,7 +116,7 @@ class _LoginFormState extends State<LoginForm> {
             ],
           ),
           SizedBox(
-            height: 16,
+            height: SizeConfig.screenHeight * 0.03,
           ),
           _buildForm(),
         ],
