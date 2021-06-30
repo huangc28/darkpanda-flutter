@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
 import '../../screen_arguments/args.dart';
@@ -24,13 +25,18 @@ class _ChooseGenderState extends State<ChooseGender> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('註冊'),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.screenHeight * 0.02, //16.0,
+            vertical: 0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,7 +44,12 @@ class _ChooseGenderState extends State<ChooseGender> {
                 step: RegisterStep.StepOne,
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(30, 46, 30, 0),
+                padding: EdgeInsets.fromLTRB(
+                  SizeConfig.screenWidth * 0.03,
+                  SizeConfig.screenHeight * 0.08,
+                  SizeConfig.screenWidth * 0.03,
+                  0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -53,11 +64,12 @@ class _ChooseGenderState extends State<ChooseGender> {
                     ),
 
                     SizedBox(
-                      height: 30,
+                      // height: 30,
+                      height: SizeConfig.screenHeight * 0.05,
                     ),
 
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         // Female button
@@ -69,11 +81,17 @@ class _ChooseGenderState extends State<ChooseGender> {
                           },
                           child: Container(
                             child: _femaleBtnActive
-                                ? Image.asset(
-                                    'assets/female_icon_active.png',
+                                ? SizedBox(
+                                    width: SizeConfig.screenWidth * 0.4,
+                                    child: Image.asset(
+                                      'assets/female_icon_active.png',
+                                    ),
                                   )
-                                : Image.asset(
-                                    'assets/female_icon_inactive.png',
+                                : SizedBox(
+                                    width: SizeConfig.screenWidth * 0.4,
+                                    child: Image.asset(
+                                      'assets/female_icon_inactive.png',
+                                    ),
                                   ),
                           ),
                         ),
@@ -86,11 +104,17 @@ class _ChooseGenderState extends State<ChooseGender> {
                             });
                           },
                           child: _femaleBtnActive
-                              ? Image.asset(
-                                  'assets/male_icon_inactive.png',
+                              ? SizedBox(
+                                  width: SizeConfig.screenWidth * 0.4,
+                                  child: Image.asset(
+                                    'assets/male_icon_inactive.png',
+                                  ),
                                 )
-                              : Image.asset(
-                                  'assets/male_icon_active.png',
+                              : SizedBox(
+                                  width: SizeConfig.screenWidth * 0.4,
+                                  child: Image.asset(
+                                    'assets/male_icon_active.png',
+                                  ),
                                 ),
                         ),
                       ],
@@ -104,7 +128,8 @@ class _ChooseGenderState extends State<ChooseGender> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
-                    height: 44,
+                    // height: 44,
+                    height: SizeConfig.screenHeight * 0.065,
                     child: DPTextButton(
                       theme: DPTextButtonThemes.purple,
                       onPressed: () {
@@ -125,7 +150,10 @@ class _ChooseGenderState extends State<ChooseGender> {
                 ),
               ),
 
-              SizedBox(height: 24),
+              SizedBox(
+                // height: 24,
+                height: SizeConfig.screenHeight * 0.04,
+              ),
             ],
           ),
         ),
