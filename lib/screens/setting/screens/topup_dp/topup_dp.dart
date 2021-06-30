@@ -1,6 +1,7 @@
-import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +30,7 @@ class TopupDp extends StatefulWidget {
 class _TopupDpState extends State<TopupDp> {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(

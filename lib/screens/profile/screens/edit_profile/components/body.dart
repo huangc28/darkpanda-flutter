@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:darkpanda_flutter/util/decimal_text_input_formatter.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,24 +69,42 @@ class _BodyState extends State<Body> {
         padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 0.0),
         child: Column(
           children: <Widget>[
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             ProfilePicture(),
             InputTextLabel(label: "暱稱*"),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildNicknameInput(),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "年齡"),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildAgeInput(),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "身高"),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildHeightInput(),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "體重"),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildWeightInput(),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "身形"),
             Container(
               child: Column(
@@ -120,7 +139,9 @@ class _BodyState extends State<Body> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "特色"),
             Container(
               child: Column(
@@ -155,7 +176,9 @@ class _BodyState extends State<Body> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "個性"),
             Container(
               child: Column(
@@ -190,16 +213,26 @@ class _BodyState extends State<Body> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "簡介"),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildDescriptionInput(),
-            SizedBox(height: 24),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.028, //24
+            ),
             InputTextLabel(label: "照片*（至少上傳兩張）"),
             buildAddImage(),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
             buildUpdateButton(),
-            SizedBox(height: 20),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.022, //20
+            ),
           ],
         ),
       ),

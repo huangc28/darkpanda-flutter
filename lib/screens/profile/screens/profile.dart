@@ -12,11 +12,11 @@ import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/review.dart';
-import 'components/review_star.dart';
 import 'edit_profile/edit_profile.dart';
 
 class DemoImage {
@@ -50,22 +50,22 @@ class DemoReview {
   DemoReview({this.image, this.name, this.description, this.date, this.rate});
 }
 
-List demoReviewList = [
-  DemoReview(
-    image: "assets/logo.png",
-    name: "Jenny",
-    description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
-    date: "2020.05.20",
-    rate: 5,
-  ),
-  DemoReview(
-    image: "assets/logo.png",
-    name: "Sally",
-    description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
-    date: "2021.05.20",
-    rate: 3,
-  ),
-];
+// List demoReviewList = [
+//   DemoReview(
+//     image: "assets/logo.png",
+//     name: "Jenny",
+//     description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
+//     date: "2020.05.20",
+//     rate: 5,
+//   ),
+//   DemoReview(
+//     image: "assets/logo.png",
+//     name: "Sally",
+//     description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
+//     date: "2021.05.20",
+//     rate: 3,
+//   ),
+// ];
 
 class LabelList {
   final String description;
@@ -124,6 +124,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -204,7 +206,12 @@ class _ProfileState extends State<Profile> {
         color: Color.fromRGBO(255, 255, 255, 0.1),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(
+          SizeConfig.screenWidth * 0.05,
+          SizeConfig.screenHeight * 0.03,
+          SizeConfig.screenWidth * 0.05,
+          SizeConfig.screenHeight * 0.03,
+        ),
         child: BlocConsumer<LoadUserBloc, LoadUserState>(
           listener: (BuildContext context, LoadUserState state) {},
           builder: (BuildContext context, LoadUserState state) {
@@ -232,7 +239,10 @@ class _ProfileState extends State<Profile> {
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              SizedBox(
+                                // width: 10,
+                                width: SizeConfig.screenWidth * 0.03,
+                              ),
                               InkWell(
                                 onTap: () {
                                   // widget.onPush(
@@ -437,7 +447,9 @@ class _ProfileState extends State<Profile> {
 
   Widget descriptionText(state) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: EdgeInsets.only(
+        top: SizeConfig.screenHeight * 0.02, //16.0,
+      ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -446,7 +458,7 @@ class _ProfileState extends State<Profile> {
               ? '沒有內容'
               : state.userProfile.description,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15, //SizeConfig.screenHeight * 0.02, //15,
             color: Colors.white,
           ),
         ),
@@ -467,7 +479,12 @@ class DescriptionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
+        padding: EdgeInsets.fromLTRB(
+          0.0,
+          10.0, //SizeConfig.screenHeight * 0.02, //10.0,
+          10.0,
+          0.0,
+        ),
         child: Container(
           padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
           decoration: BoxDecoration(
