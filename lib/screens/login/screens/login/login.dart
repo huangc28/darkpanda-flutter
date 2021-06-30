@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
@@ -70,8 +71,8 @@ class _LoginState extends State<Login> {
       body: SystemUiOverlayLayout(
         child: Container(
           padding: EdgeInsets.only(
-            left: 30,
-            right: 30,
+            left: SizeConfig.screenWidth * 0.05,
+            right: SizeConfig.screenWidth * 0.05,
           ),
           child: UnfocusPrimary(
             child: SingleChildScrollView(
@@ -79,7 +80,7 @@ class _LoginState extends State<Login> {
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     SizedBox(height: 92),
                     _buildLogoImage(),
                     SizedBox(height: 26),
@@ -132,7 +133,7 @@ class _LoginState extends State<Login> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: SizedBox(
-                          height: SizeConfig.screenHeight * 0.08,
+                          height: SizeConfig.screenHeight * 0.065,
                           child: DPTextButton(
                             theme: DPTextButtonThemes.purple,
                             onPressed: () {

@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,7 +48,9 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
       appBar: AppBar(title: Text('註冊')),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          padding: EdgeInsets.symmetric(
+            vertical: 0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -55,133 +58,144 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                 step: RegisterStep.StepFour,
               ),
               SizedBox(
-                height: 48,
+                height: SizeConfig.screenHeight * 0.08,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '輸入你收到的驗證碼',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      SizedBox(height: 26),
-
-                      BlocListener<MobileVerifyBloc, MobileVerifyState>(
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.error) {
-                            setState(() {
-                              _mobileVerifyErrStr = state.error.message;
-                            });
-
-                            _formKey.currentState.validate();
-                          }
-
-                          if (state.status == AsyncLoadingStatus.done) {
-                            _mobileVerifyErrStr = '';
-
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    state.gender == Gender.female
-                                        ? FemaleApp()
-                                        : MaleApp(),
-                              ),
-                            );
-                          }
-                        },
-                        child: DPPinPut(
-                          controller: _pinCodeController,
-                          fieldsCount: 4,
-                          onSubmit: (String v) {
-                            setState(() {
-                              _mobileVerifyErrStr = '';
-                            });
-
-                            if (!_formKey.currentState.validate()) {
-                              return;
-                            }
-
-                            // Perform async validation on phone verify code.
-                            BlocProvider.of<MobileVerifyBloc>(context)
-                                .add(VerifyMobile(
-                              verifyChars: _mobileVerifyChars,
-                              verifyDigs: v,
-                              uuid: widget.args.uuid,
-                              mobileNumber:
-                                  '${widget.args.dialCode}${widget.args.mobile}',
-                            ));
-                          },
-                          validator: (String v) {
-                            if (v.trim().isEmpty) {
-                              return 'verify code can not be empty';
-                            }
-
-                            if (!Util.isNumeric(v)) {
-                              return 'verify code must be numeric';
-                            }
-
-                            if (!_mobileVerifyErrStr.isEmpty) {
-                              return _mobileVerifyErrStr;
-                            }
-
-                            return null;
-                          },
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 46,
-                      ),
-
-                      /// Resend validation code
-                      BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _mobileVerifyChars = state.sendSMS.verifyPrefix;
-                            });
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              '沒有收到驗證碼？',
-                              style: TextStyle(
-                                fontSize: 15,
-                                letterSpacing: 0.47,
-                                color: Color.fromRGBO(106, 109, 137, 1),
-                              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.screenHeight * 0.02,
+                      vertical: 0,
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '輸入你收到的驗證碼',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              letterSpacing: 0.5,
                             ),
-                            BlocBuilder<SendSmsCodeBloc, SendSmsCodeState>(
-                                builder: (BuildContext builder, state) {
-                              if (state.status == AsyncLoadingStatus.loading) {
-                                return Text(
-                                  '重寄中',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    letterSpacing: 0.5,
+                          ),
+                          SizedBox(
+                            height: SizeConfig.screenHeight * 0.05,
+                          ),
+
+                          BlocListener<MobileVerifyBloc, MobileVerifyState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.error) {
+                                setState(() {
+                                  _mobileVerifyErrStr = state.error.message;
+                                });
+
+                                _formKey.currentState.validate();
+                              }
+
+                              if (state.status == AsyncLoadingStatus.done) {
+                                _mobileVerifyErrStr = '';
+
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        state.gender == Gender.female
+                                            ? FemaleApp()
+                                            : MaleApp(),
                                   ),
                                 );
                               }
-                              return _buildResendButton();
-                            }),
-                          ],
-                        ),
+                            },
+                            child: DPPinPut(
+                              controller: _pinCodeController,
+                              fieldsCount: 4,
+                              onSubmit: (String v) {
+                                setState(() {
+                                  _mobileVerifyErrStr = '';
+                                });
+
+                                if (!_formKey.currentState.validate()) {
+                                  return;
+                                }
+
+                                // Perform async validation on phone verify code.
+                                BlocProvider.of<MobileVerifyBloc>(context)
+                                    .add(VerifyMobile(
+                                  verifyChars: _mobileVerifyChars,
+                                  verifyDigs: v,
+                                  uuid: widget.args.uuid,
+                                  mobileNumber:
+                                      '${widget.args.dialCode}${widget.args.mobile}',
+                                ));
+                              },
+                              validator: (String v) {
+                                if (v.trim().isEmpty) {
+                                  return 'verify code can not be empty';
+                                }
+
+                                if (!Util.isNumeric(v)) {
+                                  return 'verify code must be numeric';
+                                }
+
+                                if (!_mobileVerifyErrStr.isEmpty) {
+                                  return _mobileVerifyErrStr;
+                                }
+
+                                return null;
+                              },
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: SizeConfig.screenHeight * 0.08,
+                          ),
+
+                          /// Resend validation code
+                          BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.done) {
+                                setState(() {
+                                  _mobileVerifyChars =
+                                      state.sendSMS.verifyPrefix;
+                                });
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  '沒有收到驗證碼？',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    letterSpacing: 0.47,
+                                    color: Color.fromRGBO(106, 109, 137, 1),
+                                  ),
+                                ),
+                                BlocBuilder<SendSmsCodeBloc, SendSmsCodeState>(
+                                    builder: (BuildContext builder, state) {
+                                  if (state.status ==
+                                      AsyncLoadingStatus.loading) {
+                                    return Text(
+                                      '重寄中',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    );
+                                  }
+                                  return _buildResendButton();
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
