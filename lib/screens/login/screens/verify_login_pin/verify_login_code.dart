@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/female_app.dart';
 import 'package:darkpanda_flutter/screens/male/male_app.dart';
 
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -199,92 +200,111 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('登入'),
-          iconTheme: IconThemeData(
-            color: Color.fromRGBO(106, 109, 137, 1),
-          ),
+      appBar: AppBar(
+        title: Text('登入'),
+        iconTheme: IconThemeData(
+          color: Color.fromRGBO(106, 109, 137, 1),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 26),
-              _buildDescBlock(),
-              SizedBox(height: 11),
-              _buildVerifyCodeForm(context),
-              SizedBox(height: 36),
-              Row(
-                children: [
-                  Text(
-                    '沒有收到驗證碼?',
-                    style: TextStyle(
-                      fontSize: 15,
-                      letterSpacing: 0.47,
-                      color: Color.fromRGBO(106, 109, 137, 1),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 17,
-                  ),
-                  BlocListener<SendLoginVerifyCodeBloc,
-                      SendLoginVerifyCodeState>(
-                    listener: (context, state) {
-                      // If login verify code send successfully, update the current verify prefix
-                      // to the newest one.
-                      if (state.status == AsyncLoadingStatus.done) {
-                        setState(() {
-                          _verifyPrefix = state.verifyChar;
-                        });
-                      }
-                    },
-                    child: Container(),
-                  ),
-                  BlocBuilder<SendLoginVerifyCodeBloc,
-                      SendLoginVerifyCodeState>(
-                    builder: (BuildContext, state) {
-                      if (state.status == AsyncLoadingStatus.loading) {
-                        return Text(
-                          '重寄中',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            letterSpacing: 0.5,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.screenHeight * 0.04,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.05,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      _buildDescBlock(),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.02,
+                      ),
+                      _buildVerifyCodeForm(context),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.01,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            '沒有收到驗證碼?',
+                            style: TextStyle(
+                              fontSize: 15,
+                              letterSpacing: 0.47,
+                              color: Color.fromRGBO(106, 109, 137, 1),
+                            ),
                           ),
-                        );
-                      }
+                          SizedBox(
+                            width: SizeConfig.screenWidth * 0.05,
+                          ),
+                          BlocListener<SendLoginVerifyCodeBloc,
+                              SendLoginVerifyCodeState>(
+                            listener: (context, state) {
+                              // If login verify code send successfully, update the current verify prefix
+                              // to the newest one.
+                              if (state.status == AsyncLoadingStatus.done) {
+                                setState(() {
+                                  _verifyPrefix = state.verifyChar;
+                                });
+                              }
+                            },
+                            child: Container(),
+                          ),
+                          BlocBuilder<SendLoginVerifyCodeBloc,
+                              SendLoginVerifyCodeState>(
+                            builder: (BuildContext, state) {
+                              if (state.status == AsyncLoadingStatus.loading) {
+                                return Text(
+                                  '重寄中',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    letterSpacing: 0.5,
+                                  ),
+                                );
+                              }
 
-                      return _buildResendButton();
-                    },
-                  ),
-                ],
-              ),
+                              return _buildResendButton();
+                            },
+                          ),
+                        ],
+                      ),
 
-              SizedBox(
-                height: 16,
-              ),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.02,
+                      ),
 
-              // Resend login verify code error message.
-              Expanded(
-                child: BlocBuilder<SendLoginVerifyCodeBloc,
-                    SendLoginVerifyCodeState>(
-                  builder: (context, state) {
-                    if (state.status == AsyncLoadingStatus.error) {
-                      return Text(
-                        state.error.message,
-                        style: TextStyle(
-                          color: Colors.red,
+                      // Resend login verify code error message.
+                      Expanded(
+                        child: BlocBuilder<SendLoginVerifyCodeBloc,
+                            SendLoginVerifyCodeState>(
+                          builder: (context, state) {
+                            if (state.status == AsyncLoadingStatus.error) {
+                              return Text(
+                                state.error.message,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              );
+                            }
+
+                            return Container();
+                          },
                         ),
-                      );
-                    }
-
-                    return Container();
-                  },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

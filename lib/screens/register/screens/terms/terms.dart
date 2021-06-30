@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
@@ -30,7 +31,12 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
 
   Widget _buildServiceTerms() {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(30, 26, 30, 0),
+      padding: EdgeInsets.fromLTRB(
+        SizeConfig.screenWidth * 0.05, //30,
+        SizeConfig.screenHeight * 0.05, //26,
+        SizeConfig.screenWidth * 0.05, //30,
+        0,
+      ),
       child: RichText(
         text: TextSpan(
           style: TextStyle(
@@ -44,7 +50,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
               children: [
                 TextSpan(
                   text:
-                      '通过访问我们的网站，您同意受这些服务条款，所有适用法律和法规的约束，并同意您有责任遵守任何适用的当地法律。如果您不同意这些条款中的任何一项，则禁止您使用或访问本网站。本网站所含材料受适用的版权和商标法保护。',
+                      '通过访问我们的网站，您同意受这些服务条款，所有适用法律和法规的约束，并同意您有责任遵守任何适用的当地法律。如果您不同意这些条款中的任何一项，则禁止您使用或访问本网站。本网站所含材料受适用的版权和商标法保护。\n',
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.6,
@@ -77,7 +83,12 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
   // Complete it if you got time.
   Widget _buildPrivacyTerms() {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(30, 26, 30, 0),
+      padding: EdgeInsets.fromLTRB(
+        SizeConfig.screenWidth * 0.05, //30,
+        SizeConfig.screenHeight * 0.05, //26,
+        SizeConfig.screenWidth * 0.05, //30,
+        0,
+      ),
       child: RichText(
         text: TextSpan(
           style: TextStyle(
@@ -91,7 +102,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
               children: [
                 TextSpan(
                   text:
-                      ' 隱私權保護政策內容，包括本App如何處理在您使用App服務時收集到的個人識別資料。隱私權保護政策不適用於本App以外的相關連結外部網頁，也不適用於非本App所委託或參與管理的人員。',
+                      ' 隱私權保護政策內容，包括本App如何處理在您使用App服務時收集到的個人識別資料。隱私權保護政策不適用於本App以外的相關連結外部網頁，也不適用於非本App所委託或參與管理的人員。\n',
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.6,
@@ -159,25 +170,37 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                 ],
               ),
             ),
+            SizedBox(
+              // height: 30,
+              height: SizeConfig.screenHeight * 0.04,
+            ),
 
             /// Use [Expanded] to fill up the rest of the column space
             // Expanded(
             //   child:
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: DPTextButton(
-                    theme: DPTextButtonThemes.purple,
-                    onPressed: () {
-                      widget.onPush('/register/choose-gender');
-                    },
-                    text: '我同意'),
+              padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.screenHeight * 0.02, //16.0,
+                vertical: 0,
+              ),
+              child: SizedBox(
+                height: SizeConfig.screenHeight * 0.065,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: DPTextButton(
+                      theme: DPTextButtonThemes.purple,
+                      onPressed: () {
+                        widget.onPush('/register/choose-gender');
+                      },
+                      text: '我同意'),
+                ),
               ),
             ),
             // ),
-            SizedBox(height: 30),
+            SizedBox(
+              // height: 30,
+              height: SizeConfig.screenHeight * 0.04,
+            ),
           ],
         ),
       ),

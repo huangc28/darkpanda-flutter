@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
@@ -70,8 +71,8 @@ class _LoginState extends State<Login> {
       body: SystemUiOverlayLayout(
         child: Container(
           padding: EdgeInsets.only(
-            left: 30,
-            right: 30,
+            left: SizeConfig.screenWidth * 0.05, //30,
+            right: SizeConfig.screenWidth * 0.05, //30,
           ),
           child: UnfocusPrimary(
             child: SingleChildScrollView(
@@ -127,26 +128,25 @@ class _LoginState extends State<Login> {
                       ),
                     ),
 
-                    /// Use [Expanded] to fill up the rest of the column space
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          height: SizeConfig.screenHeight * 0.08,
-                          child: DPTextButton(
-                            theme: DPTextButtonThemes.purple,
-                            onPressed: () {
-                              Navigator.of(
-                                context,
-                                rootNavigator: true,
-                              ).push(
-                                MaterialPageRoute(
-                                  builder: (context) => AuthNavigator(),
-                                ),
-                              );
-                            },
-                            text: AppLocalizations.of(context).register,
-                          ),
+                  /// Use [Expanded] to fill up the rest of the column space
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: SizeConfig.screenHeight * 0.065,
+                        child: DPTextButton(
+                          theme: DPTextButtonThemes.purple,
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).push(
+                              MaterialPageRoute(
+                                builder: (context) => AuthNavigator(),
+                              ),
+                            );
+                          },
+                          text: AppLocalizations.of(context).register,
                         ),
                       ),
                     ),

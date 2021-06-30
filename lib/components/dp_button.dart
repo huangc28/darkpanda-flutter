@@ -88,10 +88,12 @@ class _DPTextButtonState extends State<DPTextButton> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          widget.text,
-          textAlign: TextAlign.center,
-          style: themeConf.textStyle,
+        FittedBox(
+          child: Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: themeConf.textStyle,
+          ),
         ),
         widget.icon == null
             ? Container()
@@ -106,7 +108,9 @@ class _DPTextButtonState extends State<DPTextButton> {
   Widget _buildSpinner() {
     return Container(
       height: 30.0,
-      child: LoadingIcon(),
+      child: LoadingIcon(
+        size: 20,
+      ),
     );
   }
 
