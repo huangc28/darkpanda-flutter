@@ -6,7 +6,6 @@ import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
