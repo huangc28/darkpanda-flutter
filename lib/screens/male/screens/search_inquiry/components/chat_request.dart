@@ -10,6 +10,7 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_argu
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
@@ -39,16 +40,23 @@ class _ChatRequestState extends State<ChatRequest> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _buildHeader(),
-            SizedBox(height: 10),
-            _femaleProfile(),
-            SizedBox(height: 30),
-            _actionButton(),
-          ],
-        ),
+      child: Column(
+        children: <Widget>[
+          _buildHeader(),
+          SizedBox(height: 10),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  _femaleProfile(),
+                  SizedBox(height: 30),
+                  _actionButton(),
+                  SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -102,39 +110,43 @@ class _ChatRequestState extends State<ChatRequest> {
 
   Widget _onTapViewProfile() {
     return Expanded(
-      child: SizedBox(
-        child: Container(
-          padding: EdgeInsets.only(right: 15),
-          height: MediaQuery.of(context).size.height * 0.06,
-          child: Material(
-            borderRadius: BorderRadius.circular(20),
-            color: Color.fromRGBO(255, 255, 255, 0.18),
-            child: GestureDetector(
-              onTap: () {
-                widget.onPush(
-                  '/inquirer-profile',
-                  InquirerProfileArguments(
-                    uuid: userProfile.uuid,
-                  ),
-                );
-              },
+      child: GestureDetector(
+        onTap: () {
+          widget.onPush(
+            '/inquirer-profile',
+            InquirerProfileArguments(
+              uuid: userProfile.uuid,
+            ),
+          );
+        },
+        child: SizedBox(
+          child: Container(
+            padding: EdgeInsets.only(right: 15),
+            height: MediaQuery.of(context).size.height * 0.06,
+            child: Material(
+              borderRadius: BorderRadius.circular(20),
+              color: Color.fromRGBO(255, 255, 255, 0.18),
               child: Align(
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(top: 0, left: 20, right: 12),
+                      padding: EdgeInsets.only(top: 0, left: 20, right: 10),
                       child:
                           Image.asset("lib/screens/male/assets/editButton.png"),
                     ),
                     Container(
-                      padding: EdgeInsets.only(top: 0, left: 0, right: 20),
+                      padding: EdgeInsets.only(
+                        top: 0,
+                        left: 0,
+                        right: SizeConfig.screenWidth * 0.04, //20,
+                      ),
                       child: Text(
                         '查看檔案',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: SizeConfig.blockSizeVertical * 2, //16,
                         ),
                       ),
                     ),
@@ -176,35 +188,39 @@ class _ChatRequestState extends State<ChatRequest> {
       },
       builder: (context, state) {
         return Expanded(
-          child: SizedBox(
-            child: Container(
-              padding: EdgeInsets.only(right: 15),
-              height: MediaQuery.of(context).size.height * 0.06,
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                color: Color.fromRGBO(255, 255, 255, 0.18),
-                child: GestureDetector(
-                  onTap: () {
-                    BlocProvider.of<AgreeInquiryBloc>(context)
-                        .add(AgreeInquiry(widget.activeInquiry.uuid));
-                  },
+          child: GestureDetector(
+            onTap: () {
+              BlocProvider.of<AgreeInquiryBloc>(context)
+                  .add(AgreeInquiry(widget.activeInquiry.uuid));
+            },
+            child: SizedBox(
+              child: Container(
+                padding: EdgeInsets.only(right: 15),
+                height: MediaQuery.of(context).size.height * 0.06,
+                child: Material(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Color.fromRGBO(255, 255, 255, 0.18),
                   child: Align(
                     alignment: Alignment.center,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(top: 0, left: 20, right: 12),
+                          padding: EdgeInsets.only(top: 0, left: 20, right: 10),
                           child: Image.asset(
                               "lib/screens/male/assets/deleteButton.png"),
                         ),
                         Container(
-                          padding: EdgeInsets.only(top: 0, left: 0, right: 20),
+                          padding: EdgeInsets.only(
+                            top: 0,
+                            left: 0,
+                            right: SizeConfig.screenWidth * 0.04, //20,
+                          ),
                           child: Text(
                             '馬上聊聊',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: SizeConfig.blockSizeVertical * 2, //16,
                             ),
                           ),
                         ),
