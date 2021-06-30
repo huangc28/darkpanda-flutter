@@ -55,23 +55,6 @@ class _BuyServiceState extends State<BuyService> {
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
-        actions: [
-          Align(
-            child: GestureDetector(
-              onTap: () {
-                print('幫助');
-              },
-              child: Text(
-                '幫助',
-                style: TextStyle(
-                  color: Color.fromRGBO(106, 109, 137, 1),
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 20),
-        ],
       ),
       body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
         listener: (context, state) {

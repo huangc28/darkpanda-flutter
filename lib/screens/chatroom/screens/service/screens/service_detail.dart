@@ -40,23 +40,6 @@ class _ServiceDetailState extends State<ServiceDetail>
       appBar: AppBar(
         title: Text('交易'),
         centerTitle: true,
-        actions: [
-          Align(
-            child: GestureDetector(
-              onTap: () {
-                print('幫助');
-              },
-              child: Text(
-                '幫助',
-                style: TextStyle(
-                  color: Color.fromRGBO(106, 109, 137, 1),
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 20),
-        ],
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1), //change your color here
         ),
