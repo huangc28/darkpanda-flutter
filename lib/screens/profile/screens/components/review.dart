@@ -1,5 +1,7 @@
-import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:flutter/material.dart';
+
+import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'review_star.dart';
 
@@ -14,9 +16,19 @@ class Review extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.fromLTRB(
+        SizeConfig.screenWidth * 0.04, //16.0,
+        SizeConfig.screenHeight * 0.02, //16.0,
+        SizeConfig.screenWidth * 0.04, //16.0,
+        SizeConfig.screenHeight * 0.02, //16.0,
+      ),
       child: Container(
-        padding: EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0),
+        padding: EdgeInsets.fromLTRB(
+          SizeConfig.screenWidth * 0.04, //16.0,
+          SizeConfig.screenHeight * 0.022, //20.0,
+          SizeConfig.screenWidth * 0.04, //16.0,
+          SizeConfig.screenHeight * 0.022, //16.0,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           color: Color.fromRGBO(255, 255, 255, 0.1),
@@ -36,7 +48,9 @@ class Review extends StatelessWidget {
                       ? AssetImage('assets/logo.png')
                       : NetworkImage(review.raterAvatarUrl),
                 ),
-                SizedBox(width: 15),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.04, //15,
+                ),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -49,7 +63,9 @@ class Review extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.011, //10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -79,7 +95,9 @@ class Review extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.02, //16,
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
