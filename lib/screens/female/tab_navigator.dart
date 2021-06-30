@@ -59,20 +59,16 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (tabItem == currentTab) {
-      final routeBuilder = _getRouteBuildersByTab(context, tabItem);
+    final routeBuilder = _getRouteBuildersByTab(context, tabItem);
 
-      return Navigator(
-          key: navigatorKey,
-          initialRoute: initialRouteMap[tabItem],
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) => routeBuilder[settings.name](context),
-            );
-          });
-    }
-
-    return Container();
+    return Navigator(
+        key: navigatorKey,
+        initialRoute: initialRouteMap[tabItem],
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (context) => routeBuilder[settings.name](context),
+          );
+        });
   }
 }

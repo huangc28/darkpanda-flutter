@@ -11,6 +11,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 
+import './util/mobile_masker.dart';
 import '../../bloc/verify_login_code_bloc.dart';
 import '../../bloc/send_login_verify_code_bloc.dart';
 import '../../screen_arguments/args.dart';
@@ -55,7 +56,7 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
             padding: EdgeInsets.fromLTRB(16, 14, 6, 14),
             height: 72,
             child: Text(
-              '我們已傳送驗證碼到此帳號的綁定手機 *******880',
+              '我們已傳送驗證碼到此帳號的綁定手機 ${MobileMasker.mask(widget.args.mobile)}',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15,
