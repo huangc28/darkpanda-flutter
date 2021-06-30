@@ -7,39 +7,12 @@ class InquiryDetail extends StatelessWidget {
 
   final Inquiry inquiry;
 
-  Widget _buildAppointmentTimeText() {
-    final format = DateFormat.jm();
-    final timeWithJM = format.format(inquiry.appointmentTime);
-
-    return Bullet(
-      // '時間: 12.18 at 00:20 AM',
-      '時間: ${inquiry.appointmentTime.month}/${inquiry.appointmentTime.day} at ${timeWithJM}',
-      style: TextStyle(
-        color: Colors.white,
-        height: 1.3,
-        fontSize: 13,
-      ),
-    );
-  }
-
-  Widget _buildDurationText() {
-    final durationSplit = inquiry.duration.toString().split(':');
-    return Bullet(
-      '時長: ${durationSplit.first} 小時 ${durationSplit[1]} 分',
-      style: TextStyle(
-        color: Colors.white,
-        height: 1.3,
-        fontSize: 13,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         // Inquiry details.
         Container(
           width: SizeConfig.screenWidth * 0.35, //150,
@@ -50,11 +23,11 @@ class InquiryDetail extends StatelessWidget {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               // Inquirer avatar.
               SizedBox(
-                height: 64,
-                width: 64,
+                height: 64, //SizeConfig.screenHeight * 0.072, //64,
+                width: 64, //SizeConfig.screenWidth * 0.15, //64,
                 child: CircleAvatar(
                     // backgroundImage: NetworkImage(
                     //   'https://www.fillmurray.com/640/360',
@@ -74,7 +47,7 @@ class InquiryDetail extends StatelessWidget {
                 softWrap: false,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 16, //SizeConfig.blockSizeVertical * 1.6, //16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -82,40 +55,92 @@ class InquiryDetail extends StatelessWidget {
           ),
         ),
 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Bullet(
-              '預算: ${inquiry.budget} DP',
-              style: TextStyle(
-                height: 1.3,
-                color: Colors.white,
-                fontSize: 13,
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Bullet(
+                    '預算: ${inquiry.budget} DP',
+                    style: TextStyle(
+                      height: 1.3,
+                      color: Colors.white,
+                      fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
+                    ),
+                  ),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.01, //6
+                  ),
+                  Bullet(
+                    '項目: ${inquiry.serviceType}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      height: 1.3,
+                      fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
+                    ),
+                  ),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.01, //6
+                  ),
+                  _buildAppointmentTimeText(),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.01, //6
+                  ),
+                  _buildDurationText(),
+                ],
               ),
-            ),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.01, //6
-            ),
-            Bullet(
-              '項目: ${inquiry.serviceType}',
-              style: TextStyle(
-                color: Colors.white,
-                height: 1.3,
-                fontSize: 13,
+              Expanded(
+                child: Container(
+                  child: GestureDetector(
+                    child: Text(
+                      '隱藏',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize:
+                            13, //SizeConfig.blockSizeVertical * 1.5, //14,
+                      ),
+                    ),
+                    onTap: () {
+                      print('DEBUG trigger hide');
+                    },
+                  ),
+                ),
               ),
-            ),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.01, //6
-            ),
-            _buildAppointmentTimeText(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.01, //6
-            ),
-            _buildDurationText(),
-          ],
+            ],
+          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAppointmentTimeText() {
+    final format = DateFormat.jm();
+    final timeWithJM = format.format(inquiry.appointmentTime);
+
+    return Bullet(
+      // '時間: 12.18 at 00:20 AM',
+      '時間: ${inquiry.appointmentTime.month}/${inquiry.appointmentTime.day} at ${timeWithJM}',
+      style: TextStyle(
+        color: Colors.white,
+        height: 1.3,
+        fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
+      ),
+    );
+  }
+
+  Widget _buildDurationText() {
+    final durationSplit = inquiry.duration.toString().split(':');
+    return Bullet(
+      '時長: ${durationSplit.first} 小時 ${durationSplit[1]} 分',
+      style: TextStyle(
+        color: Colors.white,
+        height: 1.3,
+        fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
+      ),
     );
   }
 }
