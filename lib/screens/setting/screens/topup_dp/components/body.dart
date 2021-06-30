@@ -12,6 +12,7 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/my_dp.
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/args.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -89,19 +90,28 @@ class _BodyState extends State<Body> {
           children: <Widget>[
             _myDpBalance(),
             Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.fromLTRB(
+                SizeConfig.screenWidth * 0.05,
+                SizeConfig.screenHeight * 0.03,
+                SizeConfig.screenWidth * 0.05,
+                SizeConfig.screenHeight * 0.03,
+              ),
               child: Column(
                 children: [
                   InputTextLabel(label: "充值金額"),
-                  SizedBox(height: 30.0),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.03, //30
+                  ),
                   _topupPackage(),
-                  SizedBox(height: 30),
+                  SizedBox(
+                    height: SizeConfig.screenHeight * 0.03, //30
+                  ),
                   Row(
                     children: [
                       Text(
                         "*您只能在 Dark Panda 上使用 DP幣。",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: SizeConfig.screenHeight * 0.02, //18,
                           color: Color.fromRGBO(254, 226, 136, 1),
                         ),
                       ),
@@ -161,14 +171,22 @@ class _BodyState extends State<Body> {
                               ' DP',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: SizeConfig.screenHeight * 0.02, //18,
                           ),
                         ),
                       ),
-                      SizedBox(width: 2),
+                      SizedBox(
+                        width: SizeConfig.screenWidth * 0.01, //2,
+                      ),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          // padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          padding: EdgeInsets.fromLTRB(
+                            SizeConfig.screenWidth * 0.02,
+                            SizeConfig.screenHeight * 0.01,
+                            SizeConfig.screenWidth * 0.02,
+                            SizeConfig.screenHeight * 0.01,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             color: Colors.white,
@@ -178,7 +196,7 @@ class _BodyState extends State<Body> {
                                 dpPackageList.packages[index].cost.toString(),
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18,
+                              fontSize: SizeConfig.screenHeight * 0.02, //18,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -212,7 +230,13 @@ class _BodyState extends State<Body> {
           color: Color.fromRGBO(31, 30, 56, 1),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
+          // padding: EdgeInsets.fromLTRB(40.0, 30.0, 40.0, 30.0),
+          padding: EdgeInsets.fromLTRB(
+            SizeConfig.screenWidth * 0.1,
+            SizeConfig.screenHeight * 0.04,
+            SizeConfig.screenWidth * 0.1,
+            SizeConfig.screenHeight * 0.04,
+          ),
           child: Row(
             children: <Widget>[
               Image(
@@ -229,7 +253,7 @@ class _BodyState extends State<Body> {
                         "我的DP幣：",
                         style: TextStyle(
                           color: Color.fromRGBO(106, 109, 137, 1),
-                          fontSize: 20,
+                          fontSize: SizeConfig.screenHeight * 0.023, //20,
                         ),
                       ),
                     ],
@@ -240,7 +264,7 @@ class _BodyState extends State<Body> {
                         myDp.balance == null ? "0" : myDp.balance.toString(),
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 50,
+                          fontSize: SizeConfig.screenHeight * 0.058, //50,
                         ),
                       ),
                       SizedBox(width: 4),
@@ -248,7 +272,7 @@ class _BodyState extends State<Body> {
                         "DP",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: SizeConfig.screenHeight * 0.023, //20,
                         ),
                       ),
                     ],
@@ -276,8 +300,8 @@ class InputTextLabel extends StatelessWidget {
     return Row(
       children: <Widget>[
         Container(
-          height: 7.0,
-          width: 7.0,
+          height: SizeConfig.screenHeight * 0.007, //7.0,
+          width: SizeConfig.screenWidth * 0.014, //7.0,
           transform: new Matrix4.identity()..rotateZ(45 * 3.1415927 / 180),
           child: Container(
             decoration: BoxDecoration(
@@ -290,7 +314,7 @@ class InputTextLabel extends StatelessWidget {
           label,
           style: TextStyle(
             color: Colors.white,
-            fontSize: 18,
+            fontSize: SizeConfig.screenHeight * 0.02, //18,
           ),
         ),
       ],
