@@ -1,3 +1,11 @@
+import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
+
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/components/loading_icon.dart';
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
@@ -6,11 +14,8 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/screens/servi
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/historical_service_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -42,10 +47,6 @@ import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
-
-import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-import 'package:darkpanda_flutter/components/loading_icon.dart';
 
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
@@ -79,7 +80,6 @@ class ServiceChatroom extends StatefulWidget {
 //   - If is male,
 //      - Load dp balance.
 //      - If service status is unpaid, show unpaid banner.
-
 class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
@@ -409,16 +409,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                 }
                               },
                               builder: (context, state) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
-
-                                    // Dismiss keyboard when user clicks on chat window.
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                    }
-                                  },
+                                return UnfocusPrimary(
                                   child: ChatroomWindow(
                                     scrollController: scrollController,
                                     historicalMessages:
