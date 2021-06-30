@@ -42,11 +42,11 @@ class InquiryDetail extends StatelessWidget {
       children: [
         // Inquiry details.
         Container(
-          width: 150,
+          width: SizeConfig.screenWidth * 0.35, //150,
           padding: EdgeInsets.only(
-            left: 31,
-            right: 25,
-            bottom: 12,
+            left: SizeConfig.screenWidth * 0.07, //31,
+            right: SizeConfig.screenWidth * 0.06, //25,
+            bottom: SizeConfig.screenHeight * 0.014, //12,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +63,7 @@ class InquiryDetail extends StatelessWidget {
               ),
 
               SizedBox(
-                height: 10,
+                height: SizeConfig.screenHeight * 0.01, //10
               ),
 
               // Inquirer name
@@ -94,7 +94,9 @@ class InquiryDetail extends StatelessWidget {
                 fontSize: 13,
               ),
             ),
-            SizedBox(height: 6),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.01, //6
+            ),
             Bullet(
               '項目: ${inquiry.serviceType}',
               style: TextStyle(
@@ -103,9 +105,13 @@ class InquiryDetail extends StatelessWidget {
                 fontSize: 13,
               ),
             ),
-            SizedBox(height: 6),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.01, //6
+            ),
             _buildAppointmentTimeText(),
-            SizedBox(height: 6),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.01, //6
+            ),
             _buildDurationText(),
           ],
         ),

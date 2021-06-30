@@ -41,11 +41,14 @@ class InquiryGridActions extends StatelessWidget {
     }
 
     return Expanded(
-      child: DPTextButton(
-        theme: theme,
-        onPressed: btnHandler,
-        text: btnText,
-        icon: icon,
+      child: SizedBox(
+        height: 44,
+        child: DPTextButton(
+          theme: theme,
+          onPressed: btnHandler,
+          text: btnText,
+          icon: icon,
+        ),
       ),
     );
   }
@@ -55,19 +58,18 @@ class InquiryGridActions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Hide button
-        Expanded(
-          child: DPTextButton(
-            theme: DPTextButtonThemes.grey,
-            onPressed: () {
-              print('DEBUG trigger hide');
-            },
-            text: '隱藏',
-          ),
-        ),
-
-        SizedBox(
-          width: 11,
-        ),
+        // Expanded(
+        //   child: SizedBox(
+        //     height: 44, //SizeConfig.screenHeight * 0.05, //44,
+        //     child: DPTextButton(
+        //       theme: DPTextButtonThemes.grey,
+        //       onPressed: () {
+        //         print('DEBUG trigger hide');
+        //       },
+        //       text: '隱藏',
+        //     ),
+        //   ),
+        // ),
 
         // Check profile button
         Expanded(
@@ -84,7 +86,7 @@ class InquiryGridActions extends StatelessWidget {
         ),
 
         SizedBox(
-          width: 11,
+          width: SizeConfig.screenWidth * 0.03, //11,
         ),
 
         // Chat now button

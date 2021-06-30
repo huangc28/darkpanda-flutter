@@ -70,35 +70,9 @@ class _InquirerProfileState extends State<InquirerProfile>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          95.0,
-        ),
-        child: BlocBuilder<LoadUserBloc, LoadUserState>(
-          builder: (context, state) {
-            if (state.status == AsyncLoadingStatus.done) {
-              return AppBar(
-                flexibleSpace: Image(
-                  image: state.userProfile.avatarUrl == null
-                      ? NetworkImage(
-                          state.userProfile.avatarUrl,
-                        )
-                      : NetworkImage(
-                          'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg'),
-                  fit: BoxFit.fill,
-                ),
-              );
-            }
-
-            return AppBar(
-              flexibleSpace: Image(
-                image: NetworkImage(
-                    'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg'),
-                fit: BoxFit.fill,
-              ),
-            );
-          },
-        ),
+      appBar: AppBar(
+        title: Text('檔案'),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: BlocBuilder<LoadUserBloc, LoadUserState>(
