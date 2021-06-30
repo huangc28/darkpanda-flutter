@@ -288,15 +288,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
   Widget _buildButton() {
     return Column(
-      children: [
-        DPTextButton(
-          onPressed: () {
-            print('收據？');
-          },
-          text: '收據？',
-          theme: DPTextButtonThemes.purple,
-        ),
-        SizedBox(height: 15),
+      children: <Widget>[
+        Container(),
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
             onPressed: () {
