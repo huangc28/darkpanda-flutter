@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,9 +46,9 @@ class _InqiuryListState extends State<InqiuryList> {
   Widget _buildHeader() {
     return Container(
       padding: EdgeInsets.only(
-        top: 30,
-        right: 16,
-        left: 16,
+        top: SizeConfig.screenHeight * 0.034, //30,
+        right: SizeConfig.screenWidth * 0.038, //16,
+        left: SizeConfig.screenWidth * 0.038, //16,
       ),
       child: Row(
         children: [
@@ -71,6 +72,8 @@ class _InqiuryListState extends State<InqiuryList> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -135,10 +138,10 @@ class _InqiuryListState extends State<InqiuryList> {
               return Expanded(
                 child: Container(
                   padding: EdgeInsets.only(
-                    top: 25,
-                    bottom: 20,
-                    left: 16,
-                    right: 16,
+                    top: SizeConfig.screenHeight * 0.028, //25,
+                    bottom: SizeConfig.screenHeight * 0.022, //20,
+                    left: SizeConfig.screenWidth * 0.038, //16,
+                    right: SizeConfig.screenWidth * 0.038, //16,
                   ),
                   child: InquiryList(
                     onLoadMore: () {

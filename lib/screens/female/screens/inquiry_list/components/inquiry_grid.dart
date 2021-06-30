@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -45,11 +46,9 @@ class InquiryGrid extends StatelessWidget {
     // In this case, `ListView` does not have constraint on it's scrolling direction.
     // @Ref: https://www.youtube.com/watch?v=uVki2CIzBTs&ab_channel=Flutter
     return LimitedBox(
-      maxHeight: 216,
       child: Container(
-        margin: EdgeInsets.only(bottom: 20),
         padding: EdgeInsets.only(
-          top: 12,
+          top: SizeConfig.screenHeight * 0.022, //12,
         ),
         decoration: BoxDecoration(
           border: Border.all(
