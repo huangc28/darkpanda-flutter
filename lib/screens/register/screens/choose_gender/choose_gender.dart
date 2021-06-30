@@ -64,7 +64,6 @@ class _ChooseGenderState extends State<ChooseGender> {
                     ),
 
                     SizedBox(
-                      // height: 30,
                       height: SizeConfig.screenHeight * 0.05,
                     ),
 
@@ -128,7 +127,6 @@ class _ChooseGenderState extends State<ChooseGender> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
-                    // height: 44,
                     height: SizeConfig.screenHeight * 0.065,
                     child: DPTextButton(
                       theme: DPTextButtonThemes.purple,
@@ -151,7 +149,6 @@ class _ChooseGenderState extends State<ChooseGender> {
               ),
 
               SizedBox(
-                // height: 24,
                 height: SizeConfig.screenHeight * 0.04,
               ),
             ],

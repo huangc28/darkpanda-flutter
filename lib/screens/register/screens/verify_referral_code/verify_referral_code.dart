@@ -55,7 +55,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.screenHeight * 0.02, //16.0,
+            horizontal: SizeConfig.screenHeight * 0.02,
             vertical: 0,
           ),
           child: Column(
@@ -85,8 +85,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                             // Pin code input field
                             Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    SizeConfig.screenHeight * 0.02, //16,
+                                horizontal: SizeConfig.screenHeight * 0.02,
                               ),
                               child: Form(
                                 key: _formKey,
@@ -101,7 +100,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                       ),
                                     ),
                                     SizedBox(
-                                      // height: 26,
                                       height: SizeConfig.screenHeight * 0.05,
                                     ),
                                     DPPinPut(
@@ -236,7 +234,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: SizedBox(
-                                    // height: 44,
                                     height: SizeConfig.screenHeight * 0.065,
                                     child: DPTextButton(
                                       theme: DPTextButtonThemes.purple,
@@ -274,7 +271,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                               ),
                             ),
                             SizedBox(
-                              // height: 24,
                               height: SizeConfig.screenHeight * 0.04,
                             ),
                           ],

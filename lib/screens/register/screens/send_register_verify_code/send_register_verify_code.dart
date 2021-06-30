@@ -62,7 +62,7 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.screenHeight * 0.02, //16.0,
+            horizontal: SizeConfig.screenHeight * 0.02,
             vertical: 0,
           ),
           child: BlocBuilder<RegisterBloc, RegisterState>(
@@ -74,14 +74,13 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                   step: RegisterStep.StepThree,
                 ),
                 SizedBox(
-                  // height: 46,
                   height: SizeConfig.screenHeight * 0.08,
                 ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.screenHeight * 0.02, //14,
+                        horizontal: SizeConfig.screenHeight * 0.02,
                         vertical: 0,
                       ),
                       child: Form(
@@ -98,7 +97,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                               ),
                             ),
                             SizedBox(
-                              // height: 11,
                               height: SizeConfig.screenHeight * 0.02,
                             ),
                             Text(
@@ -110,7 +108,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                               ),
                             ),
                             SizedBox(
-                              // height: 26,
                               height: SizeConfig.screenHeight * 0.05,
                             ),
                             Row(
@@ -174,7 +171,6 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                               ],
                             ),
                             SizedBox(
-                              // height: 46,
                               height: SizeConfig.screenHeight * 0.07,
                             ),
                             BlocListener<SendSmsCodeBloc, SendSmsCodeState>(

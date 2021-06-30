@@ -49,7 +49,6 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.screenHeight * 0.02, //16.0,
             vertical: 0,
           ),
           child: Column(
@@ -59,14 +58,13 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                 step: RegisterStep.StepFour,
               ),
               SizedBox(
-                // height: 46,
                 height: SizeConfig.screenHeight * 0.08,
               ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.screenHeight * 0.02, //14,
+                      horizontal: SizeConfig.screenHeight * 0.02,
                       vertical: 0,
                     ),
                     child: Form(
@@ -84,7 +82,6 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                             ),
                           ),
                           SizedBox(
-                            // height: 26,
                             height: SizeConfig.screenHeight * 0.05,
                           ),
 
@@ -155,7 +152,6 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                           ),
 
                           SizedBox(
-                            // height: 46,
                             height: SizeConfig.screenHeight * 0.08,
                           ),
 

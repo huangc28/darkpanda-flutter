@@ -71,8 +71,8 @@ class _LoginState extends State<Login> {
       body: SystemUiOverlayLayout(
         child: Container(
           padding: EdgeInsets.only(
-            left: SizeConfig.screenWidth * 0.05, //30,
-            right: SizeConfig.screenWidth * 0.05, //30,
+            left: SizeConfig.screenWidth * 0.05,
+            right: SizeConfig.screenWidth * 0.05,
           ),
           child: UnfocusPrimary(
             child: SingleChildScrollView(
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     SizedBox(height: 92),
                     _buildLogoImage(),
                     SizedBox(height: 26),
@@ -128,25 +128,26 @@ class _LoginState extends State<Login> {
                       ),
                     ),
 
-                  /// Use [Expanded] to fill up the rest of the column space
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        height: SizeConfig.screenHeight * 0.065,
-                        child: DPTextButton(
-                          theme: DPTextButtonThemes.purple,
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).push(
-                              MaterialPageRoute(
-                                builder: (context) => AuthNavigator(),
-                              ),
-                            );
-                          },
-                          text: AppLocalizations.of(context).register,
+                    /// Use [Expanded] to fill up the rest of the column space
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          height: SizeConfig.screenHeight * 0.065,
+                          child: DPTextButton(
+                            theme: DPTextButtonThemes.purple,
+                            onPressed: () {
+                              Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              ).push(
+                                MaterialPageRoute(
+                                  builder: (context) => AuthNavigator(),
+                                ),
+                              );
+                            },
+                            text: AppLocalizations.of(context).register,
+                          ),
                         ),
                       ),
                     ),

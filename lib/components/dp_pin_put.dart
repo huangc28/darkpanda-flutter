@@ -47,8 +47,8 @@ class DPPinPut extends StatelessWidget {
       submittedFieldDecoration: pinputDecoration,
       selectedFieldDecoration: pinputDecoration,
       followingFieldDecoration: pinputDecoration,
-      eachFieldWidth: SizeConfig.screenWidth * 0.12, //50,
-      eachFieldHeight: SizeConfig.screenHeight * 0.06, //57,
+      eachFieldWidth: SizeConfig.screenWidth * 0.12,
+      eachFieldHeight: SizeConfig.screenHeight * 0.06,
     );
   }
 }

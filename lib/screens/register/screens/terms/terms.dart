@@ -32,9 +32,9 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
   Widget _buildServiceTerms() {
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
-        SizeConfig.screenWidth * 0.05, //30,
-        SizeConfig.screenHeight * 0.05, //26,
-        SizeConfig.screenWidth * 0.05, //30,
+        SizeConfig.screenWidth * 0.05,
+        SizeConfig.screenHeight * 0.05,
+        SizeConfig.screenWidth * 0.05,
         0,
       ),
       child: RichText(
@@ -84,9 +84,9 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
   Widget _buildPrivacyTerms() {
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
-        SizeConfig.screenWidth * 0.05, //30,
-        SizeConfig.screenHeight * 0.05, //26,
-        SizeConfig.screenWidth * 0.05, //30,
+        SizeConfig.screenWidth * 0.05,
+        SizeConfig.screenHeight * 0.05,
+        SizeConfig.screenWidth * 0.05,
         0,
       ),
       child: RichText(
@@ -171,16 +171,13 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
               ),
             ),
             SizedBox(
-              // height: 30,
               height: SizeConfig.screenHeight * 0.04,
             ),
 
             /// Use [Expanded] to fill up the rest of the column space
-            // Expanded(
-            //   child:
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.screenHeight * 0.02, //16.0,
+                horizontal: SizeConfig.screenHeight * 0.02,
                 vertical: 0,
               ),
               child: SizedBox(
@@ -196,9 +193,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
                 ),
               ),
             ),
-            // ),
             SizedBox(
-              // height: 30,
               height: SizeConfig.screenHeight * 0.04,
             ),
           ],
