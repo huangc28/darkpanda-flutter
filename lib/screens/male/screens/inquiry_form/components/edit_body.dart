@@ -222,23 +222,23 @@ class _EditBodyState extends State<EditBody> {
   }
 
   Widget _confirmButton() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-      height: 45,
-      child: Material(
-        borderRadius: BorderRadius.circular(20),
-        color: Color.fromRGBO(119, 81, 255, 1),
-        elevation: 7,
-        child: GestureDetector(
-          onTap: () {
-            if (!_formKey.currentState.validate()) {
-              return;
-            }
-            _formKey.currentState.save();
-            BlocProvider.of<SearchInquiryFormBloc>(context).add(
-              SubmitEditSearchInquiryForm(_inquiryForms),
-            );
-          },
+    return GestureDetector(
+      onTap: () {
+        if (!_formKey.currentState.validate()) {
+          return;
+        }
+        _formKey.currentState.save();
+        BlocProvider.of<SearchInquiryFormBloc>(context).add(
+          SubmitEditSearchInquiryForm(_inquiryForms),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+        height: 45,
+        child: Material(
+          borderRadius: BorderRadius.circular(20),
+          color: Color.fromRGBO(119, 81, 255, 1),
+          elevation: 7,
           child: Center(
             child: Text(
               '编织',
