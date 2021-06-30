@@ -88,6 +88,8 @@ class _AddressMapState extends State<AddressMap> {
 
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
+
+          // Emit event to update position on the map.
         }
       },
       initialCameraPosition: CameraPosition(
@@ -128,6 +130,9 @@ class _AddressMapState extends State<AddressMap> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
       child: Stack(
         children: [
           Container(
@@ -137,7 +142,7 @@ class _AddressMapState extends State<AddressMap> {
                 // Display google map. The map display sector should be relatively small.
                 // We need to display loading spinner when location is being loaded.
                 Expanded(
-                  flex: 4,
+                  flex: 6,
                   child: BlocConsumer<DetermineLocationBloc,
                       DetermineLocationState>(
                     listener: (context, state) {
@@ -179,19 +184,11 @@ class _AddressMapState extends State<AddressMap> {
 
                 Expanded(
                   flex: 2,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(243, 244, 246, 1),
-                    ),
-                    child: Center(
+                  child: Center(
+                    child: SingleChildScrollView(
                       child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 27,
-                          vertical: 16,
-                        ),
+                        padding: EdgeInsets.fromLTRB(27, 7, 27, 15),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
