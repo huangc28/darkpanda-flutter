@@ -89,7 +89,7 @@ class _BodyState extends State<Body> {
           children: <Widget>[
             _myDpBalance(),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: Column(
                 children: [
                   InputTextLabel(label: "充值金額"),
