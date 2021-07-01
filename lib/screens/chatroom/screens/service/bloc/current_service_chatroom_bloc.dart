@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/models/start_service_message.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
 
 import 'package:equatable/equatable.dart';
@@ -164,6 +165,8 @@ class CurrentServiceChatroomBloc
           return QuitChatroomMessage.fromMap(data);
         } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.start_service.name) {
+          return StartServiceMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -230,6 +233,8 @@ class CurrentServiceChatroomBloc
         (String type) => type == MessageType.quit_chatroom.name;
     final isCompletedPaymentMsg =
         (String type) => type == MessageType.complete_payment.name;
+    final isStartServiceMsg =
+        (String type) => type == MessageType.start_service.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -255,6 +260,8 @@ class CurrentServiceChatroomBloc
       msg = QuitChatroomMessage.fromMap(rawMsg);
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
+    } else if (isStartServiceMsg(rawMsg['type'])) {
+      msg = StartServiceMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/models/start_service_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/start_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
@@ -494,6 +496,13 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                       } else if (message
                                           is PaymentCompletedMessage) {
                                         return PaymentCompletedBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                          onTapMessage: (message) {},
+                                        );
+                                      } else if (message
+                                          is StartServiceMessage) {
+                                        return StartServiceBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
                                           onTapMessage: (message) {},
