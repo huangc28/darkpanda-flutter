@@ -498,14 +498,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                         return PaymentCompletedBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
-                                          onTapMessage: (message) {},
                                         );
                                       } else if (message
                                           is StartServiceMessage) {
                                         return StartServiceBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
-                                          onTapMessage: (message) {},
                                         );
                                       } else {
                                         return ChatBubble(

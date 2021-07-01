@@ -315,7 +315,6 @@ class _ChatroomState extends State<Chatroom>
                                               isMe:
                                                   _sender.uuid == message.from,
                                               message: message,
-                                              onTapMessage: (message) {},
                                             );
                                           } else {
                                             return ChatBubble(

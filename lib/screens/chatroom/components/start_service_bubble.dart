@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/start_service_message.dart';
-import 'package:darkpanda_flutter/models/service_detail_message.dart';
 
 class StartServiceBubble extends StatelessWidget {
   const StartServiceBubble({
     this.message,
     this.isMe = false,
-    this.onTapMessage,
   });
 
   final StartServiceMessage message;
   final bool isMe;
-  final Function(ServiceDetailMessage) onTapMessage;
 
   @override
   Widget build(BuildContext context) {
