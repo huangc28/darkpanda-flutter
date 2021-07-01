@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 class SendMessageBar extends StatefulWidget {
   const SendMessageBar({
     @required this.onSend,
+    this.onImageGallery,
+    this.onCamera,
     this.editMessageController,
-    this.disable = false,
   });
 
   final VoidCallback onSend;
+  final VoidCallback onImageGallery;
+  final VoidCallback onCamera;
 
   final TextEditingController editMessageController;
-  final bool disable;
 
   @override
   _SendMessageBarState createState() => _SendMessageBarState();
@@ -26,7 +28,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
       ),
       iconSize: 22,
       color: Colors.white,
-      onPressed: () {},
+      onPressed: widget.onImageGallery,
     );
   }
 
@@ -36,6 +38,46 @@ class _SendMessageBarState extends State<SendMessageBar> {
       iconSize: 22,
       color: Colors.white,
       onPressed: widget.onSend,
+    );
+  }
+
+  Widget _buildCameraIconButton() {
+    return IconButton(
+      icon: Icon(
+        Icons.camera_alt_rounded,
+      ),
+      iconSize: 22,
+      color: Colors.white,
+      onPressed: widget.onCamera,
+    );
+  }
+
+  Widget _inputTextField() {
+    return Expanded(
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center,
+        controller: widget.editMessageController,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(top: 2, left: 20),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+            Radius.circular(40),
+          )),
+          filled: true,
+          fillColor: Colors.black38,
+          hintText: '輸入訊息',
+        ),
+        textCapitalization: TextCapitalization.sentences,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+        onChanged: (String v) {
+          //  If v has value and is not an empty string, display the send icon.
+          setState(() {
+            _showSendButton = v.isNotEmpty;
+          });
+        },
+      ),
     );
   }
 
@@ -50,34 +92,12 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Color.fromRGBO(31, 30, 56, 1),
       child: Row(
         children: <Widget>[
+          // Display camera icon
+          _buildCameraIconButton(),
+
           // Display image Gallery icon.
           _buildImageGalleryIconButton(),
-          Expanded(
-            child: TextField(
-              textAlignVertical: TextAlignVertical.center,
-              controller: widget.editMessageController,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 2, left: 20),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                  Radius.circular(40),
-                )),
-                filled: true,
-                fillColor: Colors.black38,
-                hintText: '輸入訊息',
-              ),
-              textCapitalization: TextCapitalization.sentences,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              onChanged: (String v) {
-                //  If v has value and is not an empty string, display the send icon.
-                setState(() {
-                  _showSendButton = v.isNotEmpty;
-                });
-              },
-            ),
-          ),
+          _inputTextField(),
 
           // Only display sending icon when user is typing.
           _showSendButton

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
@@ -55,6 +57,7 @@ import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
@@ -117,6 +120,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
   InquirerProfileArguments _inquirerProfileArguments;
 
+  File _image;
+  final picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -171,6 +177,30 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     );
 
     super.deactivate();
+  }
+
+  Future _getCameraImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future _getGalleryImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
@@ -585,7 +615,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         }
       },
       child: SendMessageBar(
-        disable: _serviceConfirmed,
         editMessageController: _editMessageController,
         onSend: () {
           if (_message.isEmpty) {
@@ -598,6 +627,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               channelUUID: widget.args.channelUUID,
             ),
           );
+        },
+        onImageGallery: () {
+          _getGalleryImage();
+        },
+        onCamera: () {
+          _getCameraImage();
         },
       ),
     );

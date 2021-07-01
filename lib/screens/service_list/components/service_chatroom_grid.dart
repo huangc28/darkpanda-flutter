@@ -18,21 +18,21 @@ class ServiceChatroomGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Color.fromRGBO(31, 30, 56, 1),
-        border: Border.all(
-          width: 0.5,
-          color: Color.fromRGBO(106, 109, 137, 1),
+    return GestureDetector(
+      onTap: () => onEnterChat(chatroom),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(31, 30, 56, 1),
+          border: Border.all(
+            width: 0.5,
+            color: Color.fromRGBO(106, 109, 137, 1),
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => onEnterChat(chatroom),
-            child: Row(
+        child: Column(
+          children: <Widget>[
+            Row(
               children: <Widget>[
                 Expanded(
                   flex: 1,
@@ -44,8 +44,8 @@ class ServiceChatroomGrid extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
