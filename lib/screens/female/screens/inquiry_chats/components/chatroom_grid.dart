@@ -50,27 +50,31 @@ class ChatroomGrid extends StatelessWidget {
   Widget _buildChatInfoBar() {
     return Row(
       children: [
-        Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                chatroom.username,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white,
+        Flexible(
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  chatroom.username,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                lastMessage,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Color.fromRGBO(106, 109, 137, 1),
+                SizedBox(height: 6),
+                Text(
+                  lastMessage,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color.fromRGBO(106, 109, 137, 1),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

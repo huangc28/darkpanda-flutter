@@ -185,11 +185,13 @@ class InquiryDetailDialog extends StatelessWidget {
                     color: Color.fromRGBO(141, 145, 155, 1),
                   ),
                 ),
-                Text(
-                  inquiryDetail.updateInquiryMessage.serviceTime.toString(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
+                Flexible(
+                  child: Text(
+                    inquiryDetail.updateInquiryMessage.serviceTime.toString(),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromRGBO(49, 50, 53, 1),
+                    ),
                   ),
                 ),
               ],
@@ -216,16 +218,18 @@ class InquiryDetailDialog extends StatelessWidget {
                     color: Color.fromRGBO(141, 145, 155, 1),
                   ),
                 ),
-                Text(
-                  inquiryDetail.updateInquiryMessage.duration >
-                              Duration(hours: 0, minutes: 1) &&
-                          inquiryDetail.updateInquiryMessage.duration <=
-                              Duration(hours: 0, minutes: 59)
-                      ? '${durationSplit[1]} 分'
-                      : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
+                Flexible(
+                  child: Text(
+                    inquiryDetail.updateInquiryMessage.duration >
+                                Duration(hours: 0, minutes: 1) &&
+                            inquiryDetail.updateInquiryMessage.duration <=
+                                Duration(hours: 0, minutes: 59)
+                        ? '${durationSplit[1]} 分'
+                        : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromRGBO(49, 50, 53, 1),
+                    ),
                   ),
                 ),
               ],

@@ -102,23 +102,6 @@ class ServiceChatroomGrid extends StatelessWidget {
                       color: Color.fromRGBO(106, 109, 137, 1),
                     ),
                   ),
-                  SizedBox(height: 6),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(4.5, 1, 4.5, 1),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Color.fromRGBO(236, 97, 88, 1),
-                    ),
-                    child: Text(
-                      '1',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

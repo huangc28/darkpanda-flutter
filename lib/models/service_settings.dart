@@ -77,7 +77,7 @@ class ServiceSettings extends Equatable {
         price: msg.price,
         duration: Duration(minutes: msg.duration),
         serviceDate: msg.serviceTime.toLocal(),
-        serviceTime: TimeOfDay.fromDateTime(msg.serviceTime),
+        serviceTime: TimeOfDay.fromDateTime(msg.serviceTime.toLocal()),
         serviceType: msg.serviceType,
       );
 
