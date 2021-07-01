@@ -1,3 +1,11 @@
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
@@ -107,6 +115,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   InquiryDetail _inquiryDetail = InquiryDetail();
   ServiceDetails _serviceDetails = ServiceDetails();
   UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
+  InquirerProfileArguments _inquirerProfileArguments;
 
   @override
   void initState() {
@@ -116,6 +125,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     _inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     _inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
     _inquiryDetail.serviceUuid = widget.args.serviceUUID;
+
+    _inquirerProfileArguments =
+        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -161,32 +173,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     super.deactivate();
   }
 
-  Widget _buildMessageBar() {
-    return BlocListener<SendMessageBloc, SendMessageState>(
-      listener: (context, state) {
-        if (state.status == AsyncLoadingStatus.done) {
-          _editMessageController.clear();
-        }
-      },
-      child: SendMessageBar(
-        disable: _serviceConfirmed,
-        editMessageController: _editMessageController,
-        onSend: () {
-          if (_message.isEmpty) {
-            return;
-          }
-
-          BlocProvider.of<SendMessageBloc>(context).add(
-            SendTextMessage(
-              content: _message,
-              channelUUID: widget.args.channelUUID,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,12 +212,46 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               _inquiryDetail.username = state.userProfile.username;
             }
 
-            return Text(
-              state.status == AsyncLoadingStatus.done
-                  ? state.userProfile.username
-                  : '',
-              style: TextStyle(
-                fontSize: 18,
+            return GestureDetector(
+              onTap: () {
+                print('Inquirer profile');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => LoadUserImagesBloc(
+                              userApi: UserApis(),
+                            ),
+                          ),
+                          BlocProvider(
+                            create: (context) => LoadHistoricalServicesBloc(
+                              userApi: UserApis(),
+                            ),
+                          ),
+                          BlocProvider(
+                            create: (context) => LoadRateBloc(
+                              rateApiClient: RateApiClient(),
+                            ),
+                          ),
+                        ],
+                        child: InquirerProfile(
+                          loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+                          args: _inquirerProfileArguments,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                state.status == AsyncLoadingStatus.done
+                    ? state.userProfile.username
+                    : '',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
               ),
             );
           },
@@ -553,6 +573,32 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           ));
         },
         child: Icon(Icons.qr_code_scanner),
+      ),
+    );
+  }
+
+  Widget _buildMessageBar() {
+    return BlocListener<SendMessageBloc, SendMessageState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          _editMessageController.clear();
+        }
+      },
+      child: SendMessageBar(
+        disable: _serviceConfirmed,
+        editMessageController: _editMessageController,
+        onSend: () {
+          if (_message.isEmpty) {
+            return;
+          }
+
+          BlocProvider.of<SendMessageBloc>(context).add(
+            SendTextMessage(
+              content: _message,
+              channelUUID: widget.args.channelUUID,
+            ),
+          );
+        },
       ),
     );
   }
