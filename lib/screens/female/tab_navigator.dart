@@ -13,6 +13,7 @@ import '../service_list/routes.dart';
 final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
   TabItem.inquiryChats: InquiryChatsRoutes.root,
+  TabItem.manage: ServiceChatroomRoutes.root,
   TabItem.settings: SettingRoutes.root,
   TabItem.profile: ProfileRoutes.root,
 };
@@ -59,16 +60,20 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routeBuilder = _getRouteBuildersByTab(context, tabItem);
+    if (tabItem == currentTab) {
+      final routeBuilder = _getRouteBuildersByTab(context, tabItem);
 
-    return Navigator(
-        key: navigatorKey,
-        initialRoute: initialRouteMap[tabItem],
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(
-            settings: settings,
-            builder: (context) => routeBuilder[settings.name](context),
-          );
-        });
+      return Navigator(
+          key: navigatorKey,
+          initialRoute: initialRouteMap[tabItem],
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => routeBuilder[settings.name](context),
+            );
+          });
+    }
+
+    return Container();
   }
 }
