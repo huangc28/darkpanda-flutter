@@ -49,7 +49,12 @@ class _TopupDpState extends State<TopupDp> {
             if (widget.args == null) {
               Navigator.of(context).pop();
             }
-            // If widget.args is not null, means is from male inquiry
+            // If route is from service_chatroom, should use pop
+            else if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+              Navigator.of(context).pop();
+            }
+            // 1. If widget.args is not null, means is from male inquiry
+            // 2. Or route is from inquiry_chatroom
             else {
               BlocProvider.of<LoadIncomingServiceBloc>(context)
                   .add(LoadIncomingService());

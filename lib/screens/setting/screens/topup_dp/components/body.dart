@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
@@ -34,10 +35,16 @@ class _BodyState extends State<Body> {
   LoadDpPackageBloc loadDpPackageBloc = new LoadDpPackageBloc();
   MyDp myDp = new MyDp();
   DpPackageList dpPackageList = new DpPackageList();
+  InquiryDetail _inquiryDetail = InquiryDetail();
 
   @override
   void initState() {
     super.initState();
+
+    _inquiryDetail = widget.args;
+    if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+      _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
+    }
 
     BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
 
@@ -160,7 +167,7 @@ class _BodyState extends State<Body> {
                     navigateBuyDpPage(
                       dpPackageList.packages[index].cost,
                       dpPackageList.packages[index].id,
-                      widget.args,
+                      _inquiryDetail,
                     );
                   },
                   child: Row(

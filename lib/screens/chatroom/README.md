@@ -19,3 +19,15 @@ https://medium.com/flutterdevs/date-and-time-picker-in-flutter-72141e7531c
 - [] Female user should be able to see the profile of the inquirer.
 
 
+## service_chatroom back button routes
+1. From service_list:
+ - female use navigator.pop
+ - male use navigator.pop
+2. From topup back button - navigator.pushNamed
+ - male
+  - if topup is from service_chatroom, use navigator.pop
+  - if topup is from settings, use navigator.pop
+  - if topup is from inquiry, use navigator.pushNamed
+3. From complete_buy_service use navigator.pushNamed
+4. From buy_service back button 
+ - if route is from service_chatroom, use navigator.pop

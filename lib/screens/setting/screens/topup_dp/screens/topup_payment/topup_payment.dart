@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
@@ -135,10 +136,12 @@ class _TopupPaymentState extends State<TopupPayment> {
               } else if (state.status == AsyncLoadingStatus.done) {
                 _showInSnackBar('充值成功！');
                 // If args is null, means topup is from settings
-                // Else if not enough DP which is from male accept and pay inquiry
+
                 if (widget.args == null) {
                   Navigator.pop(context, true);
-                } else {
+                }
+                // Else not enough DP which is from male accept to pay inquiry
+                else {
                   // Go to payment screen
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(

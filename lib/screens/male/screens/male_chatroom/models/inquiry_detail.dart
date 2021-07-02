@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/util/try_parse_to_date_time.dart';
 
@@ -12,6 +13,7 @@ class InquiryDetail extends Equatable {
     this.inquiryUuid,
     this.counterPartUuid,
     this.serviceUuid,
+    this.routeTypes,
   });
 
   UpdateInquiryMessage updateInquiryMessage;
@@ -21,6 +23,7 @@ class InquiryDetail extends Equatable {
   String inquiryUuid;
   String counterPartUuid;
   String serviceUuid;
+  RouteTypes routeTypes;
 
   static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
 
@@ -34,6 +37,7 @@ class InquiryDetail extends Equatable {
       inquiryUuid: data['inquiryUuid'] ?? '',
       counterPartUuid: data['counterPartUuid'] ?? '',
       serviceUuid: data['serviceUuid'] ?? '',
+      routeTypes: data['routeTypes'] ?? '',
     );
   }
 
@@ -46,5 +50,6 @@ class InquiryDetail extends Equatable {
         inquiryUuid,
         counterPartUuid,
         serviceUuid,
+        routeTypes,
       ];
 }

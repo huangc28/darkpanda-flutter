@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -76,6 +77,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
     inquiryDetail.channelUuid = widget.args.channelUUID;
     inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
+    inquiryDetail.routeTypes = RouteTypes.fromInquiry;
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 

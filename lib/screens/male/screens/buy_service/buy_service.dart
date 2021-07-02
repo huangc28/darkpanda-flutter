@@ -36,8 +36,16 @@ class _BuyServiceState extends State<BuyService> {
                 color: Color.fromRGBO(106, 109, 137, 1),
               ),
               onPressed: () {
-                BlocProvider.of<LoadIncomingServiceBloc>(context)
-                    .add(LoadIncomingService());
+                // If route is from service_chatroom, should use pop
+                if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+                  Navigator.of(context).pop();
+                }
+                // 1. Route is from inquiry_chatroom
+                // 2. From service_chatroom to topup_dp
+                else {
+                  BlocProvider.of<LoadIncomingServiceBloc>(context)
+                      .add(LoadIncomingService());
+                }
               },
             ),
             Text(
