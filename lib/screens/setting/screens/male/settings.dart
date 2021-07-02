@@ -130,7 +130,10 @@ class _MaleSettingsState extends State<MaleSettings> {
                                   Navigator.of(
                                     context,
                                     rootNavigator: true,
-                                  ).pushNamed(MainRoutes.login);
+                                  ).pushNamedAndRemoveUntil(
+                                    MainRoutes.login,
+                                    (Route<dynamic> route) => false,
+                                  );
                                 }
                               },
                               child: DPTextButton(
