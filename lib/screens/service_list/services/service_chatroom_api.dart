@@ -103,7 +103,7 @@ class ServiceChatroomClient extends BaseClient {
     String uuid,
   ) async {
     final request = http.Request(
-      'Post',
+      'POST',
       buildUri('/v1/block'),
     );
 
