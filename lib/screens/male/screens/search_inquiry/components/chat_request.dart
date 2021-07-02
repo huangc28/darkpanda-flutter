@@ -96,11 +96,9 @@ class _ChatRequestState extends State<ChatRequest> {
             },
           ).then((value) {
             if (value) {
-              if (value) {
-                BlocProvider.of<CancelInquiryBloc>(context).add(
-                  SkipInquiry(widget.activeInquiry.uuid),
-                );
-              }
+              BlocProvider.of<CancelInquiryBloc>(context).add(
+                SkipInquiry(widget.activeInquiry.uuid),
+              );
             }
           });
         },

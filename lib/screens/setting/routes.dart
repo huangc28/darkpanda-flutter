@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/pkg/timer.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +26,9 @@ import 'screens/female/settings.dart';
 import 'screens/male/settings.dart';
 
 import 'bloc/logout_bloc.dart';
+import 'screens/verify_phone/bloc/send_change_mobile_bloc.dart';
+import 'screens/verify_phone/services/change_mobile_apis.dart';
+import 'screens/verify_phone/verify_phone.dart';
 import 'services/settings_apis.dart';
 
 class SettingRoutes extends BaseRoutes {
@@ -33,6 +38,7 @@ class SettingRoutes extends BaseRoutes {
   static const topup_dp = '/topup-dp';
   static const blacklist = '/blacklist';
   static const bank_account = '/bank-account';
+  static const verify_phone = '/verify-phone';
 
   SettingRoutes();
 
@@ -131,6 +137,24 @@ class SettingRoutes extends BaseRoutes {
             ),
           ],
           child: BankAccount(),
+        );
+      },
+      SettingRoutes.verify_phone: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => TimerBloc(
+                ticker: Timer(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => SendChangeMobileBloc(
+                changeMobileClient: ChangeMobileClient(),
+                timerBloc: BlocProvider.of<TimerBloc>(context),
+              ),
+            ),
+          ],
+          child: VerifyPhone(),
         );
       }
     };

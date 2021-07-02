@@ -15,6 +15,13 @@ Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
 };
 
 class FemaleApp extends StatefulWidget {
+  const FemaleApp({
+    Key key,
+    this.selectedTab = TabItem.inquiries,
+  }) : super(key: key);
+
+  final TabItem selectedTab;
+
   @override
   _FemaleAppState createState() => _FemaleAppState();
 }
@@ -24,7 +31,14 @@ class FemaleApp extends StatefulWidget {
 //   - If user has not logged in, we need to navigate user
 //   - To perform login / registration process before proceeding
 class _FemaleAppState extends State<FemaleApp> {
-  TabItem _currentTab = TabItem.inquiries;
+  TabItem _currentTab;
+
+  @override
+  void initState() {
+    _currentTab = widget.selectedTab;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

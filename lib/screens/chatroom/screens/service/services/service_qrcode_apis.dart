@@ -36,7 +36,7 @@ class ServiceQrCodeAPIs extends BaseClient {
       request.body = jsonBody;
 
       await withTokenFromSecureStore(request);
-      withJson(request);
+      withApplicationJsonHeader(request);
 
       return sendWithResponse(request);
     } catch (e) {

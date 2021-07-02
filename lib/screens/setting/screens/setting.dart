@@ -10,6 +10,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_ph
 
 import '../bloc/logout_bloc.dart';
 import 'topup_dp/screen_arguements/args.dart';
+import 'verify_phone/bloc/send_change_mobile_bloc.dart';
+import 'verify_phone/services/change_mobile_apis.dart';
 
 class DemoMenu {
   final String image;
@@ -73,9 +75,21 @@ class _SettingState extends State<Setting> {
                           ),
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => VerifyPhone()),
+                              MaterialPageRoute(builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) => SendChangeMobileBloc(
+                                        changeMobileClient:
+                                            ChangeMobileClient(),
+                                      ),
+                                    ),
+                                  ],
+                                  child: VerifyPhone(),
+                                );
+                              }),
                             );
+                            // widget.onPush('/verify-phone', null);
                           },
                         ),
                         InkWell(

@@ -5,7 +5,10 @@ import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
-import '../bank_account/bank_account.dart';
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/pkg/timer.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/bloc/send_change_mobile_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/services/change_mobile_apis.dart';
 import '../recommend_management/recommend_management.dart';
 import '../verify_phone/verify_phone.dart';
 
@@ -50,9 +53,28 @@ class _MaleSettingsState extends State<MaleSettings> {
                           ),
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => VerifyPhone()),
+                              MaterialPageRoute(builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) => TimerBloc(
+                                        ticker: Timer(),
+                                      ),
+                                    ),
+                                    BlocProvider(
+                                      create: (context) => SendChangeMobileBloc(
+                                        changeMobileClient:
+                                            ChangeMobileClient(),
+                                        timerBloc:
+                                            BlocProvider.of<TimerBloc>(context),
+                                      ),
+                                    ),
+                                  ],
+                                  child: VerifyPhone(),
+                                );
+                              }),
                             );
+                            // widget.onPush('/verify-phone', null);
                           },
                         ),
                         InkWell(

@@ -37,7 +37,7 @@ class MainRoutes extends BaseRoutes {
           value: BlocProvider.of<AuthUserBloc>(context),
           child: LoginNavigator()),
       MainRoutes.register: (context) => AuthNavigator(),
-      MainRoutes.female: (context) => FemaleApp(),
+      MainRoutes.female: (context) => FemaleApp(selectedTab: args),
       MainRoutes.male: (context) => MaleApp(selectedTab: args),
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;

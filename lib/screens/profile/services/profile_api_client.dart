@@ -38,7 +38,7 @@ class ProfileApiClient extends BaseClient {
       request.body = jsonBody;
 
       await withTokenFromSecureStore(request);
-      withJson(request);
+      withApplicationJsonHeader(request);
 
       final res = await sendWithResponse(request);
 
