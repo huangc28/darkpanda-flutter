@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/services/apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,8 +86,19 @@ class _MaleSettingsState extends State<MaleSettings> {
                           ),
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => RecommendManagement()),
+                              MaterialPageRoute(builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) =>
+                                          LoadGeneralRecommendBloc(
+                                        apiClient: RecommendAPIClient(),
+                                      ),
+                                    ),
+                                  ],
+                                  child: RecommendManagement(),
+                                );
+                              }),
                             );
                           },
                         ),

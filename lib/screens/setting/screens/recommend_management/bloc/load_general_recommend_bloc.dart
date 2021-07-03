@@ -37,7 +37,7 @@ class LoadGeneralRecommendBloc
       yield LoadGeneralRecommendState.loading(state);
 
       // request API
-      final res = await apiClient.fetchGeneralRecommend(event.uuid);
+      final res = await apiClient.fetchGeneralRecommendCode();
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

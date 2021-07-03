@@ -7,10 +7,4 @@ abstract class LoadGeneralRecommendEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadGeneralRecommend extends LoadGeneralRecommendEvent {
-  const LoadGeneralRecommend({
-    this.uuid,
-  });
-
-  final String uuid;
-}
+class LoadGeneralRecommend extends LoadGeneralRecommendEvent {}

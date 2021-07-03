@@ -1,5 +1,9 @@
 import 'package:clipboard/clipboard.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -18,6 +22,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       vsync: this,
       length: 2,
     );
+
+    BlocProvider.of<LoadGeneralRecommendBloc>(context)
+        .add(LoadGeneralRecommend());
   }
 
   @override
@@ -71,7 +78,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget normal() {
-    textEditingController.text = "AABBCCDDE";
     return SingleChildScrollView(
       // padding: EdgeInsets.fromLTRB(20.0, 26, 20, 0),
       child: Column(
@@ -104,7 +110,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget manager() {
-    textEditingController.text = "AABBCCDDE";
     return SingleChildScrollView(
       // padding: EdgeInsets.fromLTRB(20.0, 26, 20, 0),
       child: Column(
@@ -329,50 +334,70 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget clipboard() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color.fromRGBO(255, 255, 255, 0.1),
-                labelStyle: TextStyle(color: Colors.white),
-                // hintText: 'Enter Username',
-                contentPadding:
-                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(255, 255, 255, 0.1),
+    return BlocListener<LoadGeneralRecommendBloc, LoadGeneralRecommendState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          textEditingController.text = state.recommendDetail.referralCode;
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromRGBO(255, 255, 255, 0.1),
+                  labelStyle: TextStyle(color: Colors.white),
+                  // hintText: 'Enter Username',
+                  contentPadding:
+                      const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(255, 255, 255, 0.1),
+                    ),
+                    borderRadius: BorderRadius.circular(25.7),
                   ),
-                  borderRadius: BorderRadius.circular(25.7),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromRGBO(255, 255, 255, 0.1),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(255, 255, 255, 0.1),
+                    ),
+                    borderRadius: BorderRadius.circular(25.7),
                   ),
-                  borderRadius: BorderRadius.circular(25.7),
                 ),
+                controller: textEditingController,
+                style: TextStyle(color: Colors.white),
               ),
-              controller: textEditingController,
-              style: TextStyle(color: Colors.white),
             ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                onPressed: () {
+                  FlutterClipboard.copy(textEditingController.text);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Referral Code copied!'),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.content_copy),
+              ),
             ),
-            child: IconButton(
-              onPressed: () {
-                FlutterClipboard.copy(textEditingController.text);
-              },
-              icon: Icon(Icons.content_copy),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

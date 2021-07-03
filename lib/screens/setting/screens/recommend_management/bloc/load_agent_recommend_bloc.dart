@@ -37,7 +37,7 @@ class LoadAgentRecommendBloc
       yield LoadAgentRecommendState.loading(state);
 
       // request API
-      final res = await apiClient.fetchGeneralRecommend(event.uuid);
+      final res = await apiClient.fetchAgentRecommend(event.uuid);
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
