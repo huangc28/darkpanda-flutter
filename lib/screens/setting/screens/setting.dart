@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/services/apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,6 +10,7 @@ import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/r
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
 
 import '../bloc/logout_bloc.dart';
+import 'recommend_management/bloc/load_general_recommend_bloc.dart';
 import 'topup_dp/screen_arguements/args.dart';
 import 'verify_phone/bloc/send_change_mobile_bloc.dart';
 import 'verify_phone/services/change_mobile_apis.dart';
@@ -99,8 +101,19 @@ class _SettingState extends State<Setting> {
                           ),
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => RecommendManagement()),
+                              MaterialPageRoute(builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (context) =>
+                                          LoadGeneralRecommendBloc(
+                                        apiClient: RecommendAPIClient(),
+                                      ),
+                                    ),
+                                  ],
+                                  child: RecommendManagement(),
+                                );
+                              }),
                             );
                           },
                         ),
