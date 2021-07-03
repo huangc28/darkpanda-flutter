@@ -82,7 +82,7 @@ class PaymentDetail {
       price: data['price'],
       recTradeId: data['rec_trade_id'],
       address: data['address'],
-      startTime: parsedStartTime,
+      startTime: parsedStartTime.toLocal(),
       duration: parsedDuration,
       pickerUuid: data['picker_uuid'],
       pickerUsername: data['picker_username'],

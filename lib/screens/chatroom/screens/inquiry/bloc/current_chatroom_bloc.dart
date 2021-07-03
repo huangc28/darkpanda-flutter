@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 
@@ -162,6 +163,8 @@ class CurrentChatroomBloc
           return DisagreeInquiryMessage.fromMap(data);
         } else if (data['type'] == MessageType.quit_chatroom.name) {
           return QuitChatroomMessage.fromMap(data);
+        } else if (data['type'] == MessageType.images.name) {
+          return ImageMessage.fromMap(data);
         } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
         } else {
@@ -224,6 +227,7 @@ class CurrentChatroomBloc
         (String type) => type == MessageType.quit_chatroom.name;
     final isCompletedPaymentMsg =
         (String type) => type == MessageType.complete_payment.name;
+    final isImagesMsg = (String type) => type == MessageType.images.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -251,6 +255,8 @@ class CurrentChatroomBloc
       msg = QuitChatroomMessage.fromMap(rawMsg);
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
+    } else if (isImagesMsg(rawMsg['type'])) {
+      msg = ImageMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

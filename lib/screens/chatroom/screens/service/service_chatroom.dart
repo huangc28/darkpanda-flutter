@@ -1,7 +1,13 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/start_service_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/start_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
@@ -124,6 +130,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   File _image;
   final picker = ImagePicker();
+  List<ChatImage> chatImages = [];
+
+  /// Show loading when user sending image
+  bool _isSendingImage = false;
 
   @override
   void initState() {
@@ -183,11 +193,22 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   }
 
   Future _getCameraImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
+    final pickedFile = await picker.getImage(
+      source: ImageSource.camera,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
+        _isSendingImage = true;
         _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
       } else {
         print('No image selected.');
       }
@@ -195,11 +216,21 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   }
 
   Future _getGalleryImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
+        _isSendingImage = true;
         _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
       } else {
         print('No image selected.');
       }
@@ -300,42 +331,87 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
-          children: [
+          children: <Widget>[
             Container(
               child: Column(
-                children: [
-                  BlocListener<LoadServiceDetailBloc, LoadServiceDetailState>(
-                    listener: (context, state) {
-                      if (state.status == AsyncLoadingStatus.error) {
-                        developer.log(
-                          'failed to fetch service detail',
-                          error: state.error,
-                        );
+                children: <Widget>[
+                  MultiBlocListener(
+                    listeners: [
+                      BlocListener<UploadImageMessageBloc,
+                          UploadImageMessageState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.error.message),
-                          ),
-                        );
-                      }
+                          if (state.status == AsyncLoadingStatus.done) {
+                            chatImages = state.chatImages;
 
-                      if (state.status == AsyncLoadingStatus.done) {
-                        setState(() {
-                          _serviceDetails = state.serviceDetails;
-                          _updateInquiryMessage.duration =
-                              _serviceDetails.duration;
-                          _updateInquiryMessage.address =
-                              _serviceDetails.address;
-                          _updateInquiryMessage.serviceTime =
-                              _serviceDetails.appointmentTime;
-                          _updateInquiryMessage.matchingFee =
-                              _serviceDetails.matchingFee;
+                            BlocProvider.of<SendImageMessageBloc>(context).add(
+                              SendImageMessage(
+                                imageUrl: chatImages[0].imageUrl,
+                                channelUUID: widget.args.channelUUID,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      BlocListener<SendImageMessageBloc, SendImageMessageState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
 
-                          _inquiryDetail.updateInquiryMessage =
-                              _updateInquiryMessage;
-                        });
-                      }
-                    },
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _isSendingImage = false;
+                            });
+                          }
+                        },
+                      ),
+                      BlocListener<LoadServiceDetailBloc,
+                          LoadServiceDetailState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            developer.log(
+                              'failed to fetch service detail',
+                              error: state.error,
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
+
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _serviceDetails = state.serviceDetails;
+                              _updateInquiryMessage.duration =
+                                  _serviceDetails.duration;
+                              _updateInquiryMessage.address =
+                                  _serviceDetails.address;
+                              _updateInquiryMessage.serviceTime =
+                                  _serviceDetails.appointmentTime;
+                              _updateInquiryMessage.matchingFee =
+                                  _serviceDetails.matchingFee;
+
+                              _inquiryDetail.updateInquiryMessage =
+                                  _updateInquiryMessage;
+                            });
+                          }
+                        },
+                      ),
+                    ],
                     child: SizedBox.shrink(),
                   ),
                   if (_sender.gender == Gender.male)
@@ -432,7 +508,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                       },
                       builder: (context, scrollController) {
                         return Stack(
-                          children: [
+                          children: <Widget>[
                             BlocConsumer<CurrentServiceChatroomBloc,
                                 CurrentServiceChatroomState>(
                               listener: (context, state) {
@@ -468,6 +544,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                     historicalMessages:
                                         state.historicalMessages,
                                     currentMessages: state.currentMessages,
+                                    isSendingImage: _isSendingImage,
                                     builder: (BuildContext context, message) {
                                       // Render different chat bubble based on message type.
                                       if (message is ServiceConfirmedMessage) {
@@ -505,6 +582,25 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                         return StartServiceBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
+                                        );
+                                      } else if (message is ImageMessage) {
+                                        return ImageBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                          onEnlarge: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) {
+                                                  return FullScreenImage(
+                                                    imageUrl:
+                                                        message.imageUrls[0],
+                                                    tag: "chat_image",
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
                                         );
                                       } else {
                                         return ChatBubble(

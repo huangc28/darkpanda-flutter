@@ -13,7 +13,7 @@ class InquiryGridActions extends StatelessWidget {
   final ValueChanged<String> onTapChat;
   final ValueChanged<String> onTapClear;
   final ValueChanged<String> onTapCheckProfile;
-  final ValueChanged<String> onTapStartChat;
+  final ValueChanged<Inquiry> onTapStartChat;
   final Inquiry inquiry;
 
   Widget _buildChatButton() {
@@ -141,7 +141,7 @@ class InquiryGridActions extends StatelessWidget {
             theme: DPTextButtonThemes.grey,
             text: '開始洽談',
             onPressed: () {
-              onTapStartChat(inquiry.uuid);
+              onTapStartChat(inquiry);
             },
           ),
         ),

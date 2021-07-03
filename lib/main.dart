@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,6 +174,18 @@ class DarkPandaApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LoadServiceDetailBloc(
             serviceAPIs: ServiceAPIs(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (_) => SendImageMessageBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (_) => UploadImageMessageBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
           ),
         ),
 

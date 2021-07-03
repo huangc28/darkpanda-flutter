@@ -8,12 +8,16 @@ class SendMessageBar extends StatefulWidget {
   const SendMessageBar({
     @required this.onSend,
     @required this.onEditInquiry,
+    this.onImageGallery,
+    this.onCamera,
     this.editMessageController,
     this.disable = false,
   });
 
   final VoidCallback onSend;
   final VoidCallback onEditInquiry;
+  final VoidCallback onImageGallery;
+  final VoidCallback onCamera;
 
   final TextEditingController editMessageController;
   final bool disable;
@@ -56,7 +60,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
       ),
       iconSize: 22,
       color: Colors.white,
-      onPressed: () {},
+      onPressed: widget.onImageGallery,
     );
   }
 
@@ -66,6 +70,17 @@ class _SendMessageBarState extends State<SendMessageBar> {
       iconSize: 22,
       color: Colors.white,
       onPressed: widget.onSend,
+    );
+  }
+
+  Widget _buildCameraIconButton() {
+    return IconButton(
+      icon: Icon(
+        Icons.camera_alt_rounded,
+      ),
+      iconSize: 22,
+      color: Colors.white,
+      onPressed: widget.onCamera,
     );
   }
 
@@ -83,6 +98,9 @@ class _SendMessageBarState extends State<SendMessageBar> {
           widget.onEditInquiry == null
               ? Container()
               : _buildEditInquiryButton(),
+
+          // Display camera icon
+          _buildCameraIconButton(),
 
           // Display image Gallery icon.
           _buildImageGalleryIconButton(),

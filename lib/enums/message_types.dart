@@ -3,6 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 enum MessageType {
   service_detail,
   text,
+  images,
   confirmed_service,
   update_inquiry_detail,
   disagree_inquiry,

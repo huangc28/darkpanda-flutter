@@ -38,7 +38,7 @@ class InquiryGrid extends StatelessWidget {
 
   /// Male user agrees to chat with the female user. By pressing the `onTapChatting` button,
   /// Female user would be redirect to inquiry chatroom.
-  final ValueChanged<String> onTapStartChat;
+  final ValueChanged<Inquiry> onTapStartChat;
 
   @override
   Widget build(BuildContext context) {

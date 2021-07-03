@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -52,6 +54,25 @@ class InquiryChatroomApis extends BaseClient {
         buildUri('/v1/chat/emit-text-message', {
           'channel_uuid': channelUUID,
           'content': content,
+        }),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<http.Response> sendChatroomImageMessage(
+      String channelUUID, String imageUrl) async {
+    try {
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/chat/emit-image-message', {
+          'channel_uuid': channelUUID,
+          'image_url': imageUrl,
         }),
       );
 
@@ -130,5 +151,34 @@ class InquiryChatroomApis extends BaseClient {
     await withTokenFromSecureStore(request);
 
     return sendWithResponse(request);
+  }
+
+  Future<http.Response> uploadChatroomImage(File imageFile) async {
+    try {
+      var request = new http.MultipartRequest(
+        "POST",
+        buildUri('/v1/images'),
+      );
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          imageFile.path.toString(),
+        ),
+      );
+
+      if (request.files.length == 0) {
+        return null;
+      }
+
+      await withTokenFromSecureStore(request);
+      withMultiPart(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

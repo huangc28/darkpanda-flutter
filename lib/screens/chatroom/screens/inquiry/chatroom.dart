@@ -1,7 +1,15 @@
+import 'dart:io';
+
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +28,7 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'bloc/current_chatroom_bloc.dart';
 import 'bloc/get_inquiry_bloc.dart';
@@ -75,6 +84,13 @@ class _ChatroomState extends State<Chatroom>
 
   /// [ServiceSettings] model to be passed down to service settings sheet.
   ServiceSettings _serviceSettings;
+
+  File _image;
+  final picker = ImagePicker();
+  List<ChatImage> chatImages = [];
+
+  /// Show loading when user sending image
+  bool _isSendingImage = false;
 
   @override
   void initState() {
@@ -178,8 +194,59 @@ class _ChatroomState extends State<Chatroom>
           );
         },
         onEditInquiry: _handleTapEditInquiry,
+        onImageGallery: () {
+          _getGalleryImage();
+        },
+        onCamera: () {
+          _getCameraImage();
+        },
       ),
     );
+  }
+
+  Future _getCameraImage() async {
+    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
+    final pickedFile = await picker.getImage(
+      source: ImageSource.camera,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _isSendingImage = true;
+        _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future _getGalleryImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _isSendingImage = true;
+        _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
@@ -274,6 +341,7 @@ class _ChatroomState extends State<Chatroom>
                                         historicalMessages:
                                             state.historicalMessages,
                                         currentMessages: state.currentMessages,
+                                        isSendingImage: _isSendingImage,
                                         builder:
                                             (BuildContext context, message) {
                                           // Render different chat bubble based on message type.
@@ -315,6 +383,26 @@ class _ChatroomState extends State<Chatroom>
                                               isMe:
                                                   _sender.uuid == message.from,
                                               message: message,
+                                            );
+                                          } else if (message is ImageMessage) {
+                                            return ImageBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onEnlarge: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) {
+                                                      return FullScreenImage(
+                                                        imageUrl: message
+                                                            .imageUrls[0],
+                                                        tag: "chat_image",
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
                                             );
                                           } else {
                                             return ChatBubble(
@@ -398,6 +486,51 @@ class _ChatroomState extends State<Chatroom>
                   },
                 ),
               ),
+            ),
+
+            // Upload image bloc
+            BlocListener<UploadImageMessageBloc, UploadImageMessageState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  chatImages = state.chatImages;
+
+                  BlocProvider.of<SendImageMessageBloc>(context).add(
+                    SendImageMessage(
+                      imageUrl: chatImages[0].imageUrl,
+                      channelUUID: widget.args.channelUUID,
+                    ),
+                  );
+                }
+              },
+              child: SizedBox.shrink(),
+            ),
+
+            // Send image bloc
+            BlocListener<SendImageMessageBloc, SendImageMessageState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  setState(() {
+                    _isSendingImage = false;
+                  });
+                }
+              },
+              child: SizedBox.shrink(),
             ),
           ],
         ),

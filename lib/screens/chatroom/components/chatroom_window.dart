@@ -10,12 +10,14 @@ class ChatroomWindow extends StatefulWidget {
     this.historicalMessages,
     this.currentMessages,
     this.builder,
+    this.isSendingImage = false,
   });
 
   final List<Message> historicalMessages;
   final List<Message> currentMessages;
   final BubbleBuilder builder;
   final ScrollController scrollController;
+  final bool isSendingImage;
 
   @override
   _ChatroomWindowState createState() => _ChatroomWindowState();
@@ -54,13 +56,28 @@ class _ChatroomWindowState extends State<ChatroomWindow> {
       ..addAll(widget.historicalMessages);
 
     return Scrollbar(
-      child: ListView.builder(
-          reverse: true,
-          controller: _chatWindowScrollController,
-          padding: EdgeInsets.all(20),
-          itemCount: messages.length,
-          itemBuilder: (context, int index) =>
-              widget.builder(context, messages[index])),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+                reverse: true,
+                controller: _chatWindowScrollController,
+                padding: EdgeInsets.all(20),
+                itemCount: messages.length,
+                itemBuilder: (context, int index) =>
+                    widget.builder(context, messages[index])),
+          ),
+          widget.isSendingImage
+              ? Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 20, bottom: 10),
+                  child: CircularProgressIndicator(
+                    color: Colors.grey,
+                  ),
+                )
+              : Container(),
+        ],
+      ),
       isAlwaysShown: true,
       controller: _chatWindowScrollController,
     );

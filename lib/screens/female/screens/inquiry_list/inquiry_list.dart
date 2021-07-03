@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/models/inquiry.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -181,11 +184,23 @@ class _InqiuryListState extends State<InqiuryList> {
     );
   }
 
-  _handleStartChat(String uuid) {
-    print('DEBUG handle start chatting ${uuid}');
+  _handleStartChat(Inquiry inquiry) {
+    print('DEBUG handle start chatting ${inquiry.uuid}');
     // We need to redirect female to chatroom and clear the inquiry
     // item from inquiry list.
     // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => ChatRooms()));
+    // Navigator.of(
+    //   context,
+    //   rootNavigator: true,
+    // ).pushNamed(
+    //   MainRoutes.chatroom,
+    //   arguments: ChatroomScreenArguments(
+    //     channelUUID: chatroom.channelUUID,
+    //     inquiryUUID: inquiry.uuid,
+    //     counterPartUUID: inquiry.inquirer.uuid,
+    //     serviceType: inquiry.serviceType,
+    //   ),
+    // );
   }
 
   _handleClearInquiry(String uuid) {

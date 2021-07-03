@@ -1,4 +1,12 @@
+import 'dart:io';
+
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +37,7 @@ import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -70,6 +79,13 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   UpdateInquiryMessage messages = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
 
+  File _image;
+  final picker = ImagePicker();
+  List<ChatImage> chatImages = [];
+
+  /// Show loading when user sending image
+  bool _isSendingImage = false;
+
   @override
   void initState() {
     super.initState();
@@ -109,6 +125,51 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   _handleEditMessage() {
     setState(() {
       _message = _editMessageController.value.text;
+    });
+  }
+
+  Future _getCameraImage() async {
+    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
+    final pickedFile = await picker.getImage(
+      source: ImageSource.camera,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _isSendingImage = true;
+        _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future _getGalleryImage() async {
+    final pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _isSendingImage = true;
+        _image = File(pickedFile.path);
+
+        BlocProvider.of<UploadImageMessageBloc>(context).add(
+          UploadImageMessage(
+            imageFile: _image,
+          ),
+        );
+      } else {
+        print('No image selected.');
+      }
     });
   }
 
@@ -208,6 +269,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                     historicalMessages:
                                         state.historicalMessages,
                                     currentMessages: state.currentMessages,
+                                    isSendingImage: _isSendingImage,
                                     builder: (BuildContext context, message) {
                                       if (message is ServiceConfirmedMessage) {
                                         return ConfirmedServiceBubble(
@@ -226,6 +288,25 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                         return DisagreeInquiryBubble(
                                           isMe: _sender.uuid == message.from,
                                           message: message,
+                                        );
+                                      } else if (message is ImageMessage) {
+                                        return ImageBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                          onEnlarge: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) {
+                                                  return FullScreenImage(
+                                                    imageUrl:
+                                                        message.imageUrls[0],
+                                                    tag: "chat_image",
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
                                         );
                                       } else {
                                         return ChatBubble(
@@ -375,6 +456,54 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                             },
                             child: SizedBox.shrink(),
                           ),
+
+                          // Upload image bloc
+                          BlocListener<UploadImageMessageBloc,
+                              UploadImageMessageState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.error.message),
+                                  ),
+                                );
+                              }
+
+                              if (state.status == AsyncLoadingStatus.done) {
+                                chatImages = state.chatImages;
+
+                                BlocProvider.of<SendImageMessageBloc>(context)
+                                    .add(
+                                  SendImageMessage(
+                                    imageUrl: chatImages[0].imageUrl,
+                                    channelUUID: widget.args.channelUUID,
+                                  ),
+                                );
+                              }
+                            },
+                            child: SizedBox.shrink(),
+                          ),
+
+                          // Send image bloc
+                          BlocListener<SendImageMessageBloc,
+                              SendImageMessageState>(
+                            listener: (context, state) {
+                              if (state.status == AsyncLoadingStatus.error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(state.error.message),
+                                  ),
+                                );
+                              }
+
+                              if (state.status == AsyncLoadingStatus.done) {
+                                setState(() {
+                                  _isSendingImage = false;
+                                });
+                              }
+                            },
+                            child: SizedBox.shrink(),
+                          ),
                         ],
                       );
                     },
@@ -455,6 +584,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
               channelUUID: widget.args.channelUUID,
             ),
           );
+        },
+        onImageGallery: () {
+          _getGalleryImage();
+        },
+        onCamera: () {
+          _getCameraImage();
         },
       ),
     );
