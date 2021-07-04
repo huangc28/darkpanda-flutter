@@ -95,9 +95,25 @@ class CurrentChatroomBloc
 
       final Map<String, dynamic> respMap = json.decode(resp.body);
 
-      final prevPageMessage = respMap['messages']
-          .map<Message>((data) => Message.fromMap(data))
-          .toList();
+      final prevPageMessage = respMap['messages'].map<Message>((data) {
+        if (data['type'] == MessageType.service_detail.name) {
+          return ServiceDetailMessage.fromMap(data);
+        } else if (data['type'] == MessageType.confirmed_service.name) {
+          return ServiceConfirmedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.update_inquiry_detail.name) {
+          return UpdateInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.disagree_inquiry.name) {
+          return DisagreeInquiryMessage.fromMap(data);
+        } else if (data['type'] == MessageType.quit_chatroom.name) {
+          return QuitChatroomMessage.fromMap(data);
+        } else if (data['type'] == MessageType.images.name) {
+          return ImageMessage.fromMap(data);
+        } else if (data['type'] == MessageType.complete_payment.name) {
+          return PaymentCompletedMessage.fromMap(data);
+        } else {
+          return Message.fromMap(data);
+        }
+      }).toList();
 
       final newMessages = List<Message>.from(state.historicalMessages)
         ..addAll(prevPageMessage);
@@ -136,8 +152,10 @@ class CurrentChatroomBloc
       // Fetch historical messages
       yield CurrentChatroomState.loading(state);
 
-      final resp = await inquiryChatroomApis
-          .fetchInquiryHistoricalMessages(event.channelUUID);
+      final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
+        event.channelUUID,
+        event.perPage,
+      );
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(

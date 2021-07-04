@@ -25,7 +25,7 @@ class UpdateInquiryBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Jenny 已送出交易邀請',
+            message.username + ' 已送出交易邀請',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),

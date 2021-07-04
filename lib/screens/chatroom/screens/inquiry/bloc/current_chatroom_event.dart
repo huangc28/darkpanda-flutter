@@ -21,17 +21,19 @@ class FetchMoreHistoricalMessages extends CurrentChatroomEvent {
 
   const FetchMoreHistoricalMessages({
     this.channelUUID,
-    this.perPage = 10,
+    this.perPage = 15,
   });
 }
 
 class InitCurrentChatroom extends CurrentChatroomEvent {
   final String channelUUID;
   final String inquirerUUID;
+  final int perPage;
 
   const InitCurrentChatroom({
     this.channelUUID,
     this.inquirerUUID,
+    this.perPage = 15,
   });
 }
 

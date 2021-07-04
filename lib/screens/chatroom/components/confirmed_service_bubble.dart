@@ -22,7 +22,7 @@ class ConfirmedServiceBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Brat 已接受邀請',
+            message.username + ' 已接受邀請',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),

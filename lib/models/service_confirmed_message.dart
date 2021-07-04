@@ -10,6 +10,7 @@ class ServiceConfirmedMessage extends Message {
     this.duration,
     this.serviceTime,
     this.serviceType,
+    this.username,
   }) : super(
           content: content,
           from: from,
@@ -21,6 +22,7 @@ class ServiceConfirmedMessage extends Message {
   final int duration;
   final DateTime serviceTime;
   final String serviceType;
+  final String username;
 
   factory ServiceConfirmedMessage.fromMap(Map<String, dynamic> data) {
     return ServiceConfirmedMessage(
@@ -32,6 +34,7 @@ class ServiceConfirmedMessage extends Message {
       price: data['price'].toDouble() ?? 0,
       duration: data['duration'],
       serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['service_time']),
+      username: data['username'],
     );
   }
 }

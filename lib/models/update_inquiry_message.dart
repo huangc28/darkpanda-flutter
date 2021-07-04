@@ -11,6 +11,7 @@ class UpdateInquiryMessage extends Message {
     this.serviceType,
     this.address,
     this.matchingFee,
+    this.username,
   }) : super(
           content: content,
           from: from,
@@ -23,6 +24,7 @@ class UpdateInquiryMessage extends Message {
   String serviceType;
   String address;
   int matchingFee;
+  String username;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
     return UpdateInquiryMessage(
@@ -38,6 +40,7 @@ class UpdateInquiryMessage extends Message {
           .toLocal(),
       address: data['address'],
       matchingFee: data['matching_fee'],
+      username: data['username'],
     );
   }
 }
