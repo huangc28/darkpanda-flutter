@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
@@ -113,6 +114,8 @@ class CurrentServiceChatroomBloc
           return StartServiceMessage.fromMap(data);
         } else if (data['type'] == MessageType.images.name) {
           return ImageMessage.fromMap(data);
+        } else if (data['type'] == MessageType.cancel_service.name) {
+          return CancelServiceMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -190,6 +193,8 @@ class CurrentServiceChatroomBloc
           return StartServiceMessage.fromMap(data);
         } else if (data['type'] == MessageType.images.name) {
           return ImageMessage.fromMap(data);
+        } else if (data['type'] == MessageType.cancel_service.name) {
+          return CancelServiceMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -259,6 +264,8 @@ class CurrentServiceChatroomBloc
     final isStartServiceMsg =
         (String type) => type == MessageType.start_service.name;
     final isImagesMsg = (String type) => type == MessageType.images.name;
+    final isCancelServiceMsg =
+        (String type) => type == MessageType.cancel_service.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -288,6 +295,8 @@ class CurrentServiceChatroomBloc
       msg = StartServiceMessage.fromMap(rawMsg);
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
+    } else if (isCancelServiceMsg(rawMsg['type'])) {
+      msg = CancelServiceMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

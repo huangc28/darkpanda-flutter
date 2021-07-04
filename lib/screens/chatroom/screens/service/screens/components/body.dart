@@ -1,4 +1,3 @@
-import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -6,17 +5,21 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 
 class Body extends StatefulWidget {
-  final HistoricalService historicalService;
-  final PaymentDetail paymentDetail;
-  final AsyncLoadingStatus paymentDetailStatus;
   const Body({
     Key key,
     @required this.historicalService,
     @required this.paymentDetail,
     @required this.paymentDetailStatus,
+    this.onCancelService,
   }) : super(key: key);
+
+  final HistoricalService historicalService;
+  final PaymentDetail paymentDetail;
+  final AsyncLoadingStatus paymentDetailStatus;
+  final VoidCallback onCancelService;
 
   @override
   _BodyState createState() => _BodyState();
@@ -225,9 +228,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       children: [
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
-            onPressed: () {
-              print('取消交易');
-            },
+            onPressed: widget.onCancelService,
             text: '取消交易',
             theme: DPTextButtonThemes.purple,
           ),

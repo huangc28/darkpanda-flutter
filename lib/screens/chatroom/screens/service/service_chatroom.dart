@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/start_service_message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/start_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
@@ -67,6 +69,7 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
@@ -77,6 +80,7 @@ import '../../components/chat_bubble.dart';
 import '../../components/confirmed_service_bubble.dart';
 import '../../components/update_inquiry_bubble.dart';
 import '../../components/chatroom_window.dart';
+import 'services/service_apis.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
@@ -583,6 +587,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                           isMe: _sender.uuid == message.from,
                                           message: message,
                                         );
+                                      } else if (message
+                                          is CancelServiceMessage) {
+                                        return CancelServiceBubble(
+                                          isMe: _sender.uuid == message.from,
+                                          message: message,
+                                        );
                                       } else if (message is ImageMessage) {
                                         return ImageBubble(
                                           isMe: _sender.uuid == message.from,
@@ -657,6 +667,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                   BlocProvider(
                     create: (context) => LoadRateDetailBloc(
                       apiClient: ServiceChatroomClient(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => CancelServiceBloc(
+                      serviceAPIs: ServiceAPIs(),
                     ),
                   ),
                 ],
