@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/block_user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,6 +58,11 @@ class ServiceHistoricalList extends StatelessWidget {
                           ),
                           BlocProvider(
                             create: (context) => LoadRateDetailBloc(
+                              apiClient: ServiceChatroomClient(),
+                            ),
+                          ),
+                          BlocProvider(
+                            create: (context) => BlockUserBloc(
                               apiClient: ServiceChatroomClient(),
                             ),
                           ),

@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -36,9 +37,9 @@ class _HistoryCardState extends State<HistoryCard> {
           ),
         ),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Expanded(
                   flex: 1,
                   child:
@@ -48,14 +49,41 @@ class _HistoryCardState extends State<HistoryCard> {
                   flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.historicalService.chatPartnerUsername,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            widget.historicalService.chatPartnerUsername,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: widget.historicalService.serviceStatus ==
+                                    ServiceStatus.canceled
+                                ? Text(
+                                    '已取消',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : Text(
+                                    '已完成',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 8,

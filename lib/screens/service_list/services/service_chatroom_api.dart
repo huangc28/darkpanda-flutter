@@ -100,11 +100,16 @@ class ServiceChatroomClient extends BaseClient {
   }
 
   Future<http.Response> blockUser(
-    String uuid,
+    String blockeeUuid,
   ) async {
     final request = http.Request(
       'POST',
-      buildUri('/v1/block'),
+      buildUri(
+        '/v1/block',
+        {
+          'blockee_uuid': blockeeUuid,
+        },
+      ),
     );
 
     await withTokenFromSecureStore(request);

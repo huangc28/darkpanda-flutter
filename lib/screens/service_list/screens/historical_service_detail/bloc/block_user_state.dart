@@ -19,7 +19,7 @@ class BlockUserState<E extends AppBaseException> extends Equatable {
           status: AsyncLoadingStatus.loading,
         );
 
-  BlockUserState.loadSuccess(BlockUserState state, {RateDetail rateDetail})
+  BlockUserState.loadSuccess(BlockUserState state)
       : this._(
           status: AsyncLoadingStatus.done,
         );

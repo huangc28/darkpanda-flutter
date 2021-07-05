@@ -1,8 +1,5 @@
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/components/complete_rate.dart';
-import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
@@ -11,17 +8,9 @@ import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dar
 import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 import '../../../models/historical_service.dart';
-import 'block_user_confirmation_dialog.dart';
 
 class Body extends StatefulWidget {
-  final HistoricalService historicalService;
-  final PaymentDetail paymentDetail;
-  final RateDetail rateDetail;
-  final AsyncLoadingStatus paymentDetailStatus;
-  final AsyncLoadingStatus rateDetailStatus;
-  final Function onRefreshRateDetail;
   const Body({
     Key key,
     @required this.historicalService,
@@ -30,7 +19,18 @@ class Body extends StatefulWidget {
     this.rateDetail,
     this.rateDetailStatus,
     this.onRefreshRateDetail,
+    this.onRating,
+    this.onBlock,
   }) : super(key: key);
+
+  final HistoricalService historicalService;
+  final PaymentDetail paymentDetail;
+  final RateDetail rateDetail;
+  final AsyncLoadingStatus paymentDetailStatus;
+  final AsyncLoadingStatus rateDetailStatus;
+  final Function onRefreshRateDetail;
+  final VoidCallback onRating;
+  final VoidCallback onBlock;
 
   @override
   _BodyState createState() => _BodyState();
@@ -99,16 +99,42 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.historicalService.chatPartnerUsername != null
-                        ? widget.historicalService.chatPartnerUsername
-                        : '',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        widget.historicalService.chatPartnerUsername != null
+                            ? widget.historicalService.chatPartnerUsername
+                            : '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: widget.historicalService.serviceStatus ==
+                                ServiceStatus.canceled
+                            ? Text(
+                                '已取消',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.red,
+                                ),
+                              )
+                            : Text(
+                                '已完成',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.green,
+                                ),
+                              ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -292,51 +318,13 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         Container(),
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
-            onPressed: () {
-              print('評價對方');
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).push(MaterialPageRoute(
-                builder: (context) {
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => SendRateBloc(
-                          apiClient: ServiceChatroomClient(),
-                        ),
-                      ),
-                    ],
-                    child: Rate(
-                      historicalService: widget.historicalService,
-                    ),
-                  );
-                },
-              )).then((refresh) {
-                if (refresh != null) {
-                  if (refresh == true) {
-                    widget.onRefreshRateDetail();
-                  }
-                }
-              });
-            },
+            onPressed: widget.onRating,
             text: '評價對方',
             theme: DPTextButtonThemes.pink,
           ),
-        SizedBox(height: 10),
+        SizedBox(height: 14),
         GestureDetector(
-          onTap: () {
-            print('封鎖他');
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return BlockUserConfirmationDialog();
-              },
-            ).then((value) {
-              if (value) {}
-            });
-          },
+          onTap: widget.onBlock,
           child: Text(
             '封鎖他',
             style: TextStyle(

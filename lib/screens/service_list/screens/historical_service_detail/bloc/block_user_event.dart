@@ -8,7 +8,9 @@ abstract class BlockUserEvent extends Equatable {
 }
 
 class BlockUser extends BlockUserEvent {
-  const BlockUser({this.uuid});
+  const BlockUser({
+    this.uuid,
+  });
   final String uuid;
 
   @override
