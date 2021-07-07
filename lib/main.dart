@@ -1,5 +1,3 @@
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:appcenter/appcenter.dart';
+import 'package:appcenter_analytics/appcenter_analytics.dart';
+import 'package:appcenter_crashes/appcenter_crashes.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
@@ -17,6 +18,8 @@ import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/register_api_client.dart';
 
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
@@ -53,11 +56,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FirebaseApp app = await Firebase.initializeApp();
+
   assert(app != null);
 
   await DotEnv.load(fileName: '.env');
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await AppCenter.start(
+    "1efaf584-f4b4-4e2a-b3f1-9a9d64343d37",
+    [
+      AppCenterAnalytics.id,
+      AppCenterCrashes.id,
+    ],
+  );
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
