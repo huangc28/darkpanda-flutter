@@ -174,6 +174,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
         return inquiry.copyWith(
           inquiryStatus: event.inquiryStatus,
+          channelUuid: event.channelUuid,
         );
       }
 
@@ -245,6 +246,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
     String iqStatus = snapshot['status'] as String;
+    String channelUuid = snapshot['channel_uuid'] as String;
 
     developer.log(
         'firestore inquiry changes recieved: ${snapshot.data().toString()}');
@@ -253,6 +255,7 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       UpdateInquiryStatus(
         inquiryUuid: inquiryUuid,
         inquiryStatus: iqStatus.toInquiryStatusEnum(),
+        channelUuid: channelUuid,
       ),
     );
   }

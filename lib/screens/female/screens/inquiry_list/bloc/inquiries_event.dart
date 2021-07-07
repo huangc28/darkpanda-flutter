@@ -41,10 +41,12 @@ class AppendInquiries extends InquiriesEvent {
 class UpdateInquiryStatus extends InquiriesEvent {
   final String inquiryUuid;
   final InquiryStatus inquiryStatus;
+  final String channelUuid;
 
   const UpdateInquiryStatus({
     this.inquiryUuid,
     this.inquiryStatus,
+    this.channelUuid,
   });
 }
 

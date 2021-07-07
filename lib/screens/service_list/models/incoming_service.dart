@@ -5,7 +5,7 @@ import 'package:darkpanda_flutter/models/message.dart';
 class IncomingService {
   IncomingService({
     this.serviceUuid,
-    this.serviceStatus,
+    this.status,
     this.appointmentTime,
     this.channelUuid,
     this.inquiryUuid,
@@ -17,7 +17,7 @@ class IncomingService {
   });
 
   String serviceUuid;
-  String serviceStatus;
+  String status;
   DateTime appointmentTime;
   String channelUuid;
   String inquiryUuid;
@@ -29,7 +29,7 @@ class IncomingService {
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
-        'service_status': serviceStatus,
+        'status': status,
         'appointment_time': appointmentTime,
         'channel_uuid': channelUuid,
         'inquiry_uuid': inquiryUuid,
@@ -61,7 +61,7 @@ class IncomingService {
 
     return IncomingService(
       serviceUuid: data['service_uuid'],
-      serviceStatus: data['service_status'],
+      status: data['status'],
       appointmentTime: parsedAppointmentTime,
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
@@ -77,7 +77,7 @@ class IncomingService {
 
   IncomingService copyWith({
     String serviceUuid,
-    String serviceStatus,
+    String status,
     DateTime appointmentTime,
     String channelUuid,
     String inquiryUuid,
@@ -89,7 +89,7 @@ class IncomingService {
   }) {
     return IncomingService(
       serviceUuid: serviceUuid ?? this.serviceUuid,
-      serviceStatus: serviceStatus ?? this.serviceStatus,
+      status: status ?? this.status,
       appointmentTime: appointmentTime ?? this.appointmentTime,
       channelUuid: channelUuid ?? this.channelUuid,
       inquiryUuid: inquiryUuid ?? this.inquiryUuid,

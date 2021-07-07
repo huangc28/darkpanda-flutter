@@ -316,8 +316,8 @@ class CurrentServiceChatroomBloc
       _createServiceSubscriptionStreamMap(IncomingService service) {
     Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
 
-    if (service.serviceStatus == ServiceStatus.unpaid.name ||
-        service.serviceStatus == ServiceStatus.to_be_fulfilled.name) {
+    if (service.status == ServiceStatus.unpaid.name ||
+        service.status == ServiceStatus.to_be_fulfilled.name) {
       _streamMap[service.serviceUuid] =
           _createServiceSubscriptionStream(service.serviceUuid);
     }
@@ -341,7 +341,7 @@ class CurrentServiceChatroomBloc
   }
 
   _handleServiceStatusChange(String serviceUuid, DocumentSnapshot snapshot) {
-    String serviceStatus = snapshot['service_status'] as String;
+    String status = snapshot['status'] as String;
 
     developer.log(
         'firestore service changes received: ${snapshot.data().toString()}');
@@ -349,7 +349,7 @@ class CurrentServiceChatroomBloc
     add(
       UpdateServiceStatus(
         serviceUuid: serviceUuid,
-        serviceStatus: serviceStatus.toServiceStatusEnum(),
+        status: status.toServiceStatusEnum(),
       ),
     );
   }
@@ -358,10 +358,10 @@ class CurrentServiceChatroomBloc
       UpdateServiceStatus event) async* {
     IncomingService service = new IncomingService();
     developer.log(
-        'Service found: ${event.serviceUuid}, updating status: ${event.serviceStatus.toString()}');
+        'Service found: ${event.serviceUuid}, updating status: ${event.status.toString()}');
 
     service = service.copyWith(
-      serviceStatus: event.serviceStatus.name,
+      status: event.status.name,
     );
 
     // Replace current service list witht updated list.

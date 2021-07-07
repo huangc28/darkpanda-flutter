@@ -58,7 +58,7 @@ class _BuyServiceState extends State<BuyService> {
           ],
         ),
         automaticallyImplyLeading: false,
-        title: Text('交易#113'),
+        title: Text('交易'),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1),

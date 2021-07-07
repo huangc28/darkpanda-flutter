@@ -17,6 +17,7 @@ class Inquiry extends Equatable {
   final InquiryStatus inquiryStatus;
   final Inquirer inquirer;
   final String address;
+  final String channelUuid;
 
   const Inquiry({
     this.uuid,
@@ -30,6 +31,7 @@ class Inquiry extends Equatable {
     this.inquiryStatus,
     this.inquirer,
     this.address,
+    this.channelUuid,
   });
 
   factory Inquiry.fromJson(Map<String, dynamic> data) {
@@ -74,6 +76,7 @@ class Inquiry extends Equatable {
           ? Inquirer.fromJson(data['inquirer'])
           : Inquirer(),
       address: data['address'],
+      channelUuid: data['channel_uuid'],
     );
   }
 
@@ -89,6 +92,7 @@ class Inquiry extends Equatable {
     InquiryStatus inquiryStatus,
     Inquirer inquirer,
     String address,
+    String channelUuid,
   }) {
     return Inquiry(
       uuid: uuid ?? this.uuid,
@@ -102,6 +106,7 @@ class Inquiry extends Equatable {
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
       inquirer: inquirer ?? this.inquirer,
       address: address ?? this.address,
+      channelUuid: channelUuid ?? this.channelUuid,
     );
   }
 
@@ -117,5 +122,6 @@ class Inquiry extends Equatable {
         lng,
         lat,
         address,
+        channelUuid,
       ];
 }

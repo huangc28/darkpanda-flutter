@@ -54,10 +54,10 @@ class LeaveCurrentServiceChatroom extends CurrentServiceChatroomEvent {
 
 class UpdateServiceStatus extends CurrentServiceChatroomEvent {
   final String serviceUuid;
-  final ServiceStatus serviceStatus;
+  final ServiceStatus status;
 
   const UpdateServiceStatus({
     this.serviceUuid,
-    this.serviceStatus,
+    this.status,
   });
 }
