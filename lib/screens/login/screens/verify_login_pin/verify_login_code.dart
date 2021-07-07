@@ -111,12 +111,13 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                       Navigator.of(
                         context,
                         rootNavigator: true,
-                      ).push(
+                      ).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => state.gender == Gender.female
                               ? FemaleApp()
                               : MaleApp(),
                         ),
+                        (Route<dynamic> route) => false,
                       );
                     }
                   },

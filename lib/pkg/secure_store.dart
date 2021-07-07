@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStore {
   static const JwtTokenKey = 'jwt';
+  static const GenderKey = 'gender';
 
   static final SecureStore _secureStore =
       new SecureStore._internal(fsc: new FlutterSecureStorage());
@@ -22,4 +23,14 @@ class SecureStore {
   Future<String> readJwtToken() => fsc.read(key: SecureStore.JwtTokenKey);
 
   Future<void> delJwtToken() => fsc.delete(key: SecureStore.JwtTokenKey);
+
+  // Store user gender
+  Future<void> writeGender(String gender) => fsc.write(
+        key: SecureStore.GenderKey,
+        value: gender,
+      );
+
+  Future<String> readGender() => fsc.read(key: SecureStore.GenderKey);
+
+  Future<void> delGender() => fsc.delete(key: SecureStore.GenderKey);
 }

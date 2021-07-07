@@ -1,5 +1,4 @@
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +36,9 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screen_arguments/landing_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 
@@ -64,14 +66,32 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  String _gender = await SecureStore().readGender();
+  String _jwt = await SecureStore().readJwtToken();
+
   runApp(
-    DarkPandaApp(),
+    DarkPandaApp(
+      gender: _gender,
+      jwt: _jwt,
+    ),
   );
 }
 
-class DarkPandaApp extends StatelessWidget {
-  DarkPandaApp();
+class DarkPandaApp extends StatefulWidget {
+  const DarkPandaApp({
+    Key key,
+    this.gender,
+    this.jwt,
+  }) : super(key: key);
 
+  final gender;
+  final jwt;
+
+  @override
+  _DarkPandaAppState createState() => _DarkPandaAppState();
+}
+
+class _DarkPandaAppState extends State<DarkPandaApp> {
   final mainRoutes = MainRoutes();
 
   @override
@@ -248,11 +268,30 @@ class DarkPandaApp extends StatelessWidget {
           ],
 
           theme: ThemeManager.getTheme(),
-          initialRoute: MainRoutes.login,
+          initialRoute: MainRoutes.landing,
           onGenerateRoute: (settings) {
             return MaterialPageRoute(
               settings: settings,
               builder: (context) {
+                /// Media query initialization
+                /// https://flutteragency.com/solve-mediaquery-of-called-with-a-context
+                SizeConfig().init(context);
+
+                print('settting name: ' + settings.name);
+
+                if (settings.name == MainRoutes.landing) {
+                  final LandingScreenArguments landingScreenArguments =
+                      LandingScreenArguments(
+                    gender: widget.gender,
+                    jwt: widget.jwt,
+                  );
+
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, landingScreenArguments);
+
+                  return routeBuilder[settings.name](context);
+                }
+
                 if (settings.name == MainRoutes.chatroom) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);

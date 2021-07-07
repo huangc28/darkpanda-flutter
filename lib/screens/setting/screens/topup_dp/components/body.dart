@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:darkpanda_flutter/components/loading_icon.dart';
-import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
@@ -42,8 +40,12 @@ class _BodyState extends State<Body> {
     super.initState();
 
     _inquiryDetail = widget.args;
-    if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
-      _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
+
+    // If route from settings, it is null
+    if (widget.args != null) {
+      if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+        _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
+      }
     }
 
     BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());

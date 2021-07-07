@@ -62,27 +62,28 @@ class LoginNavigatorState extends State<LoginNavigator> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => TimerBloc(ticker: Timer()),
+      providers: [
+        BlocProvider(
+          create: (context) => TimerBloc(ticker: Timer()),
+        ),
+        BlocProvider(
+          create: (context) => SendLoginVerifyCodeBloc(
+            authApiClient: LoginAPIClient(),
+            timerBloc: BlocProvider.of<TimerBloc>(context),
           ),
-          BlocProvider(
-            create: (context) => SendLoginVerifyCodeBloc(
-              authApiClient: LoginAPIClient(),
-              timerBloc: BlocProvider.of<TimerBloc>(context),
-            ),
-          )
-        ],
-        child: WillPopScope(
-          onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
-          child: Navigator(
-            key: _navigatorKey,
-            initialRoute: '/',
-            onGenerateRoute: (settings) => MaterialPageRoute(
-              settings: settings,
-              builder: (context) => _routeBuilder()[settings.name](context),
-            ),
+        )
+      ],
+      child: WillPopScope(
+        onWillPop: () async => !await _navigatorKey.currentState.maybePop(),
+        child: Navigator(
+          key: _navigatorKey,
+          initialRoute: '/',
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            settings: settings,
+            builder: (context) => _routeBuilder()[settings.name](context),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -104,7 +104,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
-    print(_sender.jwt);
+    // print(_sender.jwt);
     widget.loadUserBloc.add(
       LoadUser(uuid: _sender.uuid),
     );

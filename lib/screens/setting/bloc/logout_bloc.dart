@@ -41,6 +41,9 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
       // Remove jwt token.
       await SecureStore().delJwtToken();
 
+      // Remove gender.
+      await SecureStore().delGender();
+
       // Remove auth user info.
       authUserBloc.add(RemoveAuthUser());
 

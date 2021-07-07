@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,8 +18,11 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_argu
 import './screens/female/female_app.dart';
 import './screens/male/male_app.dart';
 
+import 'landing.dart';
+
 class MainRoutes extends BaseRoutes {
-  static const login = '/';
+  static const landing = '/';
+  static const login = '/login';
   static const register = '/register';
 
   ///  App routes to serve female user.
@@ -33,12 +38,34 @@ class MainRoutes extends BaseRoutes {
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
-      MainRoutes.login: (context) => BlocProvider.value(
+      MainRoutes.landing: (context) => Landing(args: args),
+      MainRoutes.login: (context) {
+        return BlocProvider.value(
           value: BlocProvider.of<AuthUserBloc>(context),
-          child: LoginNavigator()),
+          child: LoginNavigator(),
+        );
+      },
       MainRoutes.register: (context) => AuthNavigator(),
-      MainRoutes.female: (context) => FemaleApp(selectedTab: args),
-      MainRoutes.male: (context) => MaleApp(selectedTab: args),
+      MainRoutes.female: (context) {
+        if (args == null) {
+          args = TabItem.inquiries;
+          BlocProvider.of<AuthUserBloc>(context).add(
+            FetchUserInfo(),
+          );
+        }
+
+        return FemaleApp(selectedTab: args);
+      },
+      MainRoutes.male: (context) {
+        if (args == null) {
+          args = MaleAppTabItem.waitingInquiry;
+          BlocProvider.of<AuthUserBloc>(context).add(
+            FetchUserInfo(),
+          );
+        }
+
+        return MaleApp(selectedTab: args);
+      },
       MainRoutes.chatroom: (context) {
         final ChatroomScreenArguments chatroomArgs = args;
 

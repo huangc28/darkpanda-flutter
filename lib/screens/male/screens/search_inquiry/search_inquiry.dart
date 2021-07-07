@@ -6,6 +6,7 @@ import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,6 +35,7 @@ class _SearchInquiryState extends State<SearchInquiry> {
   @override
   void initState() {
     super.initState();
+
     _refreshCompleter = Completer();
     BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry());
   }

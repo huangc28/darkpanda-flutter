@@ -1,5 +1,9 @@
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -108,7 +112,30 @@ class _MaleSettingsState extends State<MaleSettings> {
                                 "lib/screens/setting/assets/buy_dp.png"),
                           ),
                           onTap: () {
-                            widget.onPushTopupDP(TopUpDpArguments(amount: 200));
+                            // widget.onPushTopupDP(TopUpDpArguments(
+                            //   amount: 200,
+                            // ));
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider(
+                                        create: (context) => LoadMyDpBloc(
+                                          apiClient: TopUpClient(),
+                                        ),
+                                      ),
+                                      BlocProvider(
+                                        create: (context) => LoadDpPackageBloc(
+                                          apiClient: TopUpClient(),
+                                        ),
+                                      ),
+                                    ],
+                                    child: TopupDp(),
+                                  );
+                                },
+                              ),
+                            );
                           },
                         ),
                         InkWell(

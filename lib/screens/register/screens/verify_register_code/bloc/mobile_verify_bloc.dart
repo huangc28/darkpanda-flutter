@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -67,6 +66,8 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       final authUser = AuthUser.copyFrom(
         AuthUser.fromJson(json.decode(authUserInfo.body)),
       );
+
+      await SecureStore().writeGender(authUser.gender.name);
 
       authUserBloc.add(
         PutUser(
