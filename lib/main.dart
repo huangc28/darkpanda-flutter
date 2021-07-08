@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:appcenter/appcenter.dart';
 import 'package:appcenter_analytics/appcenter_analytics.dart';
 import 'package:appcenter_crashes/appcenter_crashes.dart';
 
+import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
@@ -59,12 +59,13 @@ void main() async {
 
   assert(app != null);
 
-  await DotEnv.load(fileName: '.env');
+  // Initialize application config.
+  await Config.AppConfig.initConfig();
 
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppCenter.start(
-    "1efaf584-f4b4-4e2a-b3f1-9a9d64343d37",
+    Config.config.appCenterAndroidAppSecret,
     [
       AppCenterAnalytics.id,
       AppCenterCrashes.id,

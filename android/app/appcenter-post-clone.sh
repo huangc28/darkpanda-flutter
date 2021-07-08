@@ -2,6 +2,8 @@
 
 cd ..
 
+# retrieve environment variables
+
 # fail if any command fails
 set -e
 # debug log

@@ -41,7 +41,7 @@ app.*.symbols
 app.*.map.json
 
 # Environment variable
-.env
+*.env
 
 # Firebase firestore google service credentials 
 android/app/google-services.json

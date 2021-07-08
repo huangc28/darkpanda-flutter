@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 
 // Any API client requesting darkpanda service should extend this base client.
@@ -14,7 +15,7 @@ abstract class BaseClient extends http.BaseClient {
   BaseClient({
     this.jwtToken,
   }) {
-    baseUri = Uri.parse('${env['SERVER_HOST']}');
+    baseUri = Uri.parse(Config.config.serverHost);
   }
 
   Uri buildUri(String path, [Map<String, dynamic> queryParams]) {
