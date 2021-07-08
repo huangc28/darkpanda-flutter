@@ -6,7 +6,7 @@ Prompt the following command: `flutter build apk --release`
 
 ## Release
 
-We will be using `appCenter` to release darkpanda app.
+We will be using `appCenter` to release darkpanda app. The approach used is referencing  [this article]([Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)).
 
 ### Environment variables
 
@@ -14,6 +14,19 @@ The app will retrieve it's environment variables from `.env` on local file syste
 
 
 After custom environment variables are properly set in appcenter build configuration, we can then retrieve variables in `appcenter-post-clone.sh` script.
+`appcenter-post-clone.sh` defines environment configs when building android SDK with  `flutter build --dart-define=ENV=$ENV` : 
+
+```sh
+flutter build \
+    --dart-define=SERVER_HOST=$SERVER_HOST \
+    --dart-define=PUBNUB_PUBLISH_KEY=$PUBNUB_PUBLISH_KEY \
+    --dart-define=PUBNUB_SUBSCRIBE_KEY=$PUBNUB_SUBSCRIBE_KEY \
+    --dart-define=PUBNUB_SECRET_KEY=$PUBNUB_SECRET_KEY \
+    --dart-define=GEOCODING_APIS=$GEOCODING_APIS \
+    --dart-define=APPCENTER_ANDROID_APP_SECRET=$APPCENTER_ANDROID_APP_SECRET \
+    --dart-define=ENV=$ENV \
+    apk --release
+```
 
 ## TODOs 
 
