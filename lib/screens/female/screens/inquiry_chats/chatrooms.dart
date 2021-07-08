@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -101,6 +102,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 inquiryUUID: chatroom.inquiryUUID,
                                 counterPartUUID: chatroom.inquirerUUID,
                                 serviceType: chatroom.serviceType,
+                                routeTypes: RouteTypes.fromInquiryChats,
                               ),
                             );
                           },

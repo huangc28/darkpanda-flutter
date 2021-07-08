@@ -55,7 +55,10 @@ class InquiryChatroomsBloc
       yield* _mapClearInquiryChatListToState(event);
     } else if (event is AddChatroom) {
       yield* _mapAddChatroomToState(event);
+    } else if (event is ClearInquiryList) {
+      yield* _mapClearInquiryListToState(event);
     }
+
     if (event is LeaveMaleChatroom) {
       yield* _mapLeaveMaleChatroomToState(event);
     }
@@ -285,5 +288,10 @@ class InquiryChatroomsBloc
   Stream<InquiryChatroomsState> _mapClearInquiryChatListToState(
       ClearInquiryChatList event) async* {
     yield InquiryChatroomsState.clearInqiuryChatList(state);
+  }
+
+  Stream<InquiryChatroomsState> _mapClearInquiryListToState(
+      ClearInquiryList event) async* {
+    yield InquiryChatroomsState.init();
   }
 }
