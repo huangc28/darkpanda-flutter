@@ -35,6 +35,7 @@ echo "File updated"
 #   - https://flutter.dev/docs/deployment/android#configure-signing-in-gradle
 
 KEYPROPERTIES_FILE=android/key.properties
+touch $KEYPROPERTIES_FILE
 cat > $KEYPROPERTIES_FILE <<- EOM  
 storePassword=$APPCENTER_KEYSTORE_PASSWORD
 keyPassword=$APPCENTER_KEY_PASSWORD
