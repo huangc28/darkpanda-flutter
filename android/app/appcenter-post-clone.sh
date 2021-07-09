@@ -22,17 +22,11 @@ echo "Installed flutter to `pwd`/flutter"
 touch .env
 
 # create google-services.json for firestore to work.
-GOOGLE_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/android/app/google-services.json
-
-touch $GOOGLE_JSON_FILE
-
-if [ -e "$GOOGLE_JSON_FILE" ]
-then
-    echo "Updating Google Json"
-    echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
-    sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
-    echo "File updated"
-fi
+touch android/app/google-services.json
+echo "Updating Google Json"
+echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
+sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
+echo "File updated"
 
 # build APK
 # if you get "Execution failed for task ':app:lintVitalRelease'." error, uncomment next two lines
