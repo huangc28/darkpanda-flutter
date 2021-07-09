@@ -33,14 +33,13 @@ echo "File updated"
 # keystore is essential to build sign apk on appstore:
 #
 #   - https://flutter.dev/docs/deployment/android#configure-signing-in-gradle
-
 KEYPROPERTIES_FILE=android/key.properties
 touch $KEYPROPERTIES_FILE
 cat > $KEYPROPERTIES_FILE <<- EOM  
 storePassword=$APPCENTER_KEYSTORE_PASSWORD
 keyPassword=$APPCENTER_KEY_PASSWORD
 keyAlias=$APPCENTER_KEY_ALIAS
-storeFile=app/keystore.jks
+storeFile=keystore.jks
 EOM
 
 # build APK
