@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
@@ -57,8 +58,10 @@ class _BodyState extends State<Body> {
                     },
                   ));
                 } else
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Row(
+                    children: <Widget>[
+                      LoadingScreen(),
+                    ],
                   );
               },
             ),
@@ -104,7 +107,7 @@ class _BodyState extends State<Body> {
                     ),
                     SizedBox(width: 15),
                     Text(
-                      blacklistUser.userName,
+                      blacklistUser.username,
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -114,6 +117,37 @@ class _BodyState extends State<Body> {
                 ),
                 Column(
                   children: <Widget>[
+                    BlocListener<RemoveBlacklistBloc, RemoveBlacklistState>(
+                      listener: (context, state) {
+                        if (state.status == AsyncLoadingStatus.initial ||
+                            state.status == AsyncLoadingStatus.loading) {
+                          return Row(
+                            children: <Widget>[
+                              LoadingScreen(),
+                            ],
+                          );
+                        }
+
+                        if (state.status == AsyncLoadingStatus.error) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error.message),
+                            ),
+                          );
+                        }
+
+                        if (state.status == AsyncLoadingStatus.done) {
+                          // setState(() {
+                          //   blacklistUserList.removeWhere(
+                          //       (item) => item.uuid == blacklistUser.uuid);
+                          // });
+                          BlocProvider.of<LoadBlacklistUserBloc>(context).add(
+                            LoadBlacklistUser(uuid: _sender.uuid),
+                          );
+                        }
+                      },
+                      child: SizedBox.shrink(),
+                    ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.transparent, // background
@@ -128,10 +162,6 @@ class _BodyState extends State<Body> {
                             blockeeUuid: blacklistUser.uuid,
                           ),
                         );
-                        setState(() {
-                          blacklistUserList.removeWhere(
-                              (item) => item.id == blacklistUser.id);
-                        });
                       },
                       child: Text(
                         '解除封鎖',

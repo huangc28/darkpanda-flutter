@@ -10,7 +10,7 @@ class BlacklistApiClient extends BaseClient {
   ) async {
     final request = http.Request(
       'GET',
-      buildUri('/v1/block/$uuid'),
+      buildUri('/v1/block'),
     );
 
     await withTokenFromSecureStore(request);
