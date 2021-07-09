@@ -22,7 +22,8 @@ echo "Installed flutter to `pwd`/flutter"
 touch .env
 
 # create google-services.json for firestore to work.
-touch android/app/google-services.json
+GOOGLE_JSON_FILE=android/app/google-services.json
+touch $GOOGLE_JSON_FILE
 echo "Updating Google Json"
 echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
 sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
