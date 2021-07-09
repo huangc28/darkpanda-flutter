@@ -40,6 +40,14 @@ class _BodyState extends State<Body> {
           ),
           child: BlocListener<LoadBlacklistUserBloc, LoadBlacklistUserState>(
             listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error.message),
+                  ),
+                );
+              }
+
               if (state.status == AsyncLoadingStatus.done) {
                 blacklistUserList = state.blacklistUserList;
               }
