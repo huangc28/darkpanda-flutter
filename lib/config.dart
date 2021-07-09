@@ -65,8 +65,6 @@ class AppConfig {
   static initConfig() async {
     final curEnv = String.fromEnvironment('ENV', defaultValue: devEnv);
 
-    print('DEBUG curr env ${curEnv}');
-
     if (curEnv == prodEnv) {
       _appConfig = AppConfig(
         appCenterAndroidAppSecret:
