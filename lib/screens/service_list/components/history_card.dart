@@ -64,7 +64,7 @@ class _HistoryCardState extends State<HistoryCard> {
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 16.0, right: 16.0),
-                            child: widget.historicalService.serviceStatus ==
+                            child: widget.historicalService.status ==
                                     ServiceStatus.canceled.name
                                 ? Text(
                                     '已取消',

@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 class HistoricalService {
   HistoricalService({
     this.serviceUuid,
-    this.serviceStatus,
+    this.status,
     this.appointmentTime,
     this.channelUuid,
     this.inquiryUuid,
@@ -14,7 +14,7 @@ class HistoricalService {
   });
 
   String serviceUuid;
-  String serviceStatus;
+  String status;
   DateTime appointmentTime;
   String channelUuid;
   String inquiryUuid;
@@ -26,7 +26,7 @@ class HistoricalService {
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
-        'service_status': serviceStatus,
+        'status': status,
         'appointment_time': appointmentTime,
         'channel_uuid': channelUuid,
         'inquiry_uuid': inquiryUuid,
@@ -50,15 +50,13 @@ class HistoricalService {
 
     return HistoricalService(
       serviceUuid: data['service_uuid'],
-      serviceStatus: data['service_status'],
+      status: data['status'],
       appointmentTime: parsedAppointmentTime.toLocal(),
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
       chatPartnerAvatarUrl: data['chat_partner_avatar_url'],
       chatPartnerUsername: data['chat_partner_username'],
       chatPartnerUserUuid: data['chat_partner_user_uuid'],
-      // expiredAt: DateTime.parse(data['expired_at']),
-      // createdAt: DateTime.parse(data['created_at']),
     );
   }
 }
