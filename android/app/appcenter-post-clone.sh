@@ -29,6 +29,19 @@ echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
 sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
 echo "File updated"
 
+# create `key.properties` at build time that stores credentials of keystore file.  
+# keystore is essential to build sign apk on appstore:
+#
+#   - https://flutter.dev/docs/deployment/android#configure-signing-in-gradle
+
+KEYPROPERTIES_FILE=android/key.properties
+cat > $KEYPROPERTIES_FILE <<- EOM  
+storePassword=$APPCENTER_KEYSTORE_PASSWORD
+keyPassword=$APPCENTER_KEY_PASSWORD
+keyAlias=$APPCENTER_KEY_ALIAS
+storeFile=app/keystore.jks
+EOM
+
 # build APK
 # if you get "Execution failed for task ':app:lintVitalRelease'." error, uncomment next two lines
 # flutter build apk --debug
