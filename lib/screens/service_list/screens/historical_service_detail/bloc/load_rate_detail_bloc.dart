@@ -38,8 +38,6 @@ class LoadRateDetailBloc
       // request API
       final res = await apiClient.fetchRateDetail(event.serviceUuid);
 
-      print(json.decode(res.body));
-
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(res.body),

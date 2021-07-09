@@ -4,6 +4,7 @@ import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/models/blacklist_user.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +31,12 @@ class _BodyState extends State<Body> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 26, 20, 0),
+          padding: EdgeInsets.fromLTRB(
+            SizeConfig.screenWidth * 0.04, //20.0,
+            SizeConfig.screenHeight * 0.032, //26,
+            SizeConfig.screenWidth * 0.04, //20,
+            0,
+          ),
           child: BlocListener<LoadBlacklistUserBloc, LoadBlacklistUserState>(
             listener: (context, state) {
               if (state.status == AsyncLoadingStatus.done) {
@@ -64,9 +70,16 @@ class _BodyState extends State<Body> {
 
   Widget userList({BuildContext context, BlacklistUser blacklistUser}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(
+        bottom: SizeConfig.screenHeight * 0.022, //20
+      ),
       child: Container(
-        padding: EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0),
+        padding: EdgeInsets.fromLTRB(
+          SizeConfig.screenWidth * 0.04, //16.0,
+          SizeConfig.screenHeight * 0.022, //20.0,
+          SizeConfig.screenWidth * 0.04, //16.0,
+          SizeConfig.screenHeight * 0.022, //16.0,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           color: Color.fromRGBO(255, 255, 255, 0.1),
@@ -82,7 +95,7 @@ class _BodyState extends State<Body> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     CircleAvatar(
                       radius: 20,
                       backgroundImage: (blacklistUser.avatarUrl != "")
@@ -112,7 +125,7 @@ class _BodyState extends State<Body> {
                       onPressed: () {
                         BlocProvider.of<RemoveBlacklistBloc>(context).add(
                           RemoveBlacklist(
-                            blacklistId: blacklistUser.id,
+                            blockeeUuid: blacklistUser.uuid,
                           ),
                         );
                         setState(() {

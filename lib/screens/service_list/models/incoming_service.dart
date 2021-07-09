@@ -62,7 +62,7 @@ class IncomingService {
     return IncomingService(
       serviceUuid: data['service_uuid'],
       status: data['status'],
-      appointmentTime: parsedAppointmentTime,
+      appointmentTime: parsedAppointmentTime.toLocal(),
       channelUuid: data['channel_uuid'],
       inquiryUuid: data['inquiry_uuid'],
       inquirerUuid: data['inquirer_uuid'],

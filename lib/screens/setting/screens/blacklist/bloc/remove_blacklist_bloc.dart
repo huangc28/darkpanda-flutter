@@ -37,7 +37,7 @@ class RemoveBlacklistBloc
 
       // request API
       final res = await blacklistApiClient.removeBlacklistUser(
-        blacklistId: event.blacklistId,
+        event.blockeeUuid,
       );
 
       if (res.statusCode != HttpStatus.ok) {

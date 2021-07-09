@@ -277,8 +277,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 /// https://flutteragency.com/solve-mediaquery-of-called-with-a-context
                 SizeConfig().init(context);
 
-                print('settting name: ' + settings.name);
-
                 if (settings.name == MainRoutes.landing) {
                   final LandingScreenArguments landingScreenArguments =
                       LandingScreenArguments(

@@ -97,7 +97,7 @@ class ServiceChatroomGrid extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    DateTimeUtil.timeAgoSinceDate(today),
+                    DateTimeUtil.timeAgoSinceDate(chatroom.appointmentTime),
                     style: TextStyle(
                       color: Color.fromRGBO(106, 109, 137, 1),
                     ),
