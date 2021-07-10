@@ -22,16 +22,15 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.9.0-8.0 <3.0.0"
 
-
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations: 
     sdk: flutter        
 
-  appcenter: ^0.2.1
-  appcenter_analytics: ^0.2.1
-  appcenter_crashes: ^0.2.1
+  # appcenter: ^0.2.1
+  # appcenter_analytics: ^0.2.1
+  # appcenter_crashes: ^0.2.1
   http: ^0.13.1
   meta: 1.3.0
   bloc: ^7.0.0
