@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/cancel_service_message.dart';
@@ -17,6 +18,13 @@ import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart'
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -97,11 +105,16 @@ class _ChatroomState extends State<Chatroom>
   /// Show loading when user sending image
   bool _isSendingImage = false;
 
+  InquirerProfileArguments _inquirerProfileArguments;
+
   @override
   void initState() {
     super.initState();
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+
+    _inquirerProfileArguments =
+        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(
@@ -562,18 +575,6 @@ class _ChatroomState extends State<Chatroom>
 
   Widget _appBar() {
     return AppBar(
-      title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
-        builder: (context, state) {
-          return Text(
-            state.status == AsyncLoadingStatus.done
-                ? state.userProfile.username
-                : '',
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          );
-        },
-      ),
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
@@ -593,6 +594,52 @@ class _ChatroomState extends State<Chatroom>
               arguments: TabItem.inquiryChats,
             );
           }
+        },
+      ),
+      title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
+        builder: (context, state) {
+          return GestureDetector(
+            onTap: () {
+              print('Inquirer profile');
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => LoadUserImagesBloc(
+                            userApi: UserApis(),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => LoadHistoricalServicesBloc(
+                            userApi: UserApis(),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => LoadRateBloc(
+                            rateApiClient: RateApiClient(),
+                          ),
+                        ),
+                      ],
+                      child: InquirerProfile(
+                        loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+                        args: _inquirerProfileArguments,
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+            child: Text(
+              state.status == AsyncLoadingStatus.done
+                  ? state.userProfile.username
+                  : '',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          );
         },
       ),
     );

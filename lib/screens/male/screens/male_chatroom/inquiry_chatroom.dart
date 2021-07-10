@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/chat_image.dart';
@@ -9,7 +10,14 @@ import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_blo
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -81,6 +89,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
 
   UpdateInquiryMessage messages = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
+  InquirerProfileArguments _inquirerProfileArguments;
 
   File _image;
   final picker = ImagePicker();
@@ -97,6 +106,9 @@ class _InquiryChatroomState extends State<InquiryChatroom>
     inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
     inquiryDetail.routeTypes = RouteTypes.fromInquiry;
+
+    _inquirerProfileArguments =
+        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -564,12 +576,46 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
           inquiryDetail.username = state.userProfile.username ?? '';
-          return Text(
-            state.status == AsyncLoadingStatus.done
-                ? state.userProfile.username
-                : '',
-            style: TextStyle(
-              fontSize: 18,
+          return GestureDetector(
+            onTap: () {
+              print('Inquirer profile');
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => LoadUserImagesBloc(
+                            userApi: UserApis(),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => LoadHistoricalServicesBloc(
+                            userApi: UserApis(),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => LoadRateBloc(
+                            rateApiClient: RateApiClient(),
+                          ),
+                        ),
+                      ],
+                      child: InquirerProfile(
+                        loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+                        args: _inquirerProfileArguments,
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+            child: Text(
+              state.status == AsyncLoadingStatus.done
+                  ? state.userProfile.username
+                  : '',
+              style: TextStyle(
+                fontSize: 18,
+              ),
             ),
           );
         },
