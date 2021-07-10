@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 
 class DPPinPut extends StatelessWidget {
   const DPPinPut({
@@ -47,8 +48,8 @@ class DPPinPut extends StatelessWidget {
       submittedFieldDecoration: pinputDecoration,
       selectedFieldDecoration: pinputDecoration,
       followingFieldDecoration: pinputDecoration,
-      eachFieldWidth: 50,
-      eachFieldHeight: 57,
+      eachFieldWidth: SizeConfig.screenWidth * 0.12, //50
+      eachFieldHeight: SizeConfig.screenHeight * 0.065, //57
     );
   }
 }
