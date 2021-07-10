@@ -47,12 +47,12 @@ class LoadBlacklistUserBloc
 
       // Normalize response with blacklist user model.
       final dataMap = json.decode(res.body);
-      print(json.decode(res.body));
 
       List<BlacklistUser> blacklistUser = [];
 
-      if (dataMap.containsKey('block')) {
-        blacklistUser = dataMap['block'].map<BlacklistUser>((blacklistUser) {
+      if (dataMap.containsKey('blocked_users')) {
+        blacklistUser =
+            dataMap['blocked_users'].map<BlacklistUser>((blacklistUser) {
           return BlacklistUser.fromJson(blacklistUser);
         }).toList();
       }

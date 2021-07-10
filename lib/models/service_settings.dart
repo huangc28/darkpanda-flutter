@@ -104,6 +104,7 @@ class ServiceSettings extends Equatable {
       ),
       serviceDate: ap,
       serviceTime: TimeOfDay.fromDateTime(ap.toLocal()),
+      budget: data['budget']?.toDouble(),
     );
   }
 }

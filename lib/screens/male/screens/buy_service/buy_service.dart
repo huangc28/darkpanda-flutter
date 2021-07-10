@@ -2,6 +2,7 @@ import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
+import 'components/buy_service_cancel_confirmation_dialog.dart';
 
 class BuyService extends StatefulWidget {
   const BuyService({
@@ -58,7 +60,7 @@ class _BuyServiceState extends State<BuyService> {
           ],
         ),
         automaticallyImplyLeading: false,
-        title: Text('交易#113'),
+        title: Text('交易'),
         centerTitle: true,
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1),
@@ -91,7 +93,26 @@ class _BuyServiceState extends State<BuyService> {
             );
           }
         },
-        child: Body(args: widget.args),
+        child: Body(
+          args: widget.args,
+          onBuyService: () {},
+          onCancelService: () {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return BuyServiceCancelConfirmationDialog(
+                  matchingFee: widget.args.updateInquiryMessage.matchingFee,
+                );
+              },
+            ).then((value) {
+              if (value) {
+                BlocProvider.of<CancelServiceBloc>(context)
+                    .add(CancelService(serviceUuid: widget.args.serviceUuid));
+              }
+            });
+          },
+        ),
       ),
     );
   }

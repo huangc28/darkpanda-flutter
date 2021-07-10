@@ -531,10 +531,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
                                     _inquirerProfile = state.userProfile;
 
-                                    if (state.service.serviceStatus ==
+                                    if (state.service.status ==
                                         ServiceStatus.unpaid.name) {
                                       _servicePaid = false;
-                                    } else if (state.service.serviceStatus ==
+                                    } else if (state.service.status ==
                                         ServiceStatus.to_be_fulfilled.name) {
                                       _servicePaid = true;
                                     }

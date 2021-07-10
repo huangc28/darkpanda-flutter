@@ -94,12 +94,6 @@ class SearchInquiryRoutes extends BaseRoutes {
                 searchInquiryAPIs: SearchInquiryAPIs(),
               ),
             ),
-
-            // BlocProvider(
-            //   create: (context) => AgreeInquiryBloc(
-            //     searchInquiryAPIs: SearchInquiryAPIs(),
-            //   ),
-            // ),
           ],
           child: InquiryForm(
             onPush: (String routeName) => this.push(context, routeName, args),

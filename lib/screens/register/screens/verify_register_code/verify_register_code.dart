@@ -101,13 +101,14 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                                 Navigator.of(
                                   context,
                                   rootNavigator: true,
-                                ).push(
+                                ).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         state.gender == Gender.female
                                             ? FemaleApp()
                                             : MaleApp(),
                                   ),
+                                  (Route<dynamic> route) => false,
                                 );
                               }
                             },

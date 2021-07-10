@@ -22,7 +22,7 @@ class PaymentCompletedBubble extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Brat 已完成付款',
+            message.username + ' 已完成付款',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),

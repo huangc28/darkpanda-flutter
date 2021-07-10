@@ -1,17 +1,20 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
+import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -263,6 +266,27 @@ class _ChatroomState extends State<Chatroom>
                 fontSize: 18,
               ),
             );
+          },
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // To avoid Duplicate GlobalKey issue
+            if (widget.args.routeTypes == RouteTypes.fromInquiryChats) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamedAndRemoveUntil(
+                MainRoutes.female,
+                ModalRoute.withName('/'),
+                arguments: TabItem.inquiryChats,
+              );
+            }
           },
         ),
       ),

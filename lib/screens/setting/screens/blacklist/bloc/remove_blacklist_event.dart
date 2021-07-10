@@ -9,8 +9,8 @@ abstract class RemoveBlacklistEvent extends Equatable {
 
 class RemoveBlacklist extends RemoveBlacklistEvent {
   const RemoveBlacklist({
-    this.blacklistId,
+    this.blockeeUuid,
   });
 
-  final int blacklistId;
+  final String blockeeUuid;
 }

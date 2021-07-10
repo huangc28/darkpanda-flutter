@@ -15,9 +15,13 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inqu
 class Body extends StatefulWidget {
   const Body({
     this.args,
+    this.onBuyService,
+    this.onCancelService,
   });
 
   final InquiryDetail args;
+  final VoidCallback onBuyService; // Implement later
+  final VoidCallback onCancelService;
 
   @override
   _BodyState createState() => _BodyState();
@@ -268,9 +272,7 @@ class _BodyState extends State<Body> {
           ),
           SizedBox(height: 15),
           DPTextButton(
-            onPressed: () {
-              print('取消交易');
-            },
+            onPressed: widget.onCancelService,
             text: '取消交易',
             theme: DPTextButtonThemes.pink,
           ),

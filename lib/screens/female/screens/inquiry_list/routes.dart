@@ -23,27 +23,29 @@ class InquiriesRoutes extends BaseRoutes {
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
-      InquiriesRoutes.root: (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => InquiriesBloc(
-                  apiClient: ApiClient(),
-                )..add(
-                    FetchInquiries(nextPage: 1),
-                  ),
-              ),
-              BlocProvider(
-                create: (context) => PickupInquiryBloc(
-                  apiClient: ApiClient(),
-                  inquiriesBloc: BlocProvider.of<InquiriesBloc>(context),
+      InquiriesRoutes.root: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => InquiriesBloc(
+                apiClient: ApiClient(),
+              )..add(
+                  FetchInquiries(nextPage: 1),
                 ),
-              ),
-            ],
-            child: InqiuryList(
-              onPush: (String routeName, InquirerProfileArguments args) =>
-                  this.push(context, routeName, args),
             ),
+            BlocProvider(
+              create: (context) => PickupInquiryBloc(
+                apiClient: ApiClient(),
+                inquiriesBloc: BlocProvider.of<InquiriesBloc>(context),
+              ),
+            ),
+          ],
+          child: InqiuryList(
+            onPush: (String routeName, InquirerProfileArguments args) =>
+                this.push(context, routeName, args),
           ),
+        );
+      },
       InquiriesRoutes.inquirerProfile: (context) {
         final screenArgs = args as InquirerProfileArguments;
 

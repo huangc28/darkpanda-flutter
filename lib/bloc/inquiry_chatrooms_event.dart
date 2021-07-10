@@ -50,3 +50,7 @@ class PutLatestMessage extends InquiryChatroomsEvent {
 class ClearInquiryChatList extends InquiryChatroomsEvent {
   const ClearInquiryChatList();
 }
+
+class ClearInquiryList extends InquiryChatroomsEvent {
+  const ClearInquiryList();
+}

@@ -66,6 +66,7 @@ class VerifyLoginCodeBloc
 
       // fetch auth user info
       await SecureStore().writeJwtToken(responseMap['jwt']);
+
       final fetchUserResp = await userApis.fetchMe();
 
       developer.log('DEBUG fetchUserResp ${fetchUserResp.body}');
@@ -80,6 +81,8 @@ class VerifyLoginCodeBloc
         AuthUser.fromJson(json.decode(fetchUserResp.body)),
         jwt: responseMap['jwt'],
       );
+
+      await SecureStore().writeGender(authUser.gender.name);
 
       authUserBloc.add(
         PutUser(
