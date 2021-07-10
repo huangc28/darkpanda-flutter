@@ -1,22 +1,10 @@
-import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
-
-import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
-import 'package:darkpanda_flutter/pkg/timer.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/bloc/send_change_mobile_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/services/change_mobile_apis.dart';
-import '../recommend_management/recommend_management.dart';
-import '../verify_phone/verify_phone.dart';
+import 'package:darkpanda_flutter/screens/setting/routes.dart';
 
 import '../../bloc/logout_bloc.dart';
 import '../topup_dp/screen_arguements/args.dart';
@@ -58,29 +46,7 @@ class _MaleSettingsState extends State<MaleSettings> {
                                 "lib/screens/setting/assets/phone_authenticate.png"),
                           ),
                           onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(builder: (context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider(
-                                      create: (context) => TimerBloc(
-                                        ticker: Timer(),
-                                      ),
-                                    ),
-                                    BlocProvider(
-                                      create: (context) => SendChangeMobileBloc(
-                                        changeMobileClient:
-                                            ChangeMobileClient(),
-                                        timerBloc:
-                                            BlocProvider.of<TimerBloc>(context),
-                                      ),
-                                    ),
-                                  ],
-                                  child: VerifyPhone(),
-                                );
-                              }),
-                            );
-                            // widget.onPush('/verify-phone', null);
+                            widget.onPush(SettingRoutes.verify_phone, null);
                           },
                         ),
                         InkWell(
@@ -89,21 +55,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                                 "lib/screens/setting/assets/recommend_management.png"),
                           ),
                           onTap: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(builder: (context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider(
-                                      create: (context) =>
-                                          LoadGeneralRecommendBloc(
-                                        apiClient: RecommendAPIClient(),
-                                      ),
-                                    ),
-                                  ],
-                                  child: RecommendManagement(),
-                                );
-                              }),
-                            );
+                            widget.onPush(
+                                SettingRoutes.recommend_management, null);
                           },
                         ),
                         InkWell(
@@ -112,30 +65,7 @@ class _MaleSettingsState extends State<MaleSettings> {
                                 "lib/screens/setting/assets/buy_dp.png"),
                           ),
                           onTap: () {
-                            // widget.onPushTopupDP(TopUpDpArguments(
-                            //   amount: 200,
-                            // ));
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider(
-                                        create: (context) => LoadMyDpBloc(
-                                          apiClient: TopUpClient(),
-                                        ),
-                                      ),
-                                      BlocProvider(
-                                        create: (context) => LoadDpPackageBloc(
-                                          apiClient: TopUpClient(),
-                                        ),
-                                      ),
-                                    ],
-                                    child: TopupDp(),
-                                  );
-                                },
-                              ),
-                            );
+                            widget.onPush(SettingRoutes.topup_dp, null);
                           },
                         ),
                         InkWell(

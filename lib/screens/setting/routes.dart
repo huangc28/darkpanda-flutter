@@ -1,6 +1,3 @@
-import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
-import 'package:darkpanda_flutter/pkg/timer.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,10 +8,15 @@ import 'package:darkpanda_flutter/screens/setting/screens/bank_account/services/
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/remove_blacklist_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
+
+import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
+import 'package:darkpanda_flutter/pkg/timer.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/services/apis.dart';
 
 import 'screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'screens/topup_dp/bloc/load_my_dp_bloc.dart';
@@ -34,11 +36,11 @@ import 'services/settings_apis.dart';
 class SettingRoutes extends BaseRoutes {
   static const root = '/';
   static const setting = '/setting';
-  static const topup_payment = '/topup-payment';
   static const topup_dp = '/topup-dp';
   static const blacklist = '/blacklist';
   static const bank_account = '/bank-account';
   static const verify_phone = '/verify-phone';
+  static const recommend_management = '/recommend-management';
 
   SettingRoutes();
 
@@ -112,21 +114,6 @@ class SettingRoutes extends BaseRoutes {
           ),
         );
       },
-      SettingRoutes.topup_payment: (context) {
-        final screenArgs = args as InquiryDetail;
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => BuyDpBloc(
-                apiClient: TopUpClient(),
-              ),
-            ),
-          ],
-          child: TopupDp(
-            args: screenArgs,
-          ),
-        );
-      },
       SettingRoutes.bank_account: (context) {
         return MultiBlocProvider(
           providers: [
@@ -156,7 +143,19 @@ class SettingRoutes extends BaseRoutes {
           ],
           child: VerifyPhone(),
         );
-      }
+      },
+      SettingRoutes.recommend_management: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => LoadGeneralRecommendBloc(
+                apiClient: RecommendAPIClient(),
+              ),
+            ),
+          ],
+          child: RecommendManagement(),
+        );
+      },
     };
   }
 }
