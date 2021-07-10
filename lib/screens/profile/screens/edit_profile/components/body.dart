@@ -105,7 +105,6 @@ class _BodyState extends State<Body> {
             SizedBox(
               height: SizeConfig.screenHeight * 0.028, //24
             ),
-                                  fontSize: 16,
             InputTextLabel(label: "簡介"),
             SizedBox(
               height: SizeConfig.screenHeight * 0.022, //20
