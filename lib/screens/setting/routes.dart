@@ -62,8 +62,8 @@ class SettingRoutes extends BaseRoutes {
             settingsApi: SettingsAPIClient(),
           ),
           child: MaleSettings(
-            onPushTopupDP: (TopUpDpArguments args) =>
-                this.push(context, SettingRoutes.topup_dp, args),
+            onPush: (String routeName, TopUpDpArguments args) =>
+                this.push(context, routeName, args),
           ),
         );
   }

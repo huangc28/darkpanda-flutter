@@ -23,10 +23,10 @@ import '../topup_dp/screen_arguements/args.dart';
 
 class MaleSettings extends StatefulWidget {
   const MaleSettings({
-    this.onPushTopupDP,
+    this.onPush,
   });
 
-  final Function(TopUpDpArguments) onPushTopupDP;
+  final Function(String, TopUpDpArguments) onPush;
 
   @override
   _MaleSettingsState createState() => _MaleSettingsState();
@@ -144,7 +144,7 @@ class _MaleSettingsState extends State<MaleSettings> {
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
                           onTap: () {
-                            // widget.onPush('/blacklist', null);
+                            widget.onPush('/blacklist', null);
                           },
                         ),
                       ],

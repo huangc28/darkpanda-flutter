@@ -41,13 +41,6 @@ class _BodyState extends State<Body> {
 
     _inquiryDetail = widget.args;
 
-    // // If route from settings, it is null
-    // if (widget.args != null) {
-    //   if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
-    //     _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
-    //   }
-    // }
-
     BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
 
     BlocProvider.of<LoadDpPackageBloc>(context).add(LoadDpPackage());
