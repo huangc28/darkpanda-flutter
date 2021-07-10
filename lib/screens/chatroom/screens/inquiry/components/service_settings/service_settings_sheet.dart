@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_format/date_format.dart';
@@ -157,7 +158,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       },
       key: _formKey,
       child: Row(
-        children: [
+        children: <Widget>[
           Expanded(
             child: Container(
               padding: EdgeInsets.only(
@@ -167,11 +168,11 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   // Build inquiry pannel title.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       Text(
                         '發送邀請',
                         style: TextStyle(
@@ -193,7 +194,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                   ),
 
                   Column(
-                    children: [
+                    children: <Widget>[
                       PriceField(
                         controller: _priceController,
                         validator: (String v) {
@@ -207,7 +208,6 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           );
                         },
                       ),
-                      SizedBox(height: 10),
                       // Focus address field would open a map route letting the user to select an address from google map.
                       GestureDetector(
                         onTap: _navigateToAddressSelector,
@@ -216,6 +216,11 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           child: IgnorePointer(
                             child: AddressField(
                               controller: _addressController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '請輸入地址';
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -296,7 +301,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: <Widget>[
                         BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
                             listener: (context, state) {
                           if (state.status == AsyncLoadingStatus.done) {

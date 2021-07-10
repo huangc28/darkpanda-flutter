@@ -15,9 +15,8 @@ class ServiceDurationField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 107,
       child: Column(
-        children: [
+        children: <Widget>[
           Bullet(
             '服務時長(分鐘)',
             style: TextStyle(
