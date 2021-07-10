@@ -41,12 +41,12 @@ class _BodyState extends State<Body> {
 
     _inquiryDetail = widget.args;
 
-    // If route from settings, it is null
-    if (widget.args != null) {
-      if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
-        _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
-      }
-    }
+    // // If route from settings, it is null
+    // if (widget.args != null) {
+    //   if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+    //     _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
+    //   }
+    // }
 
     BlocProvider.of<LoadMyDpBloc>(context).add(LoadMyDp());
 
@@ -166,6 +166,13 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                   onPressed: () {
+                    // If route from settings, it is null
+                    if (widget.args != null) {
+                      if (widget.args.routeTypes ==
+                          RouteTypes.fromServiceChatroom) {
+                        _inquiryDetail.routeTypes = RouteTypes.fromTopupDp;
+                      }
+                    }
                     navigateBuyDpPage(
                       dpPackageList.packages[index].cost,
                       dpPackageList.packages[index].id,

@@ -50,6 +50,7 @@ class LoadIncomingServiceBloc
     try {
       // toggle loading
       yield LoadIncomingServiceState.loading(state);
+      yield LoadIncomingServiceState.clearState(state);
 
       // request API
       final res = await apiClient.fetchIncomingService();

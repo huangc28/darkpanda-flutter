@@ -26,92 +26,136 @@ class BuyService extends StatefulWidget {
 class _BuyServiceState extends State<BuyService> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-      appBar: AppBar(
-        leadingWidth: 85,
-        leading: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: Color.fromRGBO(106, 109, 137, 1),
+    return WillPopScope(
+      onWillPop: () async {
+        // If route is from service_chatroom, should use pop
+        if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+          Navigator.of(context).pop();
+        }
+        // 1. Route is from inquiry_chatroom
+        // 2. From service_chatroom to topup_dp
+        else {
+          BlocProvider.of<LoadIncomingServiceBloc>(context)
+              .add(LoadIncomingService());
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
+        appBar: AppBar(
+          leadingWidth: 85,
+          leading: Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Color.fromRGBO(106, 109, 137, 1),
+                ),
+                onPressed: () {
+                  // If route is from service_chatroom, should use pop
+                  if (widget.args.routeTypes ==
+                      RouteTypes.fromServiceChatroom) {
+                    Navigator.of(context).pop();
+                  }
+                  // 1. Route is from inquiry_chatroom
+                  // 2. From service_chatroom to topup_dp
+                  else {
+                    BlocProvider.of<LoadIncomingServiceBloc>(context)
+                        .add(LoadIncomingService());
+                  }
+                },
               ),
-              onPressed: () {
-                // If route is from service_chatroom, should use pop
-                if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
-                  Navigator.of(context).pop();
+              Text(
+                '聊天',
+                style: TextStyle(
+                  color: Color.fromRGBO(106, 109, 137, 1),
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          automaticallyImplyLeading: false,
+          title: Text('交易'),
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: Color.fromRGBO(106, 109, 137, 1),
+          ),
+        ),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.loading ||
+                    state.status == AsyncLoadingStatus.initial) {
+                  return Row(
+                    children: [
+                      LoadingScreen(),
+                    ],
+                  );
                 }
-                // 1. Route is from inquiry_chatroom
-                // 2. From service_chatroom to topup_dp
-                else {
-                  BlocProvider.of<LoadIncomingServiceBloc>(context)
-                      .add(LoadIncomingService());
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(
+                    MainRoutes.serviceChatroom,
+                    arguments: ServiceChatroomScreenArguments(
+                      channelUUID: widget.args.channelUuid,
+                      inquiryUUID: widget.args.inquiryUuid,
+                      counterPartUUID: widget.args.counterPartUuid,
+                      serviceUUID: widget.args.serviceUuid,
+                      routeTypes: RouteTypes.fromBuyService,
+                    ),
+                  );
                 }
               },
             ),
-            Text(
-              '聊天',
-              style: TextStyle(
-                color: Color.fromRGBO(106, 109, 137, 1),
-                fontSize: 16,
-              ),
+            BlocListener<CancelServiceBloc, CancelServiceState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.loading ||
+                    state.status == AsyncLoadingStatus.initial) {
+                  return Row(
+                    children: [
+                      LoadingScreen(),
+                    ],
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  print('Service cancelled');
+                }
+              },
             ),
           ],
-        ),
-        automaticallyImplyLeading: false,
-        title: Text('交易'),
-        centerTitle: true,
-        iconTheme: IconThemeData(
-          color: Color.fromRGBO(106, 109, 137, 1),
-        ),
-      ),
-      body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-        listener: (context, state) {
-          if (state.status == AsyncLoadingStatus.loading ||
-              state.status == AsyncLoadingStatus.initial) {
-            return Row(
-              children: [
-                LoadingScreen(),
-              ],
-            );
-          }
-
-          if (state.status == AsyncLoadingStatus.done) {
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamed(
-              MainRoutes.serviceChatroom,
-              arguments: ServiceChatroomScreenArguments(
-                channelUUID: widget.args.channelUuid,
-                inquiryUUID: widget.args.inquiryUuid,
-                counterPartUUID: widget.args.counterPartUuid,
-                serviceUUID: widget.args.serviceUuid,
-                routeTypes: RouteTypes.fromBuyService,
-              ),
-            );
-          }
-        },
-        child: Body(
-          args: widget.args,
-          onBuyService: () {},
-          onCancelService: () {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return BuyServiceCancelConfirmationDialog(
-                  matchingFee: widget.args.updateInquiryMessage.matchingFee,
-                );
-              },
-            ).then((value) {
-              if (value) {
-                BlocProvider.of<CancelServiceBloc>(context)
-                    .add(CancelService(serviceUuid: widget.args.serviceUuid));
-              }
-            });
-          },
+          child: Body(
+            args: widget.args,
+            onBuyService: () {},
+            onCancelService: () {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return BuyServiceCancelConfirmationDialog(
+                    matchingFee: widget.args.updateInquiryMessage.matchingFee,
+                  );
+                },
+              ).then((value) {
+                if (value) {
+                  BlocProvider.of<CancelServiceBloc>(context)
+                      .add(CancelService(serviceUuid: widget.args.serviceUuid));
+                }
+              });
+            },
+          ),
         ),
       ),
     );

@@ -30,68 +30,88 @@ class TopupDp extends StatefulWidget {
 class _TopupDpState extends State<TopupDp> {
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-      appBar: AppBar(
-        title: Text('購買DP幣'),
-        centerTitle: true,
-        iconTheme: IconThemeData(
-          color: Color.fromRGBO(106, 109, 137, 1),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
+    // SizeConfig().init(context);
+    return WillPopScope(
+      onWillPop: () async {
+        // If widget.args is null, means is from settings
+        if (widget.args == null) {
+          Navigator.of(context).pop();
+        }
+        // If route is from service_chatroom, should use pop
+        else if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+          Navigator.of(context).pop();
+        }
+        // 1. If widget.args is not null, means is from male inquiry
+        // 2. Or route is from inquiry_chatroom
+        else {
+          BlocProvider.of<LoadIncomingServiceBloc>(context)
+              .add(LoadIncomingService());
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
+        appBar: AppBar(
+          title: Text('購買DP幣'),
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: Color.fromRGBO(106, 109, 137, 1),
           ),
-          onPressed: () {
-            // If widget.args is null, means is from settings
-            if (widget.args == null) {
-              Navigator.of(context).pop();
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Color.fromRGBO(106, 109, 137, 1),
+            ),
+            onPressed: () {
+              // If widget.args is null, means is from settings
+              if (widget.args == null) {
+                Navigator.of(context).pop();
+              }
+              // If route is from service_chatroom, should use pop
+              else if (widget.args.routeTypes ==
+                  RouteTypes.fromServiceChatroom) {
+                Navigator.of(context).pop();
+              }
+              // 1. If widget.args is not null, means is from male inquiry
+              // 2. Or route is from inquiry_chatroom
+              else {
+                BlocProvider.of<LoadIncomingServiceBloc>(context)
+                    .add(LoadIncomingService());
+              }
+            },
+          ),
+        ),
+        body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
+          listener: (context, state) {
+            if (state.status == AsyncLoadingStatus.loading ||
+                state.status == AsyncLoadingStatus.initial) {
+              return Row(
+                children: [
+                  LoadingScreen(),
+                ],
+              );
             }
-            // If route is from service_chatroom, should use pop
-            else if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
-              Navigator.of(context).pop();
-            }
-            // 1. If widget.args is not null, means is from male inquiry
-            // 2. Or route is from inquiry_chatroom
-            else {
-              BlocProvider.of<LoadIncomingServiceBloc>(context)
-                  .add(LoadIncomingService());
+
+            if (state.status == AsyncLoadingStatus.done) {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamed(
+                MainRoutes.serviceChatroom,
+                arguments: ServiceChatroomScreenArguments(
+                  channelUUID: widget.args.channelUuid,
+                  inquiryUUID: widget.args.inquiryUuid,
+                  counterPartUUID: widget.args.counterPartUuid,
+                  serviceUUID: widget.args.serviceUuid,
+                  routeTypes: RouteTypes.fromBuyService,
+                ),
+              );
             }
           },
-        ),
-      ),
-      body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-        listener: (context, state) {
-          if (state.status == AsyncLoadingStatus.loading ||
-              state.status == AsyncLoadingStatus.initial) {
-            return Row(
-              children: [
-                LoadingScreen(),
-              ],
-            );
-          }
-
-          if (state.status == AsyncLoadingStatus.done) {
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamed(
-              MainRoutes.serviceChatroom,
-              arguments: ServiceChatroomScreenArguments(
-                channelUUID: widget.args.channelUuid,
-                inquiryUUID: widget.args.inquiryUuid,
-                counterPartUUID: widget.args.counterPartUuid,
-                serviceUUID: widget.args.serviceUuid,
-                routeTypes: RouteTypes.fromBuyService,
-              ),
-            );
-          }
-        },
-        child: Body(
-          onPush: widget.onPush,
-          args: widget.args,
+          child: Body(
+            onPush: widget.onPush,
+            args: widget.args,
+          ),
         ),
       ),
     );

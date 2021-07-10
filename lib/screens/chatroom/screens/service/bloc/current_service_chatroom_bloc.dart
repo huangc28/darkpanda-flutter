@@ -157,6 +157,7 @@ class CurrentServiceChatroomBloc
     try {
       // Fetch historical messages
       yield CurrentServiceChatroomState.loading(state);
+      yield CurrentServiceChatroomState.init();
 
       final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
         event.channelUUID,

@@ -7,6 +7,9 @@ import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -419,6 +422,16 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                                     SearchInquiryAPIs(),
                                               ),
                                             ),
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  CancelServiceBloc(
+                                                serviceAPIs: ServiceAPIs(),
+                                                loadIncomingServiceBloc:
+                                                    BlocProvider.of<
+                                                            LoadIncomingServiceBloc>(
+                                                        context),
+                                              ),
+                                            ),
                                           ],
                                           child: BuyService(
                                             args: inquiryDetail,
@@ -530,7 +543,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
-          color: Colors.white,
+          color: Color.fromRGBO(106, 109, 137, 1),
         ),
         onPressed: () async {
           await showDialog(
