@@ -5,9 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// import 'package:appcenter/appcenter.dart';
-// import 'package:appcenter_analytics/appcenter_analytics.dart';
-// import 'package:appcenter_crashes/appcenter_crashes.dart';
 
 import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/services/user_apis.dart';
@@ -63,18 +60,6 @@ void main() async {
   await Config.AppConfig.initConfig();
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  // await AppCenter.start(
-  //   Config.config.appCenterAndroidAppSecret,
-  //   [],
-  // );
-  // await AppCenter.start(
-  //   Config.config.appCenterAndroidAppSecret,
-  //   //   [
-  //   //     AppCenterAnalytics.id,
-  //   //     AppCenterCrashes.id,
-  //   //   ],
-  // );
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
