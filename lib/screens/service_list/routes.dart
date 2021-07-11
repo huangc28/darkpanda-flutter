@@ -16,7 +16,8 @@ class ServiceChatroomRoutes extends BaseRoutes {
             providers: [
               BlocProvider(
                 create: (context) => LoadHistoricalServiceBloc(
-                    apiClient: ServiceChatroomClient()),
+                  apiClient: ServiceChatroomClient(),
+                ),
               ),
             ],
             child: ServiceList(),

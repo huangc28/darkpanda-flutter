@@ -47,7 +47,6 @@ import 'package:darkpanda_flutter/enums/service_status.dart';
 
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
@@ -108,14 +107,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final SlideUpController _slideUpController = SlideUpController();
 
   String _message;
   AuthUser _sender;
-
-  /// If male user confirmed the service, toggle this state to be true to prevent
-  /// further editing of the service detail.
-  bool _serviceConfirmed = false;
 
   /// Lock the message bar functionalities if we are still initialzing chatroom.
   /// until chatroom is done initializing.

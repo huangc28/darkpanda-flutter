@@ -24,11 +24,13 @@ class ServiceChatroomClient extends BaseClient {
     }
   }
 
-  Future<http.Response> fetchOverdueService() async {
+  Future<http.Response> fetchOverdueService({int offset = 0}) async {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/services/overdue'),
+        buildUri('/v1/services/overdue', {
+          'offset': '$offset',
+        }),
       );
 
       await withTokenFromSecureStore(request);

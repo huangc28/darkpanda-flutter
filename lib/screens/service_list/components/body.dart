@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -34,6 +37,14 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
+  Completer<void> _refreshCompleter;
+
+  @override
+  initState() {
+    super.initState();
+    _refreshCompleter = Completer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -124,6 +135,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       listener: (BuildContext context, LoadHistoricalServiceState state) {
         // Display error in snack bar.
         if (state.status == AsyncLoadingStatus.error) {
+          _refreshCompleter.completeError(state.error);
+          _refreshCompleter = Completer();
           developer.log(
             'failed to fetch load historaical service',
             error: state.error,
@@ -134,6 +147,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               content: Text(state.error.message),
             ),
           );
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          _refreshCompleter.complete();
+          _refreshCompleter = Completer();
         }
       },
       builder: (BuildContext context, LoadHistoricalServiceState state) {
@@ -146,10 +164,13 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             : ServiceHistoricalList(
                 historicalService: state.services,
                 onRefresh: () {
-                  print('DEBUG trigger onRefresh');
+                  BlocProvider.of<LoadHistoricalServiceBloc>(context)
+                      .add(LoadHistoricalService());
+                  return _refreshCompleter.future;
                 },
                 onLoadMore: () {
-                  print('DEBUG trigger onLoadMore');
+                  BlocProvider.of<LoadHistoricalServiceBloc>(context)
+                      .add(LoadMoreHistoricalService());
                 },
               );
       },
