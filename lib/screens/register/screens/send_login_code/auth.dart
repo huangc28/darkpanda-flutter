@@ -27,8 +27,6 @@ class _AuthState extends State<Auth> {
     final authUser = BlocProvider.of<AuthUserBloc>(context).state.user;
 
     if (authUser != null) {
-      print('DEBUG ${authUser.gender}');
-
       SchedulerBinding.instance.addPostFrameCallback(
         (_) => Navigator.of(
           context,

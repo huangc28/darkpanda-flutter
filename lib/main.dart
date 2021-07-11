@@ -1,13 +1,13 @@
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:darkpanda_flutter/util/size_config.dart';
+import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
@@ -16,6 +16,8 @@ import 'package:darkpanda_flutter/services/inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/services/register_api_client.dart';
 
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
@@ -37,8 +39,6 @@ import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/screen_arguments/landing_screen_arguments.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 
@@ -55,9 +55,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   FirebaseApp app = await Firebase.initializeApp();
+
   assert(app != null);
 
-  await DotEnv.load(fileName: '.env');
+  // Initialize application config.
+  await Config.AppConfig.initConfig();
 
   WidgetsFlutterBinding.ensureInitialized();
 

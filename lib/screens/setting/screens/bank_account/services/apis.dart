@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
