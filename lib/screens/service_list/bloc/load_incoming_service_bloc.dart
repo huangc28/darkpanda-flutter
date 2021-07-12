@@ -48,7 +48,7 @@ class LoadIncomingServiceBloc
   Stream<LoadIncomingServiceState> _mapLoadIncomingServiceEventToState(
       LoadIncomingService event) async* {
     try {
-      // toggle loading
+      // toggle loadings
       yield LoadIncomingServiceState.loading(state);
 
       // request API
