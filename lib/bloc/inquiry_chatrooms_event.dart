@@ -7,7 +7,23 @@ abstract class InquiryChatroomsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchChatrooms extends InquiryChatroomsEvent {}
+class FetchChatrooms extends InquiryChatroomsEvent {
+  final int perPage;
+  final int nextPage;
+
+  FetchChatrooms({
+    this.perPage = 5,
+    this.nextPage = 1,
+  }) : assert(nextPage > 0);
+}
+
+class LoadMoreChatrooms extends InquiryChatroomsEvent {
+  final int perPage;
+
+  const LoadMoreChatrooms({
+    this.perPage = 5,
+  });
+}
 
 class AddChatroom extends InquiryChatroomsEvent {
   final Chatroom chatroom;

@@ -235,6 +235,7 @@ class InquiryChatroomsBloc
       FetchChatrooms event) async* {
     try {
       yield InquiryChatroomsState.loading(state);
+
       final resp = await inquiryChatroomApis.fetchInquiryChatrooms();
 
       if (resp.statusCode != HttpStatus.ok) {

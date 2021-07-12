@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,11 +30,14 @@ class ChatRooms extends StatefulWidget {
 
 class _ChatRoomsState extends State<ChatRooms> {
   InquiryChatroomsBloc _inquiryChatroomsBloc;
+  Completer<void> _refreshCompleter;
 
   /// Emit flutter bloc event in lifecycle `Dispose` https://github.com/felangel/bloc/issues/588.
   @override
   void initState() {
+    _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
+
     super.initState();
   }
 
@@ -55,6 +60,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                 listener: (context, state) {
                   // Display error in snack bar.
                   if (state.status == AsyncLoadingStatus.error) {
+                    _refreshCompleter.completeError(state.error);
+                    _refreshCompleter = Completer();
                     developer.log(
                       'failed to fetch inquiry chatroom',
                       error: state.error,
@@ -65,6 +72,11 @@ class _ChatRoomsState extends State<ChatRooms> {
                         content: Text(state.error.message),
                       ),
                     );
+                  }
+
+                  if (state.status == AsyncLoadingStatus.done) {
+                    _refreshCompleter.complete();
+                    _refreshCompleter = Completer();
                   }
                 },
                 builder: (context, state) {
@@ -77,6 +89,10 @@ class _ChatRoomsState extends State<ChatRooms> {
                     chatrooms: state.chatrooms,
                     onRefresh: () {
                       print('DEBUG trigger onRefresh');
+                      BlocProvider.of<InquiryChatroomsBloc>(context)
+                          .add(FetchChatrooms());
+
+                      return _refreshCompleter.future;
                     },
                     onLoadMore: () {
                       print('DEBUG trigger onLoadMore');
