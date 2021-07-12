@@ -14,7 +14,21 @@ class AddChatrooms extends LoadIncomingServiceEvent {
 }
 
 class LoadIncomingService extends LoadIncomingServiceEvent {
-  const LoadIncomingService();
+  const LoadIncomingService({
+    this.perPage = 5,
+    this.nextPage = 1,
+  }) : assert(nextPage > 0);
+
+  final int perPage;
+  final int nextPage;
+}
+
+class LoadMoreIncomingService extends LoadIncomingServiceEvent {
+  final int perPage;
+
+  const LoadMoreIncomingService({
+    this.perPage = 5,
+  });
 }
 
 class PutLatestMessage extends LoadIncomingServiceEvent {

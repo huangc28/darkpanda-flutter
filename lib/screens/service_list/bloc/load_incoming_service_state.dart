@@ -6,6 +6,7 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
   final AsyncLoadingStatus status;
   final List<IncomingService> services;
   final E error;
+  final int currentPage;
 
   const LoadIncomingServiceState._({
     this.status,
@@ -13,6 +14,7 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
     this.error,
     this.chatroomLastMessage,
     this.privateChatStreamMap,
+    this.currentPage,
   });
 
   LoadIncomingServiceState.initial()
@@ -21,33 +23,40 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
           services: [],
           chatroomLastMessage: {},
           privateChatStreamMap: {},
+          currentPage: 0,
         );
 
   LoadIncomingServiceState.loading(LoadIncomingServiceState state)
       : this._(
           status: AsyncLoadingStatus.loading,
-          services: [],
+          services: state.services,
           chatroomLastMessage: state.chatroomLastMessage,
           privateChatStreamMap: state.privateChatStreamMap,
+          currentPage: state.currentPage,
         );
 
-  LoadIncomingServiceState.loadFailed(LoadIncomingServiceState state, E err)
-      : this._(
+  LoadIncomingServiceState.loadFailed(
+    LoadIncomingServiceState state, {
+    E err,
+  }) : this._(
           status: AsyncLoadingStatus.error,
           chatroomLastMessage: {},
           privateChatStreamMap: state.privateChatStreamMap,
+          currentPage: state.currentPage,
         );
 
   LoadIncomingServiceState.updateChatrooms(
     LoadIncomingServiceState state, {
     List<IncomingService> services,
     Map<String, StreamSubscription> privateChatStreamMap,
+    int currentPage,
   }) : this._(
           privateChatStreamMap:
               privateChatStreamMap ?? state.privateChatStreamMap,
           services: services ?? state.services,
           status: AsyncLoadingStatus.done,
           chatroomLastMessage: state.chatroomLastMessage,
+          currentPage: currentPage ?? state.currentPage,
         );
 
   LoadIncomingServiceState.putChatroomLatestMessage(
@@ -58,6 +67,7 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
           services: state.services,
           status: state.status,
           chatroomLastMessage: chatroomLastMessage ?? state.chatroomLastMessage,
+          currentPage: state.currentPage,
         );
 
   LoadIncomingServiceState.clearState(LoadIncomingServiceState state)
@@ -66,6 +76,7 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
           status: AsyncLoadingStatus.initial,
           chatroomLastMessage: {},
           privateChatStreamMap: state.privateChatStreamMap,
+          currentPage: 0,
         );
 
   @override
@@ -75,5 +86,6 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
         privateChatStreamMap,
         error,
         chatroomLastMessage,
+        currentPage,
       ];
 }

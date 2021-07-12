@@ -69,6 +69,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       listener: (BuildContext context, LoadIncomingServiceState state) {
         // Display error in snack bar.
         if (state.status == AsyncLoadingStatus.error) {
+          _refreshCompleter.completeError(state.error);
+          _refreshCompleter = Completer();
           developer.log(
             'failed to fetch load imcoming service',
             error: state.error,
@@ -80,9 +82,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             ),
           );
         }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          _refreshCompleter.complete();
+          _refreshCompleter = Completer();
+        }
       },
       builder: (BuildContext context, LoadIncomingServiceState state) {
-        return widget.incomingServicesStatus == AsyncLoadingStatus.loading
+        return widget.incomingServicesStatus == AsyncLoadingStatus.initial ||
+                widget.incomingServicesStatus == AsyncLoadingStatus.loading
             ? Row(
                 children: [
                   LoadingScreen(),
@@ -91,10 +99,14 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             : ServiceChatroomList(
                 chatrooms: widget.incomingServices,
                 onRefresh: () {
-                  print('DEBUG trigger onRefresh');
+                  BlocProvider.of<LoadIncomingServiceBloc>(context)
+                      .add(LoadIncomingService());
+
+                  return _refreshCompleter.future;
                 },
                 onLoadMore: () {
-                  print('DEBUG trigger onLoadMore');
+                  BlocProvider.of<LoadIncomingServiceBloc>(context)
+                      .add(LoadMoreIncomingService());
                 },
                 chatroomBuilder: (context, chatroom, ___) {
                   final lastMsg =

@@ -7,11 +7,13 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 class ServiceChatroomClient extends BaseClient {
-  Future<http.Response> fetchIncomingService() async {
+  Future<http.Response> fetchIncomingService({int offset = 0}) async {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/services/incoming'),
+        buildUri('/v1/services/incoming', {
+          'offset': '$offset',
+        }),
       );
 
       await withTokenFromSecureStore(request);
