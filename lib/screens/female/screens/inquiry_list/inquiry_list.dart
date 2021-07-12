@@ -156,6 +156,9 @@ class _InqiuryListState extends State<InqiuryList> {
                     child: InquiryList(
                       onLoadMore: () {
                         print('DEBUG trigger load more');
+                        BlocProvider.of<InquiriesBloc>(context).add(
+                          LoadMoreInquiries(),
+                        );
                       },
                       onRefresh: () {
                         BlocProvider.of<InquiriesBloc>(context).add(

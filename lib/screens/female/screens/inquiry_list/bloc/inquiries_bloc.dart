@@ -54,6 +54,8 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
       FetchInquiries event) async* {
     try {
       yield InquiriesState.fetching(state);
+      yield InquiriesState.initial();
+
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,
         perPage: event.perPage,
@@ -103,16 +105,12 @@ class InquiriesBloc extends Bloc<InquiriesEvent, InquiriesState> {
 
   Stream<InquiriesState> _mapLoadMoreInquiries(LoadMoreInquiries event) async* {
     try {
-      yield InquiriesState.fetching(state);
+      // yield InquiriesState.fetching(state);
 
       // If there are no more records to load, don't bother to request the API.
       if (!state.hasMore) {
         return;
       }
-
-      final jwt = await SecureStore().fsc.read(key: 'jwt');
-
-      this.apiClient.jwtToken = jwt;
 
       // Calculate the number to offset to skip when fetching the next page.
       final resp = await apiClient.fetchInquiries(
