@@ -8,7 +8,6 @@ import 'package:darkpanda_flutter/screens/female/female_app.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/male_app.dart';
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
-import 'package:darkpanda_flutter/screens/setting/routes.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/bloc/send_change_mobile_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/bloc/verify_change_mobile_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/components/mobile_changed_dialog.dart';

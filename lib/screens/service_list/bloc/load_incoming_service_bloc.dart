@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
@@ -36,6 +37,8 @@ class LoadIncomingServiceBloc
   ) async* {
     if (event is LoadIncomingService) {
       yield* _mapLoadIncomingServiceEventToState(event);
+    } else if (event is LoadMoreIncomingService) {
+      yield* _mapLoadMoreIncomingServiceEventToState(event);
     } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     } else if (event is PutLatestMessage) {
@@ -50,9 +53,17 @@ class LoadIncomingServiceBloc
     try {
       // toggle loadings
       yield LoadIncomingServiceState.loading(state);
+      yield LoadIncomingServiceState.clearState(state);
+
+      final offset = calcNextPageOffset(
+        nextPage: event.nextPage,
+        perPage: event.perPage,
+      );
 
       // request API
-      final res = await apiClient.fetchIncomingService();
+      final res = await apiClient.fetchIncomingService(
+        offset: offset,
+      );
 
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -70,11 +81,64 @@ class LoadIncomingServiceBloc
         AddChatrooms(serviceList),
       );
     } on APIException catch (err) {
-      yield LoadIncomingServiceState.loadFailed(state, err);
+      yield LoadIncomingServiceState.loadFailed(
+        state,
+        err: err,
+      );
     } catch (err) {
       yield LoadIncomingServiceState.loadFailed(
         state,
-        AppGeneralExeption(message: err.toString()),
+        err: AppGeneralExeption(message: err.toString()),
+      );
+    }
+  }
+
+  Stream<LoadIncomingServiceState> _mapLoadMoreIncomingServiceEventToState(
+      LoadMoreIncomingService event) async* {
+    try {
+      // toggle loading
+      // yield LoadIncomingServiceState.loading(state);
+      // yield LoadIncomingServiceState.clearState(state);
+
+      final offset = calcNextPageOffset(
+        nextPage: state.currentPage + 1,
+        perPage: event.perPage,
+      );
+
+      // request API
+      final res = await apiClient.fetchIncomingService(
+        offset: offset,
+      );
+
+      if (res.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(res.body),
+        );
+      }
+
+      final Map<String, dynamic> respMap = json.decode(res.body);
+
+      final serviceList = respMap['services'].map<IncomingService>((v) {
+        return IncomingService.fromMap(v);
+      }).toList();
+
+      final appended = <IncomingService>[
+        ...state.services,
+        ...?serviceList,
+      ].toList();
+
+      add(
+        AddChatrooms(appended),
+      );
+    } on APIException catch (err) {
+      yield LoadIncomingServiceState.loadFailed(
+        state,
+        err: err,
+      );
+    } catch (err) {
+      yield LoadIncomingServiceState.loadFailed(
+        state,
+        err: AppGeneralExeption(message: err.toString()),
       );
     }
   }
@@ -107,6 +171,7 @@ class LoadIncomingServiceBloc
       state,
       services: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
+      currentPage: state.currentPage + 1,
     );
 
     for (final chatroom in event.chatrooms) {

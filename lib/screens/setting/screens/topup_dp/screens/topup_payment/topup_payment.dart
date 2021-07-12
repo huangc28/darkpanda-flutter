@@ -1,10 +1,12 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_number_input_formatter.dart';
@@ -151,6 +153,14 @@ class _TopupPaymentState extends State<TopupPayment> {
                             BlocProvider(
                               create: (context) => BuyServiceBloc(
                                 searchInquiryAPIs: SearchInquiryAPIs(),
+                              ),
+                            ),
+                            BlocProvider(
+                              create: (context) => CancelServiceBloc(
+                                serviceAPIs: ServiceAPIs(),
+                                loadIncomingServiceBloc:
+                                    BlocProvider.of<LoadIncomingServiceBloc>(
+                                        context),
                               ),
                             ),
                           ],
@@ -414,7 +424,7 @@ class _TopupPaymentState extends State<TopupPayment> {
           keyboardType: TextInputType.number,
           style: TextStyle(
             color: Colors.white,
-            fontSize: SizeConfig.screenHeight * 0.02, //18,
+            // fontSize: SizeConfig.screenHeight * 0.02, //18,
           ),
           decoration: inputDecoration("請輸入您的安全碼"),
           onSaved: (value) {

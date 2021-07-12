@@ -8,7 +8,21 @@ abstract class LoadHistoricalServiceEvent extends Equatable {
 }
 
 class LoadHistoricalService extends LoadHistoricalServiceEvent {
-  const LoadHistoricalService();
+  final int perPage;
+  final int nextPage;
+
+  const LoadHistoricalService({
+    this.perPage = 5,
+    this.nextPage = 1,
+  }) : assert(nextPage > 0);
+}
+
+class LoadMoreHistoricalService extends LoadHistoricalServiceEvent {
+  final int perPage;
+
+  const LoadMoreHistoricalService({
+    this.perPage = 5,
+  });
 }
 
 class ClearHistoricalServiceState extends LoadHistoricalServiceEvent {

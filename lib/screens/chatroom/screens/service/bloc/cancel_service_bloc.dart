@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -13,11 +14,15 @@ part 'cancel_service_event.dart';
 part 'cancel_service_state.dart';
 
 class CancelServiceBloc extends Bloc<CancelServiceEvent, CancelServiceState> {
-  CancelServiceBloc({this.serviceAPIs})
-      : assert(serviceAPIs != null),
+  CancelServiceBloc({
+    this.serviceAPIs,
+    this.loadIncomingServiceBloc,
+  })  : assert(serviceAPIs != null),
+        assert(loadIncomingServiceBloc != null),
         super(CancelServiceState.initial());
 
   final ServiceAPIs serviceAPIs;
+  final LoadIncomingServiceBloc loadIncomingServiceBloc;
 
   @override
   Stream<CancelServiceState> mapEventToState(
@@ -40,6 +45,9 @@ class CancelServiceBloc extends Bloc<CancelServiceEvent, CancelServiceState> {
           json.decode(resp.body),
         );
       }
+
+      // To refresh incoming service list
+      loadIncomingServiceBloc.add(LoadIncomingService());
 
       yield CancelServiceState.loaded(state);
     } on APIException catch (e) {

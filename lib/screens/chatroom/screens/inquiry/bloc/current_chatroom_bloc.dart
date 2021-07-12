@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
@@ -110,6 +111,8 @@ class CurrentChatroomBloc
           return ImageMessage.fromMap(data);
         } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.cancel_service.name) {
+          return CancelServiceMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -151,6 +154,7 @@ class CurrentChatroomBloc
     try {
       // Fetch historical messages
       yield CurrentChatroomState.loading(state);
+      yield CurrentChatroomState.init();
 
       final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
         event.channelUUID,
@@ -185,6 +189,8 @@ class CurrentChatroomBloc
           return ImageMessage.fromMap(data);
         } else if (data['type'] == MessageType.complete_payment.name) {
           return PaymentCompletedMessage.fromMap(data);
+        } else if (data['type'] == MessageType.cancel_service.name) {
+          return CancelServiceMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -246,6 +252,8 @@ class CurrentChatroomBloc
     final isCompletedPaymentMsg =
         (String type) => type == MessageType.complete_payment.name;
     final isImagesMsg = (String type) => type == MessageType.images.name;
+    final isCancelServiceMsg =
+        (String type) => type == MessageType.cancel_service.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -275,6 +283,8 @@ class CurrentChatroomBloc
       msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
+    } else if (isCancelServiceMsg(rawMsg['type'])) {
+      msg = CancelServiceMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

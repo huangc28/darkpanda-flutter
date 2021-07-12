@@ -24,17 +24,14 @@ class AddressField extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
-        Container(
-          height: 44,
-          child: DPTextFormField(
-            readOnly: true,
-            focusNode: focusNode,
-            controller: controller,
-            validator: validator,
-            textAlignVertical: TextAlignVertical.center,
-            theme: DPTextFieldThemes.inquiryForm,
-            hintText: '請輸入地址',
-          ),
+        DPTextFormField(
+          readOnly: true,
+          focusNode: focusNode,
+          controller: controller,
+          validator: validator,
+          textAlignVertical: TextAlignVertical.center,
+          theme: DPTextFieldThemes.inquiryForm,
+          hintText: '請輸入地址',
         ),
       ],
     );
