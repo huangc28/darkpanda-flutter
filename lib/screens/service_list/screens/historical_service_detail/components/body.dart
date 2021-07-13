@@ -323,16 +323,17 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             theme: DPTextButtonThemes.pink,
           ),
         SizedBox(height: 14),
-        GestureDetector(
-          onTap: widget.onBlock,
-          child: Text(
-            '封鎖他',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+        if (widget.paymentDetail.hasBlocked == false)
+          GestureDetector(
+            onTap: widget.onBlock,
+            child: Text(
+              '封鎖他',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
             ),
-          ),
-        )
+          )
       ],
     );
   }

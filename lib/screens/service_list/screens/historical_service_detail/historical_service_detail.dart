@@ -115,7 +115,11 @@ class _HistoricalServiceDetailState extends State<HistoricalServiceDetail>
           }),
           BlocListener<BlockUserBloc, BlockUserState>(
               listener: (context, state) {
-            if (state.status == AsyncLoadingStatus.done) {}
+            if (state.status == AsyncLoadingStatus.done) {
+              BlocProvider.of<LoadPaymentDetailBloc>(context).add(
+                  LoadPaymentDetail(
+                      serviceUuid: widget.historicalService.serviceUuid));
+            }
 
             if (state.status == AsyncLoadingStatus.error) {
               developer.log(
