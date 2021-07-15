@@ -438,10 +438,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                               create: (context) =>
                                                   CancelServiceBloc(
                                                 serviceAPIs: ServiceAPIs(),
-                                                loadIncomingServiceBloc:
-                                                    BlocProvider.of<
-                                                            LoadIncomingServiceBloc>(
-                                                        context),
                                               ),
                                             ),
                                           ],

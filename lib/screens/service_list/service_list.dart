@@ -30,18 +30,25 @@ class _ServiceListState extends State<ServiceList>
   List<IncomingService> _incomingServices = [];
 
   AsyncLoadingStatus _incomingServicesStatus = AsyncLoadingStatus.initial;
+  LoadIncomingServiceBloc _loadIncomingServiceBloc;
 
   @override
   void initState() {
     super.initState();
 
+    _loadIncomingServiceBloc =
+        BlocProvider.of<LoadIncomingServiceBloc>(context);
+
     _tabController = TabController(
       vsync: this,
       length: 2,
     );
+  }
 
-    BlocProvider.of<LoadIncomingServiceBloc>(context)
-        .add(LoadIncomingService());
+  @override
+  void dispose() {
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+    super.dispose();
   }
 
   @override

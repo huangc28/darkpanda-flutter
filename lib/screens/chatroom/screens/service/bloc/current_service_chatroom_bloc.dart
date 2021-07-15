@@ -157,7 +157,7 @@ class CurrentServiceChatroomBloc
     try {
       // Fetch historical messages
       yield CurrentServiceChatroomState.loading(state);
-      yield CurrentServiceChatroomState.init();
+      yield CurrentServiceChatroomState.clearCurrentChatroom(state);
 
       final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
         event.channelUUID,
@@ -310,7 +310,7 @@ class CurrentServiceChatroomBloc
     // Reset current chatroom messages.
     // Reset current chatroom historical messages.
     // Reset page number.
-    yield CurrentServiceChatroomState.init();
+    yield CurrentServiceChatroomState.clearCurrentChatroom(state);
   }
 
   Map<String, StreamSubscription<DocumentSnapshot>>
