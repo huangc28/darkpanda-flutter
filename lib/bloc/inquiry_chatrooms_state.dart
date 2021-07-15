@@ -12,12 +12,15 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
   /// would display the latest message for each chatroom.
   final Map<String, Message> chatroomLastMessage;
 
+  final int currentPage;
+
   const InquiryChatroomsState._({
     this.chatrooms,
     this.privateChatStreamMap,
     this.error,
     this.status,
     this.chatroomLastMessage,
+    this.currentPage,
   });
 
   InquiryChatroomsState.init()
@@ -26,14 +29,16 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           privateChatStreamMap: {},
           status: AsyncLoadingStatus.initial,
           chatroomLastMessage: {},
+          currentPage: 0,
         );
 
   InquiryChatroomsState.loading(InquiryChatroomsState state)
       : this._(
-          chatrooms: [],
+          chatrooms: state.chatrooms,
           privateChatStreamMap: state.privateChatStreamMap,
           status: AsyncLoadingStatus.loading,
           chatroomLastMessage: state.chatroomLastMessage,
+          currentPage: state.currentPage,
         );
 
   InquiryChatroomsState.loadFailed(InquiryChatroomsState state, E err)
@@ -42,18 +47,21 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           privateChatStreamMap: state.privateChatStreamMap,
           status: AsyncLoadingStatus.error,
           chatroomLastMessage: state.chatroomLastMessage,
+          currentPage: state.currentPage,
         );
 
   InquiryChatroomsState.updateChatrooms(
     InquiryChatroomsState state, {
     List<Chatroom> chatrooms,
     Map<String, StreamSubscription> privateChatStreamMap,
+    int currentPage,
   }) : this._(
           privateChatStreamMap:
               privateChatStreamMap ?? state.privateChatStreamMap,
           chatrooms: chatrooms ?? state.chatrooms,
           status: AsyncLoadingStatus.done,
           chatroomLastMessage: state.chatroomLastMessage,
+          currentPage: currentPage ?? state.currentPage,
         );
 
   InquiryChatroomsState.putChatroomLatestMessage(
@@ -64,6 +72,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           chatrooms: state.chatrooms,
           status: state.status,
           chatroomLastMessage: chatroomLastMessage ?? state.chatroomLastMessage,
+          currentPage: state.currentPage,
         );
 
   InquiryChatroomsState.clearInqiuryChatList(InquiryChatroomsState state)
@@ -72,6 +81,7 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
           chatrooms: [],
           status: state.status,
           chatroomLastMessage: {},
+          currentPage: 0,
         );
 
   @override
@@ -81,5 +91,6 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
         privateChatStreamMap,
         error,
         chatroomLastMessage,
+        currentPage,
       ];
 }

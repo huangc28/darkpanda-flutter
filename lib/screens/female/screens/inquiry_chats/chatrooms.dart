@@ -53,7 +53,7 @@ class _ChatRoomsState extends State<ChatRooms> {
       body: SystemUiOverlayLayout(
         child: SafeArea(
           child: Column(
-            children: [
+            children: <Widget>[
               // Inquiry chatrooms title
               _buildHeader(),
               BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
@@ -85,48 +85,52 @@ class _ChatRoomsState extends State<ChatRooms> {
                     return LoadingScreen();
                   }
 
-                  return ChatroomList(
-                    chatrooms: state.chatrooms,
-                    onRefresh: () {
-                      print('DEBUG trigger onRefresh');
-                      BlocProvider.of<InquiryChatroomsBloc>(context)
-                          .add(FetchChatrooms());
+                  return Expanded(
+                    child: ChatroomList(
+                      chatrooms: state.chatrooms,
+                      onRefresh: () {
+                        print('DEBUG trigger onRefresh');
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
+                            .add(FetchChatrooms());
 
-                      return _refreshCompleter.future;
-                    },
-                    onLoadMore: () {
-                      print('DEBUG trigger onLoadMore');
-                    },
-                    chatroomBuilder: (context, chatroom, ___) {
-                      final lastMsg =
-                          state.chatroomLastMessage[chatroom.channelUUID];
+                        return _refreshCompleter.future;
+                      },
+                      onLoadMore: () {
+                        print('DEBUG trigger onLoadMore');
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
+                            .add(LoadMoreChatrooms());
+                      },
+                      chatroomBuilder: (context, chatroom, ___) {
+                        final lastMsg =
+                            state.chatroomLastMessage[chatroom.channelUUID];
 
-                      // Loading inquirier info before proceeding to chatroom.
-                      return Container(
-                        margin: EdgeInsets.only(
-                          bottom: 20,
-                        ),
-                        child: ChatroomGrid(
-                          onEnterChat: (chatroomModel.Chatroom chatroom) {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).pushNamed(
-                              MainRoutes.chatroom,
-                              arguments: ChatroomScreenArguments(
-                                channelUUID: chatroom.channelUUID,
-                                inquiryUUID: chatroom.inquiryUUID,
-                                counterPartUUID: chatroom.inquirerUUID,
-                                serviceType: chatroom.serviceType,
-                                routeTypes: RouteTypes.fromInquiryChats,
-                              ),
-                            );
-                          },
-                          chatroom: chatroom,
-                          lastMessage: lastMsg.content,
-                        ),
-                      );
-                    },
+                        // Loading inquirier info before proceeding to chatroom.
+                        return Container(
+                          margin: EdgeInsets.only(
+                            bottom: 20,
+                          ),
+                          child: ChatroomGrid(
+                            onEnterChat: (chatroomModel.Chatroom chatroom) {
+                              Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              ).pushNamed(
+                                MainRoutes.chatroom,
+                                arguments: ChatroomScreenArguments(
+                                  channelUUID: chatroom.channelUUID,
+                                  inquiryUUID: chatroom.inquiryUUID,
+                                  counterPartUUID: chatroom.inquirerUUID,
+                                  serviceType: chatroom.serviceType,
+                                  routeTypes: RouteTypes.fromInquiryChats,
+                                ),
+                              );
+                            },
+                            chatroom: chatroom,
+                            lastMessage: lastMsg.content,
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

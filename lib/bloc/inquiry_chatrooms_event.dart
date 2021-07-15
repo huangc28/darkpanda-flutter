@@ -12,7 +12,7 @@ class FetchChatrooms extends InquiryChatroomsEvent {
   final int nextPage;
 
   FetchChatrooms({
-    this.perPage = 5,
+    this.perPage = 7,
     this.nextPage = 1,
   }) : assert(nextPage > 0);
 }
@@ -21,7 +21,7 @@ class LoadMoreChatrooms extends InquiryChatroomsEvent {
   final int perPage;
 
   const LoadMoreChatrooms({
-    this.perPage = 5,
+    this.perPage = 7,
   });
 }
 

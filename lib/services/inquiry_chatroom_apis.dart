@@ -6,12 +6,13 @@ import 'dart:convert';
 import 'package:darkpanda_flutter/services/base_client.dart';
 
 class InquiryChatroomApis extends BaseClient {
-  Future<http.Response> fetchInquiryChatrooms() async {
+  Future<http.Response> fetchInquiryChatrooms({int offset = 0}) async {
     try {
       final request = http.Request(
         'GET',
         buildUri('/v1/chat', {
           'chatroom_type': 'inquiry',
+          'offset': '$offset',
         }),
       );
 

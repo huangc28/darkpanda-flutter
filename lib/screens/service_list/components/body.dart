@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;

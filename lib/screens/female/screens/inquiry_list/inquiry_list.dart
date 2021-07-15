@@ -87,7 +87,7 @@ class _InqiuryListState extends State<InqiuryList> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children: [
+          children: <Widget>[
             _buildHeader(),
             BlocListener<PickupInquiryBloc, PickupInquiryState>(
               listener: (context, state) {
