@@ -1,28 +1,28 @@
 import 'dart:io';
 import 'dart:async';
 
-import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/models/user_image.dart';
-
-import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
-import 'package:darkpanda_flutter/util/decimal_text_input_formatter.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Body extends StatefulWidget {
-  final UserProfile args;
-  final List<UserImage> imageList;
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/models/user_image.dart';
 
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
+import 'package:darkpanda_flutter/util/decimal_text_input_formatter.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
+
+class Body extends StatefulWidget {
   const Body({
     Key key,
     this.args,
     this.imageList,
   }) : super(key: key);
+
+  final UserProfile args;
+  final List<UserImage> imageList;
 
   @override
   _BodyState createState() => _BodyState();
@@ -32,28 +32,28 @@ class _BodyState extends State<Body> {
   File _image;
   final picker = ImagePicker();
   UpdateProfileBloc updateProfileBloc = UpdateProfileBloc();
-  UserProfile userProfile;
   TextEditingController _nicknameTextController = TextEditingController();
   TextEditingController _ageTextController = TextEditingController();
   TextEditingController _heightTextController = TextEditingController();
   TextEditingController _weightTextController = TextEditingController();
   TextEditingController _descriptionTextController = TextEditingController();
-  UserImage userImageAdd = UserImage(url: "");
+  UserImage userImageAdd;
   List<UserImage> removeImageList = [];
 
   File _avatarImageFile;
-  String _avatarUrl;
+  List<UserImage> images = [];
 
   @override
   void initState() {
-    super.initState();
-
-    _avatarUrl = widget.args.avatarUrl;
+    userImageAdd = UserImage(url: ""); // is add button
 
     BlocProvider.of<UpdateProfileBloc>(context)
         .add(FetchProfileEdit(widget.args));
 
     widget.imageList.add(userImageAdd);
+    images = widget.imageList;
+
+    super.initState();
   }
 
   @override
@@ -144,9 +144,13 @@ class _BodyState extends State<Body> {
           url: null,
           fileName: _image,
         );
-        widget.imageList.removeAt(demoImageList.length - 1);
-        widget.imageList.add(demoImage);
-        widget.imageList.add(userImageAdd);
+
+        if (images.length > 0) {
+          images.removeAt(images.length - 1);
+        }
+
+        images.add(demoImage);
+        images.add(userImageAdd);
       } else {
         print('No image selected.');
       }
@@ -164,9 +168,12 @@ class _BodyState extends State<Body> {
           url: null,
           fileName: _image,
         );
-        widget.imageList.removeAt(widget.imageList.length - 1);
-        widget.imageList.add(demoImage);
-        widget.imageList.add(userImageAdd);
+        if (images.length > 0) {
+          images.removeAt(images.length - 1);
+        }
+
+        images.add(demoImage);
+        images.add(userImageAdd);
       } else {
         print('No image selected.');
       }
@@ -198,9 +205,6 @@ class _BodyState extends State<Body> {
   }
 
   Widget _avatarImage() {
-    // return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-    //   builder: (context, state) {
-    //     final avatarUrl = state.avatarUrl;
     return Container(
       alignment: Alignment.center,
       child: CircleAvatar(
@@ -233,8 +237,6 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
-    //   },
-    // );
   }
 
   Widget buildNicknameInput() {
@@ -413,25 +415,19 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildAddImage() {
+    print("ImageList length: " + images.length.toString());
     return Container(
       height: 190,
       padding: EdgeInsets.only(top: 25),
       child: ListView.builder(
-        itemCount: widget.imageList.length,
+        itemCount: images.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              if (index == widget.imageList.length - 1) {
-                _showPicker(context);
-              }
-            },
-            child: widget.imageList[index].url == ""
-                ? AddImageButton()
-                : widget.imageList[index].url == null
-                    ? imageCardFile(index)
-                    : imageCard(index),
-          );
+          return images[index].url == ""
+              ? _addImageButton()
+              : images[index].url == null
+                  ? imageCardFile(index)
+                  : imageCard(index);
         },
       ),
     );
@@ -448,7 +444,7 @@ class _BodyState extends State<Body> {
       child: Stack(
         children: <Widget>[
           Image.file(
-            widget.imageList[index].fileName,
+            images[index].fileName,
             height: 150,
           ),
           Positioned(
@@ -457,8 +453,9 @@ class _BodyState extends State<Body> {
             child: GestureDetector(
               onTap: () {
                 print('delete image from List');
-                widget.imageList.removeAt(index);
+
                 setState(() {
+                  images.removeAt(index);
                   print('set new state of images');
                 });
               },
@@ -494,8 +491,8 @@ class _BodyState extends State<Body> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  removeImageList.add(widget.imageList[index]);
-                  widget.imageList.removeAt(index);
+                  removeImageList.add(images[index]);
+                  images.removeAt(index);
                 });
               },
               child: Icon(
@@ -531,7 +528,6 @@ class _BodyState extends State<Body> {
                     widget.imageList,
                     removeImageList,
                     _avatarImageFile,
-                    _avatarUrl,
                   ),
                 );
               },
@@ -543,7 +539,38 @@ class _BodyState extends State<Body> {
     );
   }
 
-  void _showPicker(context) {
+  Widget _addImageButton() {
+    return GestureDetector(
+      onTap: () {
+        _showPicker();
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        width: 123,
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Color.fromRGBO(255, 255, 255, 0.1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '+',
+              style: TextStyle(
+                fontSize: 55,
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPicker() {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -661,38 +688,4 @@ InputDecoration inputDecoration(String hintText) {
       borderRadius: BorderRadius.circular(25.7),
     ),
   );
-}
-
-class AddImageButton extends StatefulWidget {
-  @override
-  _AddImageButtonState createState() => _AddImageButtonState();
-}
-
-class _AddImageButtonState extends State<AddImageButton> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Color.fromRGBO(255, 255, 255, 0.1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            '+',
-            style: TextStyle(
-              fontSize: 55,
-              color: Colors.white,
-              fontWeight: FontWeight.w200,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

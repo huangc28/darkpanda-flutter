@@ -42,7 +42,7 @@ class UserApis extends BaseClient {
       }),
     );
 
-    withAuthHeader(request);
+    await withTokenFromSecureStore(request);
 
     final res = await sendWithResponse(request);
 

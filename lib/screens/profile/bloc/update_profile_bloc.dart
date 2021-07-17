@@ -56,7 +56,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       );
 
       // 1. Upload avatar image
-      String avatarImageLink = event.avatarUrl == "" ? null : event.avatarUrl;
+      String avatarImageLink = state.avatarUrl == "" ? null : state.avatarUrl;
 
       if (event.avatarImage != null) {
         final resAvatarImage =
@@ -213,6 +213,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
           height: userProfile.height,
           weight: userProfile.weight,
           description: userProfile.description,
+          avatarUrl: userProfile.avatarUrl,
         ));
       } catch (_) {
         yield (state.copyWith(

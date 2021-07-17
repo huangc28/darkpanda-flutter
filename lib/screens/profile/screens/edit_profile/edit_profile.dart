@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
@@ -37,6 +38,14 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: BlocListener<UpdateProfileBloc, UpdateProfileState>(
         listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.initial ||
+              state.status == AsyncLoadingStatus.loading) {
+            return Row(
+              children: [
+                LoadingScreen(),
+              ],
+            );
+          }
           if (state.status == AsyncLoadingStatus.done) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

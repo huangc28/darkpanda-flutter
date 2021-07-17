@@ -57,7 +57,6 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
     String avatarUrl,
     File avatarImage,
   }) {
-    print("Height copy: " + height.toString());
     return UpdateProfileState._(
       ready: ready ?? this.ready,
       uuid: uuid ?? this.uuid,
