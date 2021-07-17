@@ -24,6 +24,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
   final double height;
   final double weight;
   final String description;
+  final File avatarImage;
 
   const UpdateProfileState._({
     this.ready = false,
@@ -41,6 +42,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
     this.height,
     this.weight,
     this.description,
+    this.avatarImage,
   });
 
   UpdateProfileState copyWith({
@@ -52,6 +54,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
     double height,
     double weight,
     String description,
+    File avatarImage,
   }) {
     print("Height copy: " + height.toString());
     return UpdateProfileState._(
@@ -63,6 +66,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
       height: height ?? this.height,
       weight: weight ?? this.weight,
       description: description ?? this.description,
+      avatarImage: avatarUrl ?? this.avatarImage,
     );
   }
 

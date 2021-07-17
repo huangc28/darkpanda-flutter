@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:darkpanda_flutter/screens/profile/models/update_profile.dart';
 import 'package:http/http.dart' as http;
@@ -26,13 +27,12 @@ class ProfileApiClient extends BaseClient {
 
   Future<http.Response> updateUserProfile(UpdateProfile updateProfile) async {
     try {
-      final uuid = updateProfile.userProfile.uuid;
       final body = updateProfile.userProfile;
 
       final jsonBody = jsonEncode(body);
       final request = http.Request(
         'PUT',
-        buildUri('/v1/users/$uuid'),
+        buildUri('/v1/users/'),
       );
 
       request.body = jsonBody;
@@ -58,8 +58,12 @@ class ProfileApiClient extends BaseClient {
 
       for (var i = 0; i < updateProfile.userImageList.length; i++) {
         if (updateProfile.userImageList[i].url == null) {
-          request.files.add(await http.MultipartFile.fromPath('image',
-              updateProfile.userImageList[i].fileName.path.toString()));
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'image',
+              updateProfile.userImageList[i].fileName.path.toString(),
+            ),
+          );
         }
       }
 
@@ -77,6 +81,29 @@ class ProfileApiClient extends BaseClient {
       rethrow;
     }
   }
-}
 
-class Dynamic {}
+  Future<http.Response> updateAvatarImage(File avatarImage) async {
+    try {
+      var request = new http.MultipartRequest(
+        "POST",
+        buildUri('/v1/images'),
+      );
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          avatarImage.path.toString(),
+        ),
+      );
+
+      await withTokenFromSecureStore(request);
+      withMultiPart(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+}

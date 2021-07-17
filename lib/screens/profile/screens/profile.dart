@@ -287,7 +287,9 @@ class _ProfileState extends State<Profile> {
                     ),
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage("assets/logo.png"),
+                      backgroundImage: state.userProfile.avatarUrl == ""
+                          ? AssetImage("assets/logo.png")
+                          : NetworkImage(state.userProfile.avatarUrl),
                     ),
                   ],
                 ),

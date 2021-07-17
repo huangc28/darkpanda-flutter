@@ -41,6 +41,8 @@ class _BodyState extends State<Body> {
   UserImage userImageAdd = UserImage(url: "");
   List<UserImage> removeImageList = [];
 
+  File _avatarImageFile;
+
   @override
   void initState() {
     super.initState();
@@ -72,7 +74,8 @@ class _BodyState extends State<Body> {
             SizedBox(
               height: SizeConfig.screenHeight * 0.022, //20
             ),
-            ProfilePicture(),
+            // ProfilePicture(),
+            _avatarImage(),
             InputTextLabel(label: "暱稱*"),
             SizedBox(
               height: SizeConfig.screenHeight * 0.022, //20
@@ -165,6 +168,65 @@ class _BodyState extends State<Body> {
         print('No image selected.');
       }
     });
+  }
+
+  Future getGalleryImageAvatar() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _avatarImageFile = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future getCameraImageAvatar() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _avatarImageFile = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Widget _avatarImage() {
+    return Container(
+      alignment: Alignment.center,
+      child: CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.blue,
+        backgroundImage: _avatarImageFile != null
+            ? FileImage(_avatarImageFile)
+            : widget.args.avatarUrl != ""
+                ? NetworkImage(widget.args.avatarUrl)
+                : _avatarImageFile == null
+                    ? AssetImage('assets/logo.png')
+                    : FileImage(_avatarImageFile),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.grey[400],
+            child: IconButton(
+              onPressed: () {
+                print('pet edit');
+                _showPickerAvatar();
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.black,
+                size: 16,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildNicknameInput() {
@@ -456,7 +518,11 @@ class _BodyState extends State<Body> {
               theme: DPTextButtonThemes.purple,
               onPressed: () {
                 BlocProvider.of<UpdateProfileBloc>(context).add(
-                  UpdateUserProfile(widget.imageList, removeImageList),
+                  UpdateUserProfile(
+                    widget.imageList,
+                    removeImageList,
+                    _avatarImageFile,
+                  ),
                 );
               },
               text: '更新',
@@ -487,6 +553,37 @@ class _BodyState extends State<Body> {
                   title: new Text('Camera'),
                   onTap: () {
                     getCameraImage();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPickerAvatar() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
+                    onTap: () {
+                      getGalleryImageAvatar();
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    getCameraImageAvatar();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -530,40 +627,6 @@ class InputTextLabel extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class ProfilePicture extends StatelessWidget {
-  const ProfilePicture({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: CircleAvatar(
-        radius: 50,
-        backgroundColor: Colors.blue,
-        child: Align(
-          alignment: Alignment.topRight,
-          child: CircleAvatar(
-            radius: 16,
-            backgroundColor: Colors.grey[400],
-            child: IconButton(
-              onPressed: () {
-                print('pet edit');
-              },
-              icon: Icon(
-                Icons.edit,
-                color: Colors.black,
-                size: 16,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
