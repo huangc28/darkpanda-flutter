@@ -366,7 +366,7 @@ class _ProfileState extends State<Profile> {
       },
     );
 
-    Navigator.push(context, route).then(onGoBack);
+    Navigator.of(context, rootNavigator: true).push(route).then(onGoBack);
   }
 
   FutureOr onGoBack(dynamic value) {

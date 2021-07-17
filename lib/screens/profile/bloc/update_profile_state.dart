@@ -54,6 +54,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
     double height,
     double weight,
     String description,
+    String avatarUrl,
     File avatarImage,
   }) {
     print("Height copy: " + height.toString());
@@ -66,7 +67,8 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
       height: height ?? this.height,
       weight: weight ?? this.weight,
       description: description ?? this.description,
-      avatarImage: avatarUrl ?? this.avatarImage,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      avatarImage: avatarImage ?? this.avatarImage,
     );
   }
 
@@ -101,13 +103,11 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
   factory UpdateProfileState.copyFrom(
     UpdateProfileState state, {
     E error,
-    models.UserProfile userProfile,
-    double height,
+    UserProfile userProfile,
   }) {
     return UpdateProfileState._(
       error: error ?? state.error,
       userProfile: userProfile ?? state.userProfile,
-      // height: height ?? state.height,
     );
   }
 
@@ -122,6 +122,7 @@ class UpdateProfileState<E extends AppBaseException> extends Equatable {
         age,
         height,
         weight,
-        description
+        description,
+        avatarUrl,
       ];
 }

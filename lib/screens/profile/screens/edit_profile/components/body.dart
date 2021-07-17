@@ -42,10 +42,14 @@ class _BodyState extends State<Body> {
   List<UserImage> removeImageList = [];
 
   File _avatarImageFile;
+  String _avatarUrl;
 
   @override
   void initState() {
     super.initState();
+
+    _avatarUrl = widget.args.avatarUrl;
+
     BlocProvider.of<UpdateProfileBloc>(context)
         .add(FetchProfileEdit(widget.args));
 
@@ -74,7 +78,6 @@ class _BodyState extends State<Body> {
             SizedBox(
               height: SizeConfig.screenHeight * 0.022, //20
             ),
-            // ProfilePicture(),
             _avatarImage(),
             InputTextLabel(label: "暱稱*"),
             SizedBox(
@@ -195,6 +198,9 @@ class _BodyState extends State<Body> {
   }
 
   Widget _avatarImage() {
+    // return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+    //   builder: (context, state) {
+    //     final avatarUrl = state.avatarUrl;
     return Container(
       alignment: Alignment.center,
       child: CircleAvatar(
@@ -227,16 +233,19 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
+    //   },
+    // );
   }
 
   Widget buildNicknameInput() {
     return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
       buildWhen: (previous, current) => previous.username != current.username,
       builder: (context, state) {
-        _nicknameTextController.text = state.nickname;
+        _nicknameTextController.text = state.username;
         return Column(
           children: <Widget>[
             TextFormField(
+              readOnly: true,
               controller: new TextEditingController.fromValue(
                 new TextEditingValue(
                   text: _nicknameTextController.text,
@@ -522,6 +531,7 @@ class _BodyState extends State<Body> {
                     widget.imageList,
                     removeImageList,
                     _avatarImageFile,
+                    _avatarUrl,
                   ),
                 );
               },

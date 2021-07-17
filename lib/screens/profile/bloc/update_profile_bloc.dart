@@ -56,7 +56,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       );
 
       // 1. Upload avatar image
-      String avatarImageLink = "";
+      String avatarImageLink = event.avatarUrl == "" ? null : event.avatarUrl;
 
       if (event.avatarImage != null) {
         final resAvatarImage =
