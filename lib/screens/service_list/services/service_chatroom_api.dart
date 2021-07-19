@@ -7,12 +7,14 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 class ServiceChatroomClient extends BaseClient {
-  Future<http.Response> fetchIncomingService({int offset = 0}) async {
+  Future<http.Response> fetchIncomingService(
+      {int offset = 0, int perPage = 7}) async {
     try {
       final request = http.Request(
         'GET',
         buildUri('/v1/services/incoming', {
           'offset': '$offset',
+          'perpage': '$perPage',
         }),
       );
 
@@ -26,12 +28,14 @@ class ServiceChatroomClient extends BaseClient {
     }
   }
 
-  Future<http.Response> fetchOverdueService({int offset = 0}) async {
+  Future<http.Response> fetchOverdueService(
+      {int offset = 0, int perPage = 7}) async {
     try {
       final request = http.Request(
         'GET',
         buildUri('/v1/services/overdue', {
           'offset': '$offset',
+          'per_page': '$perPage',
         }),
       );
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,11 +30,14 @@ class ChatRooms extends StatefulWidget {
 
 class _ChatRoomsState extends State<ChatRooms> {
   InquiryChatroomsBloc _inquiryChatroomsBloc;
+  Completer<void> _refreshCompleter;
 
   /// Emit flutter bloc event in lifecycle `Dispose` https://github.com/felangel/bloc/issues/588.
   @override
   void initState() {
+    _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
+
     super.initState();
   }
 
@@ -48,13 +53,15 @@ class _ChatRoomsState extends State<ChatRooms> {
       body: SystemUiOverlayLayout(
         child: SafeArea(
           child: Column(
-            children: [
+            children: <Widget>[
               // Inquiry chatrooms title
               _buildHeader(),
               BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
                 listener: (context, state) {
                   // Display error in snack bar.
                   if (state.status == AsyncLoadingStatus.error) {
+                    _refreshCompleter.completeError(state.error);
+                    _refreshCompleter = Completer();
                     developer.log(
                       'failed to fetch inquiry chatroom',
                       error: state.error,
@@ -66,6 +73,11 @@ class _ChatRoomsState extends State<ChatRooms> {
                       ),
                     );
                   }
+
+                  if (state.status == AsyncLoadingStatus.done) {
+                    _refreshCompleter.complete();
+                    _refreshCompleter = Completer();
+                  }
                 },
                 builder: (context, state) {
                   if (state.status == AsyncLoadingStatus.loading ||
@@ -73,44 +85,52 @@ class _ChatRoomsState extends State<ChatRooms> {
                     return LoadingScreen();
                   }
 
-                  return ChatroomList(
-                    chatrooms: state.chatrooms,
-                    onRefresh: () {
-                      print('DEBUG trigger onRefresh');
-                    },
-                    onLoadMore: () {
-                      print('DEBUG trigger onLoadMore');
-                    },
-                    chatroomBuilder: (context, chatroom, ___) {
-                      final lastMsg =
-                          state.chatroomLastMessage[chatroom.channelUUID];
+                  return Expanded(
+                    child: ChatroomList(
+                      chatrooms: state.chatrooms,
+                      onRefresh: () {
+                        print('DEBUG trigger onRefresh');
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
+                            .add(FetchChatrooms());
 
-                      // Loading inquirier info before proceeding to chatroom.
-                      return Container(
-                        margin: EdgeInsets.only(
-                          bottom: 20,
-                        ),
-                        child: ChatroomGrid(
-                          onEnterChat: (chatroomModel.Chatroom chatroom) {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            ).pushNamed(
-                              MainRoutes.chatroom,
-                              arguments: ChatroomScreenArguments(
-                                channelUUID: chatroom.channelUUID,
-                                inquiryUUID: chatroom.inquiryUUID,
-                                counterPartUUID: chatroom.inquirerUUID,
-                                serviceType: chatroom.serviceType,
-                                routeTypes: RouteTypes.fromInquiryChats,
-                              ),
-                            );
-                          },
-                          chatroom: chatroom,
-                          lastMessage: lastMsg.content,
-                        ),
-                      );
-                    },
+                        return _refreshCompleter.future;
+                      },
+                      onLoadMore: () {
+                        print('DEBUG trigger onLoadMore');
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
+                            .add(LoadMoreChatrooms());
+                      },
+                      chatroomBuilder: (context, chatroom, ___) {
+                        final lastMsg =
+                            state.chatroomLastMessage[chatroom.channelUUID];
+
+                        // Loading inquirier info before proceeding to chatroom.
+                        return Container(
+                          margin: EdgeInsets.only(
+                            bottom: 20,
+                          ),
+                          child: ChatroomGrid(
+                            onEnterChat: (chatroomModel.Chatroom chatroom) {
+                              Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              ).pushNamed(
+                                MainRoutes.chatroom,
+                                arguments: ChatroomScreenArguments(
+                                  channelUUID: chatroom.channelUUID,
+                                  inquiryUUID: chatroom.inquiryUUID,
+                                  counterPartUUID: chatroom.inquirerUUID,
+                                  serviceType: chatroom.serviceType,
+                                  routeTypes: RouteTypes.fromInquiryChats,
+                                ),
+                              );
+                            },
+                            chatroom: chatroom,
+                            lastMessage: lastMsg.content,
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

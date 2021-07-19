@@ -4,6 +4,7 @@ import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/load_historical_service_bloc.dart';
+import 'bloc/load_incoming_service_bloc.dart';
 import 'service_list.dart';
 import './services/service_chatroom_api.dart';
 
@@ -14,6 +15,12 @@ class ServiceChatroomRoutes extends BaseRoutes {
     return {
       ServiceChatroomRoutes.root: (context) => MultiBlocProvider(
             providers: [
+              BlocProvider.value(
+                value: BlocProvider.of<LoadIncomingServiceBloc>(context)
+                  ..add(
+                    LoadIncomingService(),
+                  ),
+              ),
               BlocProvider(
                 create: (context) => LoadHistoricalServiceBloc(
                   apiClient: ServiceChatroomClient(),

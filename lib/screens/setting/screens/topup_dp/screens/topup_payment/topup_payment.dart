@@ -158,9 +158,6 @@ class _TopupPaymentState extends State<TopupPayment> {
                             BlocProvider(
                               create: (context) => CancelServiceBloc(
                                 serviceAPIs: ServiceAPIs(),
-                                loadIncomingServiceBloc:
-                                    BlocProvider.of<LoadIncomingServiceBloc>(
-                                        context),
                               ),
                             ),
                           ],
@@ -285,7 +282,9 @@ class _TopupPaymentState extends State<TopupPayment> {
           ),
           DPTextButton(
             theme: DPTextButtonThemes.purple,
-            onPressed: () {},
+            onPressed: () {
+              print('press 通過 Paypal 付款');
+            },
             text: '通過 Paypal 付款',
           ),
         ],

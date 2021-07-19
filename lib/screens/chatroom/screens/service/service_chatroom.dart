@@ -432,10 +432,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                 create: (context) =>
                                                     CancelServiceBloc(
                                                   serviceAPIs: ServiceAPIs(),
-                                                  loadIncomingServiceBloc:
-                                                      BlocProvider.of<
-                                                              LoadIncomingServiceBloc>(
-                                                          context),
                                                 ),
                                               ),
                                             ],
@@ -626,8 +622,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                   BlocProvider(
                     create: (context) => CancelServiceBloc(
                       serviceAPIs: ServiceAPIs(),
-                      loadIncomingServiceBloc:
-                          BlocProvider.of<LoadIncomingServiceBloc>(context),
                     ),
                   ),
                 ],

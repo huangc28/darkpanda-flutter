@@ -72,7 +72,7 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
 
   LoadIncomingServiceState.clearState(LoadIncomingServiceState state)
       : this._(
-          services: [],
+          services: state.services,
           status: AsyncLoadingStatus.initial,
           chatroomLastMessage: {},
           privateChatStreamMap: state.privateChatStreamMap,

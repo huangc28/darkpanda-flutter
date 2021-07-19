@@ -96,10 +96,6 @@ class LoadIncomingServiceBloc
   Stream<LoadIncomingServiceState> _mapLoadMoreIncomingServiceEventToState(
       LoadMoreIncomingService event) async* {
     try {
-      // toggle loading
-      // yield LoadIncomingServiceState.loading(state);
-      // yield LoadIncomingServiceState.clearState(state);
-
       final offset = calcNextPageOffset(
         nextPage: state.currentPage + 1,
         perPage: event.perPage,

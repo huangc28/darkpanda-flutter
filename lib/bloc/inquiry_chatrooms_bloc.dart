@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,6 +50,8 @@ class InquiryChatroomsBloc
       yield* _mapAddChatroomsToState(event);
     } else if (event is FetchChatrooms) {
       yield* _mapFetchChatroomToState(event);
+    } else if (event is LoadMoreChatrooms) {
+      yield* _mapLoadMoreChatroomsToState(event);
     } else if (event is PutLatestMessage) {
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearInquiryChatList) {
@@ -140,6 +143,7 @@ class InquiryChatroomsBloc
       state,
       chatrooms: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
+      // currentPage: state.currentPage + 1,
     );
 
     for (final chatroom in event.chatrooms) {
@@ -235,7 +239,16 @@ class InquiryChatroomsBloc
       FetchChatrooms event) async* {
     try {
       yield InquiryChatroomsState.loading(state);
-      final resp = await inquiryChatroomApis.fetchInquiryChatrooms();
+      yield InquiryChatroomsState.clearInqiuryChatList(state);
+
+      final offset = calcNextPageOffset(
+        nextPage: event.nextPage,
+        perPage: event.perPage,
+      );
+
+      final resp = await inquiryChatroomApis.fetchInquiryChatrooms(
+        offset: offset,
+      );
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -251,6 +264,61 @@ class InquiryChatroomsBloc
 
       add(
         AddChatrooms(chatrooms),
+      );
+    } on APIException catch (err) {
+      developer.log(
+        err.toString(),
+        name: "APIException: fetch_chats_bloc",
+      );
+
+      yield InquiryChatroomsState.loadFailed(state, err);
+    } on AppGeneralExeption catch (e) {
+      developer.log(
+        e.toString(),
+        name: "AppGeneralExeption: fetch_chats_bloc",
+      );
+
+      yield InquiryChatroomsState.loadFailed(
+        state,
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Stream<InquiryChatroomsState> _mapLoadMoreChatroomsToState(
+      LoadMoreChatrooms event) async* {
+    try {
+      // yield InquiryChatroomsState.loading(state);
+      final offset = calcNextPageOffset(
+        nextPage: state.currentPage + 1,
+        perPage: event.perPage,
+      );
+
+      final resp = await inquiryChatroomApis.fetchInquiryChatrooms(
+        offset: offset,
+      );
+
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+
+      final Map<String, dynamic> respMap = json.decode(resp.body);
+
+      final chatrooms = respMap['chats']
+          .map<Chatroom>((chat) => Chatroom.fromMap(chat))
+          .toList();
+
+      final appended = <Chatroom>[
+        ...state.chatrooms,
+        ...?chatrooms,
+      ].toList();
+
+      add(
+        AddChatrooms(appended),
       );
     } on APIException catch (err) {
       developer.log(

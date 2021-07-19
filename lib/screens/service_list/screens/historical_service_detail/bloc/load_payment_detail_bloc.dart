@@ -39,8 +39,6 @@ class LoadPaymentDetailBloc
       // request API
       final res = await apiClient.fetchPaymentDetail(event.serviceUuid);
 
-      print(json.decode(res.body));
-
       if (res.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(res.body),

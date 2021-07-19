@@ -1,5 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
@@ -13,8 +17,6 @@ import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart'
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/review.dart';
 import 'edit_profile/edit_profile.dart';
@@ -25,62 +27,27 @@ class DemoImage {
   DemoImage({this.image});
 }
 
-List demoImageList = [
-  DemoImage(
-    image: "assets/female_icon_active.png",
-  ),
-  DemoImage(
-    image: "assets/female_icon_inactive.png",
-  ),
-  DemoImage(
-    image: "assets/male_icon_active.png",
-  ),
-  DemoImage(
-    image: "assets/male_icon_inactive.png",
-  ),
-];
+// class DemoReview {
+//   final String image;
+//   final String name;
+//   final String description;
+//   final String date;
+//   final int rate;
 
-class DemoReview {
-  final String image;
-  final String name;
-  final String description;
-  final String date;
-  final int rate;
-
-  DemoReview({this.image, this.name, this.description, this.date, this.rate});
-}
-
-// List demoReviewList = [
-//   DemoReview(
-//     image: "assets/logo.png",
-//     name: "Jenny",
-//     description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
-//     date: "2020.05.20",
-//     rate: 5,
-//   ),
-//   DemoReview(
-//     image: "assets/logo.png",
-//     name: "Sally",
-//     description: "小姐姐人不錯，身材很好好，服務也不錯，就是希望下次能準時點。",
-//     date: "2021.05.20",
-//     rate: 3,
-//   ),
-// ];
+//   DemoReview({
+//     this.image,
+//     this.name,
+//     this.description,
+//     this.date,
+//     this.rate,
+//   });
+// }
 
 class LabelList {
   final String description;
 
   LabelList({this.description});
 }
-
-List demoLabelList = [
-  LabelList(
-    description: "身材",
-  ),
-  LabelList(
-    description: "身材",
-  ),
-];
 
 class Profile extends StatefulWidget {
   final LoadUserBloc loadUserBloc;
@@ -118,14 +85,21 @@ class _ProfileState extends State<Profile> {
   @override
   void dispose() {
     widget.loadUserBloc.add(ClearUserState());
+    loadUserImagesBloc.add(ClearUserImagesState());
 
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    SizeConfig().init(context);
+  void deactivate() {
+    widget.loadUserBloc.add(ClearUserState());
+    loadUserImagesBloc.add(ClearUserImagesState());
 
+    super.deactivate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -287,7 +261,9 @@ class _ProfileState extends State<Profile> {
                     ),
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage("assets/logo.png"),
+                      backgroundImage: state.userProfile.avatarUrl == ""
+                          ? AssetImage("assets/logo.png")
+                          : NetworkImage(state.userProfile.avatarUrl),
                     ),
                   ],
                 ),
@@ -303,16 +279,20 @@ class _ProfileState extends State<Profile> {
 
   Widget imageList() {
     return BlocConsumer<LoadUserImagesBloc, LoadUserImagesState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        userImageList = state.userImages;
-        for (var i = 0; i < state.userImages.length; i++) {
-          if (state.userImages[i].url == null ||
-              state.userImages[i].url == "") {
-            state.userImages.removeAt(i);
-            i--;
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.done) {
+          for (var i = 0; i < state.userImages.length; i++) {
+            if (state.userImages[i].url == null ||
+                state.userImages[i].url == "") {
+              state.userImages.removeAt(i);
+              i--;
+            }
           }
         }
+      },
+      builder: (context, state) {
+        userImageList = state.userImages;
+
         if (state.status == AsyncLoadingStatus.initial ||
             state.status == AsyncLoadingStatus.loading) {
           return Row(
@@ -321,6 +301,8 @@ class _ProfileState extends State<Profile> {
             ],
           );
         }
+
+        // if (state.status == AsyncLoadingStatus.done) {
         return state.userImages.length > 0
             ? Container(
                 height: 190,
@@ -340,6 +322,8 @@ class _ProfileState extends State<Profile> {
                 ),
               )
             : SizedBox();
+        // }
+        // return SizedBox.shrink();
       },
     );
   }
@@ -364,7 +348,7 @@ class _ProfileState extends State<Profile> {
       },
     );
 
-    Navigator.push(context, route).then(onGoBack);
+    Navigator.of(context, rootNavigator: true).push(route).then(onGoBack);
   }
 
   FutureOr onGoBack(dynamic value) {

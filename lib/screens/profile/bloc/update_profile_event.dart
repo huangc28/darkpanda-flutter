@@ -53,20 +53,31 @@ class DescriptionChanged extends UpdateProfileEvent {
 }
 
 class UpdateUserProfile extends UpdateProfileEvent {
-  const UpdateUserProfile(this.imageList, this.removeImageList);
+  const UpdateUserProfile(
+    this.imageList,
+    this.removeImageList,
+    this.avatarImage,
+  );
 
   final List<UserImage> imageList;
   final List<UserImage> removeImageList;
+  final File avatarImage;
 
   @override
-  List<Object> get props => [imageList, removeImageList];
+  List<Object> get props => [
+        imageList,
+        removeImageList,
+        avatarImage,
+      ];
 }
 
-class UpdateUserImage extends UpdateProfileEvent {
-  const UpdateUserImage();
+class AvatarImageChanged extends UpdateProfileEvent {
+  const AvatarImageChanged(this.avatarImage);
+
+  final File avatarImage;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [avatarImage];
 }
 
 class FetchProfileEdit extends UpdateProfileEvent {

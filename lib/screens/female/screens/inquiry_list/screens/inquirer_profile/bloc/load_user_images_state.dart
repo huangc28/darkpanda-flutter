@@ -1,14 +1,7 @@
 part of 'load_user_images_bloc.dart';
 
-enum LoadUserImagesStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class LoadUserImagesState<E extends AppBaseException> extends Equatable {
-  final LoadUserImagesStatus status;
+  final AsyncLoadingStatus status;
   final E error;
   final List<UserImage> userImages;
   final int currentPage;
@@ -22,21 +15,21 @@ class LoadUserImagesState<E extends AppBaseException> extends Equatable {
 
   LoadUserImagesState.initial()
       : this._(
-          status: LoadUserImagesStatus.initial,
+          status: AsyncLoadingStatus.initial,
           currentPage: 0,
           userImages: <UserImage>[],
         );
 
   LoadUserImagesState.loading(LoadUserImagesState state)
       : this._(
-          status: LoadUserImagesStatus.loading,
+          status: AsyncLoadingStatus.loading,
           userImages: state.userImages,
           currentPage: state.currentPage,
         );
 
   LoadUserImagesState.loadFailed(LoadUserImagesState state, {E error})
       : this._(
-          status: LoadUserImagesStatus.loadFailed,
+          status: AsyncLoadingStatus.error,
           error: error ?? state.error,
           userImages: state.userImages,
           currentPage: state.currentPage,
@@ -44,15 +37,16 @@ class LoadUserImagesState<E extends AppBaseException> extends Equatable {
 
   const LoadUserImagesState.loaded(List<UserImage> images, int currentPage)
       : this._(
-          status: LoadUserImagesStatus.loaded,
+          status: AsyncLoadingStatus.done,
           userImages: images,
           currentPage: currentPage,
         );
 
   LoadUserImagesState.clearState(LoadUserImagesState state)
       : this._(
+          status: AsyncLoadingStatus.initial,
           userImages: <UserImage>[],
-          status: LoadUserImagesStatus.initial,
+          currentPage: 0,
         );
 
   @override

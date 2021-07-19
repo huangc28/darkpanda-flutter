@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
@@ -37,13 +38,13 @@ class LoadUserImagesBloc
     try {
       yield LoadUserImagesState.loading(state);
 
-      final jwt = await SecureStore().readJwtToken();
+      // final jwt = await SecureStore().readJwtToken();
       final offset = calcNextPageOffset(
         nextPage: event.pageNum,
         perPage: 9,
       );
 
-      userApi.jwtToken = jwt;
+      // userApi.jwtToken = jwt;
       final resp = await userApi.fetchUserImages(
         event.uuid,
         offset,

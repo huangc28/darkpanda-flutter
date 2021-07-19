@@ -87,7 +87,7 @@ class _InqiuryListState extends State<InqiuryList> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children: [
+          children: <Widget>[
             _buildHeader(),
             BlocListener<PickupInquiryBloc, PickupInquiryState>(
               listener: (context, state) {
@@ -156,6 +156,9 @@ class _InqiuryListState extends State<InqiuryList> {
                     child: InquiryList(
                       onLoadMore: () {
                         print('DEBUG trigger load more');
+                        BlocProvider.of<InquiriesBloc>(context).add(
+                          LoadMoreInquiries(),
+                        );
                       },
                       onRefresh: () {
                         BlocProvider.of<InquiriesBloc>(context).add(

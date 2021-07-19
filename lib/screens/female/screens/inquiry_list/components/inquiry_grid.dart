@@ -45,33 +45,36 @@ class InquiryGrid extends StatelessWidget {
     // Limited box give container a constraint when the constraint isn't set by the parent.
     // In this case, `ListView` does not have constraint on it's scrolling direction.
     // @Ref: https://www.youtube.com/watch?v=uVki2CIzBTs&ab_channel=Flutter
-    return LimitedBox(
-      child: Container(
-        padding: EdgeInsets.only(
-          top: SizeConfig.screenHeight * 0.022, //12,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 1,
-            color: Color.fromRGBO(106, 109, 137, 1),
+    return Padding(
+      padding: EdgeInsets.only(bottom: SizeConfig.screenHeight * 0.016),
+      child: LimitedBox(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: SizeConfig.screenHeight * 0.022, //12,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          color: Color.fromRGBO(31, 30, 56, 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InquiryDetail(
-              inquiry: inquiry,
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 1,
+              color: Color.fromRGBO(106, 109, 137, 1),
             ),
-            InquiryGridActions(
-              onTapChat: onTapChat,
-              onTapStartChat: onTapStartChat,
-              onTapClear: onTapClear,
-              onTapCheckProfile: onTapCheckProfile,
-              inquiry: inquiry,
-            )
-          ],
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+            color: Color.fromRGBO(31, 30, 56, 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InquiryDetail(
+                inquiry: inquiry,
+              ),
+              InquiryGridActions(
+                onTapChat: onTapChat,
+                onTapStartChat: onTapStartChat,
+                onTapClear: onTapClear,
+                onTapCheckProfile: onTapCheckProfile,
+                inquiry: inquiry,
+              )
+            ],
+          ),
         ),
       ),
     );

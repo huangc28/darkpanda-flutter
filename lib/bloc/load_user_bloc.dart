@@ -36,9 +36,6 @@ class LoadUserBloc extends Bloc<LoadUserEvent, LoadUserState> {
     try {
       yield LoadUserState.loading();
 
-      final jwt = await SecureStore().fsc.read(key: 'jwt');
-
-      userApis.jwtToken = jwt;
       final resp = await userApis.fetchUser(event.uuid);
 
       if (resp.statusCode != HttpStatus.ok) {

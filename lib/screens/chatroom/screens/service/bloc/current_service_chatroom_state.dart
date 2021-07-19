@@ -112,6 +112,18 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           service: state.service,
         );
 
+  CurrentServiceChatroomState.clearCurrentChatroom(
+      CurrentServiceChatroomState state)
+      : this._(
+          status: AsyncLoadingStatus.initial,
+          page: 1,
+          historicalMessages: [],
+          currentMessages: [],
+          userProfile: UserProfile(),
+          serviceStreamMap: {},
+          service: state.service,
+        );
+
   List<Message> get messages {
     return List.from(historicalMessages)..addAll(currentMessages);
   }

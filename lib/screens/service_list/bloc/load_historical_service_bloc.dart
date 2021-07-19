@@ -83,9 +83,6 @@ class LoadHistoricalServiceBloc
   Stream<LoadHistoricalServiceState> _mapLoadMoreHistoricalServiceEventToState(
       LoadMoreHistoricalService event) async* {
     try {
-      // toggle loading
-      // yield LoadHistoricalServiceState.loading(state);
-
       final offset = calcNextPageOffset(
         nextPage: state.currentPage + 1,
         perPage: event.perPage,

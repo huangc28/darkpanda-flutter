@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
@@ -34,8 +33,8 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       yield* _mapUserLoadedToState(event, state);
     } else if (event is UpdateUserProfile) {
       yield* _mapUpdateUserProfileToState(event, state);
-    } else if (event is UpdateUserImage) {
-      yield* _mapUpdateUserImageToState(event, state);
+    } else if (event is AvatarImageChanged) {
+      yield _mapAvatarImageChangedToState(event, state);
     } else if (event is NicknameChanged) {
       yield _mapNicknameChangedToState(event, state);
     } else if (event is AgeChanged) {
@@ -56,6 +55,30 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
         UpdateProfileState.copyFrom(state),
       );
 
+      // 1. Upload avatar image
+      String avatarImageLink = state.avatarUrl == "" ? null : state.avatarUrl;
+
+      if (event.avatarImage != null) {
+        final resAvatarImage =
+            await profileApiClient.updateAvatarImage(event.avatarImage);
+
+        if (resAvatarImage != null) {
+          if (resAvatarImage.statusCode != HttpStatus.ok) {
+            throw APIException.fromJson(json.decode(resAvatarImage.body));
+          }
+        }
+
+        final Map<String, dynamic> resultAvatar =
+            json.decode(resAvatarImage.body);
+
+        List<UserImage> avatarImageList = resultAvatar['links']
+            .map<UserImage>((image) => UserImage(url: image))
+            .toList();
+
+        avatarImageLink = avatarImageList[0].url;
+      }
+
+      // 2. Upload image listing
       List<UserImage> imageList = event.imageList;
       List<UserImage> removeImageList = event.removeImageList;
 
@@ -77,12 +100,19 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
             .toList();
       }
 
-      UserProfile userProfile =
-          await getUserProfile(state, imageStringList, removeImageList);
+      // 3. Update user profile
+      UserProfile userProfile = await getUserProfile(
+          state, imageStringList, removeImageList, avatarImageLink);
 
       updateProfile = new UpdateProfile(userProfile: userProfile);
 
-      await profileApiClient.updateUserProfile(updateProfile);
+      final res = await profileApiClient.updateUserProfile(updateProfile);
+
+      if (res != null) {
+        if (res.statusCode != HttpStatus.ok) {
+          throw APIException.fromJson(json.decode(res.body));
+        }
+      }
 
       yield UpdateProfileState.updated();
     } on APIException catch (e) {
@@ -100,23 +130,15 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     }
   }
 
-  Stream<UpdateProfileState> _mapUpdateUserImageToState(
-      UpdateUserImage event, UpdateProfileState state) async* {
-    try {
-      yield UpdateProfileState.updated();
-    } on APIException catch (e) {
-      yield UpdateProfileState.updateFailed(UpdateProfileState.copyFrom(
-        state,
-        error: e,
-      ));
-    } catch (e) {
-      yield UpdateProfileState.updateFailed(
-        UpdateProfileState.copyFrom(
-          state,
-          error: AppGeneralExeption(message: e.toString()),
-        ),
-      );
-    }
+  UpdateProfileState _mapAvatarImageChangedToState(
+    AvatarImageChanged event,
+    UpdateProfileState state,
+  ) {
+    final avatarImage = event.avatarImage;
+
+    return state.copyWith(
+      avatarImage: avatarImage,
+    );
   }
 
   UpdateProfileState _mapNicknameChangedToState(
@@ -191,6 +213,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
           height: userProfile.height,
           weight: userProfile.weight,
           description: userProfile.description,
+          avatarUrl: userProfile.avatarUrl,
         ));
       } catch (_) {
         yield (state.copyWith(
@@ -200,7 +223,8 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     }
   }
 
-  Future<UserProfile> getUserProfile(state, imageList, removeImageList) async {
+  Future<UserProfile> getUserProfile(
+      state, imageList, removeImageList, avatarUrl) async {
     UserProfile createPetObject;
 
     createPetObject = new UserProfile(
@@ -212,6 +236,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       description: state.description,
       imageList: imageList,
       removeImageList: removeImageList,
+      avatarUrl: avatarUrl,
     );
 
     return createPetObject;

@@ -86,7 +86,7 @@ class UserProfile {
         'username': username,
         'nickname': nickname,
         'gender': gender,
-        'avatarUrl': avatarUrl,
+        'avatar_url': avatarUrl,
         'nationality': nationality,
         'region': region,
         'age': age,
