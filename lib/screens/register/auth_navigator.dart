@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/register/screens/send_register_email/send_register_email.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -23,6 +24,8 @@ import './bloc/register_bloc.dart';
 import './services/register_api_client.dart';
 
 import './screen_arguments/args.dart';
+import 'screens/send_register_email/bloc/send_register_email_bloc.dart';
+import 'screens/send_register_email/services/send_register_api_client.dart';
 
 class AuthNavigator extends StatefulWidget {
   AuthNavigator();
@@ -87,6 +90,21 @@ class AuthNavigatorState extends State<AuthNavigator> {
                 _push(context, routeName, args),
             args: screenArgs,
           ),
+        );
+      },
+      '/register/send-register-email': (context) {
+        // var screenArgs = args as SendRegisterVerifyCodeArguments;
+
+        return BlocProvider(
+          create: (context) => SendRegisterEmailBloc(
+            sendRegisterApiClient: SendRegisterApiClient(),
+            timerBloc: BlocProvider.of<TimerBloc>(context),
+          ),
+          child: SendRegisterEmail(
+              // onPush: (String routeName, [VerifyRegisterCodeArguments args]) =>
+              //     _push(context, routeName, args),
+              // args: screenArgs,
+              ),
         );
       },
       '/register/verify-register-code': (context) {

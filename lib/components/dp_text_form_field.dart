@@ -72,17 +72,47 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       ),
       filled: true,
       fillColor: Colors.white.withOpacity(0.1),
+      hintText: '請輸入價格',
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(26),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26),
+        ),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26),
+        ),
+        borderSide: BorderSide.none,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
         ),
       ),
       errorStyle: TextStyle(
         fontSize: 15,
         letterSpacing: 0.47,
       ),
-      focusedErrorBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
     ),
   ),
   DPTextFieldThemes.inquiryForm: ThemeConfig.setConfig(
@@ -138,6 +168,9 @@ class DPTextFormField extends StatelessWidget {
     this.decoration,
     this.hintStyle,
     this.contentPadding,
+    this.obscureText = false,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
   }) : super(key: key);
 
   final BoxDecoration decoration;
@@ -153,6 +186,9 @@ class DPTextFormField extends StatelessWidget {
   final bool readOnly;
   final TextStyle hintStyle;
   final EdgeInsetsGeometry contentPadding;
+  final bool obscureText;
+  final bool autocorrect;
+  final bool enableSuggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +210,9 @@ class DPTextFormField extends StatelessWidget {
       style: chosenTheme.style,
       decoration: textFieldDecoration,
       focusNode: focusNode,
+      obscureText: obscureText,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
     );
   }
 }

@@ -179,8 +179,15 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                     if (state.status ==
                                         AsyncLoadingStatus.done) {
                                       // state.user.uuid
+                                      // widget.onPush(
+                                      //   '/register/send-verify-code',
+                                      //   SendRegisterVerifyCodeArguments(
+                                      //     username: _username,
+                                      //     userUuid: state.user.uuid,
+                                      //   ),
+                                      // );
                                       widget.onPush(
-                                        '/register/send-verify-code',
+                                        '/register/send-register-email',
                                         SendRegisterVerifyCodeArguments(
                                           username: _username,
                                           userUuid: state.user.uuid,
