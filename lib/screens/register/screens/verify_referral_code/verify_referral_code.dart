@@ -128,79 +128,79 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                       fieldsCount: 6,
                                     ),
 
-                                    Text(
-                                      '建立你的用戶名',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   '建立你的用戶名',
+                                    //   style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontSize: 16,
+                                    //   ),
+                                    // ),
 
-                                    SizedBox(
-                                      // height: 26,
-                                      height: SizeConfig.screenHeight * 0.05,
-                                    ),
+                                    // SizedBox(
+                                    //   // height: 26,
+                                    //   height: SizeConfig.screenHeight * 0.05,
+                                    // ),
 
                                     // Username input
-                                    DPTextFormField(
-                                      controller: _usernameControler,
-                                      onSaved: (String v) {
-                                        _username = v;
-                                      },
-                                      validator: (String v) {
-                                        if (v.trim().isEmpty) {
-                                          return 'username can not be empty';
-                                        }
+                                    // DPTextFormField(
+                                    //   controller: _usernameControler,
+                                    //   onSaved: (String v) {
+                                    //     _username = v;
+                                    //   },
+                                    //   validator: (String v) {
+                                    //     if (v.trim().isEmpty) {
+                                    //       return 'username can not be empty';
+                                    //     }
 
-                                        // If username does not pass async validation,
-                                        // display error message
-                                        if (_verifyUsernameErrStr != null &&
-                                            !_verifyUsernameErrStr.isEmpty) {
-                                          return _verifyUsernameErrStr;
-                                        }
+                                    //     // If username does not pass async validation,
+                                    //     // display error message
+                                    //     if (_verifyUsernameErrStr != null &&
+                                    //         !_verifyUsernameErrStr.isEmpty) {
+                                    //       return _verifyUsernameErrStr;
+                                    //     }
 
-                                        return null;
-                                      },
-                                      contentPadding: EdgeInsets.only(
-                                        left: 14.0,
-                                        bottom: SizeConfig.screenHeight * 0.01,
-                                        top: SizeConfig.screenHeight * 0.04,
-                                      ),
-                                    ),
+                                    //     return null;
+                                    //   },
+                                    //   contentPadding: EdgeInsets.only(
+                                    //     left: 14.0,
+                                    //     bottom: SizeConfig.screenHeight * 0.01,
+                                    //     top: SizeConfig.screenHeight * 0.04,
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
                             ),
                             MultiBlocListener(
                               listeners: [
-                                BlocListener<RegisterBloc, RegisterState>(
-                                  listener: (context, state) {
-                                    // If register successfully, we redirect to send register verify code
-                                    if (state.status ==
-                                        AsyncLoadingStatus.done) {
-                                      // state.user.uuid
-                                      // widget.onPush(
-                                      //   '/register/send-verify-code',
-                                      //   SendRegisterVerifyCodeArguments(
-                                      //     username: _username,
-                                      //     userUuid: state.user.uuid,
-                                      //   ),
-                                      // );
-                                      widget.onPush(
-                                        '/register/send-register-email',
-                                        SendRegisterVerifyCodeArguments(
-                                          username: _username,
-                                          userUuid: state.user.uuid,
-                                        ),
-                                      );
-                                    }
+                                // BlocListener<RegisterBloc, RegisterState>(
+                                //   listener: (context, state) {
+                                //     // If register successfully, we redirect to send register verify code
+                                //     if (state.status ==
+                                //         AsyncLoadingStatus.done) {
+                                //       // state.user.uuid
+                                //       // widget.onPush(
+                                //       //   '/register/send-verify-code',
+                                //       //   SendRegisterVerifyCodeArguments(
+                                //       //     username: _username,
+                                //       //     userUuid: state.user.uuid,
+                                //       //   ),
+                                //       // );
+                                //       widget.onPush(
+                                //         '/register/send-register-email',
+                                //         SendRegisterVerifyCodeArguments(
+                                //           username: _username,
+                                //           userUuid: state.user.uuid,
+                                //         ),
+                                //       );
+                                //     }
 
-                                    if (state.status ==
-                                        AsyncLoadingStatus.error) {
-                                      print('registering error!');
-                                    }
-                                  },
-                                ),
+                                //     if (state.status ==
+                                //         AsyncLoadingStatus.error) {
+                                //       print('registering error!');
+                                //     }
+                                //   },
+                                // ),
                                 BlocListener<VerifyReferralCodeBloc,
                                         VerifyReferralCodeState>(
                                     listener: (context, state) {
@@ -218,21 +218,28 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                   }
 
                                   if (state.status == AsyncLoadingStatus.done) {
-                                    setState(() {
-                                      _verifyRefCodeErrStr = '';
-                                      _verifyUsernameErrStr = '';
-                                    });
+                                    // setState(() {
+                                    //   _verifyRefCodeErrStr = '';
+                                    //   _verifyUsernameErrStr = '';
+                                    // });
 
-                                    _formKey.currentState.save();
+                                    // _formKey.currentState.save();
 
                                     // If verify code and and username are all valid,
                                     // register a new user.
-                                    BlocProvider.of<RegisterBloc>(context).add(
-                                      Register(
-                                        username: _username,
-                                        gender: widget.args.gender,
-                                        referalcode: _referralCode,
-                                      ),
+                                    // BlocProvider.of<RegisterBloc>(context).add(
+                                    //   Register(
+                                    //     username: _username,
+                                    //     gender: widget.args.gender,
+                                    //     referalcode: _referralCode,
+                                    //   ),
+                                    // );
+                                    widget.onPush(
+                                      '/register/send-register-email',
+                                      SendRegisterVerifyCodeArguments(
+                                          // username: _username,
+                                          // userUuid: state.user.uuid,
+                                          ),
                                     );
                                   }
                                 }),
