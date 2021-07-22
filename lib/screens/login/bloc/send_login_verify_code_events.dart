@@ -9,16 +9,20 @@ abstract class SendLoginVerifyCodeEvent extends Equatable {
 
 class SendLoginVerifyCode extends SendLoginVerifyCodeEvent {
   final String username;
+  final String password;
 
   const SendLoginVerifyCode({
     this.username,
+    this.password,
   });
 }
 
 class SendLoginVerifyCodeResetNumSend extends SendLoginVerifyCodeEvent {
   final String username;
+  final String password;
 
   const SendLoginVerifyCodeResetNumSend({
     this.username,
+    this.password,
   });
 }

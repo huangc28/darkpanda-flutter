@@ -36,6 +36,12 @@ class AuthNavigator extends StatefulWidget {
 
 class AuthNavigatorState extends State<AuthNavigator> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  static const root = '/';
+  static const chooseGender = '/register/choose-gender';
+  static const verifyReferralCode = '/register/verify-referral-code';
+  static const sendVerifyCode = '/register/send-verify-code';
+  static const sendRegisterEmail = '/register/send-register-email';
+  static const verifyRegisterCode = '/register/verify-register-code';
 
   void _push(BuildContext context, String routeName, [Object args]) {
     Navigator.push(
@@ -48,14 +54,14 @@ class AuthNavigatorState extends State<AuthNavigator> {
 
   Map<String, WidgetBuilder> _routeBuilder([Object args]) {
     return {
-      '/': (context) => Terms(
+      root: (context) => Terms(
             onPush: (String routeName) => _push(context, routeName),
           ),
-      '/register/choose-gender': (context) => ChooseGender(
+      chooseGender: (context) => ChooseGender(
             onPush: (String routeName, VerifyReferralCodeArguments args) =>
                 _push(context, routeName, args),
           ),
-      '/register/verify-referral-code': (context) {
+      verifyReferralCode: (context) {
         var screenArgs = args as VerifyReferralCodeArguments;
 
         return MultiBlocProvider(
@@ -77,7 +83,7 @@ class AuthNavigatorState extends State<AuthNavigator> {
           ),
         );
       },
-      '/register/send-verify-code': (context) {
+      sendVerifyCode: (context) {
         var screenArgs = args as SendRegisterVerifyCodeArguments;
 
         return BlocProvider(
@@ -92,7 +98,7 @@ class AuthNavigatorState extends State<AuthNavigator> {
           ),
         );
       },
-      '/register/send-register-email': (context) {
+      sendRegisterEmail: (context) {
         // var screenArgs = args as SendRegisterVerifyCodeArguments;
 
         return BlocProvider(
@@ -107,7 +113,7 @@ class AuthNavigatorState extends State<AuthNavigator> {
               ),
         );
       },
-      '/register/verify-register-code': (context) {
+      verifyRegisterCode: (context) {
         var screenArgs = args as VerifyRegisterCodeArguments;
 
         return MultiBlocProvider(

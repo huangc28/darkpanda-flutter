@@ -3,7 +3,6 @@ import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
@@ -36,9 +35,10 @@ class _LoginState extends State<Login> {
 
   Widget _buildLogoImage() {
     return Row(
-      children: [
+      children: <Widget>[
         Container(
           child: Image(
+            width: SizeConfig.blockSizeVertical * 16,
             image: AssetImage('assets/logo.png'),
           ),
         )
@@ -49,13 +49,13 @@ class _LoginState extends State<Login> {
 
   Widget _buildTitleText() {
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: Text(
             '歡迎來到 Dark Panda',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: SizeConfig.blockSizeVertical * 3.5, //24,
             ),
           ),
         ),
@@ -65,8 +65,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-
     return Scaffold(
       body: SystemUiOverlayLayout(
         child: Container(
@@ -81,11 +79,17 @@ class _LoginState extends State<Login> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(height: 92),
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.11, //92,
+                    ),
                     _buildLogoImage(),
-                    SizedBox(height: 26),
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.036, //26,
+                    ),
                     _buildTitleText(),
-                    SizedBox(height: 30),
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.044, //30,
+                    ),
                     BlocListener<SendLoginVerifyCodeBloc,
                         SendLoginVerifyCodeState>(
                       listener: (context, state) {
@@ -126,6 +130,9 @@ class _LoginState extends State<Login> {
                           );
                         },
                       ),
+                    ),
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.02,
                     ),
 
                     /// Use [Expanded] to fill up the rest of the column space
