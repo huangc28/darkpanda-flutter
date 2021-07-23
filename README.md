@@ -46,6 +46,7 @@ flutter build \
  
 
 - Implement app bottom bar. --- [ok]
+- Remove pubnub from the application
 - Login / Logout function.
 - Handle error when API request failed.
 - Initialize firestore instance at the start of the application. --- [ok]
@@ -54,7 +55,7 @@ flutter build \
 
 ## Reference
 
-- [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)
+- [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)
 - [Great navigator article ](https://medium.com/flutter-community/flutter-push-pop-push-1bb718b13c31)
 - [How to fix form overflow problem](https://www.google.com/search?q=flutter+from+keyboard+overflow&rlz=1C5CHFA_enTW891TW891&oq=flutter+keyboard+form+o&aqs=chrome.1.69i57j0i10i22i30j69i60.11468j0j7&sourceid=chrome&ie=UTF-8#kpvalbx=_6Gd0YMewBrXLmAXXtJe4DA12)
 - [Slideup panel animation](https://nhancv.medium.com/simple-slide-up-widget-animation-56b14e0189c5)
