@@ -3,7 +3,6 @@
 
 Prompt the following command: `flutter build apk --release`
 
-
 ## Release
 
 We will be using `appCenter` to release darkpanda app. The approach used is referencing  [this article]([Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)).
@@ -14,7 +13,7 @@ The app will retrieve it's environment variables from `.env` on local file syste
 
 
 After custom environment variables are properly set in appcenter build configuration, we can then retrieve variables in `appcenter-post-clone.sh` script.
-`appcenter-post-clone.sh` defines environment configs when building android SDK with  `flutter build --dart-define=ENV=$ENV` : 
+`appcenter-post-clone.sh` gets executes during building process in appcenter so we can feed env variables to comments  `flutter build --dart-define=ENV=$ENV` when building APK.
 
 ```sh
 flutter build \
