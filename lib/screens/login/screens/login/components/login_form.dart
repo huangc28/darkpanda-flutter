@@ -86,6 +86,7 @@ class _LoginFormState extends State<LoginForm> {
             height: SizeConfig.screenHeight * 0.065,
             child: DPTextButton(
               loading: widget.loading,
+              disabled: widget.loading,
               text: AppLocalizations.of(context).login,
               onPressed: _submit,
             ),
