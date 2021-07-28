@@ -38,7 +38,7 @@ class LoginNavigatorState extends State<LoginNavigator> {
             onPush: (String routeName, VerifyLoginPinArguments args) =>
                 _push(context, routeName, args),
           ),
-      '/login/verify-login-ping': (context) {
+      '/login/verify-login-pin': (context) {
         final screenArgs = args as VerifyLoginPinArguments;
 
         return MultiBlocProvider(
