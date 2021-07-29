@@ -20,7 +20,6 @@ class LoginAPIClient extends BaseClient {
 
       return res;
     } catch (err) {
-      print('DEBUG err ${err}');
       throw AppGeneralExeption(
         message: err.toString(),
       );
@@ -33,26 +32,21 @@ class LoginAPIClient extends BaseClient {
     String verifyDigs,
     String mobile,
   }) async {
-    try {
-      final request = http.Request(
-          'POST',
-          buildUri(
-            '/v1/auth/verify-code',
-            {
-              'uuid': uuid,
-              'mobile': mobile,
-              'verify_char': verifyChars,
-              'verify_dig': verifyDigs,
-            },
-          ));
+    final request = http.Request(
+      'POST',
+      buildUri(
+        '/v1/auth/verify-code',
+        {
+          'uuid': uuid,
+          'mobile': mobile,
+          'verify_char': verifyChars,
+          'verify_dig': verifyDigs,
+        },
+      ),
+    );
 
-      final res = await sendWithResponse(request);
+    final res = await sendWithResponse(request);
 
-      return res;
-    } catch (err) {
-      throw AppGeneralExeption(
-        message: err.toString(),
-      );
-    }
+    return res;
   }
 }

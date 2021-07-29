@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,40 +53,44 @@ import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  FirebaseApp app = await Firebase.initializeApp();
+    FirebaseApp app = await Firebase.initializeApp();
 
-  assert(app != null);
+    assert(app != null);
 
-  // Initialize application config.
-  await Config.AppConfig.initConfig();
+    // Initialize application config.
+    await Config.AppConfig.initConfig();
 
-  WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
-  String _gender = await SecureStore().readGender();
-  String _jwt = await SecureStore().readJwtToken();
+    String _gender = await SecureStore().readGender();
+    String _jwt = await SecureStore().readJwtToken();
 
-  ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
-        body: Center(
-          child: Text(
-            'Something went wrong',
-            style: TextStyle(color: Colors.white),
+    ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
+          body: Center(
+            child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      );
+        );
 
-  runApp(
-    DarkPandaApp(
-      gender: _gender,
-      jwt: _jwt,
-    ),
-  );
+    runApp(
+      DarkPandaApp(
+        gender: _gender,
+        jwt: _jwt,
+      ),
+    );
+  } catch (err) {
+    developer.log('failed to initialize app: ${err.toString()}');
+  }
 }
 
 class DarkPandaApp extends StatefulWidget {
@@ -95,8 +100,8 @@ class DarkPandaApp extends StatefulWidget {
     this.jwt,
   }) : super(key: key);
 
-  final gender;
-  final jwt;
+  final String gender;
+  final String jwt;
   static final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
 
   @override

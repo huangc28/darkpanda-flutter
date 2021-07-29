@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/bank_account/bank_account.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/recommend_management.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/verify_phone/verify_phone.dart';
 

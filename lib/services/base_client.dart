@@ -1,7 +1,7 @@
-import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
