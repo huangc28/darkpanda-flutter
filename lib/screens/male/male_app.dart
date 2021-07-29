@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/main.dart';
+import 'package:darkpanda_flutter/components/navigate_to_login.dart';
+
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
 
@@ -38,7 +41,15 @@ class _MaleAppState extends State<MaleApp> {
       onWillPop: () async =>
           !await _tabGlobalKeyMap[_currentTab].currentState.maybePop(),
       child: Scaffold(
-        body: _buildBody(),
+        body: ValueListenableBuilder(
+          valueListenable: DarkPandaApp.valueNotifier,
+          builder: (context, value, child) {
+            if (value == true) {
+              return NavitgateToLogin();
+            }
+            return _buildBody();
+          },
+        ),
         bottomNavigationBar: BottomNavigation(
           currentTab: _currentTab,
           onSelectTab: _handleSelectTab,

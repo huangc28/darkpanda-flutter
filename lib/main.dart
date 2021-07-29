@@ -71,6 +71,15 @@ void main() async {
   String _gender = await SecureStore().readGender();
   String _jwt = await SecureStore().readJwtToken();
 
+  ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
+        body: Center(
+          child: Text(
+            'Something went wrong',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+
   runApp(
     DarkPandaApp(
       gender: _gender,
@@ -88,6 +97,7 @@ class DarkPandaApp extends StatefulWidget {
 
   final gender;
   final jwt;
+  static final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
 
   @override
   _DarkPandaAppState createState() => _DarkPandaAppState();
@@ -259,7 +269,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
             CountryLocalizations.delegate,
             AppLocalizations.delegate,
           ],
-
           supportedLocales: [
             Locale.fromSubtags(
               languageCode: 'zh',
@@ -268,7 +277,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
             ),
             Locale.fromSubtags(languageCode: 'en'),
           ],
-
           theme: ThemeManager.getTheme(),
           initialRoute: MainRoutes.landing,
           onGenerateRoute: (settings) {

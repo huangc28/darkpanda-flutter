@@ -16,7 +16,6 @@ import 'profile.dart';
 
 class ProfileRoutes extends BaseRoutes {
   static const root = '/';
-  static const myProfile = '/my-profile';
   static const editProfile = '/edit-profile';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
