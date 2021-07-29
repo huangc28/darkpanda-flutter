@@ -1,5 +1,7 @@
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
+
+import 'package:darkpanda_flutter/util/size_config.dart';
+import 'package:darkpanda_flutter/routes.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 
@@ -135,6 +137,21 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamedAndRemoveUntil(
+              MainRoutes.login,
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
         title: Image.asset(
           'assets/horizontal_logo_banner.png',
           fit: BoxFit.cover,
