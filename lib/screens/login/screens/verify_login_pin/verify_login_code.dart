@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/female_app.dart';
 import 'package:darkpanda_flutter/screens/male/male_app.dart';
 
+import 'package:darkpanda_flutter/main.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
@@ -101,6 +102,8 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   listener: (context, state) {
                     // If verify success, redirect to application.
                     if (state.status == AsyncLoadingStatus.done) {
+                      DarkPandaApp.valueNotifier.value = false;
+
                       Navigator.of(
                         context,
                         rootNavigator: true,

@@ -207,7 +207,9 @@ class _ProfileState extends State<Profile> {
                           Row(
                             children: <Widget>[
                               Text(
-                                state.userProfile.username,
+                                state?.userProfile?.username == null
+                                    ? ''
+                                    : state?.userProfile?.username,
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
@@ -238,16 +240,16 @@ class _ProfileState extends State<Profile> {
                                   alignment: Alignment.centerLeft,
                                   child: Wrap(
                                     children: <Widget>[
-                                      state.userProfile.age != null &&
-                                              state.userProfile.age != ""
+                                      state?.userProfile?.age != null &&
+                                              state?.userProfile?.age != ""
                                           ? ageLabel(state)
                                           : SizedBox(),
-                                      state.userProfile.height != null &&
-                                              state.userProfile.age != ""
+                                      state?.userProfile?.height != null &&
+                                              state?.userProfile?.age != ""
                                           ? heightLabel(state)
                                           : SizedBox(),
-                                      state.userProfile.weight != null &&
-                                              state.userProfile.age != ""
+                                      state?.userProfile?.weight != null &&
+                                              state?.userProfile?.age != ""
                                           ? weightLabel(state)
                                           : SizedBox(),
                                     ],
@@ -261,9 +263,10 @@ class _ProfileState extends State<Profile> {
                     ),
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: state.userProfile.avatarUrl == ""
+                      backgroundImage: state?.userProfile?.avatarUrl == "" ||
+                              state?.userProfile?.avatarUrl == null
                           ? AssetImage("assets/logo.png")
-                          : NetworkImage(state.userProfile.avatarUrl),
+                          : NetworkImage(state?.userProfile?.avatarUrl),
                     ),
                   ],
                 ),
@@ -437,8 +440,8 @@ class _ProfileState extends State<Profile> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          state.userProfile.description == null ||
-                  state.userProfile.description.isEmpty
+          state?.userProfile?.description == null ||
+                  state?.userProfile?.description == ""
               ? '沒有內容'
               : state.userProfile.description,
           style: TextStyle(

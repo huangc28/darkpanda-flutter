@@ -6,9 +6,7 @@ abstract class ServiceConfirmNotifierEvent extends Equatable {
   final Message message;
 
   @override
-  List<Object> get props => [
-        message,
-      ];
+  List<Object> get props => [message];
 }
 
 class NotifyServiceConfirmed extends ServiceConfirmNotifierEvent {
