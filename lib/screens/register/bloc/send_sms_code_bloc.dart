@@ -63,9 +63,9 @@ class SendSmsCodeBloc extends Bloc<SendSmsCodeEvent, SendSmsCodeState> {
         ),
       );
 
-      // If user intends to resend for more than 2 times, we start locking
+      // If user intends to resend for more than 1 times, we start locking
       // the resend button for a fixed time range.
-      if (incrNumSend >= 2) {
+      if (incrNumSend > 1) {
         timerBloc.add(
           StartTimer(
             duration: Fib.genFib(currNumSend) * Duration.secondsPerMinute,
