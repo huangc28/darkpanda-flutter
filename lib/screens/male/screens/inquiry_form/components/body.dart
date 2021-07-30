@@ -1,20 +1,14 @@
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/male_app.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/service_list.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/components/waiting_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 part 'appointment_time_field.dart';
 
@@ -139,33 +133,35 @@ class _BodyState extends State<Body> {
     initPeriodRadio();
     initServiceTypeRadio(serviceList.serviceNames);
 
-    return SingleChildScrollView(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: (20.0 / 375.0) * viewPortWidth),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: viewPortHeight * 0.05),
-                _budgetInput(),
-                SizedBox(height: viewPortHeight * 0.05),
-                _textLabel('服務類型'),
-                SizedBox(height: viewPortHeight * 0.02),
-                _serviceTypeRadio(),
-                SizedBox(height: viewPortHeight * 0.05),
-                _textLabel('見面時間'),
-                SizedBox(height: viewPortHeight * 0.02),
-                _appointmentTime(),
-                SizedBox(height: viewPortHeight * 0.05),
-                _textLabel('服務期限'),
-                SizedBox(height: viewPortHeight * 0.02),
-                _servicePeriodRadio(),
-                SizedBox(height: viewPortHeight * 0.015),
-                _confirmButton(),
-              ],
+    return UnfocusPrimary(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: (20.0 / 375.0) * viewPortWidth),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: viewPortHeight * 0.05),
+                  _budgetInput(),
+                  SizedBox(height: viewPortHeight * 0.05),
+                  _textLabel('服務類型'),
+                  SizedBox(height: viewPortHeight * 0.02),
+                  _serviceTypeRadio(),
+                  SizedBox(height: viewPortHeight * 0.05),
+                  _textLabel('見面時間'),
+                  SizedBox(height: viewPortHeight * 0.02),
+                  _appointmentTime(),
+                  SizedBox(height: viewPortHeight * 0.05),
+                  _textLabel('服務期限'),
+                  SizedBox(height: viewPortHeight * 0.02),
+                  _servicePeriodRadio(),
+                  SizedBox(height: viewPortHeight * 0.015),
+                  _confirmButton(),
+                ],
+              ),
             ),
           ),
         ),
