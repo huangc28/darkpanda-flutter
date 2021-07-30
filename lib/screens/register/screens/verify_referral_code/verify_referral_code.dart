@@ -9,7 +9,6 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/register/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import './bloc/verify_referral_code_bloc.dart';
 
@@ -160,6 +159,11 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                             return 'username can not be empty';
                                           }
 
+                                          // Username has to be at least 6 chars.
+                                          if (v.length < 6) {
+                                            return 'username has to be at least 6 characters';
+                                          }
+
                                           // If username does not pass async validation,
                                           // display error message
                                           if (_verifyUsernameErrStr != null &&
@@ -248,13 +252,13 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                                 AsyncLoadingStatus.loading,
                                             theme: DPTextButtonThemes.purple,
                                             onPressed: () {
-                                              /// Reset async error before performing validation
+                                              // Reset async error before performing validation
                                               setState(() {
                                                 _verifyRefCodeErrStr = '';
                                                 _verifyUsernameErrStr = '';
                                               });
 
-                                              /// verify pin code input and username synchronously
+                                              // verify pin code input and username synchronously
                                               if (!_formKey.currentState
                                                   .validate()) {
                                                 return null;
@@ -262,7 +266,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
 
                                               _formKey.currentState.save();
 
-                                              /// verify pin code and username validity asynchornously
+                                              // verify pin code and username validity asynchornously
                                               BlocProvider.of<
                                                           VerifyReferralCodeBloc>(
                                                       context)
@@ -273,8 +277,8 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                                 ),
                                               );
 
-                                              /// The rest of the form operations `_formKey.save()`, `_formKey.validate()`
-                                              /// will be performed in bloc listeners
+                                              // The rest of the form operations `_formKey.save()`, `_formKey.validate()`
+                                              // will be performed in bloc listeners
                                             },
                                             text: '下一步',
                                           );

@@ -14,9 +14,6 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/send_sms_code_bloc.dart';
 import 'package:darkpanda_flutter/screens/register/bloc/register_bloc.dart';
 
-// import '../../bloc/send_sms_code_bloc.dart';
-//  import '../../bloc';
-
 // @TODO:
 //   - Create a phone number form field [ok]
 //   - Create a verify code form field [ok]
@@ -51,7 +48,11 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
 
   String _mobileNumber;
   String _dialCode = '+886';
-  bool _disableSend = true;
+
+  /// Display sms error message beneath phone number field.
+  String _sendSmsErrStr = '';
+
+  bool _disableSend = false;
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +173,12 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                             ),
                             SizedBox(
                               height: SizeConfig.screenHeight * 0.07,
+                              child: Text(
+                                _sendSmsErrStr,
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
                             ),
                             BlocListener<SendSmsCodeBloc, SendSmsCodeState>(
                               listener: (context, state) {
@@ -189,30 +196,38 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
                                 }
 
                                 if (state.status == AsyncLoadingStatus.error) {
-                                  print('sending sms error');
-
-                                  // Display error
+                                  _sendSmsErrStr = state.error.message;
                                 }
                               },
                               child: SizedBox(
                                 height: SizeConfig.screenHeight * 0.065,
-                                child: DPTextButton(
-                                  disabled: _disableSend,
-                                  text: '寄驗證碼',
-                                  onPressed: () {
-                                    if (!_formKey.currentState.validate()) {
-                                      return;
-                                    }
+                                child: BlocBuilder<SendSmsCodeBloc,
+                                    SendSmsCodeState>(
+                                  builder: (context, state) {
+                                    return DPTextButton(
+                                      loading: state.status ==
+                                          AsyncLoadingStatus.loading,
+                                      disabled: _disableSend,
+                                      text: '寄驗證碼',
+                                      onPressed: () {
+                                        _sendSmsErrStr = '';
 
-                                    _formKey.currentState.save();
+                                        if (!_formKey.currentState.validate()) {
+                                          return;
+                                        }
 
-                                    BlocProvider.of<SendSmsCodeBloc>(context)
-                                        .add(
-                                      SendSMSCode(
-                                        dialCode: _dialCode,
-                                        mobileNumber: _mobileNumber,
-                                        uuid: widget.args.userUuid,
-                                      ),
+                                        _formKey.currentState.save();
+
+                                        BlocProvider.of<SendSmsCodeBloc>(
+                                                context)
+                                            .add(
+                                          SendSMSCode(
+                                            dialCode: _dialCode,
+                                            mobileNumber: _mobileNumber,
+                                            uuid: widget.args.userUuid,
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
                                 ),
