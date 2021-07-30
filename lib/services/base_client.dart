@@ -71,6 +71,7 @@ abstract class BaseClient extends http.BaseClient {
 
       final res = await http.Response.fromStream(streamResp);
 
+      // Check if token is expired
       if (res.statusCode == HttpStatus.badRequest) {
         DarkPandaApp.valueNotifier.value = true;
       }
