@@ -27,7 +27,7 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
   DPTextFieldThemes.white: ThemeConfig.setConfig(
     style: TextStyle(
       fontSize: 18,
-      color: Colors.white,
+      color: Colors.black,
       letterSpacing: .36,
     ),
     decoration: InputDecoration(
