@@ -604,6 +604,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             serviceUuid: widget.args.serviceUUID,
             chatPartnerUsername: _inquiryDetail.username,
             appointmentTime: _inquiryDetail.updateInquiryMessage.serviceTime,
+            status: _serviceDetails.serviceStatus,
           );
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) {

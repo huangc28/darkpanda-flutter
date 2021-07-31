@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -228,8 +229,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       children: [
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
+            disabled:
+                widget.historicalService.status == ServiceStatus.fulfilling.name
+                    ? true
+                    : false,
             onPressed: widget.onCancelService,
-            text: '取消交易',
+            text:
+                widget.historicalService.status == ServiceStatus.fulfilling.name
+                    ? '服務進行中，無法取消交易'
+                    : '取消交易',
             theme: DPTextButtonThemes.purple,
           ),
       ],
