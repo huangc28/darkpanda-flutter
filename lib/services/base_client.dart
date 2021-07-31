@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -73,7 +74,12 @@ abstract class BaseClient extends http.BaseClient {
 
       // Check if token is expired
       if (res.statusCode == HttpStatus.badRequest) {
-        DarkPandaApp.valueNotifier.value = true;
+        final error = json.decode(res.body);
+
+        // FailedToParseSignature, token is expired
+        if (error['err_code'] == '1000024') {
+          DarkPandaApp.valueNotifier.value = true;
+        }
       }
 
       return res;
