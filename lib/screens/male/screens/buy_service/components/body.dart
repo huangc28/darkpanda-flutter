@@ -45,13 +45,13 @@ class _BodyState extends State<Body> {
         child: Column(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.only(top: 10.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: Color.fromRGBO(31, 30, 56, 1),
               ),
               child: Column(
-                children: [
+                children: <Widget>[
                   SizedBox(height: 15),
                   Row(
                     children: [
@@ -166,7 +166,7 @@ class _BodyState extends State<Body> {
           SizedBox(height: 15),
           _buildEachText(
             'countDown.png',
-            '期限',
+            '時長',
             widget.args.updateInquiryMessage.duration >
                         Duration(hours: 0, minutes: 1) &&
                     widget.args.updateInquiryMessage.duration <=
@@ -286,7 +286,7 @@ class _BodyState extends State<Body> {
     return Container(
       // height: 30,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(

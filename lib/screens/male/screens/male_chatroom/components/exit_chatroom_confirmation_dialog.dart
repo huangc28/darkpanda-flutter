@@ -27,21 +27,21 @@ class ExitChatroomConfirmationDialog extends StatelessWidget {
           Container(
             width: MediaQuery.of(context).size.width * 0.3,
             child: DPTextButton(
-              theme: DPTextButtonThemes.grey,
-              onPressed: () async {
-                Navigator.pop(context, true);
-              },
-              text: '離開',
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: DPTextButton(
               theme: DPTextButtonThemes.purple,
               onPressed: () async {
                 Navigator.pop(context, false);
               },
               text: '繼續聊',
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: DPTextButton(
+              theme: DPTextButtonThemes.grey,
+              onPressed: () async {
+                Navigator.pop(context, true);
+              },
+              text: '離開',
             ),
           ),
         ],

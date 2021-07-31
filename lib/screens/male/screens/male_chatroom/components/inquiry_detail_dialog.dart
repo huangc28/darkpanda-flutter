@@ -1,6 +1,7 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class InquiryDetailDialog extends StatelessWidget {
   const InquiryDetailDialog({
@@ -78,40 +79,11 @@ class InquiryDetailDialog extends StatelessWidget {
         color: Color.fromRGBO(239, 239, 244, 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+        padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(141, 145, 155, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '小計：',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(141, 145, 155, 1),
-                  ),
-                ),
-                Text(
-                  inquiryDetail.updateInquiryMessage.matchingFee.toString() +
-                      'DP',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(49, 50, 53, 1),
-                  ),
-                ),
-              ],
-            ),
+            _buildEachText('pie.png', '小計',
+                '${inquiryDetail.updateInquiryMessage.matchingFee}DP'),
           ],
         ),
       ),
@@ -127,113 +99,34 @@ class InquiryDetailDialog extends StatelessWidget {
         color: Color.fromRGBO(239, 239, 244, 1),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+        padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(141, 145, 155, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '地址：',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(141, 145, 155, 1),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    inquiryDetail.updateInquiryMessage.address,
-                    // '臺中市北屯區豐樂路二段158...',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color.fromRGBO(49, 50, 53, 1),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6),
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(141, 145, 155, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '時間：',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(141, 145, 155, 1),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    inquiryDetail.updateInquiryMessage.serviceTime.toString(),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color.fromRGBO(49, 50, 53, 1),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6),
-            Row(
-              children: <Widget>[
-                Container(
-                  height: 7.0,
-                  width: 7.0,
-                  transform: new Matrix4.identity()
-                    ..rotateZ(45 * 3.1415927 / 180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(141, 145, 155, 1),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  '期限：',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromRGBO(141, 145, 155, 1),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    inquiryDetail.updateInquiryMessage.duration >
-                                Duration(hours: 0, minutes: 1) &&
-                            inquiryDetail.updateInquiryMessage.duration <=
-                                Duration(hours: 0, minutes: 59)
-                        ? '${durationSplit[1]} 分'
-                        : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color.fromRGBO(49, 50, 53, 1),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildEachText(
+                'place.png',
+                '地址',
+                inquiryDetail.updateInquiryMessage.address != null
+                    ? inquiryDetail.updateInquiryMessage.address
+                    : ''),
+            SizedBox(height: 8),
+            _buildEachText(
+                'clock.png',
+                '時間',
+                inquiryDetail.updateInquiryMessage.serviceTime != null
+                    ? '${DateFormat("MM/dd/yy, hh: mm a").format(inquiryDetail.updateInquiryMessage.serviceTime)}'
+                    : ''),
+            SizedBox(height: 8),
+            if (durationSplit.length > 0)
+              _buildEachText(
+                'countDown.png',
+                '時長',
+                inquiryDetail.updateInquiryMessage.duration >
+                            Duration(hours: 0, minutes: 1) &&
+                        inquiryDetail.updateInquiryMessage.duration <=
+                            Duration(hours: 0, minutes: 59)
+                    ? '${durationSplit[1]} 分'
+                    : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
+              ),
           ],
         ),
       ),
@@ -249,6 +142,45 @@ class InquiryDetailDialog extends StatelessWidget {
         color: Color.fromRGBO(49, 50, 53, 1),
       ),
       textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildEachText(String iconName, String title, String value,
+      {Color titleColor, double titleSize, double valueSize}) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 20,
+            height: 20,
+            child: Image.asset(
+              'lib/screens/service_list/assets/$iconName',
+            ),
+          ),
+          SizedBox(width: 4),
+          Text(
+            '${title}:',
+            style: TextStyle(
+              color: titleColor != null
+                  ? titleColor
+                  : Color.fromRGBO(106, 109, 137, 1),
+              fontSize: titleSize != null ? titleSize : 13,
+            ),
+          ),
+          SizedBox(width: 10),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: valueSize != null ? valueSize : 14,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
