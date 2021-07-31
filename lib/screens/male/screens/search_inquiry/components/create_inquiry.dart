@@ -27,51 +27,51 @@ class _CreateInquiryState extends State<CreateInquiry> {
   }
 
   Widget _searchButton() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(31, 30, 56, 1),
-      ),
-      padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-      height: 45,
-      child: Material(
-        borderRadius: BorderRadius.circular(5),
-        color: Color.fromRGBO(119, 81, 255, 1),
-        elevation: 7,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => LoadInquiryBloc(
-                          searchInquiryAPIs: SearchInquiryAPIs(),
-                        ),
-                      ),
-                      BlocProvider(
-                        create: (context) => SearchInquiryFormBloc(
-                          searchInquiryAPIs: SearchInquiryAPIs(),
-                          loadInquiryBloc:
-                              BlocProvider.of<LoadInquiryBloc>(context),
-                        ),
-                      ),
-                      BlocProvider(
-                        create: (context) => LoadServiceListBloc(
-                          searchInquiryAPIs: SearchInquiryAPIs(),
-                        ),
-                      ),
-                    ],
-                    child: InquiryForm(),
-                  );
-                },
-              ),
-            ).then((value) {
-              setState(() {
-                BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry());
-              });
-            });
-          },
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => LoadInquiryBloc(
+                      searchInquiryAPIs: SearchInquiryAPIs(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => SearchInquiryFormBloc(
+                      searchInquiryAPIs: SearchInquiryAPIs(),
+                      loadInquiryBloc:
+                          BlocProvider.of<LoadInquiryBloc>(context),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => LoadServiceListBloc(
+                      searchInquiryAPIs: SearchInquiryAPIs(),
+                    ),
+                  ),
+                ],
+                child: InquiryForm(),
+              );
+            },
+          ),
+        ).then((value) {
+          setState(() {
+            BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry());
+          });
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(31, 30, 56, 1),
+        ),
+        padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+        height: 45,
+        child: Material(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(119, 81, 255, 1),
+          elevation: 7,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Row(

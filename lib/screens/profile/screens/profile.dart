@@ -162,7 +162,7 @@ class _ProfileState extends State<Profile> {
           ),
           SizedBox(width: 8),
           Text(
-            '个人主页',
+            '個人主頁',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
