@@ -152,17 +152,24 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.only(top: 30, right: 16, left: 16, bottom: 16),
+      padding: EdgeInsets.only(
+        top: 30,
+        right: 16,
+        left: 16,
+        bottom: 16,
+      ),
       child: Row(
-        children: [
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,
             height: 31,
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 10),
           Text(
-            '个人主页',
+            '個人主頁',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -201,9 +208,17 @@ class _ProfileState extends State<Profile> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
+                    CircleAvatar(
+                      radius: 38,
+                      backgroundImage: state?.userProfile?.avatarUrl == "" ||
+                              state?.userProfile?.avatarUrl == null
+                          ? AssetImage("assets/logo.png")
+                          : NetworkImage(state?.userProfile?.avatarUrl),
+                    ),
+                    SizedBox(width: SizeConfig.screenWidth * 0.04),
                     Expanded(
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Row(
                             children: <Widget>[
                               Text(
@@ -215,60 +230,55 @@ class _ProfileState extends State<Profile> {
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(
-                                // width: 10,
-                                width: SizeConfig.screenWidth * 0.03,
-                              ),
+                            ],
+                          ),
+                          SizedBox(height: SizeConfig.screenHeight * 0.025),
+                          Row(
+                            children: <Widget>[
                               InkWell(
                                 onTap: () {
-                                  // widget.onPush(
-                                  //     '/edit-profile', state.userProfile);
                                   navigateUpdateProfilePage(
                                       state, userImageList);
                                 },
                                 child: Image(
+                                  width: 24,
+                                  fit: BoxFit.fitWidth,
                                   image: AssetImage(
                                       "lib/screens/profile/assets/edit_profile.png"),
                                 ),
                               ),
                             ],
                           ),
-                          Container(
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Wrap(
-                                    children: <Widget>[
-                                      state?.userProfile?.age != null &&
-                                              state?.userProfile?.age != ""
-                                          ? ageLabel(state)
-                                          : SizedBox(),
-                                      state?.userProfile?.height != null &&
-                                              state?.userProfile?.age != ""
-                                          ? heightLabel(state)
-                                          : SizedBox(),
-                                      state?.userProfile?.weight != null &&
-                                              state?.userProfile?.age != ""
-                                          ? weightLabel(state)
-                                          : SizedBox(),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: state?.userProfile?.avatarUrl == "" ||
-                              state?.userProfile?.avatarUrl == null
-                          ? AssetImage("assets/logo.png")
-                          : NetworkImage(state?.userProfile?.avatarUrl),
-                    ),
                   ],
+                ),
+                SizedBox(height: SizeConfig.screenHeight * 0.01),
+                Container(
+                  child: Column(
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          children: <Widget>[
+                            state?.userProfile?.age != null &&
+                                    state?.userProfile?.age != ""
+                                ? ageLabel(state)
+                                : SizedBox(),
+                            state?.userProfile?.height != null &&
+                                    state?.userProfile?.age != ""
+                                ? heightLabel(state)
+                                : SizedBox(),
+                            state?.userProfile?.weight != null &&
+                                    state?.userProfile?.age != ""
+                                ? weightLabel(state)
+                                : SizedBox(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 descriptionText(state),
                 imageList(),

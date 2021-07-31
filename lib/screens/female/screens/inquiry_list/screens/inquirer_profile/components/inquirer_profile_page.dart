@@ -59,7 +59,7 @@ class InquirerProfilePage extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.only(
-                    top: 12,
+                    top: 4,
                     left: 16,
                   ),
                   child: Row(

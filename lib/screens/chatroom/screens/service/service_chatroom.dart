@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
+
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/models/cancel_service_message.dart';
@@ -17,10 +20,7 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
@@ -604,6 +604,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             serviceUuid: widget.args.serviceUUID,
             chatPartnerUsername: _inquiryDetail.username,
             appointmentTime: _inquiryDetail.updateInquiryMessage.serviceTime,
+            status: _serviceDetails.serviceStatus,
           );
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) {

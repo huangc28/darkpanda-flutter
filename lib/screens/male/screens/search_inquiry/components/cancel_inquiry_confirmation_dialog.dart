@@ -13,7 +13,7 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
           child: ListBody(
             children: <Widget>[
               Text(
-                '您確定要刪除需求嗎？',
+                '確定跳過此女生？',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -41,7 +41,7 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
               onPressed: () async {
                 Navigator.pop(context, true);
               },
-              text: '確定刪除',
+              text: ' 確定跳過',
             ),
           ),
         ],

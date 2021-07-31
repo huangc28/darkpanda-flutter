@@ -1,3 +1,9 @@
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tappay/flutter_tappay.dart';
+
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
@@ -6,15 +12,10 @@ import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_serv
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_number_input_formatter.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tappay/flutter_tappay.dart';
 
 import '../../utils//card_utils.dart';
 import '../../models/payment_card.dart';
@@ -130,52 +131,54 @@ class _TopupPaymentState extends State<TopupPayment> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: BlocListener<BuyDpBloc, BuyDpState>(
-            listener: (context, state) {
-              if (state.status == AsyncLoadingStatus.error) {
-                _showInSnackBar(state.error.message);
-              } else if (state.status == AsyncLoadingStatus.done) {
-                _showInSnackBar('充值成功！');
-                // If args is null, means topup is from settings
+        child: UnfocusPrimary(
+          child: SingleChildScrollView(
+            child: BlocListener<BuyDpBloc, BuyDpState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  _showInSnackBar(state.error.message);
+                } else if (state.status == AsyncLoadingStatus.done) {
+                  _showInSnackBar('充值成功！');
+                  // If args is null, means topup is from settings
 
-                if (widget.args == null) {
-                  Navigator.pop(context, true);
-                }
-                // Else not enough DP which is from male accept to pay inquiry
-                else {
-                  // Go to payment screen
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => BuyServiceBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
+                  if (widget.args == null) {
+                    Navigator.pop(context, true);
+                  }
+                  // Else not enough DP which is from male accept to pay inquiry
+                  else {
+                    // Go to payment screen
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => BuyServiceBloc(
+                                  searchInquiryAPIs: SearchInquiryAPIs(),
+                                ),
                               ),
-                            ),
-                            BlocProvider(
-                              create: (context) => CancelServiceBloc(
-                                serviceAPIs: ServiceAPIs(),
+                              BlocProvider(
+                                create: (context) => CancelServiceBloc(
+                                  serviceAPIs: ServiceAPIs(),
+                                ),
                               ),
+                            ],
+                            child: BuyService(
+                              args: widget.args,
                             ),
-                          ],
-                          child: BuyService(
-                            args: widget.args,
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                          );
+                        },
+                      ),
+                    );
+                  }
                 }
-              }
-            },
-            child: Column(
-              children: <Widget>[
-                buildAmountDetail(),
-                buildPaymentDetail(),
-              ],
+              },
+              child: Column(
+                children: <Widget>[
+                  buildAmountDetail(),
+                  buildPaymentDetail(),
+                ],
+              ),
             ),
           ),
         ),
@@ -276,16 +279,6 @@ class _TopupPaymentState extends State<TopupPayment> {
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.022, //20
-          ),
-          DPTextButton(
-            theme: DPTextButtonThemes.purple,
-            onPressed: () {
-              print('press 通過 Paypal 付款');
-            },
-            text: '通過 Paypal 付款',
           ),
         ],
       ),
