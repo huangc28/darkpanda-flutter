@@ -133,7 +133,7 @@ class _ProfileState extends State<Profile> {
                           );
                         } else {
                           return Row(
-                            children: [
+                            children: <Widget>[
                               LoadingScreen(),
                             ],
                           );
@@ -256,28 +256,13 @@ class _ProfileState extends State<Profile> {
                 ),
                 SizedBox(height: SizeConfig.screenHeight * 0.01),
                 Container(
-                  child: Column(
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                          children: <Widget>[
-                            state?.userProfile?.age != null &&
-                                    state?.userProfile?.age != ""
-                                ? ageLabel(state)
-                                : SizedBox(),
-                            state?.userProfile?.height != null &&
-                                    state?.userProfile?.age != ""
-                                ? heightLabel(state)
-                                : SizedBox(),
-                            state?.userProfile?.weight != null &&
-                                    state?.userProfile?.age != ""
-                                ? weightLabel(state)
-                                : SizedBox(),
-                          ],
-                        ),
-                      ),
-                    ],
+                  height: 40,
+                  child: ListView.builder(
+                    itemCount: state.userProfile.traits.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return traitsLabel(state.userProfile.traits[index]);
+                    },
                   ),
                 ),
                 descriptionText(state),
@@ -315,7 +300,6 @@ class _ProfileState extends State<Profile> {
           );
         }
 
-        // if (state.status == AsyncLoadingStatus.done) {
         return state.userImages.length > 0
             ? Container(
                 height: 190,
@@ -335,8 +319,6 @@ class _ProfileState extends State<Profile> {
                 ),
               )
             : SizedBox();
-        // }
-        // return SizedBox.shrink();
       },
     );
   }
@@ -376,62 +358,37 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  Widget ageLabel(state) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            state.userProfile.age.toString() + '岁',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget traitsLabel(trait) {
+    String label = '岁';
+    dynamic value = '';
+    double paddingHeight = 2.0;
 
-  Widget heightLabel(state) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            state.userProfile.height.toString() + 'm',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+    if (trait.type == 'age') {
+      label = '岁';
+      value = trait.value.toInt();
+      paddingHeight = 2.0;
+    } else if (trait.type == 'height') {
+      label = 'm';
+      value = trait.value;
+      paddingHeight = 6.0;
+    } else {
+      label = 'kg';
+      value = trait.value;
+      paddingHeight = 6.0;
+    }
 
-  Widget weightLabel(state) {
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
         child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
+          padding:
+              EdgeInsets.fromLTRB(10.0, paddingHeight, 10.0, paddingHeight),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             color: Color.fromRGBO(190, 172, 255, 0.3),
           ),
           child: Text(
-            state.userProfile.weight.toString() + 'kg',
+            value.toString() + label,
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,

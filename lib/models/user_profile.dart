@@ -14,6 +14,7 @@ class UserProfile {
   final String description;
   final List<UserImage> imageList;
   final List<UserImage> removeImageList;
+  final List<UserTrait> traits;
 
   const UserProfile({
     this.uuid,
@@ -29,9 +30,18 @@ class UserProfile {
     this.description,
     this.imageList,
     this.removeImageList,
+    this.traits,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> data) {
+    List<UserTrait> userTraits = [];
+
+    if (data.containsKey('traits')) {
+      userTraits = data['traits'].map<UserTrait>((msg) {
+        return UserTrait.fromMap(msg);
+      }).toList();
+    }
+
     return UserProfile(
       uuid: data['uuid'],
       gender: data['gender'],
@@ -46,6 +56,7 @@ class UserProfile {
       weight:
           data['weight'] != null ? data['weight'].toDouble() : data['weight'],
       description: data['description'],
+      traits: userTraits,
     );
   }
 
@@ -63,6 +74,7 @@ class UserProfile {
     String description,
     List<UserImage> imageList,
     List<UserImage> removeImageList,
+    List<UserTrait> traits,
   }) {
     return UserProfile(
       uuid: uuid ?? this.uuid,
@@ -78,6 +90,7 @@ class UserProfile {
       description: description ?? this.description,
       imageList: imageList ?? this.imageList,
       removeImageList: removeImageList ?? this.removeImageList,
+      traits: traits ?? this.traits,
     );
   }
 
@@ -95,5 +108,25 @@ class UserProfile {
         'description': description,
         'imageList': imageList,
         'removeImageList': removeImageList,
+        'traits': traits,
+      };
+}
+
+class UserTrait {
+  UserTrait({this.type, this.value});
+
+  final String type;
+  final double value;
+
+  factory UserTrait.fromMap(Map<String, dynamic> data) {
+    return UserTrait(
+      type: data['type'],
+      value: data['value'].toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'value': value,
       };
 }

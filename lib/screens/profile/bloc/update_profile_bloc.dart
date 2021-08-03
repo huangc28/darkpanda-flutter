@@ -203,15 +203,28 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     if (event is FetchProfileEdit) {
       try {
         final UserProfile userProfile = event.userProfile;
+        double age;
+        double height;
+        double weight;
+
+        for (int i = 0; i < userProfile.traits.length; i++) {
+          if (userProfile.traits[i].type == 'age') {
+            age = userProfile.traits[i].value;
+          } else if (userProfile.traits[i].type == 'height') {
+            height = userProfile.traits[i].value;
+          } else {
+            weight = userProfile.traits[i].value;
+          }
+        }
 
         yield (state.copyWith(
           ready: true,
           uuid: userProfile.uuid,
           username: userProfile.username,
           nickname: userProfile.nickname,
-          age: userProfile.age,
-          height: userProfile.height,
-          weight: userProfile.weight,
+          age: age == null ? age : age.toInt(),
+          height: height,
+          weight: weight,
           description: userProfile.description,
           avatarUrl: userProfile.avatarUrl,
         ));
