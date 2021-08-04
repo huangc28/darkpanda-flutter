@@ -361,38 +361,39 @@ class _ProfileState extends State<Profile> {
   Widget traitsLabel(trait) {
     String label = '岁';
     dynamic value = '';
-    double paddingHeight = 2.0;
 
     if (trait.type == 'age') {
       label = '岁';
       value = trait.value.toInt();
-      paddingHeight = 2.0;
     } else if (trait.type == 'height') {
       label = 'm';
       value = trait.value;
-      paddingHeight = 6.0;
     } else {
       label = 'kg';
       value = trait.value;
-      paddingHeight = 6.0;
     }
 
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
         child: Container(
-          padding:
-              EdgeInsets.fromLTRB(10.0, paddingHeight, 10.0, paddingHeight),
+          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             color: Color.fromRGBO(190, 172, 255, 0.3),
           ),
-          child: Text(
-            value.toString() + label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                value.toString() + label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
