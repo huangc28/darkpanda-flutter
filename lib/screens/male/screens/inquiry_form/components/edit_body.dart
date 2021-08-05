@@ -85,7 +85,7 @@ class _EditBodyState extends State<EditBody> {
     // Convert string date into Date format
     if (widget.activeInquiry.appointmentTime != null) {
       String date = widget.activeInquiry.appointmentTime;
-      dateTime = DateTime.parse(date);
+      dateTime = DateTime.parse(date).toLocal();
       timeOfDay = TimeOfDay.fromDateTime(dateTime);
     }
 
