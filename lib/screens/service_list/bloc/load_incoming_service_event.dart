@@ -43,4 +43,7 @@ class PutLatestMessage extends LoadIncomingServiceEvent {
 
 class ClearIncomingServiceState extends LoadIncomingServiceEvent {
   const ClearIncomingServiceState();
+
+  @override
+  List<Object> get props => [];
 }

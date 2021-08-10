@@ -216,9 +216,6 @@ class _InqiuryListState extends State<InqiuryList> {
 
                   // status done will be called twice, so implement isFirstCall to solve this issue
                   if (isFirstCall == 1) {
-                    print(
-                        '[Debug]================================================================Inquiry Chatroom bloc done ' +
-                            isFirstCall.toString());
                     Navigator.of(
                       context,
                       rootNavigator: true,

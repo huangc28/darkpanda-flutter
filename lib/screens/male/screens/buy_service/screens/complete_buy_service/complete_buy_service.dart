@@ -20,6 +20,24 @@ class CompleteBuyService extends StatefulWidget {
 }
 
 class _CompleteBuyServiceState extends State<CompleteBuyService> {
+  LoadIncomingServiceBloc _loadIncomingServiceBloc;
+  int isFirstCall = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadIncomingServiceBloc =
+        BlocProvider.of<LoadIncomingServiceBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -46,19 +64,24 @@ class _CompleteBuyServiceState extends State<CompleteBuyService> {
             }
 
             if (state.status == AsyncLoadingStatus.done) {
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).pushNamed(
-                MainRoutes.serviceChatroom,
-                arguments: ServiceChatroomScreenArguments(
-                  channelUUID: widget.args.channelUuid,
-                  inquiryUUID: widget.args.inquiryUuid,
-                  counterPartUUID: widget.args.counterPartUuid,
-                  serviceUUID: widget.args.serviceUuid,
-                  routeTypes: RouteTypes.fromBuyService,
-                ),
-              );
+              isFirstCall++;
+
+              // status done will be called twice, so implement isFirstCall to solve this issue
+              if (isFirstCall == 1) {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pushNamed(
+                  MainRoutes.serviceChatroom,
+                  arguments: ServiceChatroomScreenArguments(
+                    channelUUID: widget.args.channelUuid,
+                    inquiryUUID: widget.args.inquiryUuid,
+                    counterPartUUID: widget.args.counterPartUuid,
+                    serviceUUID: widget.args.serviceUuid,
+                    routeTypes: RouteTypes.fromBuyService,
+                  ),
+                );
+              }
             }
           },
           child: Body(

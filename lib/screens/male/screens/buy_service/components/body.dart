@@ -29,16 +29,6 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
@@ -252,10 +242,14 @@ class _BodyState extends State<Body> {
         }
 
         if (state.status == AsyncLoadingStatus.done) {
-          Navigator.of(context, rootNavigator: true).push(
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) => CompleteBuyService(args: widget.args),
             ),
+            ModalRoute.withName('/'),
           );
         }
       },

@@ -16,8 +16,11 @@ class CachedImage extends StatelessWidget {
         imageUrl: url,
         placeholder: (context, url) {
           return Center(
-            child: CircularProgressIndicator(
-              color: Colors.grey,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(
+                color: Colors.grey,
+              ),
             ),
           );
         },

@@ -27,6 +27,22 @@ class TopupDp extends StatefulWidget {
 }
 
 class _TopupDpState extends State<TopupDp> {
+  LoadIncomingServiceBloc _loadIncomingServiceBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadIncomingServiceBloc =
+        BlocProvider.of<LoadIncomingServiceBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

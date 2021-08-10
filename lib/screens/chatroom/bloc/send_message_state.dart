@@ -1,12 +1,5 @@
 part of 'send_message_bloc.dart';
 
-// enum SendMessageStatus {
-//   initial,
-//   loading,
-//   loadFailed,
-//   loaded,
-// }
-
 class SendMessageState<E extends AppBaseException> extends Equatable {
   const SendMessageState._({
     this.status,

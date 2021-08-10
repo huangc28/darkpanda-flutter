@@ -24,6 +24,26 @@ class BuyService extends StatefulWidget {
 }
 
 class _BuyServiceState extends State<BuyService> {
+  LoadIncomingServiceBloc _loadIncomingServiceBloc;
+  int isFirstCall;
+
+  @override
+  void initState() {
+    super.initState();
+
+    isFirstCall = 0;
+
+    _loadIncomingServiceBloc =
+        BlocProvider.of<LoadIncomingServiceBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -95,19 +115,24 @@ class _BuyServiceState extends State<BuyService> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamed(
-                    MainRoutes.serviceChatroom,
-                    arguments: ServiceChatroomScreenArguments(
-                      channelUUID: widget.args.channelUuid,
-                      inquiryUUID: widget.args.inquiryUuid,
-                      counterPartUUID: widget.args.counterPartUuid,
-                      serviceUUID: widget.args.serviceUuid,
-                      routeTypes: RouteTypes.fromBuyService,
-                    ),
-                  );
+                  isFirstCall++;
+
+                  // status done will be called twice, so implement isFirstCall to solve this issue
+                  if (isFirstCall == 1) {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamed(
+                      MainRoutes.serviceChatroom,
+                      arguments: ServiceChatroomScreenArguments(
+                        channelUUID: widget.args.channelUuid,
+                        inquiryUUID: widget.args.inquiryUuid,
+                        counterPartUUID: widget.args.counterPartUuid,
+                        serviceUUID: widget.args.serviceUuid,
+                        routeTypes: RouteTypes.fromBuyService,
+                      ),
+                    );
+                  }
                 }
               },
             ),
