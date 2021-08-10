@@ -137,7 +137,11 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                     barrierDismissible: false,
                     context: context,
                     builder: (BuildContext context) {
-                      return CancelInquiryConfirmationDialog();
+                      return CancelInquiryConfirmationDialog(
+                        title: '您確定要刪除需求嗎？',
+                        onCancel: '取消',
+                        onConfirm: '確定刪除',
+                      );
                     },
                   ).then((value) {
                     if (value) {

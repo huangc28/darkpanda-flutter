@@ -2,6 +2,17 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:flutter/material.dart';
 
 class CancelInquiryConfirmationDialog extends StatelessWidget {
+  const CancelInquiryConfirmationDialog({
+    Key key,
+    this.title,
+    this.onCancel,
+    this.onConfirm,
+  }) : super(key: key);
+
+  final String title;
+  final String onCancel;
+  final String onConfirm;
+
   @override
   Widget build(BuildContext context) {
     return ButtonBarTheme(
@@ -13,7 +24,7 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
           child: ListBody(
             children: <Widget>[
               Text(
-                '確定跳過此女生？',
+                title,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -31,7 +42,7 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
               onPressed: () async {
                 Navigator.pop(context, false);
               },
-              text: '取消',
+              text: onCancel,
             ),
           ),
           Container(
@@ -41,7 +52,7 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
               onPressed: () async {
                 Navigator.pop(context, true);
               },
-              text: ' 確定跳過',
+              text: onConfirm,
             ),
           ),
         ],
