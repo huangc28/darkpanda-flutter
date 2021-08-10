@@ -1,12 +1,5 @@
 part of 'upload_image_message_bloc.dart';
 
-enum SendMessageStatus {
-  initial,
-  loading,
-  loadFailed,
-  loaded,
-}
-
 class UploadImageMessageState<E extends AppBaseException> extends Equatable {
   const UploadImageMessageState._({
     this.status,
@@ -16,34 +9,34 @@ class UploadImageMessageState<E extends AppBaseException> extends Equatable {
 
   final AsyncLoadingStatus status;
   final E error;
-  final List<ChatImage> chatImages;
+  final ChatImage chatImages;
 
   UploadImageMessageState.init()
       : this._(
           status: AsyncLoadingStatus.initial,
-          chatImages: [],
+          chatImages: null,
         );
 
   UploadImageMessageState.loading(UploadImageMessageState state)
       : this._(
           status: AsyncLoadingStatus.loading,
-          chatImages: [],
+          chatImages: null,
         );
 
   UploadImageMessageState.loadFailed(E error)
       : this._(
-          status: AsyncLoadingStatus.loading,
+          status: AsyncLoadingStatus.error,
           error: error,
         );
 
   UploadImageMessageState.loaded(
     UploadImageMessageState state, {
-    List<ChatImage> chatImages,
+    ChatImage chatImages,
   }) : this._(
           status: AsyncLoadingStatus.done,
           chatImages: chatImages ?? state.chatImages,
         );
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status, chatImages, error];
 }

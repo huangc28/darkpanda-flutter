@@ -129,7 +129,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   File _image;
   final picker = ImagePicker();
-  List<ChatImage> chatImages = [];
+  ChatImage chatImages;
 
   /// Show loading when user sending image
   bool _isSendingImage = false;
@@ -296,7 +296,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                               BlocProvider.of<SendImageMessageBloc>(context)
                                   .add(
                                 SendImageMessage(
-                                  imageUrl: chatImages[0].imageUrl,
+                                  imageUrl: chatImages.thumbnails[0],
                                   channelUUID: widget.args.channelUUID,
                                 ),
                               );
