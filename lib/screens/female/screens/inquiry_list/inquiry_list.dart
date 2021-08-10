@@ -44,13 +44,24 @@ class _InqiuryListState extends State<InqiuryList> {
 
   Inquiry inquiryDetail;
 
+  InquiryChatroomsBloc _inquiryChatroomsBloc;
+  int isFirstCall = 0;
+
   @override
   initState() {
     _refreshCompleter = Completer();
+    _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
     super.initState();
-    BlocProvider.of<InquiryChatroomsBloc>(context).add(
-      ClearInquiryList(),
-    );
+    // BlocProvider.of<InquiryChatroomsBloc>(context).add(
+    //   ClearInquiryList(),
+    // );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _inquiryChatroomsBloc.add(ClearInquiryChatList());
   }
 
   Widget _buildHeader() {
@@ -82,8 +93,6 @@ class _InqiuryListState extends State<InqiuryList> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -203,19 +212,28 @@ class _InqiuryListState extends State<InqiuryList> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamed(
-                    MainRoutes.chatroom,
-                    arguments: ChatroomScreenArguments(
-                      channelUUID: inquiryDetail.channelUuid,
-                      inquiryUUID: inquiryDetail.uuid,
-                      counterPartUUID: inquiryDetail.inquirer.uuid,
-                      serviceType: inquiryDetail.serviceType,
-                      routeTypes: RouteTypes.fromInquiryList,
-                    ),
-                  );
+                  isFirstCall++;
+
+                  // status done will be called twice, so implement isFirstCall to solve this issue
+                  if (isFirstCall == 1) {
+                    print(
+                        '[Debug]================================================================Inquiry Chatroom bloc done ' +
+                            isFirstCall.toString());
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamed(
+                      MainRoutes.chatroom,
+                      arguments: ChatroomScreenArguments(
+                        channelUUID: inquiryDetail.channelUuid,
+                        inquiryUUID: inquiryDetail.uuid,
+                        counterPartUUID: inquiryDetail.inquirer.uuid,
+                        serviceType: inquiryDetail.serviceType,
+                        routeTypes: RouteTypes.fromInquiryList,
+                        serviceUUID: inquiryDetail.serviceUuid,
+                      ),
+                    );
+                  }
                 }
               },
               child: SizedBox.shrink(),

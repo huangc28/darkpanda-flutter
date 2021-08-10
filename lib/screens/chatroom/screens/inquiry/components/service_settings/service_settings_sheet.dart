@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,17 +26,20 @@ part 'service_duration_field.dart';
 class ServiceSettingsSheet extends StatefulWidget {
   const ServiceSettingsSheet({
     this.serviceSettings,
+    this.serviceDetails,
     this.controller,
     @required this.onTapClose,
     @required this.onUpdateInquiry,
   });
 
   final ServiceSettings serviceSettings;
+  final ServiceDetails serviceDetails;
   final SlideUpController controller;
   final VoidCallback onTapClose;
 
   /// Triggered when inquiry is updated.
   final Function(ServiceSettings) onUpdateInquiry;
+  // final Function(ServiceDetails) onUpdateInquiry;
 
   @override
   _ServiceSettingsSheetState createState() => _ServiceSettingsSheetState();
@@ -302,36 +306,40 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
-                            listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _serviceSetting = state.serviceSettings;
-                            });
+                        // BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
+                        //     listener: (context, state) {
+                        //   if (state.status == AsyncLoadingStatus.done) {
+                        //     setState(() {
+                        //       _serviceSetting = state.serviceSettings;
+                        //     });
 
-                            widget.onUpdateInquiry(state.serviceSettings);
-                          }
-                        }, builder: (context, state) {
-                          return DPTextButton(
-                            loading: state.status == AsyncLoadingStatus.loading,
-                            onPressed: () {
-                              if (!_formKey.currentState.validate()) {
-                                return;
-                              }
+                        //     widget.onUpdateInquiry(state.serviceSettings);
+                        //   }
+                        // }, builder: (context, state) {
+                        // return
+                        DPTextButton(
+                          // loading: state.status == AsyncLoadingStatus.loading,
+                          onPressed: () {
+                            if (!_formKey.currentState.validate()) {
+                              return;
+                            }
 
-                              _formKey.currentState.save();
+                            _formKey.currentState.save();
 
-                              BlocProvider.of<UpdateInquiryBloc>(context).add(
-                                UpdateInquiry(
-                                  serviceSettings: _serviceSetting,
-                                ),
-                              );
-                            },
-                            text: '發送邀請',
-                            theme: DPTextButtonThemes.purple,
-                            disabled: _disableUpdate,
-                          );
-                        }),
+                            widget.onUpdateInquiry(_serviceSetting);
+
+                            // BlocProvider.of<UpdateInquiryBloc>(context).add(
+                            //   UpdateInquiry(
+                            //     serviceSettings: _serviceSetting,
+                            //   ),
+                            // );
+                          },
+                          text: '發送邀請',
+                          theme: DPTextButtonThemes.purple,
+                          disabled: _disableUpdate,
+                          // );
+                          // }
+                        ),
                       ],
                     ),
                   ),

@@ -122,6 +122,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                                   counterPartUUID: chatroom.inquirerUUID,
                                   serviceType: chatroom.serviceType,
                                   routeTypes: RouteTypes.fromInquiryChats,
+                                  serviceUUID: chatroom.serviceUUID,
                                 ),
                               );
                             },
@@ -149,7 +150,7 @@ class _ChatRoomsState extends State<ChatRooms> {
         left: 16,
       ),
       child: Row(
-        children: [
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,

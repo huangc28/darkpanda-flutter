@@ -8,10 +8,10 @@ abstract class SendEmitServiceConfirmMessageEvent extends Equatable {
 }
 
 class EmitServiceConfirmMessage extends SendEmitServiceConfirmMessageEvent {
-  const EmitServiceConfirmMessage(this.inquiryUuid);
+  const EmitServiceConfirmMessage(this.serviceUuid);
 
-  final String inquiryUuid;
+  final String serviceUuid;
 
   @override
-  List<Object> get props => [this.inquiryUuid];
+  List<Object> get props => [this.serviceUuid];
 }

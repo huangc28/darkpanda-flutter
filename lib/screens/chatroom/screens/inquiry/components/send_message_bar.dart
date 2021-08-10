@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,7 +31,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
   bool _showSendButton = false;
 
   Widget _buildEditInquiryButton() {
-    return BlocBuilder<GetInquiryBloc, GetInquiryState>(
+    return BlocBuilder<LoadServiceDetailBloc, LoadServiceDetailState>(
       builder: (context, state) {
         // Allow user to edit inquiry detail only when done loading
         var disable =

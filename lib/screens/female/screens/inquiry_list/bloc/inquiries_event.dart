@@ -42,11 +42,13 @@ class UpdateInquiryStatus extends InquiriesEvent {
   final String inquiryUuid;
   final InquiryStatus inquiryStatus;
   final String channelUuid;
+  final String serviceUuid;
 
   const UpdateInquiryStatus({
     this.inquiryUuid,
     this.inquiryStatus,
     this.channelUuid,
+    this.serviceUuid,
   });
 }
 

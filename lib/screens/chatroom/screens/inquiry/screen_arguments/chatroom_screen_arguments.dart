@@ -6,6 +6,7 @@ class ChatroomScreenArguments {
   final String counterPartUUID;
   final String serviceType;
   final RouteTypes routeTypes;
+  final String serviceUUID;
 
   ChatroomScreenArguments({
     this.channelUUID,
@@ -13,9 +14,11 @@ class ChatroomScreenArguments {
     this.counterPartUUID,
     this.serviceType,
     this.routeTypes,
+    this.serviceUUID,
   })  : assert(channelUUID != null),
         assert(inquiryUUID != null),
         assert(counterPartUUID != null),
         assert(serviceType != null),
-        assert(routeTypes != null);
+        assert(routeTypes != null),
+        assert(serviceUUID != null);
 }

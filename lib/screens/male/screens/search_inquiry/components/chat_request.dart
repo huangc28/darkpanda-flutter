@@ -179,6 +179,7 @@ class _ChatRequestState extends State<ChatRequest> {
                 channelUUID: agreeInquiryResponse.channelUuid,
                 inquiryUUID: widget.activeInquiry.uuid,
                 counterPartUUID: agreeInquiryResponse.picker.uuid,
+                serviceUUID: agreeInquiryResponse.serviceUuid,
               ),
             );
           });

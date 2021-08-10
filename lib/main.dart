@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
@@ -240,6 +241,12 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
 
         BlocProvider(
           create: (_) => SendMessageBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (_) => SendUpdateInquiryMessageBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
           ),
         ),
