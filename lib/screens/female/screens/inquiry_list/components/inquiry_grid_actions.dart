@@ -17,7 +17,7 @@ class InquiryGridActions extends StatelessWidget {
   final Inquiry inquiry;
 
   Widget _buildChatButton() {
-    String btnText = '';
+    String btnText = ' ';
     Icon icon = null;
     Function btnHandler = () => {};
     DPTextButtonThemes theme = DPTextButtonThemes.lightGrey;

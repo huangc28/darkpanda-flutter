@@ -7,6 +7,7 @@ class AgreeInquiryResponse extends Equatable {
     this.channelUuid,
     this.serviceType,
     this.inquiryStatus,
+    this.serviceUuid,
   });
 
   Picker picker;
@@ -14,13 +15,15 @@ class AgreeInquiryResponse extends Equatable {
   String channelUuid;
   String serviceType;
   String inquiryStatus;
+  String serviceUuid;
 
   AgreeInquiryResponse.fromMap(Map<String, dynamic> data)
       : picker = Picker.fromMap(data['picker']),
         inquirer = Inquirer.fromMap(data['inquirer']),
         channelUuid = data['channel_uuid'],
         serviceType = data['service_type'],
-        inquiryStatus = data['inquiry_status'];
+        inquiryStatus = data['inquiry_status'],
+        serviceUuid = data['service_uuid'];
 
   Map<String, dynamic> toMap() => {
         'picker': picker,
@@ -28,6 +31,7 @@ class AgreeInquiryResponse extends Equatable {
         'channel_uuid': channelUuid,
         'service_type': serviceType,
         'inquiry_status': inquiryStatus,
+        'service_uuid': serviceUuid,
       };
 
   @override
@@ -37,6 +41,7 @@ class AgreeInquiryResponse extends Equatable {
         channelUuid,
         serviceType,
         inquiryStatus,
+        serviceUuid,
       ];
 }
 

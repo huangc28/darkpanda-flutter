@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
@@ -11,12 +12,15 @@ import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
@@ -97,15 +101,17 @@ class _ChatroomState extends State<Chatroom>
 
   /// [ServiceSettings] model to be passed down to service settings sheet.
   ServiceSettings _serviceSettings;
+  ServiceDetails _serviceDetails;
 
   File _image;
   final picker = ImagePicker();
-  List<ChatImage> chatImages = [];
+  ChatImage chatImages;
 
   /// Show loading when user sending image
   bool _isSendingImage = false;
 
   InquirerProfileArguments _inquirerProfileArguments;
+  // InquiryChatroomsBloc _inquiryChatroomsBloc;
 
   @override
   void initState() {
@@ -123,8 +129,12 @@ class _ChatroomState extends State<Chatroom>
     );
 
     // Fetch inquiry related inquiry if exists.
-    BlocProvider.of<GetInquiryBloc>(context).add(
-      GetInquiry(inquiryUuid: widget.args.inquiryUUID),
+    // BlocProvider.of<GetInquiryBloc>(context).add(
+    //   GetInquiry(inquiryUuid: widget.args.inquiryUUID),
+    // );
+
+    BlocProvider.of<LoadServiceDetailBloc>(context).add(
+      LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
     );
 
     _editMessageController.addListener(_handleEditMessage);
@@ -483,17 +493,43 @@ class _ChatroomState extends State<Chatroom>
                 position: _offsetAnimation,
                 child: MultiBlocListener(
                   listeners: [
-                    BlocListener<GetInquiryBloc, GetInquiryState>(
+                    // BlocListener<GetInquiryBloc, GetInquiryState>(
+                    //   listener: (_, state) {
+                    //     if (state.status == AsyncLoadingStatus.done) {
+                    //       setState(() {
+                    //         _serviceSettings = state.serviceSettings;
+                    //       });
+                    //     }
+                    //   },
+                    // ),
+                    BlocListener<LoadServiceDetailBloc, LoadServiceDetailState>(
                       listener: (_, state) {
                         if (state.status == AsyncLoadingStatus.done) {
                           setState(() {
-                            _serviceSettings = state.serviceSettings;
+                            _serviceDetails = state.serviceDetails;
+                            _serviceSettings = ServiceSettings(
+                              uuid: _serviceDetails.uuid,
+                              serviceDate:
+                                  _serviceDetails.appointmentTime.toLocal(),
+                              serviceTime: TimeOfDay.fromDateTime(
+                                  _serviceDetails.appointmentTime.toLocal()),
+                              price: _serviceDetails.price,
+                              duration: _serviceDetails.duration,
+                              serviceType: _serviceDetails.serviceType,
+                              address: _serviceDetails.address,
+                            );
                           });
                         }
                       },
                     ),
                     BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
                         listener: (_, state) {
+                      if (state.status == AsyncLoadingStatus.done) {
+                        _animationController.reverse();
+                      }
+                    }),
+                    BlocListener<SendUpdateInquiryMessageBloc,
+                        SendUpdateInquiryMessageState>(listener: (_, state) {
                       if (state.status == AsyncLoadingStatus.done) {
                         _animationController.reverse();
                       }
@@ -511,7 +547,8 @@ class _ChatroomState extends State<Chatroom>
                       });
 
                       /// Send inquiry settings message when done editing inquiry.
-                      BlocProvider.of<SendMessageBloc>(context).add(
+                      BlocProvider.of<SendUpdateInquiryMessageBloc>(context)
+                          .add(
                         SendUpdateInquiryMessage(
                           channelUUID: widget.args.channelUUID,
                           serviceSettings: data,
@@ -538,7 +575,7 @@ class _ChatroomState extends State<Chatroom>
 
                     BlocProvider.of<SendImageMessageBloc>(context).add(
                       SendImageMessage(
-                        imageUrl: chatImages[0].imageUrl,
+                        imageUrl: chatImages.thumbnails[0],
                         channelUUID: widget.args.channelUUID,
                       ),
                     );

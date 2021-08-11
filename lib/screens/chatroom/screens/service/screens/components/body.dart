@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,18 +35,18 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           children: <Widget>[
             if (widget.paymentDetailStatus == AsyncLoadingStatus.done)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.only(top: 10.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   color: Color.fromRGBO(31, 30, 56, 1),
                 ),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     SizedBox(height: 15),
                     Column(
-                      children: [
+                      children: <Widget>[
                         Row(
-                          children: [
+                          children: <Widget>[
                             Expanded(
                               flex: 1,
                               child: UserAvatar(widget.historicalService
@@ -188,7 +189,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           if (durationSplit.length > 0)
             _buildEachText(
               'countDown.png',
-              '期限',
+              '時長',
               widget.paymentDetail.duration > Duration(hours: 0, minutes: 1) &&
                       widget.paymentDetail.duration <=
                           Duration(hours: 0, minutes: 59)
@@ -228,8 +229,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       children: [
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
+            disabled:
+                widget.historicalService.status == ServiceStatus.fulfilling.name
+                    ? true
+                    : false,
             onPressed: widget.onCancelService,
-            text: '取消交易',
+            text:
+                widget.historicalService.status == ServiceStatus.fulfilling.name
+                    ? '服務進行中，無法取消交易'
+                    : '取消交易',
             theme: DPTextButtonThemes.purple,
           ),
       ],

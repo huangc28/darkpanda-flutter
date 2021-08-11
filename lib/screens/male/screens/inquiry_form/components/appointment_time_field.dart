@@ -73,7 +73,7 @@ class AppointmentTimeField extends StatelessWidget {
                     child: IgnorePointer(
                       child: DPTextFormField(
                         controller: dateController,
-                        textAlignVertical: TextAlignVertical.center,
+                        textAlignVertical: TextAlignVertical.top,
                         theme: DPTextFieldThemes.inquiryForm,
                         hintText: '年/月/日',
                       ),
@@ -92,7 +92,7 @@ class AppointmentTimeField extends StatelessWidget {
                         controller: timeController,
                         validator: validator,
                         focusNode: focusNode,
-                        textAlignVertical: TextAlignVertical.center,
+                        textAlignVertical: TextAlignVertical.top,
                         theme: DPTextFieldThemes.inquiryForm,
                         hintText: '時間',
                       ),

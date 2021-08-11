@@ -36,13 +36,13 @@ class SendServiceDetailConfirmMessage extends SendMessageEvent {
   final String channelUUID;
 }
 
-class SendUpdateInquiryMessage extends SendMessageEvent {
-  const SendUpdateInquiryMessage({
-    this.serviceSettings,
-    this.channelUUID,
-  })  : assert(serviceSettings != null),
-        assert(channelUUID != null);
+// class SendUpdateInquiryMessage extends SendMessageEvent {
+//   const SendUpdateInquiryMessage({
+//     this.serviceSettings,
+//     this.channelUUID,
+//   })  : assert(serviceSettings != null),
+//         assert(channelUUID != null);
 
-  final ServiceSettings serviceSettings;
-  final String channelUUID;
-}
+//   final ServiceSettings serviceSettings;
+//   final String channelUUID;
+// }

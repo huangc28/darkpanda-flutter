@@ -189,7 +189,8 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                                       ),
                                     );
                                   }
-                                  return _buildResendButton();
+
+                                  return _buildResendButton(state.numSend);
                                 }),
                               ],
                             ),
@@ -208,25 +209,18 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
   }
 
   /// Render resend button widget. Disable button if timer is ticking.
-  Widget _buildResendButton() => BlocBuilder<TimerBloc, TimerState>(
+  Widget _buildResendButton(int numSend) => BlocBuilder<TimerBloc, TimerState>(
           builder: (BuildContext context, state) {
-        final ResendButtonText = state.status == TimerStatus.progressing
-            ? Text(
-                '重寄請稍等 (${state.duration})',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  letterSpacing: 0.5,
-                ),
-              )
-            : Text(
-                '重寄驗證碼',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  letterSpacing: 0.5,
-                ),
-              );
+        final ResendButtonText = Text(
+          state.status == TimerStatus.progressing
+              ? '重寄請稍等 (${state.duration})'
+              : '重寄驗證碼',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            letterSpacing: 0.5,
+          ),
+        );
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -242,6 +236,8 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
       });
 
   void _handleResend() {
+    print('DEBUG trigger resend');
+
     BlocProvider.of<SendSmsCodeBloc>(context).add(
       SendSMSCode(
         dialCode: widget.args.dialCode,

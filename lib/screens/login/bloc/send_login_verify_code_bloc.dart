@@ -89,7 +89,6 @@ class SendLoginVerifyCodeBloc
         );
       }
     } on APIException catch (e) {
-      print('DEBUG err 1 ${e}');
       yield SendLoginVerifyCodeState.sendFailed(
         SendLoginVerifyCodeState.copyFrom(state, error: e),
       );

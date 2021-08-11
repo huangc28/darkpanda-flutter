@@ -36,19 +36,29 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
         fontSize: 15,
         letterSpacing: 0.47,
       ),
-      errorBorder: OutlineInputBorder(
+      border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(28.0)),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(28.0),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(28.0),
+        ),
         borderSide: BorderSide(
           color: Colors.transparent,
         ),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(28.0)),
-        borderSide: BorderSide(
-          color: Colors.transparent,
-        ),
-      ),
-      border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(28.0)),
         borderSide: BorderSide(
           color: Colors.transparent,
@@ -65,6 +75,11 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       letterSpacing: .36,
     ),
     decoration: InputDecoration(
+      helperText: ' ',
+      errorStyle: TextStyle(
+        fontSize: 15,
+        letterSpacing: 0.47,
+      ),
       hintStyle: TextStyle(
         color: Color.fromRGBO(106, 109, 137, 1),
         fontSize: 15,
@@ -74,15 +89,36 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       fillColor: Colors.white.withOpacity(0.1),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(
-          Radius.circular(26),
+          Radius.circular(26.0),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
         ),
       ),
-      errorStyle: TextStyle(
-        fontSize: 15,
-        letterSpacing: 0.47,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26.0),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
       ),
-      focusedErrorBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26.0),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(26.0),
+        ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
+        ),
+      ),
     ),
   ),
   DPTextFieldThemes.inquiryForm: ThemeConfig.setConfig(
@@ -94,30 +130,30 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       hintStyle: TextStyle(
         fontSize: 15,
       ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(12),
-        ),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(12),
-        ),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(12),
-        ),
-        borderSide: BorderSide.none,
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(12),
-        ),
-        borderSide: BorderSide.none,
-      ),
+      // border: OutlineInputBorder(
+      //   borderRadius: BorderRadius.all(
+      //     Radius.circular(12),
+      //   ),
+      //   borderSide: BorderSide.none,
+      // ),
+      // focusedBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.all(
+      //     Radius.circular(12),
+      //   ),
+      //   borderSide: BorderSide.none,
+      // ),
+      // enabledBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.all(
+      //     Radius.circular(12),
+      //   ),
+      //   borderSide: BorderSide.none,
+      // ),
+      // errorBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.all(
+      //     Radius.circular(12),
+      //   ),
+      //   borderSide: BorderSide.none,
+      // ),
     ),
   )
 };
@@ -138,9 +174,10 @@ class DPTextFormField extends StatelessWidget {
     this.decoration,
     this.hintStyle,
     this.contentPadding,
+    this.textAlign = TextAlign.start,
   }) : super(key: key);
 
-  final BoxDecoration decoration;
+  final InputDecoration decoration;
   final DPTextFieldThemes theme;
   final TextAlignVertical textAlignVertical;
   final String hintText;
@@ -153,17 +190,19 @@ class DPTextFormField extends StatelessWidget {
   final bool readOnly;
   final TextStyle hintStyle;
   final EdgeInsetsGeometry contentPadding;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
     final chosenTheme = themes[theme];
-    final textFieldDecoration = chosenTheme.decoration.copyWith(
+    final inputDecoration = chosenTheme.decoration.copyWith(
       hintText: hintText,
       hintStyle: hintStyle,
       contentPadding: contentPadding,
     );
 
     return TextFormField(
+      textAlign: textAlign,
       readOnly: readOnly,
       textAlignVertical: textAlignVertical,
       controller: controller,
@@ -172,7 +211,7 @@ class DPTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       validator: validator,
       style: chosenTheme.style,
-      decoration: textFieldDecoration,
+      decoration: inputDecoration,
       focusNode: focusNode,
     );
   }

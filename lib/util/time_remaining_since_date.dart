@@ -13,16 +13,17 @@ class DateTimeUtil {
       return formattedDate;
     }
     if (difference.inDays >= 1) {
-      return '還有${difference.inDays}天';
+      return '${difference.inMinutes}天後開始';
     }
 
     if (difference.inHours >= 1) {
-      return '還有${difference.inHours}個小時';
+      return '${difference.inMinutes}個小時後開始';
     }
 
     if (difference.inMinutes >= 1) {
-      return '還有${difference.inMinutes}分鐘';
+      return '${difference.inMinutes}分鐘後開始';
     }
+
     return formattedDate;
   }
 }

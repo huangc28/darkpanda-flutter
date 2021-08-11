@@ -234,10 +234,10 @@ class SearchInquiryAPIs extends BaseClient {
     }
   }
 
-  Future<http.Response> emitServiceComfirmedMessage(String inquiryUuid) async {
+  Future<http.Response> emitServiceComfirmedMessage(String serviceUuid) async {
     try {
       final jsonBody = jsonEncode({
-        'inquiry_uuid': inquiryUuid,
+        'service_uuid': serviceUuid,
       });
 
       final request = http.Request(

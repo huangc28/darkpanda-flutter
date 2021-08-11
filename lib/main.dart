@@ -1,10 +1,16 @@
+import 'dart:async';
+
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
@@ -52,31 +58,55 @@ import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  FirebaseApp app = await Firebase.initializeApp();
+    FirebaseApp app = await Firebase.initializeApp();
 
-  assert(app != null);
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  // Initialize application config.
-  await Config.AppConfig.initConfig();
+    if (kDebugMode) {
+      // Force disable Crashlytics collection while doing every day development.
+      // Temporarily toggle this to true if you want to test crash reporting in your app.
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
 
-  WidgetsFlutterBinding.ensureInitialized();
+    assert(app != null);
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+    // Initialize application config.
+    await Config.AppConfig.initConfig();
 
-  String _gender = await SecureStore().readGender();
-  String _jwt = await SecureStore().readJwtToken();
+    WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    DarkPandaApp(
-      gender: _gender,
-      jwt: _jwt,
-    ),
-  );
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    String _gender = await SecureStore().readGender();
+    String _jwt = await SecureStore().readJwtToken();
+
+    ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
+          body: Center(
+            child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+
+    runZonedGuarded(() {
+      runApp(
+        DarkPandaApp(
+          gender: _gender,
+          jwt: _jwt,
+        ),
+      );
+    }, FirebaseCrashlytics.instance.recordError);
+  } catch (err) {
+    developer.log('failed to initialize app: ${err.toString()}');
+  }
 }
 
 class DarkPandaApp extends StatefulWidget {
@@ -86,8 +116,9 @@ class DarkPandaApp extends StatefulWidget {
     this.jwt,
   }) : super(key: key);
 
-  final gender;
-  final jwt;
+  final String gender;
+  final String jwt;
+  static final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
 
   @override
   _DarkPandaAppState createState() => _DarkPandaAppState();
@@ -230,6 +261,12 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
         ),
 
         BlocProvider(
+          create: (_) => SendUpdateInquiryMessageBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+          ),
+        ),
+
+        BlocProvider(
           create: (_) => GetInquiryBloc(
             inquiryApi: InquiryAPIClient(),
           ),
@@ -259,7 +296,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
             CountryLocalizations.delegate,
             AppLocalizations.delegate,
           ],
-
           supportedLocales: [
             Locale.fromSubtags(
               languageCode: 'zh',
@@ -268,7 +304,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
             ),
             Locale.fromSubtags(languageCode: 'en'),
           ],
-
           theme: ThemeManager.getTheme(),
           initialRoute: MainRoutes.landing,
           onGenerateRoute: (settings) {

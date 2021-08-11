@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/models/update_profile.dart';
@@ -71,11 +72,9 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
         final Map<String, dynamic> resultAvatar =
             json.decode(resAvatarImage.body);
 
-        List<UserImage> avatarImageList = resultAvatar['links']
-            .map<UserImage>((image) => UserImage(url: image))
-            .toList();
+        ChatImage avatarImageList = ChatImage.fromMap(resultAvatar);
 
-        avatarImageLink = avatarImageList[0].url;
+        avatarImageLink = avatarImageList.thumbnails[0];
       }
 
       // 2. Upload image listing
@@ -95,7 +94,9 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
         final Map<String, dynamic> result = json.decode(resp.body);
 
-        imageStringList = result['links']
+        ChatImage chatImage = ChatImage.fromMap(result);
+
+        imageStringList = chatImage.thumbnails
             .map<UserImage>((image) => UserImage(url: image))
             .toList();
       }
@@ -203,15 +204,28 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     if (event is FetchProfileEdit) {
       try {
         final UserProfile userProfile = event.userProfile;
+        double age;
+        double height;
+        double weight;
+
+        for (int i = 0; i < userProfile.traits.length; i++) {
+          if (userProfile.traits[i].type == 'age') {
+            age = userProfile.traits[i].value;
+          } else if (userProfile.traits[i].type == 'height') {
+            height = userProfile.traits[i].value;
+          } else {
+            weight = userProfile.traits[i].value;
+          }
+        }
 
         yield (state.copyWith(
           ready: true,
           uuid: userProfile.uuid,
           username: userProfile.username,
           nickname: userProfile.nickname,
-          age: userProfile.age,
-          height: userProfile.height,
-          weight: userProfile.weight,
+          age: age == null ? age : age.toInt(),
+          height: height,
+          weight: weight,
           description: userProfile.description,
           avatarUrl: userProfile.avatarUrl,
         ));

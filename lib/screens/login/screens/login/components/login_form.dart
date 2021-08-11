@@ -76,8 +76,6 @@ class _LoginFormState extends State<LoginForm> {
                 theme: DPTextFieldThemes.white,
                 contentPadding: EdgeInsets.only(
                   left: 14.0,
-                  bottom: SizeConfig.screenHeight * 0.01,
-                  top: SizeConfig.screenHeight * 0.04,
                 ),
               ),
             ),
@@ -86,6 +84,7 @@ class _LoginFormState extends State<LoginForm> {
             height: SizeConfig.screenHeight * 0.065,
             child: DPTextButton(
               loading: widget.loading,
+              disabled: widget.loading,
               text: AppLocalizations.of(context).login,
               onPressed: _submit,
             ),

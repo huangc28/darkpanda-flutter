@@ -79,7 +79,8 @@ class InquiryChatroomsState<E extends AppBaseException> extends Equatable {
       : this._(
           privateChatStreamMap: state.privateChatStreamMap,
           chatrooms: [],
-          status: state.status,
+          status: AsyncLoadingStatus.initial,
+          // status: state.status,
           chatroomLastMessage: {},
           currentPage: 0,
         );

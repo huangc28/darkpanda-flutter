@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -133,7 +134,7 @@ class _ProfileState extends State<Profile> {
                           );
                         } else {
                           return Row(
-                            children: [
+                            children: <Widget>[
                               LoadingScreen(),
                             ],
                           );
@@ -152,17 +153,24 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.only(top: 30, right: 16, left: 16, bottom: 16),
+      padding: EdgeInsets.only(
+        top: 30,
+        right: 16,
+        left: 16,
+        bottom: 16,
+      ),
       child: Row(
-        children: [
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,
             height: 31,
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 10),
           Text(
-            '个人主页',
+            '個人主頁',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -201,74 +209,82 @@ class _ProfileState extends State<Profile> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        if (state?.userProfile?.avatarUrl != "" ||
+                            state?.userProfile?.avatarUrl != null) {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return FullScreenImage(
+                                  imageUrl: state?.userProfile?.avatarUrl,
+                                  tag: "avatar_image",
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 38,
+                        backgroundImage: state?.userProfile?.avatarUrl == "" ||
+                                state?.userProfile?.avatarUrl == null
+                            ? AssetImage("assets/logo.png")
+                            : NetworkImage(state?.userProfile?.avatarUrl),
+                      ),
+                    ),
+                    SizedBox(width: SizeConfig.screenWidth * 0.04),
                     Expanded(
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Row(
                             children: <Widget>[
                               Text(
-                                state.userProfile.username,
+                                state?.userProfile?.username == null
+                                    ? ''
+                                    : state?.userProfile?.username,
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(
-                                // width: 10,
-                                width: SizeConfig.screenWidth * 0.03,
-                              ),
+                            ],
+                          ),
+                          SizedBox(height: SizeConfig.screenHeight * 0.025),
+                          Row(
+                            children: <Widget>[
                               InkWell(
                                 onTap: () {
-                                  // widget.onPush(
-                                  //     '/edit-profile', state.userProfile);
                                   navigateUpdateProfilePage(
                                       state, userImageList);
                                 },
                                 child: Image(
+                                  width: 24,
+                                  fit: BoxFit.fitWidth,
                                   image: AssetImage(
                                       "lib/screens/profile/assets/edit_profile.png"),
                                 ),
                               ),
                             ],
                           ),
-                          Container(
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Wrap(
-                                    children: <Widget>[
-                                      state.userProfile.age != null &&
-                                              state.userProfile.age != ""
-                                          ? ageLabel(state)
-                                          : SizedBox(),
-                                      state.userProfile.height != null &&
-                                              state.userProfile.age != ""
-                                          ? heightLabel(state)
-                                          : SizedBox(),
-                                      state.userProfile.weight != null &&
-                                              state.userProfile.age != ""
-                                          ? weightLabel(state)
-                                          : SizedBox(),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: state.userProfile.avatarUrl == ""
-                          ? AssetImage("assets/logo.png")
-                          : NetworkImage(state.userProfile.avatarUrl),
-                    ),
                   ],
                 ),
-                descriptionText(state),
-                imageList(),
+                SizedBox(height: SizeConfig.screenHeight * 0.01),
+                Container(
+                  height: 40,
+                  child: ListView.builder(
+                    itemCount: state.userProfile.traits.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return traitsLabel(state.userProfile.traits[index]);
+                    },
+                  ),
+                ),
+                _descriptionText(state),
+                _imageList(),
               ],
             );
           },
@@ -277,7 +293,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget imageList() {
+  Widget _imageList() {
     return BlocConsumer<LoadUserImagesBloc, LoadUserImagesState>(
       listener: (context, state) {
         if (state.status == AsyncLoadingStatus.done) {
@@ -302,28 +318,30 @@ class _ProfileState extends State<Profile> {
           );
         }
 
-        // if (state.status == AsyncLoadingStatus.done) {
         return state.userImages.length > 0
             ? Container(
                 height: 190,
                 padding: EdgeInsets.only(top: 25),
                 child: ListView.builder(
                   itemCount:
-                      state.userImages[state.userImages.length - 1].url == ""
-                          ? state.userImages.length - 1
-                          : state.userImages.length,
+                      // state.userImages[state.userImages.length - 1].url == ""
+                      //     ? state.userImages.length - 1
+                      //     :
+                      state.userImages.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {},
-                      child: ImageCard(image: state.userImages[index].url),
+                      child: state.userImages[index].fileName != null
+                          ? _imageCardFile(state.userImages[index].fileName)
+                          : state.userImages[index].url != ""
+                              ? ImageCard(image: state.userImages[index].url)
+                              : SizedBox.shrink(),
                     );
                   },
                 ),
               )
             : SizedBox();
-        // }
-        // return SizedBox.shrink();
       },
     );
   }
@@ -363,73 +381,49 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  Widget ageLabel(state) {
+  Widget traitsLabel(trait) {
+    String label = '岁';
+    dynamic value = '';
+
+    if (trait.type == 'age') {
+      label = '岁';
+      value = trait.value.toInt();
+    } else if (trait.type == 'height') {
+      label = 'm';
+      value = trait.value;
+    } else {
+      label = 'kg';
+      value = trait.value;
+    }
+
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
         child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
+          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             color: Color.fromRGBO(190, 172, 255, 0.3),
           ),
-          child: Text(
-            state.userProfile.age.toString() + '岁',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                value.toString() + label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget heightLabel(state) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            state.userProfile.height.toString() + 'm',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget weightLabel(state) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            state.userProfile.weight.toString() + 'kg',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget descriptionText(state) {
+  Widget _descriptionText(state) {
     return Padding(
       padding: EdgeInsets.only(
         top: SizeConfig.screenHeight * 0.02, //16.0,
@@ -437,8 +431,8 @@ class _ProfileState extends State<Profile> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          state.userProfile.description == null ||
-                  state.userProfile.description.isEmpty
+          state?.userProfile?.description == null ||
+                  state?.userProfile?.description == ""
               ? '沒有內容'
               : state.userProfile.description,
           style: TextStyle(
@@ -449,39 +443,35 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-}
 
-class DescriptionList extends StatelessWidget {
-  final LabelList label;
-
-  const DescriptionList({
-    Key key,
-    this.label,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          0.0,
-          10.0, //SizeConfig.screenHeight * 0.02, //10.0,
-          10.0,
-          0.0,
+  Widget _imageCardFile(image) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) {
+              return FullScreenImage(
+                imageUrl: image,
+                tag: "user_image",
+              );
+            },
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        width: 123,
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
         ),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            label.description,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+        child: Column(
+          children: <Widget>[
+            Image.file(
+              image,
+              height: 150,
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -507,59 +497,35 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: <Widget>[
-          Image.network(
-            image,
-            fit: BoxFit.cover,
-            height: 150,
+    return InkWell(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) {
+              return FullScreenImage(
+                imageUrl: image,
+                tag: "user_image",
+              );
+            },
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class ImageCardFile extends StatefulWidget {
-  final File image;
-
-  const ImageCardFile({
-    Key key,
-    this.image,
-  }) : super(key: key);
-
-  @override
-  _ImageCardFileState createState() => _ImageCardFileState(this.image);
-}
-
-class _ImageCardFileState extends State<ImageCardFile> {
-  final File image;
-
-  _ImageCardFileState(this.image);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: <Widget>[
-          Image.file(
-            image,
-            height: 150,
-          ),
-        ],
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        width: 123,
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: <Widget>[
+            Image.network(
+              image,
+              fit: BoxFit.cover,
+              height: 150,
+            ),
+          ],
+        ),
       ),
     );
   }

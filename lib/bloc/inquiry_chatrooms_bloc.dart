@@ -240,6 +240,7 @@ class InquiryChatroomsBloc
     try {
       yield InquiryChatroomsState.loading(state);
       yield InquiryChatroomsState.clearInqiuryChatList(state);
+      // yield InquiryChatroomsState.init();
 
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,

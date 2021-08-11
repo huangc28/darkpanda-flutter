@@ -59,5 +59,10 @@ class SendSmsCodeState<E extends AppBaseException> extends Equatable {
   }
 
   @override
-  List<Object> get props => [numSend, status, error, sendSMS];
+  List<Object> get props => [
+        numSend,
+        status,
+        error,
+        sendSMS,
+      ];
 }

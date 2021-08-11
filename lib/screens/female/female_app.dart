@@ -1,7 +1,11 @@
 // FemaleApp is a stateful widget that contains an app scaffold that holds an bottom navigation bar.
 // Each navigation tab holds it's own [Navigator] class. It holds the navigation history
 // of that tab.
+
 import 'package:flutter/material.dart';
+
+import 'package:darkpanda_flutter/main.dart';
+import 'package:darkpanda_flutter/components/navigate_to_login.dart';
 
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
@@ -46,7 +50,16 @@ class _FemaleAppState extends State<FemaleApp> {
       onWillPop: () async =>
           !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
       child: Scaffold(
-        body: _buildBody(),
+        body: ValueListenableBuilder(
+          valueListenable: DarkPandaApp.valueNotifier,
+          builder: (context, value, child) {
+            // If value is true which mean token is expired
+            if (value == true) {
+              return NavitgateToLogin();
+            }
+            return _buildBody();
+          },
+        ),
         bottomNavigationBar: BottomNavigation(
           currentTab: _currentTab,
           onSelectTab: _handleSelectTab,

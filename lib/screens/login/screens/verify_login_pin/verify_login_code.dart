@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/female_app.dart';
 import 'package:darkpanda_flutter/screens/male/male_app.dart';
 
+import 'package:darkpanda_flutter/main.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/screens/register/services/util.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
@@ -35,15 +36,6 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   final TextEditingController _pinCodeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _verifyPrefix = '';
-
-  @override
-  void initState() {
-    _verifyPrefix = widget.args.verifyPrefix;
-
-    super.initState();
-  }
-
   Widget _buildDescBlock() {
     return Row(
       children: <Widget>[
@@ -71,12 +63,14 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   }
 
   handleSubmit(BuildContext context, String pin) {
-    // emit verify login code event
+    final verifyPrefix =
+        BlocProvider.of<SendLoginVerifyCodeBloc>(context).state.verifyChar;
+
     BlocProvider.of<VerifyLoginCodeBloc>(context).add(
       SendVerifyLoginCode(
         mobile: widget.args.mobile,
         uuid: widget.args.uuid,
-        verifyChars: _verifyPrefix,
+        verifyChars: verifyPrefix,
         verifyDigs: pin,
       ),
     );
@@ -108,6 +102,8 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                   listener: (context, state) {
                     // If verify success, redirect to application.
                     if (state.status == AsyncLoadingStatus.done) {
+                      DarkPandaApp.valueNotifier.value = false;
+
                       Navigator.of(
                         context,
                         rootNavigator: true,
@@ -243,19 +239,6 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
                           ),
                           SizedBox(
                             width: SizeConfig.screenWidth * 0.05,
-                          ),
-                          BlocListener<SendLoginVerifyCodeBloc,
-                              SendLoginVerifyCodeState>(
-                            listener: (context, state) {
-                              // If login verify code send successfully, update the current verify prefix
-                              // to the newest one.
-                              if (state.status == AsyncLoadingStatus.done) {
-                                setState(() {
-                                  _verifyPrefix = state.verifyChar;
-                                });
-                              }
-                            },
-                            child: Container(),
                           ),
                           BlocBuilder<SendLoginVerifyCodeBloc,
                               SendLoginVerifyCodeState>(

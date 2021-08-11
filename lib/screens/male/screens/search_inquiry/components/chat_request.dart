@@ -92,7 +92,11 @@ class _ChatRequestState extends State<ChatRequest> {
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
-              return CancelInquiryConfirmationDialog();
+              return CancelInquiryConfirmationDialog(
+                title: '確定跳過此女生？',
+                onCancel: '取消',
+                onConfirm: '確定跳過',
+              );
             },
           ).then((value) {
             if (value) {
@@ -179,6 +183,7 @@ class _ChatRequestState extends State<ChatRequest> {
                 channelUUID: agreeInquiryResponse.channelUuid,
                 inquiryUUID: widget.activeInquiry.uuid,
                 counterPartUUID: agreeInquiryResponse.picker.uuid,
+                serviceUUID: agreeInquiryResponse.serviceUuid,
               ),
             );
           });

@@ -124,6 +124,7 @@ class InquiryChatroomApis extends BaseClient {
   }
 
   Future<http.Response> sendInquiryUpdateMessage({
+    String serviceUUID,
     String channelUUID,
     DateTime serviceTime,
     int serviceDuration,
@@ -135,10 +136,12 @@ class InquiryChatroomApis extends BaseClient {
 
     final request = http.Request(
       'POST',
-      buildUri('/v1/chat/emit-inquiry-updated-message'),
+      buildUri(
+          '/v1/chat/emit-update-service-message'), //emit-inquiry-updated-message
     );
 
     request.body = json.encode({
+      'service_uuid': serviceUUID,
       'channel_uuid': channelUUID,
       'appointment_time': appointmentToUtcToIsoString,
       'duration': serviceDuration,

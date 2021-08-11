@@ -258,7 +258,6 @@ class _BodyState extends State<Body> {
   Widget _buildResendButton() {
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (BuildContext context, state) {
-        print(state.status);
         return InkWell(
           child: Text(
             state.status == TimerStatus.progressing

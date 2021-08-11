@@ -3,7 +3,6 @@ import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/register/auth_navigator.dart';
@@ -89,14 +88,13 @@ class _LoginState extends State<Login> {
                     BlocListener<SendLoginVerifyCodeBloc,
                         SendLoginVerifyCodeState>(
                       listener: (context, state) {
-                        // User send his / her first login verify code on login page
+                        // User sends first login verify code on login page
                         // which means the user should have numSend equals 0.
                         if (state.status == AsyncLoadingStatus.done &&
                             state.numSend == 1) {
                           widget.onPush(
-                            '/login/verify-login-ping',
+                            '/login/verify-login-pin',
                             VerifyLoginPinArguments(
-                              verifyPrefix: state.verifyChar,
                               uuid: state.uuid,
                               mobile: state.mobile,
                               username: _username,

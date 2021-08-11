@@ -9,6 +9,7 @@ import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_servic
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bottom_navigation.dart';
 import 'components/body.dart';
 import 'components/buy_service_cancel_confirmation_dialog.dart';
 
@@ -24,6 +25,26 @@ class BuyService extends StatefulWidget {
 }
 
 class _BuyServiceState extends State<BuyService> {
+  LoadIncomingServiceBloc _loadIncomingServiceBloc;
+  int isFirstCall;
+
+  @override
+  void initState() {
+    super.initState();
+
+    isFirstCall = 0;
+
+    _loadIncomingServiceBloc =
+        BlocProvider.of<LoadIncomingServiceBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -95,19 +116,24 @@ class _BuyServiceState extends State<BuyService> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamed(
-                    MainRoutes.serviceChatroom,
-                    arguments: ServiceChatroomScreenArguments(
-                      channelUUID: widget.args.channelUuid,
-                      inquiryUUID: widget.args.inquiryUuid,
-                      counterPartUUID: widget.args.counterPartUuid,
-                      serviceUUID: widget.args.serviceUuid,
-                      routeTypes: RouteTypes.fromBuyService,
-                    ),
-                  );
+                  isFirstCall++;
+
+                  // status done will be called twice, so implement isFirstCall to solve this issue
+                  if (isFirstCall == 1) {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamed(
+                      MainRoutes.serviceChatroom,
+                      arguments: ServiceChatroomScreenArguments(
+                        channelUUID: widget.args.channelUuid,
+                        inquiryUUID: widget.args.inquiryUuid,
+                        counterPartUUID: widget.args.counterPartUuid,
+                        serviceUUID: widget.args.serviceUuid,
+                        routeTypes: RouteTypes.fromBuyService,
+                      ),
+                    );
+                  }
                 }
               },
             ),
@@ -132,6 +158,23 @@ class _BuyServiceState extends State<BuyService> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   print('Service cancelled');
+
+                  // If route is from service_chatroom, should use pop
+                  if (widget.args.routeTypes ==
+                      RouteTypes.fromServiceChatroom) {
+                    Navigator.of(context).pop();
+                  }
+                  // 1. Route is from inquiry_chatroom
+                  else {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamedAndRemoveUntil(
+                      MainRoutes.male,
+                      ModalRoute.withName('/'),
+                      arguments: MaleAppTabItem.manage,
+                    );
+                  }
                 }
               },
             ),

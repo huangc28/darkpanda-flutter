@@ -29,29 +29,19 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.only(top: 10.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: Color.fromRGBO(31, 30, 56, 1),
               ),
               child: Column(
-                children: [
+                children: <Widget>[
                   SizedBox(height: 15),
                   Row(
                     children: [
@@ -166,7 +156,7 @@ class _BodyState extends State<Body> {
           SizedBox(height: 15),
           _buildEachText(
             'countDown.png',
-            '期限',
+            '時長',
             widget.args.updateInquiryMessage.duration >
                         Duration(hours: 0, minutes: 1) &&
                     widget.args.updateInquiryMessage.duration <=
@@ -252,10 +242,14 @@ class _BodyState extends State<Body> {
         }
 
         if (state.status == AsyncLoadingStatus.done) {
-          Navigator.of(context, rootNavigator: true).push(
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) => CompleteBuyService(args: widget.args),
             ),
+            ModalRoute.withName('/'),
           );
         }
       },
@@ -286,7 +280,7 @@ class _BodyState extends State<Body> {
     return Container(
       // height: 30,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(

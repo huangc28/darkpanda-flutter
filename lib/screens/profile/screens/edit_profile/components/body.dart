@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
@@ -70,65 +71,67 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 0.0),
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            _avatarImage(),
-            InputTextLabel(label: "暱稱*"),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildNicknameInput(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.028, //24
-            ),
-            InputTextLabel(label: "年齡"),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildAgeInput(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.028, //24
-            ),
-            InputTextLabel(label: "身高"),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildHeightInput(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.028, //24
-            ),
-            InputTextLabel(label: "體重"),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildWeightInput(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.028, //24
-            ),
-            InputTextLabel(label: "簡介"),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildDescriptionInput(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.028, //24
-            ),
-            InputTextLabel(label: "照片*（至少上傳兩張）"),
-            buildAddImage(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-            buildUpdateButton(),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.022, //20
-            ),
-          ],
+    return UnfocusPrimary(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 0.0),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              _avatarImage(),
+              InputTextLabel(label: "暱稱*"),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildNicknameInput(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.028, //24
+              ),
+              InputTextLabel(label: "年齡"),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildAgeInput(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.028, //24
+              ),
+              InputTextLabel(label: "身高"),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildHeightInput(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.028, //24
+              ),
+              InputTextLabel(label: "體重"),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildWeightInput(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.028, //24
+              ),
+              InputTextLabel(label: "簡介"),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildDescriptionInput(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.028, //24
+              ),
+              InputTextLabel(label: "照片*（至少上傳兩張）"),
+              buildAddImage(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+              buildUpdateButton(),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.022, //20
+              ),
+            ],
+          ),
         ),
       ),
     );

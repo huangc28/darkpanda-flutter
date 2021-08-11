@@ -11,6 +11,7 @@ class Chatroom {
   final DateTime expiredAt;
   final DateTime createdAt;
   final List<Message> messages;
+  final String serviceUUID;
 
   const Chatroom({
     this.serviceType,
@@ -23,6 +24,7 @@ class Chatroom {
     this.expiredAt,
     this.createdAt,
     this.messages,
+    this.serviceUUID,
   });
 
   factory Chatroom.fromMap(Map<String, dynamic> data) {
@@ -50,6 +52,7 @@ class Chatroom {
       expiredAt: DateTime.parse(data['expired_at']),
       createdAt: DateTime.parse(data['created_at']),
       messages: messages,
+      serviceUUID: data['service_uuid'],
     );
   }
 }

@@ -58,24 +58,16 @@ class InquirerProfilePage extends StatelessWidget {
                   ),
                 ),
                 Container(
+                  height: 40,
                   padding: EdgeInsets.only(
-                    top: 12,
                     left: 16,
                   ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      // Tags: age, height, weight.
-                      userProfile.age != null && userProfile.age != ""
-                          ? ageLabel()
-                          : SizedBox(),
-                      userProfile.height != null && userProfile.age != ""
-                          ? heightLabel()
-                          : SizedBox(),
-                      userProfile.weight != null && userProfile.age != ""
-                          ? weightLabel()
-                          : SizedBox(),
-                    ],
+                  child: ListView.builder(
+                    itemCount: userProfile.traits.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return traitsLabel(userProfile.traits[index]);
+                    },
                   ),
                 ),
 
@@ -168,67 +160,51 @@ class InquirerProfilePage extends StatelessWidget {
     );
   }
 
-  Widget ageLabel() {
+  Widget traitsLabel(trait) {
+    String label = '岁';
+    dynamic value = '';
+
+    if (trait.type == 'age') {
+      label = '岁';
+      value = trait.value.toInt();
+    } else if (trait.type == 'height') {
+      label = 'm';
+      value = trait.value;
+    } else {
+      label = 'kg';
+      value = trait.value;
+    }
+
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
         child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-          decoration: tagBoxDecoration(),
-          child: Text(
-            userProfile.age.toString() + '岁',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Color.fromRGBO(190, 172, 255, 0.3),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                value.toString() + label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget heightLabel() {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
-          decoration: tagBoxDecoration(),
-          child: Text(
-            userProfile.height.toString() + 'm',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
+  BoxDecoration tagBoxDecoration() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(20.0),
+      color: Color.fromRGBO(190, 172, 255, 0.3),
     );
   }
-
-  Widget weightLabel() {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
-          decoration: tagBoxDecoration(),
-          child: Text(
-            userProfile.weight.toString() + 'kg',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-BoxDecoration tagBoxDecoration() {
-  return BoxDecoration(
-    borderRadius: BorderRadius.circular(20.0),
-    color: Color.fromRGBO(190, 172, 255, 0.3),
-  );
 }

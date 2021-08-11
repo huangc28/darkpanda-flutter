@@ -121,7 +121,7 @@ class _DPTextButtonState extends State<DPTextButton> {
         : themes[widget.theme];
 
     return TextButton(
-      onPressed: widget.disabled ? null : widget.onPressed,
+      onPressed: (widget.disabled || widget.loading) ? null : widget.onPressed,
       child: SizedBox(
         width: double.infinity,
         child:

@@ -93,7 +93,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
 
   File _image;
   final picker = ImagePicker();
-  List<ChatImage> chatImages = [];
+  ChatImage chatImages;
 
   /// Show loading when user sending image
   bool _isSendingImage = false;
@@ -360,7 +360,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                             context)
                                         .add(
                                       EmitServiceConfirmMessage(
-                                          widget.args.inquiryUUID),
+                                          widget.args.serviceUUID),
                                     );
                                   }
                                   // Reject inquiry
@@ -496,7 +496,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                 BlocProvider.of<SendImageMessageBloc>(context)
                                     .add(
                                   SendImageMessage(
-                                    imageUrl: chatImages[0].imageUrl,
+                                    imageUrl: chatImages.thumbnails[0],
                                     channelUUID: widget.args.channelUUID,
                                   ),
                                 );

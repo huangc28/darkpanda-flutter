@@ -46,13 +46,11 @@ class UploadImageMessageBloc
         );
       }
 
-      List<ChatImage> imageStringList = result['links']
-          .map<ChatImage>((image) => ChatImage(imageUrl: image))
-          .toList();
-
       yield UploadImageMessageState.loaded(
         state,
-        chatImages: imageStringList,
+        chatImages: ChatImage.fromMap(
+          result,
+        ),
       );
     } on APIException catch (e) {
       yield UploadImageMessageState.loadFailed(e);
