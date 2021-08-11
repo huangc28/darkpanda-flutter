@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
@@ -63,6 +66,12 @@ void main() async {
     // Pass all uncaught errors from the framework to Crashlytics.
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
+    if (kDebugMode) {
+      // Force disable Crashlytics collection while doing every day development.
+      // Temporarily toggle this to true if you want to test crash reporting in your app.
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
+
     assert(app != null);
 
     // Initialize application config.
@@ -87,12 +96,14 @@ void main() async {
           ),
         );
 
-    runApp(
-      DarkPandaApp(
-        gender: _gender,
-        jwt: _jwt,
-      ),
-    );
+    runZonedGuarded(() {
+      runApp(
+        DarkPandaApp(
+          gender: _gender,
+          jwt: _jwt,
+        ),
+      );
+    }, FirebaseCrashlytics.instance.recordError);
   } catch (err) {
     developer.log('failed to initialize app: ${err.toString()}');
   }
