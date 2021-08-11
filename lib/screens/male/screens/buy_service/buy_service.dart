@@ -9,6 +9,7 @@ import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_servic
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bottom_navigation.dart';
 import 'components/body.dart';
 import 'components/buy_service_cancel_confirmation_dialog.dart';
 
@@ -157,6 +158,23 @@ class _BuyServiceState extends State<BuyService> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   print('Service cancelled');
+
+                  // If route is from service_chatroom, should use pop
+                  if (widget.args.routeTypes ==
+                      RouteTypes.fromServiceChatroom) {
+                    Navigator.of(context).pop();
+                  }
+                  // 1. Route is from inquiry_chatroom
+                  else {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamedAndRemoveUntil(
+                      MainRoutes.male,
+                      ModalRoute.withName('/'),
+                      arguments: MaleAppTabItem.manage,
+                    );
+                  }
                 }
               },
             ),
