@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
@@ -57,6 +58,9 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     FirebaseApp app = await Firebase.initializeApp();
+
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
     assert(app != null);
 
