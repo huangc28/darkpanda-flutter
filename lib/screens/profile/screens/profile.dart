@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -208,12 +209,29 @@ class _ProfileState extends State<Profile> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    CircleAvatar(
-                      radius: 38,
-                      backgroundImage: state?.userProfile?.avatarUrl == "" ||
-                              state?.userProfile?.avatarUrl == null
-                          ? AssetImage("assets/logo.png")
-                          : NetworkImage(state?.userProfile?.avatarUrl),
+                    InkWell(
+                      onTap: () {
+                        if (state?.userProfile?.avatarUrl != "" ||
+                            state?.userProfile?.avatarUrl != null) {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return FullScreenImage(
+                                  imageUrl: state?.userProfile?.avatarUrl,
+                                  tag: "avatar_image",
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 38,
+                        backgroundImage: state?.userProfile?.avatarUrl == "" ||
+                                state?.userProfile?.avatarUrl == null
+                            ? AssetImage("assets/logo.png")
+                            : NetworkImage(state?.userProfile?.avatarUrl),
+                      ),
                     ),
                     SizedBox(width: SizeConfig.screenWidth * 0.04),
                     Expanded(
@@ -265,8 +283,8 @@ class _ProfileState extends State<Profile> {
                     },
                   ),
                 ),
-                descriptionText(state),
-                imageList(),
+                _descriptionText(state),
+                _imageList(),
               ],
             );
           },
@@ -275,7 +293,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget imageList() {
+  Widget _imageList() {
     return BlocConsumer<LoadUserImagesBloc, LoadUserImagesState>(
       listener: (context, state) {
         if (state.status == AsyncLoadingStatus.done) {
@@ -306,14 +324,19 @@ class _ProfileState extends State<Profile> {
                 padding: EdgeInsets.only(top: 25),
                 child: ListView.builder(
                   itemCount:
-                      state.userImages[state.userImages.length - 1].url == ""
-                          ? state.userImages.length - 1
-                          : state.userImages.length,
+                      // state.userImages[state.userImages.length - 1].url == ""
+                      //     ? state.userImages.length - 1
+                      //     :
+                      state.userImages.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {},
-                      child: ImageCard(image: state.userImages[index].url),
+                      child: state.userImages[index].fileName != null
+                          ? _imageCardFile(state.userImages[index].fileName)
+                          : state.userImages[index].url != ""
+                              ? ImageCard(image: state.userImages[index].url)
+                              : SizedBox.shrink(),
                     );
                   },
                 ),
@@ -400,7 +423,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget descriptionText(state) {
+  Widget _descriptionText(state) {
     return Padding(
       padding: EdgeInsets.only(
         top: SizeConfig.screenHeight * 0.02, //16.0,
@@ -420,39 +443,35 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-}
 
-class DescriptionList extends StatelessWidget {
-  final LabelList label;
-
-  const DescriptionList({
-    Key key,
-    this.label,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          0.0,
-          10.0, //SizeConfig.screenHeight * 0.02, //10.0,
-          10.0,
-          0.0,
+  Widget _imageCardFile(image) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) {
+              return FullScreenImage(
+                imageUrl: image,
+                tag: "user_image",
+              );
+            },
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        width: 123,
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
         ),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 2.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Text(
-            label.description,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+        child: Column(
+          children: <Widget>[
+            Image.file(
+              image,
+              height: 150,
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -478,59 +497,35 @@ class _ImageCardState extends State<ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: <Widget>[
-          Image.network(
-            image,
-            fit: BoxFit.cover,
-            height: 150,
+    return InkWell(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) {
+              return FullScreenImage(
+                imageUrl: image,
+                tag: "user_image",
+              );
+            },
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class ImageCardFile extends StatefulWidget {
-  final File image;
-
-  const ImageCardFile({
-    Key key,
-    this.image,
-  }) : super(key: key);
-
-  @override
-  _ImageCardFileState createState() => _ImageCardFileState(this.image);
-}
-
-class _ImageCardFileState extends State<ImageCardFile> {
-  final File image;
-
-  _ImageCardFileState(this.image);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      width: 123,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: <Widget>[
-          Image.file(
-            image,
-            height: 150,
-          ),
-        ],
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 16),
+        width: 123,
+        height: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: <Widget>[
+            Image.network(
+              image,
+              fit: BoxFit.cover,
+              height: 150,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/models/update_profile.dart';
@@ -71,11 +72,9 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
         final Map<String, dynamic> resultAvatar =
             json.decode(resAvatarImage.body);
 
-        List<UserImage> avatarImageList = resultAvatar['links']
-            .map<UserImage>((image) => UserImage(url: image))
-            .toList();
+        ChatImage avatarImageList = ChatImage.fromMap(resultAvatar);
 
-        avatarImageLink = avatarImageList[0].url;
+        avatarImageLink = avatarImageList.thumbnails[0];
       }
 
       // 2. Upload image listing
@@ -95,7 +94,9 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
         final Map<String, dynamic> result = json.decode(resp.body);
 
-        imageStringList = result['links']
+        ChatImage chatImage = ChatImage.fromMap(result);
+
+        imageStringList = chatImage.thumbnails
             .map<UserImage>((image) => UserImage(url: image))
             .toList();
       }
