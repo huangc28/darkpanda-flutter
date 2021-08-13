@@ -128,11 +128,6 @@ class _ChatroomState extends State<Chatroom>
           inquirerUUID: widget.args.counterPartUUID),
     );
 
-    // Fetch inquiry related inquiry if exists.
-    // BlocProvider.of<GetInquiryBloc>(context).add(
-    //   GetInquiry(inquiryUuid: widget.args.inquiryUUID),
-    // );
-
     BlocProvider.of<LoadServiceDetailBloc>(context).add(
       LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
     );
@@ -234,7 +229,7 @@ class _ChatroomState extends State<Chatroom>
 
   Future _getCameraImage() async {
     await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.getImage(
+    final pickedFile = await picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 20,
     );
@@ -256,7 +251,7 @@ class _ChatroomState extends State<Chatroom>
   }
 
   Future _getGalleryImage() async {
-    final pickedFile = await picker.getImage(
+    final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 20,
     );

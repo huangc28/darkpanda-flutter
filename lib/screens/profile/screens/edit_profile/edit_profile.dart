@@ -25,6 +25,8 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +42,9 @@ class _EditProfileState extends State<EditProfile> {
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.initial ||
               state.status == AsyncLoadingStatus.loading) {
+            setState(() {
+              isLoading = true;
+            });
             return Row(
               children: [
                 LoadingScreen(),
@@ -60,6 +65,7 @@ class _EditProfileState extends State<EditProfile> {
         child: Body(
           args: widget.args,
           imageList: widget.imageList,
+          isLoading: isLoading,
         ),
       ),
     );

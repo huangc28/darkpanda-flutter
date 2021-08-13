@@ -145,7 +145,8 @@ class _InquiryChatroomState extends State<InquiryChatroom>
 
   Future _getCameraImage() async {
     await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.getImage(
+
+    final pickedFile = await picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 20,
     );
@@ -167,7 +168,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   }
 
   Future _getGalleryImage() async {
-    final pickedFile = await picker.getImage(
+    final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 20,
     );

@@ -20,10 +20,12 @@ class Body extends StatefulWidget {
     Key key,
     this.args,
     this.imageList,
+    this.isLoading,
   }) : super(key: key);
 
   final UserProfile args;
   final List<UserImage> imageList;
+  final bool isLoading;
 
   @override
   _BodyState createState() => _BodyState();
@@ -138,30 +140,42 @@ class _BodyState extends State<Body> {
   }
 
   Future getCameraImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        UserImage demoImage = UserImage(
-          url: null,
-          fileName: _image,
-        );
+    try {
+      XFile image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 20,
+      );
 
-        if (images.length > 0) {
-          images.removeAt(images.length - 1);
+      setState(() {
+        if (image != null) {
+          _image = File(image.path);
+          UserImage demoImage = UserImage(
+            url: null,
+            fileName: _image,
+          );
+
+          if (images.length > 0) {
+            images.removeAt(images.length - 1);
+          }
+
+          images.add(demoImage);
+          images.add(userImageAdd);
+        } else {
+          print('No image selected.');
         }
-
-        images.add(demoImage);
-        images.add(userImageAdd);
-      } else {
-        print('No image selected.');
-      }
-    });
+      });
+    } catch (error) {
+      print('error taking picture ${error.toString()}');
+    }
   }
 
   Future getGalleryImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
@@ -184,7 +198,10 @@ class _BodyState extends State<Body> {
   }
 
   Future getGalleryImageAvatar() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
@@ -196,7 +213,11 @@ class _BodyState extends State<Body> {
   }
 
   Future getCameraImageAvatar() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
@@ -524,6 +545,8 @@ class _BodyState extends State<Body> {
           child: SizedBox(
             height: 44,
             child: DPTextButton(
+              disabled: widget.isLoading,
+              loading: widget.isLoading,
               theme: DPTextButtonThemes.purple,
               onPressed: () {
                 BlocProvider.of<UpdateProfileBloc>(context).add(
