@@ -521,8 +521,9 @@ class _ImageCardState extends State<ImageCard> {
           children: <Widget>[
             Image.network(
               image,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
               height: 150,
+              width: 115,
             ),
           ],
         ),

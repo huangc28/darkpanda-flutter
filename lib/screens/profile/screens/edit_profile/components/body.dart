@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:image/image.dart' as img;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -69,6 +72,93 @@ class _BodyState extends State<Body> {
     _descriptionTextController.clear();
 
     super.dispose();
+  }
+
+  void _showPicker() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
+                    onTap: () {
+                      getGalleryImage();
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    // getCameraImage();
+                    Navigator.of(context).pop();
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          onTakePhoto: (xFile) {
+                            getCameraImage(xFile);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPickerAvatar() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
+                    onTap: () {
+                      getGalleryImageAvatar();
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          onTakePhoto: (xFile) {
+                            getCameraImageAvatar(xFile);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -139,14 +229,13 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Future getCameraImage() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-
+  Future getCameraImage(XFile image) async {
     try {
-      XFile image = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 20,
-      );
+      final img.Image capturedImage =
+          img.decodeImage(await File(image.path).readAsBytes());
+      final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+      await File(image.path).writeAsBytes(img.encodeJpg(orientedImage));
 
       setState(() {
         if (image != null) {
@@ -212,12 +301,12 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future getCameraImageAvatar() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 20,
-    );
+  Future getCameraImageAvatar(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
@@ -248,7 +337,7 @@ class _BodyState extends State<Body> {
             backgroundColor: Colors.grey[400],
             child: IconButton(
               onPressed: () {
-                print('pet edit');
+                print('edit');
                 _showPickerAvatar();
               },
               icon: Icon(
@@ -470,6 +559,8 @@ class _BodyState extends State<Body> {
           Image.file(
             images[index].fileName,
             height: 150,
+            width: 115,
+            fit: BoxFit.fill,
           ),
           Positioned(
             top: 5,
@@ -506,8 +597,9 @@ class _BodyState extends State<Body> {
         children: <Widget>[
           Image.network(
             widget.imageList[index].url,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             height: 150,
+            width: 115,
           ),
           Positioned(
             top: 5,
@@ -593,68 +685,6 @@ class _BodyState extends State<Body> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.photo_library),
-                    title: new Text('Photo Library'),
-                    onTap: () {
-                      getGalleryImage();
-                      Navigator.of(context).pop();
-                    }),
-                new ListTile(
-                  leading: new Icon(Icons.photo_camera),
-                  title: new Text('Camera'),
-                  onTap: () {
-                    getCameraImage();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showPickerAvatar() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.photo_library),
-                    title: new Text('Photo Library'),
-                    onTap: () {
-                      getGalleryImageAvatar();
-                      Navigator.of(context).pop();
-                    }),
-                new ListTile(
-                  leading: new Icon(Icons.photo_camera),
-                  title: new Text('Camera'),
-                  onTap: () {
-                    getCameraImageAvatar();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

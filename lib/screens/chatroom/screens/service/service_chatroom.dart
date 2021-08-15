@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
@@ -191,12 +193,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     super.deactivate();
   }
 
-  Future _getCameraImage() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 20,
-    );
+  Future _getCameraImage(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
@@ -702,7 +704,20 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          _getCameraImage();
+          // _getCameraImage();
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                onTakePhoto: (xFile) {
+                  _getCameraImage(xFile);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          );
         },
       ),
     );

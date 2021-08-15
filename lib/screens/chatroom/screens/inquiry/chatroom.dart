@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'package:darkpanda_flutter/components/camera_screen.dart';
+import 'package:image/image.dart' as img;
 
-import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
@@ -29,8 +33,6 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -221,18 +223,31 @@ class _ChatroomState extends State<Chatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          _getCameraImage();
+          // _getCameraImage();
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                onTakePhoto: (xFile) {
+                  _getCameraImage(xFile);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          );
         },
       ),
     );
   }
 
-  Future _getCameraImage() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 20,
-    );
+  Future _getCameraImage(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
