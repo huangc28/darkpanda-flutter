@@ -17,7 +17,6 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,6 +59,7 @@ import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
 import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
+import 'screens/male_inquiry_detail.dart';
 
 class InquiryChatroom extends StatefulWidget {
   InquiryChatroom({
@@ -617,6 +617,34 @@ class _InquiryChatroomState extends State<InquiryChatroom>
             ),
           );
         },
+      ),
+      actions: <Widget>[
+        _serviceDetailButton(),
+        SizedBox(width: 20),
+      ],
+    );
+  }
+
+  Widget _serviceDetailButton() {
+    return Align(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (context) => MaleInquiryDetail(
+                inquiryUuid: widget.args.inquiryUUID,
+                authUser: _sender,
+              ),
+            ),
+          );
+        },
+        child: Text(
+          '交易明細',
+          style: TextStyle(
+            color: Color.fromRGBO(255, 255, 255, 1),
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }
