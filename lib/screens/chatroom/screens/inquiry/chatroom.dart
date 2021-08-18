@@ -364,110 +364,119 @@ class _ChatroomState extends State<Chatroom>
                                       }
                                     },
                                     builder: (context, state) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // Dismiss inquiry detail pannel.
-                                          if (!_animationController
-                                              .isDismissed) {
-                                            _animationController.reverse();
-                                          }
+                                      if (_doneInitChatroom) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            // Dismiss inquiry detail pannel.
+                                            if (!_animationController
+                                                .isDismissed) {
+                                              _animationController.reverse();
+                                            }
 
-                                          FocusScopeNode currentFocus =
-                                              FocusScope.of(context);
+                                            FocusScopeNode currentFocus =
+                                                FocusScope.of(context);
 
-                                          // Dismiss keyboard when user clicks on chat window.
-                                          if (!currentFocus.hasPrimaryFocus) {
-                                            currentFocus.unfocus();
-                                          }
-                                        },
-                                        child: ChatroomWindow(
-                                          scrollController: scrollController,
-                                          historicalMessages:
-                                              state.historicalMessages,
-                                          currentMessages:
-                                              state.currentMessages,
-                                          isSendingImage: _isSendingImage,
-                                          builder:
-                                              (BuildContext context, message) {
-                                            // Render different chat bubble based on message type.
-                                            if (message
-                                                is ServiceConfirmedMessage) {
-                                              return ConfirmedServiceBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
-                                            } else if (message
-                                                is UpdateInquiryMessage) {
-                                              return UpdateInquiryBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                                onTapMessage: (message) {
-                                                  // Slideup inquiry pannel.
-                                                  _animationController
-                                                      .forward();
-                                                },
-                                              );
-                                            } else if (message
-                                                is DisagreeInquiryMessage) {
-                                              return DisagreeInquiryBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
-                                            } else if (message
-                                                is QuitChatroomMessage) {
-                                              return QuitChatroomBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
-                                            } else if (message
-                                                is PaymentCompletedMessage) {
-                                              return PaymentCompletedBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
-                                            } else if (message
-                                                is CancelServiceMessage) {
-                                              return CancelServiceBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
-                                            } else if (message
-                                                is ImageMessage) {
-                                              return ImageBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                                onEnlarge: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) {
-                                                        return FullScreenImage(
-                                                          imageUrl: message
-                                                              .imageUrls[0],
-                                                          tag: "chat_image",
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            } else {
-                                              return ChatBubble(
-                                                isMe: _sender.uuid ==
-                                                    message.from,
-                                                message: message,
-                                              );
+                                            // Dismiss keyboard when user clicks on chat window.
+                                            if (!currentFocus.hasPrimaryFocus) {
+                                              currentFocus.unfocus();
                                             }
                                           },
-                                        ),
-                                      );
+                                          child: ChatroomWindow(
+                                            scrollController: scrollController,
+                                            historicalMessages:
+                                                state.historicalMessages,
+                                            currentMessages:
+                                                state.currentMessages,
+                                            isSendingImage: _isSendingImage,
+                                            builder: (BuildContext context,
+                                                message) {
+                                              // Render different chat bubble based on message type.
+                                              if (message
+                                                  is ServiceConfirmedMessage) {
+                                                return ConfirmedServiceBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              } else if (message
+                                                  is UpdateInquiryMessage) {
+                                                return UpdateInquiryBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                  onTapMessage: (message) {
+                                                    // Slideup inquiry pannel.
+                                                    _animationController
+                                                        .forward();
+                                                  },
+                                                );
+                                              } else if (message
+                                                  is DisagreeInquiryMessage) {
+                                                return DisagreeInquiryBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              } else if (message
+                                                  is QuitChatroomMessage) {
+                                                return QuitChatroomBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              } else if (message
+                                                  is PaymentCompletedMessage) {
+                                                return PaymentCompletedBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              } else if (message
+                                                  is CancelServiceMessage) {
+                                                return CancelServiceBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              } else if (message
+                                                  is ImageMessage) {
+                                                return ImageBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                  onEnlarge: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) {
+                                                          return FullScreenImage(
+                                                            imageUrl: message
+                                                                .imageUrls[0],
+                                                            tag: "chat_image",
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                return ChatBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                        return Center(
+                                          child: Container(
+                                            height: 50,
+                                            child: LoadingIcon(),
+                                          ),
+                                        );
+                                      }
                                     },
                                   ),
                                 ),
@@ -486,12 +495,7 @@ class _ChatroomState extends State<Chatroom>
                       ),
                       _doneInitChatroom
                           ? _buildMessageBar()
-                          : Center(
-                              child: Container(
-                                height: 50,
-                                child: LoadingIcon(),
-                              ),
-                            ),
+                          : SizedBox.shrink(),
                     ],
                   ),
                 ),
