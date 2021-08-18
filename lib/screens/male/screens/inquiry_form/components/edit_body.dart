@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -366,13 +367,19 @@ class _EditBodyState extends State<EditBody> {
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
       ),
-      child: Text(
-        txt,
-        style: TextStyle(
-            color: selectedIndexServiceType == index
-                ? Colors.black
-                : Colors.white),
-      ),
+      child: txt == ServiceTypes.sex.name
+          ? Icon(
+              Icons.favorite,
+              color: Colors.pink,
+            )
+          : Text(
+              txt,
+              style: TextStyle(
+                color: selectedIndexServiceType == index
+                    ? Colors.black
+                    : Colors.white,
+              ),
+            ),
     );
   }
 

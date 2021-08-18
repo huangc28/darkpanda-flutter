@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

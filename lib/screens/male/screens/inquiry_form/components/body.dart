@@ -1,6 +1,7 @@
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
@@ -293,13 +294,19 @@ class _BodyState extends State<Body> {
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
       ),
-      child: Text(
-        txt,
-        style: TextStyle(
-            color: selectedIndexServiceType == index
-                ? Colors.black
-                : Colors.white),
-      ),
+      child: txt == ServiceTypes.sex.name
+          ? Icon(
+              Icons.favorite,
+              color: Colors.pink,
+            )
+          : Text(
+              txt,
+              style: TextStyle(
+                color: selectedIndexServiceType == index
+                    ? Colors.black
+                    : Colors.white,
+              ),
+            ),
     );
   }
 
