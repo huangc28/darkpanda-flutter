@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
@@ -70,6 +71,8 @@ class _EditBodyState extends State<EditBody> {
 
   DateTime dateTime = DateTime.now();
   TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -227,35 +230,70 @@ class _EditBodyState extends State<EditBody> {
   }
 
   Widget _confirmButton() {
-    return GestureDetector(
-      onTap: () {
-        if (!_formKey.currentState.validate()) {
-          return;
+    return BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.loading ||
+            state.status == AsyncLoadingStatus.initial) {
+          setState(() {
+            isLoading = true;
+          });
+        } else if (state.status == AsyncLoadingStatus.error) {
+          setState(() {
+            isLoading = false;
+          });
+        } else if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            isLoading = false;
+          });
         }
-        _formKey.currentState.save();
-        BlocProvider.of<SearchInquiryFormBloc>(context).add(
-          SubmitEditSearchInquiryForm(_inquiryForms),
-        );
       },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-        height: 45,
-        child: Material(
-          borderRadius: BorderRadius.circular(20),
-          color: Color.fromRGBO(119, 81, 255, 1),
-          elevation: 7,
-          child: Center(
-            child: Text(
-              '编织',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-          ),
-        ),
+      child: DPTextButton(
+        loading: isLoading,
+        disabled: isLoading,
+        theme: DPTextButtonThemes.purple,
+        onPressed: () async {
+          if (!_formKey.currentState.validate()) {
+            return;
+          }
+
+          _formKey.currentState.save();
+
+          BlocProvider.of<SearchInquiryFormBloc>(context).add(
+            SubmitEditSearchInquiryForm(_inquiryForms),
+          );
+        },
+        text: '编织',
       ),
     );
+    // return GestureDetector(
+    //   onTap: () {
+    //     if (!_formKey.currentState.validate()) {
+    //       return;
+    //     }
+    //     _formKey.currentState.save();
+    //     BlocProvider.of<SearchInquiryFormBloc>(context).add(
+    //       SubmitEditSearchInquiryForm(_inquiryForms),
+    //     );
+    //   },
+    //   child: Container(
+    //     margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+    //     height: 45,
+    //     child: Material(
+    //       borderRadius: BorderRadius.circular(20),
+    //       color: Color.fromRGBO(119, 81, 255, 1),
+    //       elevation: 7,
+    //       child: Center(
+    //         child: Text(
+    //           '编织',
+    //           style: TextStyle(
+    //             color: Colors.white,
+    //             fontSize: 18,
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _appointmentTime() {

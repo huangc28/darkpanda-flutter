@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -46,6 +47,8 @@ class _BodyState extends State<Body> {
 
   DateTime dateTime = DateTime.now();
   TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -171,33 +174,45 @@ class _BodyState extends State<Body> {
   }
 
   Widget _confirmButton() {
-    return GestureDetector(
-      onTap: () {
-        if (!_formKey.currentState.validate()) {
-          return;
-        }
-        _formKey.currentState.save();
-        BlocProvider.of<SearchInquiryFormBloc>(context).add(
-          SubmitSearchInquiryForm(_inquiryForms),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-        height: 45,
-        child: Material(
-          borderRadius: BorderRadius.circular(20),
-          color: Color.fromRGBO(119, 81, 255, 1),
-          elevation: 7,
-          child: Center(
-            child: Text(
-              '提交需求',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
+    return BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.loading ||
+            state.status == AsyncLoadingStatus.initial) {
+          setState(() {
+            isLoading = true;
+          });
+        } else if (state.status == AsyncLoadingStatus.error) {
+          setState(() {
+            isLoading = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
             ),
-          ),
-        ),
+          );
+        } else if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      },
+      child: DPTextButton(
+        loading: isLoading,
+        disabled: isLoading,
+        theme: DPTextButtonThemes.purple,
+        onPressed: () async {
+          if (!_formKey.currentState.validate()) {
+            return;
+          }
+
+          _formKey.currentState.save();
+
+          BlocProvider.of<SearchInquiryFormBloc>(context).add(
+            SubmitSearchInquiryForm(_inquiryForms),
+          );
+        },
+        text: '提交需求',
       ),
     );
   }
