@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

@@ -64,6 +64,7 @@ dependencies:
   # Use with the CupertinoIcons class for IOS style icons.
   cupertino_icons: ^1.0.3
   flutter_tappay: ^0.3.0+2
+  firebase_messaging: ^10.0.4
 
 dev_dependencies:
   flutter_test:

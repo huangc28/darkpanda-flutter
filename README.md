@@ -43,17 +43,17 @@ flutter build \
  }
  ```
  
+### FCM integration on picking up inquiry 
 
-- Implement app bottom bar. --- [ok]
-- Remove pubnub from the application
-- Login / Logout function.
-- Handle error when API request failed.
-- Initialize firestore instance at the start of the application. --- [ok]
-- Female app should add inquiry chats tap.
-- All API classes should rethrow errors so that blocs can catch and display API errors.
+When female user picks up inquiry, sends FCM message to male user. We will use google pub/sub service to integrate FCM message.
+When male starts an inquiry, backend creates a pub/sub topic that the device can subscribe to. FCM message is send via the topic.
+
+1. Retrieve topic name from active inquiry if there is any.
+2. `FirebaseMessaging` subscribes to the topic. 
 
 ## Reference
 
+- [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)
 - [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)
 - [Great navigator article ](https://medium.com/flutter-community/flutter-push-pop-push-1bb718b13c31)
 - [How to fix form overflow problem](https://www.google.com/search?q=flutter+from+keyboard+overflow&rlz=1C5CHFA_enTW891TW891&oq=flutter+keyboard+form+o&aqs=chrome.1.69i57j0i10i22i30j69i60.11468j0j7&sourceid=chrome&ie=UTF-8#kpvalbx=_6Gd0YMewBrXLmAXXtJe4DA12)
