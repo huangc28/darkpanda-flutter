@@ -117,7 +117,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                               padding:
                                   EdgeInsets.only(top: 0, left: 0, right: 20),
                               child: Text(
-                                '编织',
+                                '編輯',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
