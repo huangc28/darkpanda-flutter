@@ -492,86 +492,105 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   }
                                 },
                                 builder: (context, state) {
-                                  return UnfocusPrimary(
-                                    child: ChatroomWindow(
-                                      scrollController: scrollController,
-                                      historicalMessages:
-                                          state.historicalMessages,
-                                      currentMessages: state.currentMessages,
-                                      isSendingImage: _isSendingImage,
-                                      builder: (BuildContext context, message) {
-                                        // Render different chat bubble based on message type.
-                                        if (message
-                                            is ServiceConfirmedMessage) {
-                                          return ConfirmedServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is UpdateInquiryMessage) {
-                                          return UpdateInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onTapMessage: (message) {},
-                                          );
-                                        } else if (message
-                                            is DisagreeInquiryMessage) {
-                                          return DisagreeInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is QuitChatroomMessage) {
-                                          return QuitChatroomBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is PaymentCompletedMessage) {
-                                          return PaymentCompletedBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is StartServiceMessage) {
-                                          return StartServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is CancelServiceMessage) {
-                                          return CancelServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message is ImageMessage) {
-                                          return ImageBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onEnlarge: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) {
-                                                    return FullScreenImage(
-                                                      imageUrl:
-                                                          message.imageUrls[0],
-                                                      tag: "chat_image",
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          return ChatBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  );
+                                  if (_doneInitChatroom) {
+                                    return UnfocusPrimary(
+                                      child: ChatroomWindow(
+                                        scrollController: scrollController,
+                                        historicalMessages:
+                                            state.historicalMessages,
+                                        currentMessages: state.currentMessages,
+                                        isSendingImage: _isSendingImage,
+                                        builder:
+                                            (BuildContext context, message) {
+                                          // Render different chat bubble based on message type.
+                                          if (message
+                                              is ServiceConfirmedMessage) {
+                                            return ConfirmedServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is UpdateInquiryMessage) {
+                                            return UpdateInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onTapMessage: (message) {},
+                                            );
+                                          } else if (message
+                                              is DisagreeInquiryMessage) {
+                                            return DisagreeInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is QuitChatroomMessage) {
+                                            return QuitChatroomBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is PaymentCompletedMessage) {
+                                            return PaymentCompletedBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is StartServiceMessage) {
+                                            return StartServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is CancelServiceMessage) {
+                                            return CancelServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message is ImageMessage) {
+                                            return ImageBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onEnlarge: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) {
+                                                      return FullScreenImage(
+                                                        imageUrl: message
+                                                            .imageUrls[0],
+                                                        tag: "chat_image",
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            return ChatBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: Container(
+                                        height: 50,
+                                        child: LoadingIcon(),
+                                      ),
+                                    );
+                                  }
                                 },
                               ),
                             ],
@@ -579,14 +598,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                         },
                       ),
                     ),
-                    _doneInitChatroom
-                        ? _buildMessageBar()
-                        : Center(
-                            child: Container(
-                              height: 50,
-                              child: LoadingIcon(),
-                            ),
-                          ),
+                    _doneInitChatroom ? _buildMessageBar() : SizedBox.shrink(),
                   ],
                 ),
               ),

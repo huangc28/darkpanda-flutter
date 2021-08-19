@@ -37,13 +37,15 @@ class TopupPayment extends StatefulWidget {
 }
 
 class _TopupPaymentState extends State<TopupPayment> {
-  var _numberController = TextEditingController();
+  TextEditingController _numberController = TextEditingController();
 
-  var _payer = FlutterTappay();
+  FlutterTappay _payer = FlutterTappay();
 
-  var _paymentCard = PaymentCard();
-  var _formKey = GlobalKey<FormState>();
-  var _autoValidateMode = AutovalidateMode.disabled;
+  PaymentCard _paymentCard = PaymentCard();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -135,9 +137,21 @@ class _TopupPaymentState extends State<TopupPayment> {
           child: SingleChildScrollView(
             child: BlocListener<BuyDpBloc, BuyDpState>(
               listener: (context, state) {
-                if (state.status == AsyncLoadingStatus.error) {
+                if (state.status == AsyncLoadingStatus.loading ||
+                    state.status == AsyncLoadingStatus.initial) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                } else if (state.status == AsyncLoadingStatus.error) {
+                  setState(() {
+                    isLoading = false;
+                  });
                   _showInSnackBar(state.error.message);
                 } else if (state.status == AsyncLoadingStatus.done) {
+                  setState(() {
+                    isLoading = false;
+                  });
+
                   _showInSnackBar('充值成功！');
                   // If args is null, means topup is from settings
 
@@ -175,8 +189,8 @@ class _TopupPaymentState extends State<TopupPayment> {
               },
               child: Column(
                 children: <Widget>[
-                  buildAmountDetail(),
-                  buildPaymentDetail(),
+                  _buildAmountDetail(),
+                  _buildPaymentDetail(),
                 ],
               ),
             ),
@@ -186,7 +200,7 @@ class _TopupPaymentState extends State<TopupPayment> {
     );
   }
 
-  Widget buildPaymentDetail() {
+  Widget _buildPaymentDetail() {
     return Padding(
       // padding: EdgeInsets.all(20),
       padding: EdgeInsets.fromLTRB(
@@ -230,7 +244,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                     SizedBox(
                       height: SizeConfig.screenHeight * 0.018, //15
                     ),
-                    buildCreditCardNumberInput(),
+                    _buildCreditCardNumberInput(),
                     SizedBox(
                       height: SizeConfig.screenHeight * 0.022, //20
                     ),
@@ -257,11 +271,11 @@ class _TopupPaymentState extends State<TopupPayment> {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: buildValidInput(),
+                          child: _buildValidInput(),
                         ),
                         SizedBox(width: 10),
                         Expanded(
-                          child: buildCVCInput(),
+                          child: _buildCVCInput(),
                         ),
                       ],
                     ),
@@ -269,6 +283,8 @@ class _TopupPaymentState extends State<TopupPayment> {
                       height: SizeConfig.screenHeight * 0.022, //20
                     ),
                     DPTextButton(
+                      loading: isLoading,
+                      disabled: isLoading,
                       theme: DPTextButtonThemes.purple,
                       onPressed: () async {
                         _validateInputs();
@@ -285,7 +301,7 @@ class _TopupPaymentState extends State<TopupPayment> {
     );
   }
 
-  Widget buildAmountDetail() {
+  Widget _buildAmountDetail() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -359,7 +375,7 @@ class _TopupPaymentState extends State<TopupPayment> {
     );
   }
 
-  Widget buildCreditCardNumberInput() {
+  Widget _buildCreditCardNumberInput() {
     return Column(
       children: <Widget>[
         TextFormField(
@@ -381,7 +397,7 @@ class _TopupPaymentState extends State<TopupPayment> {
     );
   }
 
-  Widget buildValidInput() {
+  Widget _buildValidInput() {
     return Column(
       children: <Widget>[
         TextFormField(
@@ -404,7 +420,7 @@ class _TopupPaymentState extends State<TopupPayment> {
     );
   }
 
-  Widget buildCVCInput() {
+  Widget _buildCVCInput() {
     return Column(
       children: <Widget>[
         TextFormField(

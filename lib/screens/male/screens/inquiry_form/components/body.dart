@@ -1,7 +1,8 @@
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
-import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
@@ -46,6 +47,8 @@ class _BodyState extends State<Body> {
 
   DateTime dateTime = DateTime.now();
   TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -171,27 +174,46 @@ class _BodyState extends State<Body> {
   }
 
   Widget _confirmButton() {
-    return BlocBuilder<SearchInquiryFormBloc, SearchInquiryFormState>(
-      builder: (context, state) {
-        return Container(
-          height: 45,
-          child: DPTextButton(
-            text: '提交需求',
-            theme: DPTextButtonThemes.purple,
-            loading: state.status == AsyncLoadingStatus.loading,
-            onPressed: () {
-              if (!_formKey.currentState.validate()) {
-                return;
-              }
+    return BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.loading ||
+            state.status == AsyncLoadingStatus.initial) {
+          setState(() {
+            isLoading = true;
+          });
+        } else if (state.status == AsyncLoadingStatus.error) {
+          setState(() {
+            isLoading = false;
+          });
 
-              _formKey.currentState.save();
-              BlocProvider.of<SearchInquiryFormBloc>(context).add(
-                SubmitSearchInquiryForm(_inquiryForms),
-              );
-            },
-          ),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        } else if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            isLoading = false;
+          });
+        }
       },
+      child: DPTextButton(
+        loading: isLoading,
+        disabled: isLoading,
+        theme: DPTextButtonThemes.purple,
+        onPressed: () async {
+          if (!_formKey.currentState.validate()) {
+            return;
+          }
+
+          _formKey.currentState.save();
+
+          BlocProvider.of<SearchInquiryFormBloc>(context).add(
+            SubmitSearchInquiryForm(_inquiryForms),
+          );
+        },
+        text: '提交需求',
+      ),
     );
   }
 
@@ -287,13 +309,19 @@ class _BodyState extends State<Body> {
           color: Color.fromRGBO(106, 109, 137, 1),
         ),
       ),
-      child: Text(
-        txt,
-        style: TextStyle(
-            color: selectedIndexServiceType == index
-                ? Colors.black
-                : Colors.white),
-      ),
+      child: txt == ServiceTypes.sex.name
+          ? Icon(
+              Icons.favorite,
+              color: Colors.pink,
+            )
+          : Text(
+              txt,
+              style: TextStyle(
+                color: selectedIndexServiceType == index
+                    ? Colors.black
+                    : Colors.white,
+              ),
+            ),
     );
   }
 

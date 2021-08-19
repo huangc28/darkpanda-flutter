@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +161,7 @@ class _BodyState extends State<Body> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           _buildEachText(
               'place.png',
               '類型',
@@ -239,15 +240,20 @@ class _BodyState extends State<Body> {
           ),
           SizedBox(width: 10),
           Flexible(
-            child: Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: valueSize != null ? valueSize : 15,
-              ),
-            ),
+            child: value == ServiceTypes.sex.name
+                ? Icon(
+                    Icons.favorite,
+                    color: Colors.pink,
+                  )
+                : Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: valueSize != null ? valueSize : 15,
+                    ),
+                  ),
           ),
         ],
       ),
