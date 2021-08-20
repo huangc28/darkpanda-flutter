@@ -2,6 +2,7 @@ import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/edit_inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/components/color_loader.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -201,12 +202,14 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
         color: Color.fromRGBO(31, 30, 56, 1),
         child: Stack(
           children: <Widget>[
-            Container(
-              height: SizeConfig.screenHeight / 2.5,
-              width: SizeConfig.screenWidth,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("lib/screens/male/assets/pending.png"),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.only(top: SizeConfig.screenHeight * 0.05),
+                child: ColorLoader(
+                  color1: Colors.deepPurple,
+                  color2: Colors.deepPurpleAccent,
+                  color3: Color.fromRGBO(168, 106, 221, 1),
                 ),
               ),
             ),
