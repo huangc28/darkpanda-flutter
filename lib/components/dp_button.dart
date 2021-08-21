@@ -7,6 +7,7 @@ enum DPTextButtonThemes {
   purple,
   grey,
   lightGrey,
+  deepGrey,
   disabled,
 }
 
@@ -52,6 +53,10 @@ Map<DPTextButtonThemes, ThemeConfig> themes = {
     backgroundColor: Color.fromRGBO(106, 109, 137, 1),
     textStyle: baseButtonTextStyle,
   ),
+  DPTextButtonThemes.deepGrey: ThemeConfig.setConfig(
+    backgroundColor: Color.fromRGBO(255, 255, 255, 0.18),
+    textStyle: baseButtonTextStyle,
+  ),
   DPTextButtonThemes.disabled: ThemeConfig.setConfig(
     backgroundColor: Color.fromRGBO(214, 214, 215, 1),
     textStyle: baseButtonTextStyle.copyWith(
@@ -69,6 +74,7 @@ class DPTextButton extends StatefulWidget {
     this.loading = false,
     this.icon = null,
     @required this.onPressed,
+    this.assetImage = null,
   }) : super(key: key);
 
   final bool disabled;
@@ -77,6 +83,7 @@ class DPTextButton extends StatefulWidget {
   final String text;
   final Icon icon;
   final Function onPressed;
+  final String assetImage;
 
   @override
   _DPTextButtonState createState() => _DPTextButtonState();
@@ -88,6 +95,16 @@ class _DPTextButtonState extends State<DPTextButton> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        widget.assetImage == null
+            ? Container()
+            : Container(
+                padding: EdgeInsets.only(
+                  top: 0,
+                  left: 0,
+                  right: 10,
+                ),
+                child: Image.asset(widget.assetImage),
+              ),
         FittedBox(
           child: Text(
             widget.text,

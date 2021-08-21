@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
@@ -57,138 +59,102 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => LoadInquiryBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                              ),
-                            ),
-                            BlocProvider(
-                              create: (context) => SearchInquiryFormBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                                loadInquiryBloc:
-                                    BlocProvider.of<LoadInquiryBloc>(context),
-                              ),
-                            ),
-                            BlocProvider(
-                              create: (context) => LoadServiceListBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                              ),
-                            ),
-                          ],
-                          child: EditInquiryForm(
-                            activeInquiry: widget.activeInquiry,
-                          ),
-                        );
-                      },
-                    ),
-                  ).then((value) {
-                    setState(() {
-                      BlocProvider.of<LoadInquiryBloc>(context)
-                          .add(LoadInquiry());
-                    });
-                  });
-                },
-                child: SizedBox(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 30, 0, 0),
-                    height: SizeConfig.screenHeight * 0.06,
-                    width: SizeConfig.screenWidth / 2.5,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 20, right: 12),
-                              child: Image.asset(
-                                  "lib/screens/male/assets/editButton.png"),
-                            ),
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 20),
-                              child: Text(
-                                '編輯',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+              SizedBox(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  height: SizeConfig.screenHeight * 0.06,
+                  width: SizeConfig.screenWidth / 2.5,
+                  child: DPTextButton(
+                    theme: DPTextButtonThemes.deepGrey,
+                    assetImage: "lib/screens/male/assets/editButton.png",
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => LoadInquiryBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                  ),
                                 ),
+                                BlocProvider(
+                                  create: (context) => SearchInquiryFormBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                    loadInquiryBloc:
+                                        BlocProvider.of<LoadInquiryBloc>(
+                                            context),
+                                  ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => LoadServiceListBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                  ),
+                                ),
+                              ],
+                              child: EditInquiryForm(
+                                activeInquiry: widget.activeInquiry,
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                    ),
+                      ).then((value) {
+                        setState(() {
+                          BlocProvider.of<LoadInquiryBloc>(context)
+                              .add(LoadInquiry());
+                        });
+                      });
+                    },
+                    text: '編輯',
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CancelInquiryConfirmationDialog(
-                        title: '您確定要刪除需求嗎？',
-                        onCancel: '取消',
-                        onConfirm: '確定刪除',
+              SizedBox(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  height: SizeConfig.screenHeight * 0.06,
+                  width: SizeConfig.screenWidth / 2.5,
+                  child: BlocConsumer<CancelInquiryBloc, CancelInquiryState>(
+                    listener: (context, state) {
+                      if (state.status == AsyncLoadingStatus.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error.message),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return DPTextButton(
+                        loading: state.status == AsyncLoadingStatus.loading,
+                        disabled: state.status == AsyncLoadingStatus.loading,
+                        theme: DPTextButtonThemes.deepGrey,
+                        assetImage: "lib/screens/male/assets/deleteButton.png",
+                        onPressed: () async {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CancelInquiryConfirmationDialog(
+                                title: '您確定要刪除需求嗎？',
+                                onCancel: '取消',
+                                onConfirm: '確定刪除',
+                              );
+                            },
+                          ).then((value) {
+                            if (value) {
+                              BlocProvider.of<CancelInquiryBloc>(context).add(
+                                CancelInquiry(
+                                  inquiryUuid: widget.activeInquiry.uuid,
+                                  fcmTopic: widget.activeInquiry.fcmTopic,
+                                ),
+                              );
+                            }
+                          });
+                        },
+                        text: '删除',
                       );
                     },
-                  ).then((value) {
-                    if (value) {
-                      BlocProvider.of<CancelInquiryBloc>(context).add(
-                        CancelInquiry(
-                          inquiryUuid: widget.activeInquiry.uuid,
-                          fcmTopic: widget.activeInquiry.fcmTopic,
-                        ),
-                      );
-                    }
-                  });
-                },
-                child: SizedBox(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
-                    height: SizeConfig.screenHeight * 0.06,
-                    width: SizeConfig.screenWidth / 2.5,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 20, right: 12),
-                              child: Image.asset(
-                                  "lib/screens/male/assets/deleteButton.png"),
-                            ),
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 20),
-                              child: Text(
-                                '删除',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
