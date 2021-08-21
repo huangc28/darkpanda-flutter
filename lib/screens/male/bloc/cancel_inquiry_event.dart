@@ -8,12 +8,16 @@ abstract class CancelInquiryEvent extends Equatable {
 }
 
 class CancelInquiry extends CancelInquiryEvent {
-  const CancelInquiry(this.inquiryUuid);
+  const CancelInquiry({
+    this.inquiryUuid,
+    this.fcmTopic,
+  });
 
   final String inquiryUuid;
+  final String fcmTopic;
 
   @override
-  List<Object> get props => [this.inquiryUuid];
+  List<Object> get props => [this.inquiryUuid, this.fcmTopic];
 }
 
 class SkipInquiry extends CancelInquiryEvent {

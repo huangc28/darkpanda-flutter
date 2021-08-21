@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,11 @@ class _InquiryFormState extends State<InquiryForm> {
               ),
             );
           } else if (state.status == AsyncLoadingStatus.done) {
+            if (state.createInquiryResponse.fcmTopic != null) {
+              FirebaseMessagingService()
+                  .fcmSubscribe(state.createInquiryResponse.fcmTopic);
+            }
+
             Navigator.of(context).pop(null);
           }
         },

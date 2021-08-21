@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
@@ -36,7 +37,7 @@ class CancelInquiryBloc extends Bloc<CancelInquiryEvent, CancelInquiryState> {
   Stream<CancelInquiryState> _mapCancelInquiryFormToState(
       CancelInquiry event) async* {
     try {
-      yield CancelInquiryState.loading(state);
+      yield CancelInquiryState.loading();
 
       final resp = await searchInquiryAPIs.cancelInquiry(event.inquiryUuid);
 
@@ -52,7 +53,9 @@ class CancelInquiryBloc extends Bloc<CancelInquiryEvent, CancelInquiryState> {
         RemoveLoadInquiry(inquiryUuid: event.inquiryUuid),
       );
 
-      yield CancelInquiryState.done(state);
+      FirebaseMessagingService().fcmUnSubscribe(event.fcmTopic);
+
+      yield CancelInquiryState.done();
     } on APIException catch (e) {
       yield CancelInquiryState.error(e);
     } catch (e) {
@@ -64,7 +67,7 @@ class CancelInquiryBloc extends Bloc<CancelInquiryEvent, CancelInquiryState> {
   Stream<CancelInquiryState> _mapSkipInquiryFormToState(
       SkipInquiry event) async* {
     try {
-      yield CancelInquiryState.loading(state);
+      yield CancelInquiryState.loading();
 
       final resp = await searchInquiryAPIs.skipInquiry(event.inquiryUuid);
 
@@ -76,7 +79,7 @@ class CancelInquiryBloc extends Bloc<CancelInquiryEvent, CancelInquiryState> {
         );
       }
 
-      yield CancelInquiryState.done(state);
+      yield CancelInquiryState.done();
     } on APIException catch (e) {
       yield CancelInquiryState.error(e);
     } catch (e) {

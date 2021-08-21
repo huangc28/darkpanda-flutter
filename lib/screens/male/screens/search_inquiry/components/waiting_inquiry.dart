@@ -147,7 +147,10 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                   ).then((value) {
                     if (value) {
                       BlocProvider.of<CancelInquiryBloc>(context).add(
-                        CancelInquiry(widget.activeInquiry.uuid),
+                        CancelInquiry(
+                          inquiryUuid: widget.activeInquiry.uuid,
+                          fcmTopic: widget.activeInquiry.fcmTopic,
+                        ),
                       );
                     }
                   });

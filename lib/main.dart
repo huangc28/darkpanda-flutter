@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
@@ -63,6 +64,8 @@ void main() async {
 
     FirebaseApp app = await Firebase.initializeApp();
 
+    FirebaseMessaging.onBackgroundMessage(_messageHandler);
+
     // Pass all uncaught errors from the framework to Crashlytics.
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
@@ -107,6 +110,10 @@ void main() async {
   } catch (err) {
     developer.log('failed to initialize app: ${err.toString()}');
   }
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification?.body}');
 }
 
 class DarkPandaApp extends StatefulWidget {

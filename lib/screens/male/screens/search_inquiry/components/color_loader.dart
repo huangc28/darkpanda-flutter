@@ -64,10 +64,10 @@ class _ColorLoaderState extends State<ColorLoader>
             child: CustomPaint(
               painter: Arc1Painter(widget.color1),
               child: Container(
-                width: SizeConfig.screenWidth * 0.5,
-                height: SizeConfig.screenHeight * 0.3,
-                // width: 200.0,
-                // height: 200.0,
+                // width: SizeConfig.screenWidth * 0.5,
+                // height: SizeConfig.screenHeight * 0.3,
+                width: 200.0,
+                height: 200.0,
               ),
             ),
           ),
@@ -76,10 +76,10 @@ class _ColorLoaderState extends State<ColorLoader>
             child: CustomPaint(
               painter: Arc2Painter(widget.color2),
               child: Container(
-                width: SizeConfig.screenWidth * 0.5,
-                height: SizeConfig.screenHeight * 0.3,
-                // width: 200.0,
-                // height: 200.0,
+                // width: SizeConfig.screenWidth * 0.625,
+                // height: SizeConfig.screenHeight * 0.3,
+                width: 200.0,
+                height: 200.0,
               ),
             ),
           ),
@@ -88,10 +88,10 @@ class _ColorLoaderState extends State<ColorLoader>
             child: CustomPaint(
               painter: Arc3Painter(widget.color3),
               child: Container(
-                width: SizeConfig.screenWidth * 0.5,
-                height: SizeConfig.screenHeight * 0.3,
-                // width: 200.0,
-                // height: 200.0,
+                // width: SizeConfig.screenWidth * 0.625,
+                // height: SizeConfig.screenHeight * 0.3,
+                width: 200.0,
+                height: 200.0,
               ),
             ),
           )
