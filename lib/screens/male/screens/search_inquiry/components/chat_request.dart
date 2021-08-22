@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
@@ -112,50 +113,22 @@ class _ChatRequestState extends State<ChatRequest> {
 
   Widget _onTapViewProfile() {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          widget.onPush(
-            '/inquirer-profile',
-            InquirerProfileArguments(
-              uuid: userProfile.uuid,
-            ),
-          );
-        },
-        child: SizedBox(
-          child: Container(
-            padding: EdgeInsets.only(right: 15),
-            height: MediaQuery.of(context).size.height * 0.06,
-            child: Material(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromRGBO(255, 255, 255, 0.18),
-              child: Align(
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 0, left: 20, right: 10),
-                      child:
-                          Image.asset("lib/screens/male/assets/editButton.png"),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: 0,
-                        left: 0,
-                        right: SizeConfig.screenWidth * 0.04, //20,
-                      ),
-                      child: Text(
-                        '查看檔案',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: SizeConfig.blockSizeVertical * 2, //16,
-                        ),
-                      ),
-                    ),
-                  ],
+      child: SizedBox(
+        child: Container(
+          padding: EdgeInsets.only(right: 15),
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.deepGrey,
+            assetImage: "lib/screens/male/assets/editButton.png",
+            onPressed: () {
+              widget.onPush(
+                '/inquirer-profile',
+                InquirerProfileArguments(
+                  uuid: userProfile.uuid,
                 ),
-              ),
-            ),
+              );
+            },
+            text: '查看檔案',
           ),
         ),
       ),
@@ -191,46 +164,20 @@ class _ChatRequestState extends State<ChatRequest> {
       },
       builder: (context, state) {
         return Expanded(
-          child: GestureDetector(
-            onTap: () {
-              BlocProvider.of<AgreeInquiryBloc>(context)
-                  .add(AgreeInquiry(widget.activeInquiry.uuid));
-            },
-            child: SizedBox(
-              child: Container(
-                padding: EdgeInsets.only(right: 15),
-                height: MediaQuery.of(context).size.height * 0.06,
-                child: Material(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color.fromRGBO(255, 255, 255, 0.18),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(top: 0, left: 20, right: 10),
-                          child: Image.asset(
-                              "lib/screens/male/assets/deleteButton.png"),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                            top: 0,
-                            left: 0,
-                            right: SizeConfig.screenWidth * 0.04, //20,
-                          ),
-                          child: Text(
-                            '馬上聊聊',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: SizeConfig.blockSizeVertical * 2, //16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+          child: SizedBox(
+            child: Container(
+              padding: EdgeInsets.only(right: 15),
+              height: MediaQuery.of(context).size.height * 0.06,
+              child: DPTextButton(
+                loading: state.status == AsyncLoadingStatus.loading,
+                disabled: state.status == AsyncLoadingStatus.loading,
+                theme: DPTextButtonThemes.deepGrey,
+                assetImage: "lib/screens/male/assets/deleteButton.png",
+                onPressed: () {
+                  BlocProvider.of<AgreeInquiryBloc>(context)
+                      .add(AgreeInquiry(widget.activeInquiry.uuid));
+                },
+                text: '馬上聊聊',
               ),
             ),
           ),
