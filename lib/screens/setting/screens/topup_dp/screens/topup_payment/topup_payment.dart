@@ -82,29 +82,34 @@ class _TopupPaymentState extends State<TopupPayment> {
       form.save();
       String input = CardUtils.getCleanedNumber(_numberController.text);
 
-      var resp = await _payer.sendToken(
-        cardNumber: input,
-        dueMonth: _paymentCard.month,
-        dueYear: _paymentCard.year,
-        ccv: _paymentCard.cvv.toString(),
-      );
+      try {
+        var resp = await _payer.sendToken(
+          cardNumber: input,
+          dueMonth: _paymentCard.month,
+          dueYear: _paymentCard.year,
+          ccv: _paymentCard.cvv.toString(),
+        );
 
-      _paymentCard.prime = resp.prime;
-      _paymentCard.packageId = widget.packageId;
+        _paymentCard.prime = resp.prime;
+        _paymentCard.packageId = widget.packageId;
 
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return TopupUPaymentConfirmationDialog();
-        },
-      ).then((value) {
-        if (value) {
-          BlocProvider.of<BuyDpBloc>(context).add(
-            BuyDp(_paymentCard),
-          );
-        }
-      });
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return TopupUPaymentConfirmationDialog();
+          },
+        ).then((value) {
+          if (value) {
+            BlocProvider.of<BuyDpBloc>(context).add(
+              BuyDp(_paymentCard),
+            );
+          }
+        });
+      } catch (err) {
+        print(err);
+        _showInSnackBar(err.message);
+      }
     }
   }
 
