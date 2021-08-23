@@ -56,14 +56,14 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
       children: <Widget>[
         SizedBox(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(
                 child: Container(
                   margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
                   height: SizeConfig.screenHeight * 0.06,
-                  width: SizeConfig.screenWidth / 2.5,
+                  width: SizeConfig.screenWidth / 2.7,
                   child: DPTextButton(
                     theme: DPTextButtonThemes.deepGrey,
                     assetImage: "lib/screens/male/assets/editButton.png",
@@ -113,7 +113,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                 child: Container(
                   margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
                   height: SizeConfig.screenHeight * 0.06,
-                  width: SizeConfig.screenWidth / 2.5,
+                  width: SizeConfig.screenWidth / 2.7,
                   child: BlocConsumer<CancelInquiryBloc, CancelInquiryState>(
                     listener: (context, state) {
                       if (state.status == AsyncLoadingStatus.error) {
@@ -169,7 +169,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
     return Center(
       child: Material(
         color: Color.fromRGBO(31, 30, 56, 1),
-        child: Stack(
+        child: Column(
           children: <Widget>[
             Align(
               alignment: Alignment.center,
@@ -184,8 +184,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
             ),
             Container(
               padding: EdgeInsets.fromLTRB(35, 40, 0, 40),
-              margin:
-                  EdgeInsets.fromLTRB(20, SizeConfig.screenHeight / 3, 20, 0),
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
