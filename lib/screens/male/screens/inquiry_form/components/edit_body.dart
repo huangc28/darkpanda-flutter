@@ -262,7 +262,7 @@ class _EditBodyState extends State<EditBody> {
             SubmitEditSearchInquiryForm(_inquiryForms),
           );
         },
-        text: '编织',
+        text: '編輯',
       ),
     );
     // return GestureDetector(
