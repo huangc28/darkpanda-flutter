@@ -150,6 +150,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    _inquiryDetail.avatarUrl = _sender.avatarUrl;
 
     BlocProvider.of<CurrentServiceChatroomBloc>(context).add(
       InitCurrentServiceChatroom(

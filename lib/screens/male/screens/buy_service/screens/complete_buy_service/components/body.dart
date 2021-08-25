@@ -41,7 +41,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                     child: SizedBox(
                       width: 100,
                       height: 100,
-                      child: UserAvatar(""),
+                      child: UserAvatar(widget.args.avatarUrl),
                     ),
                   ),
                 ),

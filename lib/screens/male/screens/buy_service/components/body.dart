@@ -47,7 +47,7 @@ class _BodyState extends State<Body> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: UserAvatar(""),
+                        child: UserAvatar(widget.args.avatarUrl),
                       ),
                       Expanded(
                         flex: 3,
