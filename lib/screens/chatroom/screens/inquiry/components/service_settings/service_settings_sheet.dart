@@ -1,18 +1,14 @@
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'slideup_controller.dart';
 import 'slideup_provider.dart';
@@ -222,7 +218,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                               controller: _addressController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return '請輸入地址';
+                                  return '請選擇地址';
                                 }
                               },
                             ),

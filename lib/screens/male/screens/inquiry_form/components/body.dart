@@ -1,12 +1,16 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:darkpanda_flutter/components/address_field.dart';
+import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/service_list.dart';
+import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
+
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +18,8 @@ import 'package:intl/intl.dart';
 
 part 'appointment_time_field.dart';
 
+// @TODOs
+//  - duration list should be coming from the API.
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
@@ -31,7 +37,8 @@ class _BodyState extends State<Body> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _serviceTypeController = TextEditingController();
-  TextEditingController _periodController = TextEditingController();
+  TextEditingController _durationController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
 
   List serviceTypeRadioWidget = <Widget>[];
   List periodRadioWidget = <Widget>[];
@@ -60,7 +67,8 @@ class _BodyState extends State<Body> {
       _inquiryForms.inquiryTime,
     );
 
-    _periodController.text = '1';
+    _durationController.text = '1';
+    _addressController.text = '';
     serviceList.serviceNames = [];
   }
 
@@ -132,7 +140,6 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    final viewPortWidth = MediaQuery.of(context).size.width;
     final viewPortHeight = MediaQuery.of(context).size.height;
     initPeriodRadio();
     initServiceTypeRadio(serviceList.serviceNames);
@@ -142,27 +149,44 @@ class _BodyState extends State<Body> {
         child: SizedBox(
           width: double.infinity,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: (20.0 / 375.0) * viewPortWidth),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: viewPortHeight * 0.05),
+                  SizedBox(height: viewPortHeight * 0.02),
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   _textLabel('服務類型'),
                   SizedBox(height: viewPortHeight * 0.02),
                   _serviceTypeRadio(),
-                  SizedBox(height: viewPortHeight * 0.05),
+                  SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
                   _appointmentTime(),
-                  SizedBox(height: viewPortHeight * 0.05),
+                  SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('服務期限'),
                   SizedBox(height: viewPortHeight * 0.02),
                   _servicePeriodRadio(),
-                  SizedBox(height: viewPortHeight * 0.015),
+                  SizedBox(height: viewPortHeight * 0.02),
+                  GestureDetector(
+                    onTap: _navigateToAddressSelector,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: IgnorePointer(
+                        child: AddressField(
+                          controller: _addressController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '請選擇地址';
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: viewPortHeight * 0.05),
                   _confirmButton(),
                 ],
               ),
@@ -171,6 +195,23 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
+  }
+
+  void _navigateToAddressSelector() async {
+    final addr = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return AddressSelector(
+            initialAddress: _addressController.text,
+          );
+        },
+      ),
+    );
+
+    setState(() {
+      _addressController.text = addr;
+    });
   }
 
   Widget _confirmButton() {
@@ -330,16 +371,16 @@ class _BodyState extends State<Body> {
       onPressed: () {
         changeIndexPeriod(index);
         if (index == 0) {
-          _periodController.text = "60";
+          _durationController.text = "60";
         } else if (index == 1) {
-          _periodController.text = "90";
+          _durationController.text = "90";
         } else if (index == 2) {
-          _periodController.text = "120";
+          _durationController.text = "120";
         } else if (index == 3) {
-          _periodController.text = "150";
+          _durationController.text = "150";
         }
         _inquiryForms.duration =
-            Duration(minutes: int.tryParse(_periodController.text));
+            Duration(minutes: int.tryParse(_durationController.text));
       },
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
@@ -393,33 +434,12 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget _textLabel(String value) {
-    return Row(
-      children: [
-        Container(
-          height: 7.0,
-          width: 7.0,
-          transform: new Matrix4.identity()..rotateZ(45 * 3.1415927 / 180),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-          ),
+  Widget _textLabel(String text) => Bullet(
+        text,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
         ),
-        SizedBox(width: 5),
-        Container(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              value,
-              style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+      );
 }
