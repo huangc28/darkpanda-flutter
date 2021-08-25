@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/blacklist/bloc/load_blacklist_user_bloc.dart';
@@ -107,12 +108,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: (blacklistUser.avatarUrl != "")
-                          ? NetworkImage(blacklistUser.avatarUrl)
-                          : AssetImage('assets/logo.png'),
-                    ),
+                    UserAvatar(blacklistUser.avatarUrl, radius: 20),
                     SizedBox(width: 15),
                     Text(
                       blacklistUser.username,

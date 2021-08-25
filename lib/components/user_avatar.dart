@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-const radius = 28.0;
+// const radius = 28.0;
 
-Widget UserAvatar(String url) => CircleAvatar(
+Widget UserAvatar(String url, {double radius = 28.0}) => CircleAvatar(
       radius: radius,
       backgroundImage: url == ""
-          ? NetworkImage(
-              'https://flutter-examples.com/wp-content/uploads/2019/09/blossom.jpg')
+          ? AssetImage('assets/default_avatar.png')
           : NetworkImage(url),
-      backgroundColor: Colors.brown.shade800,
+      backgroundColor: Colors.transparent,
     );

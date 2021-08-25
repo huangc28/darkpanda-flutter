@@ -47,7 +47,7 @@ class _ChatCardState extends State<ChatCard> {
               CircleAvatar(
                 radius: 20,
                 backgroundImage: widget.chat.chatPartnerAvatarUrl == ""
-                    ? AssetImage("assets/logo.png")
+                    ? AssetImage("assets/default_avatar.png")
                     : NetworkImage(widget.chat.chatPartnerAvatarUrl),
               ),
               Expanded(
