@@ -46,6 +46,7 @@ class _InquiryFormState extends State<InquiryForm> {
             if (state.createInquiryResponse.fcmTopic != null) {
               FirebaseMessagingService()
                   .fcmSubscribe(state.createInquiryResponse.fcmTopic);
+              print('FCM topic: ' + state.createInquiryResponse.fcmTopic);
             }
 
             Navigator.of(context).pop(null);

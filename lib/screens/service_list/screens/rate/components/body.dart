@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../../../models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
+import '../../../models/historical_service.dart';
 
 class TypeSelection {
   String name;
@@ -20,14 +20,15 @@ class TypeSelection {
 }
 
 class Body extends StatefulWidget {
-  final Function onPressComplete;
-  final HistoricalService historicalService;
-  final GlobalKey<FormState> formKey;
   const Body({
     this.formKey,
     this.historicalService,
     this.onPressComplete,
   });
+
+  final Function onPressComplete;
+  final HistoricalService historicalService;
+  final GlobalKey<FormState> formKey;
 
   @override
   _BodyState createState() => _BodyState();

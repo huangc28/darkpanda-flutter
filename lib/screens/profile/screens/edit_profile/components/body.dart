@@ -322,13 +322,13 @@ class _BodyState extends State<Body> {
       alignment: Alignment.center,
       child: CircleAvatar(
         radius: 50,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.transparent,
         backgroundImage: _avatarImageFile != null
             ? FileImage(_avatarImageFile)
             : widget.args.avatarUrl != ""
                 ? NetworkImage(widget.args.avatarUrl)
                 : _avatarImageFile == null
-                    ? AssetImage('assets/logo.png')
+                    ? AssetImage('assets/default_avatar.png')
                     : FileImage(_avatarImageFile),
         child: Align(
           alignment: Alignment.topRight,

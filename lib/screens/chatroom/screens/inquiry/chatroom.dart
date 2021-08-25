@@ -50,7 +50,6 @@ import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'bloc/current_chatroom_bloc.dart';
-import 'bloc/get_inquiry_bloc.dart';
 import 'bloc/update_inquiry_bloc.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_settings/service_settings.dart';

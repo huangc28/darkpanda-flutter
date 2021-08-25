@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
 import 'package:flutter/material.dart';
@@ -166,10 +167,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: AssetImage("assets/logo.png"),
-                        ),
+                        UserAvatar("", radius: 20),
                         SizedBox(width: 15),
                         Text(
                           'Jenny',
@@ -232,10 +230,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage("assets/logo.png"),
-                    ),
+                    UserAvatar("", radius: 20),
                     SizedBox(width: 15),
                     Text(
                       'Jenny',
