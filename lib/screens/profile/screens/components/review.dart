@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
@@ -42,12 +43,14 @@ class Review extends StatelessWidget {
           children: [
             Row(
               children: <Widget>[
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: review.raterAvatarUrl == null
-                      ? AssetImage('assets/logo.png')
-                      : NetworkImage(review.raterAvatarUrl),
-                ),
+                UserAvatar(review.raterAvatarUrl, radius: 20),
+                // CircleAvatar(
+                //   radius: 20,
+                //   backgroundColor: Colors.transparent,
+                //   backgroundImage: review.raterAvatarUrl == null
+                //       ? AssetImage('assets/default_avatar.png')
+                //       : NetworkImage(review.raterAvatarUrl),
+                // ),
                 SizedBox(
                   width: SizeConfig.screenWidth * 0.04, //15,
                 ),

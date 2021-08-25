@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'components/body.dart';
-import '../../models/historical_service.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/components/complete_rate.dart';
 
+import 'components/body.dart';
+import '../../models/historical_service.dart';
+
 class Rate extends StatefulWidget {
-  final HistoricalService historicalService;
   const Rate({
     Key key,
     this.historicalService,
   }) : super(key: key);
+
+  final HistoricalService historicalService;
 
   @override
   _RateState createState() => _RateState();
@@ -48,7 +50,9 @@ class _RateState extends State<Rate> with SingleTickerProviderStateMixin {
                 });
               },
             )
-          : CompleteRate(),
+          : CompleteRate(
+              historicalService: widget.historicalService,
+            ),
     );
   }
 }

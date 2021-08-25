@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -211,7 +212,7 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-                        if (state?.userProfile?.avatarUrl != "" ||
+                        if (state?.userProfile?.avatarUrl != "" &&
                             state?.userProfile?.avatarUrl != null) {
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
@@ -225,12 +226,9 @@ class _ProfileState extends State<Profile> {
                           );
                         }
                       },
-                      child: CircleAvatar(
+                      child: UserAvatar(
+                        state?.userProfile?.avatarUrl,
                         radius: 38,
-                        backgroundImage: state?.userProfile?.avatarUrl == "" ||
-                                state?.userProfile?.avatarUrl == null
-                            ? AssetImage("assets/logo.png")
-                            : NetworkImage(state?.userProfile?.avatarUrl),
                       ),
                     ),
                     SizedBox(width: SizeConfig.screenWidth * 0.04),

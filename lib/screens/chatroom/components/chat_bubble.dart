@@ -45,8 +45,7 @@ class ChatBubble extends StatelessWidget {
         Container(
           padding: EdgeInsets.fromLTRB(0, 7, 0, 0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://onaliternote.files.wordpress.com/2016/11/wp-1480230666843.jpg"),
+            backgroundImage: AssetImage("assets/default_avatar.png"),
           ),
         ),
         SizedBox(
