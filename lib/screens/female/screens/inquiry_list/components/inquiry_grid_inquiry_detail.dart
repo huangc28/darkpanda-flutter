@@ -81,7 +81,7 @@ class InquiryDetail extends StatelessWidget {
                             Icons.favorite,
                             color: Colors.pink,
                           )
-                        : inquiry.serviceType,
+                        : '項目: ' + inquiry.serviceType,
                     style: TextStyle(
                       color: Colors.white,
                       height: 1.3,

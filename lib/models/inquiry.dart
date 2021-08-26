@@ -66,13 +66,13 @@ class Inquiry extends Equatable {
 
     return Inquiry(
       uuid: data['uuid'],
-      budget: data['budget'].toDouble(),
+      budget: data['budget']?.toDouble(),
       serviceType: data['service_type'],
-      price: data['price'].toDouble(),
+      price: data['price']?.toDouble(),
       duration: parsedDuration,
       appointmentTime: parsedAppointmentTime.toLocal(),
-      lng: data['lng'].toDouble(),
-      lat: data['lat'].toDouble(),
+      lng: data['lng']?.toDouble(),
+      lat: data['lat']?.toDouble(),
       inquiryStatus: iqStatus.toInquiryStatusEnum(),
       inquirer: data.containsKey('inquirer')
           ? Inquirer.fromJson(data['inquirer'])
