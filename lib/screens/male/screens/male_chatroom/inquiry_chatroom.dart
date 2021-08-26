@@ -49,7 +49,6 @@ import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
-import 'bloc/send_emit_service_confirm_message_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
 import 'models/inquiry_detail.dart';
@@ -440,9 +439,10 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   Widget _appBar() {
     return AppBar(
       leading: IconButton(
+        alignment: Alignment.centerRight,
         icon: Icon(
           Icons.arrow_back,
-          color: Color.fromRGBO(106, 109, 137, 1),
+          color: Colors.white,
         ),
         onPressed: () async {
           await showDialog(
