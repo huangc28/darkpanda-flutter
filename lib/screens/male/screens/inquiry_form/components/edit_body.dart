@@ -1,5 +1,8 @@
+import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
+import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,33 +35,14 @@ class _EditBodyState extends State<EditBody> {
   int selectedIndexServiceType = 0;
   int selectedIndexPeriod = 0;
 
-  List periodLst = [
-    {
-      "name": "一個小時",
-      "value": "60",
-    },
-    {
-      "name": "一個半小時",
-      "value": "90",
-    },
-    {
-      "name": "兩個小時",
-      "value": "120",
-    },
-    {
-      "name": "兩個半小時",
-      "value": "150",
-    },
-  ];
-
   TextEditingController _budgetController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _serviceTypeController = TextEditingController();
-  TextEditingController _periodController = TextEditingController();
+  TextEditingController _durationController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
 
   List serviceTypeRadioWidget = <Widget>[];
-  List periodRadioWidget = <Widget>[];
 
   LoadServiceListBloc loadServiceListBloc = new LoadServiceListBloc();
   ServiceList serviceList = new ServiceList();
@@ -102,12 +86,21 @@ class _EditBodyState extends State<EditBody> {
         : _formatTime(timeOfDay);
     ;
 
+    _durationController.text = widget.activeInquiry.duration.toString();
+    _addressController.text = widget.activeInquiry.address;
+
     serviceList.serviceNames = [];
   }
 
   @override
   void dispose() {
     loadServiceListBloc.add(ClearServiceListState());
+    _budgetController.clear();
+    _dateController.clear();
+    _timeController.clear();
+    _serviceTypeController.clear();
+    _durationController.clear();
+    _addressController.clear();
 
     super.dispose();
   }
@@ -126,43 +119,9 @@ class _EditBodyState extends State<EditBody> {
     }
   }
 
-  void initPeriodRadio() {
-    periodRadioWidget.clear();
-    for (int i = 0; i < periodLst.length; i++) {
-      periodRadioWidget.add(
-        SizedBox(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
-            child: _customPeriodRadio(periodLst[i]['name'], i),
-          ),
-        ),
-      );
-    }
-
-    final periodIndex = periodLst.indexWhere(
-      (element) =>
-          element['value'] ==
-          (widget.activeInquiry.duration == null
-              ? '60'
-              : widget.activeInquiry.duration.toString()),
-    );
-
-    _periodController.text = widget.activeInquiry.duration == null
-        ? '60'
-        : widget.activeInquiry.duration.toString();
-
-    changeIndexPeriod(periodIndex);
-  }
-
   void changeIndexServiceType(int index) {
     setState(() {
       selectedIndexServiceType = index;
-    });
-  }
-
-  void changeIndexPeriod(int index) {
-    setState(() {
-      selectedIndexPeriod = index;
     });
   }
 
@@ -186,11 +145,29 @@ class _EditBodyState extends State<EditBody> {
     ).toString();
   }
 
+  void _navigateToAddressSelector() async {
+    final addr = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return AddressSelector(
+            initialAddress: _addressController.text,
+          );
+        },
+      ),
+    );
+
+    setState(() {
+      _addressController.text = addr;
+
+      _inquiryForms.address = _addressController.text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewPortWidth = MediaQuery.of(context).size.width;
     final viewPortHeight = MediaQuery.of(context).size.height;
-    initPeriodRadio();
     initServiceTypeRadio(serviceList.serviceNames);
 
     return UnfocusPrimary(
@@ -210,15 +187,31 @@ class _EditBodyState extends State<EditBody> {
                   _textLabel('服務類型'),
                   SizedBox(height: viewPortHeight * 0.02),
                   _serviceTypeRadio(),
-                  SizedBox(height: viewPortHeight * 0.05),
+                  SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
                   _appointmentTime(),
-                  SizedBox(height: viewPortHeight * 0.05),
-                  _textLabel('服務期限'),
                   SizedBox(height: viewPortHeight * 0.02),
-                  _servicePeriodRadio(),
-                  SizedBox(height: viewPortHeight * 0.015),
+                  _servicePeriod(),
+                  SizedBox(height: viewPortHeight * 0.02),
+                  GestureDetector(
+                    onTap: _navigateToAddressSelector,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: IgnorePointer(
+                        child: AddressField(
+                          controller: _addressController,
+                          fontColor: Colors.white,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '請選擇地址';
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: viewPortHeight * 0.05),
                   _confirmButton(),
                 ],
               ),
@@ -265,40 +258,11 @@ class _EditBodyState extends State<EditBody> {
         text: '編輯',
       ),
     );
-    // return GestureDetector(
-    //   onTap: () {
-    //     if (!_formKey.currentState.validate()) {
-    //       return;
-    //     }
-    //     _formKey.currentState.save();
-    //     BlocProvider.of<SearchInquiryFormBloc>(context).add(
-    //       SubmitEditSearchInquiryForm(_inquiryForms),
-    //     );
-    //   },
-    //   child: Container(
-    //     margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-    //     height: 45,
-    //     child: Material(
-    //       borderRadius: BorderRadius.circular(20),
-    //       color: Color.fromRGBO(119, 81, 255, 1),
-    //       elevation: 7,
-    //       child: Center(
-    //         child: Text(
-    //           '编织',
-    //           style: TextStyle(
-    //             color: Colors.white,
-    //             fontSize: 18,
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _appointmentTime() {
     return Container(
-      child: AppointmentTimeField(
+      child: InquiryAppointmentTimeField(
         dateController: _dateController,
         timeController: _timeController,
         dateValue: dateTime,
@@ -320,19 +284,39 @@ class _EditBodyState extends State<EditBody> {
     );
   }
 
-  Widget _servicePeriodRadio() {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              children: periodRadioWidget,
-            ),
-          ),
-        ],
-      ),
+  Widget _servicePeriod() {
+    return ServiceDurationField(
+      controller: _durationController,
+      fontColor: Colors.white,
+      validator: (String v) {
+        if (v == null || v.isEmpty) {
+          return '請輸入服務時長';
+        }
+
+        final doubleDuration = double.tryParse(v);
+
+        if (doubleDuration < 30.0) {
+          return '服務時長最少 30 分鐘';
+        }
+
+        // Check if user input contains decimal fraction.
+        final fraction = doubleDuration - doubleDuration.truncate();
+
+        if (fraction > 0) {
+          return '服務時長必須為整數';
+        }
+
+        return null;
+      },
+      onSaved: (String v) {
+        // Convert duration value to Duration instance.
+        setState(
+          () {
+            _inquiryForms.duration =
+                Duration(minutes: int.tryParse(_durationController.text));
+          },
+        );
+      },
     );
   }
 
@@ -421,38 +405,6 @@ class _EditBodyState extends State<EditBody> {
     );
   }
 
-  Widget _customPeriodRadio(String txt, int index) {
-    return OutlinedButton(
-      onPressed: () {
-        changeIndexPeriod(index);
-        if (index == 0) {
-          _periodController.text = "60";
-        } else if (index == 1) {
-          _periodController.text = "90";
-        } else if (index == 2) {
-          _periodController.text = "120";
-        } else if (index == 3) {
-          _periodController.text = "150";
-        }
-        _inquiryForms.duration =
-            Duration(minutes: int.tryParse(_periodController.text));
-      },
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        backgroundColor:
-            selectedIndexPeriod == index ? Colors.white : Colors.black,
-        side: BorderSide(color: Color.fromRGBO(106, 109, 137, 1)),
-      ),
-      child: Text(
-        txt,
-        style: TextStyle(
-            color: selectedIndexPeriod == index ? Colors.black : Colors.white),
-      ),
-    );
-  }
-
   Widget _budgetInput() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
@@ -489,33 +441,14 @@ class _EditBodyState extends State<EditBody> {
     );
   }
 
-  Widget _textLabel(String value) {
-    return Row(
-      children: [
-        Container(
-          height: 7.0,
-          width: 7.0,
-          transform: new Matrix4.identity()..rotateZ(45 * 3.1415927 / 180),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-          ),
-        ),
-        SizedBox(width: 5),
-        Container(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              value,
-              style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-        ),
-      ],
+  Widget _textLabel(String text) {
+    return Bullet(
+      text,
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
     );
   }
 }

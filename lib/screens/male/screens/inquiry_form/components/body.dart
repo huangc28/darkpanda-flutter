@@ -1,10 +1,10 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
-import 'package:darkpanda_flutter/components/address_field.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-part 'appointment_time_field.dart';
+part 'inquiry_appointment_time_field.dart';
 
 // @TODOs
 //  - duration list should be coming from the API.
@@ -31,8 +31,6 @@ class _BodyState extends State<Body> {
   int selectedIndexServiceType = 0;
   int selectedIndexPeriod = 0;
 
-  List<String> periodLst = ["一個小時", "一個半小時", "兩個小時", "兩個半小時"];
-
   TextEditingController _budgetController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
@@ -41,7 +39,6 @@ class _BodyState extends State<Body> {
   TextEditingController _addressController = TextEditingController();
 
   List serviceTypeRadioWidget = <Widget>[];
-  List periodRadioWidget = <Widget>[];
 
   LoadServiceListBloc loadServiceListBloc = new LoadServiceListBloc();
   ServiceList serviceList = new ServiceList();
@@ -67,7 +64,7 @@ class _BodyState extends State<Body> {
       _inquiryForms.inquiryTime,
     );
 
-    _durationController.text = '1';
+    _durationController.text = '30';
     _addressController.text = '';
     serviceList.serviceNames = [];
   }
@@ -75,6 +72,12 @@ class _BodyState extends State<Body> {
   @override
   void dispose() {
     loadServiceListBloc.add(ClearServiceListState());
+    _budgetController.clear();
+    _dateController.clear();
+    _timeController.clear();
+    _serviceTypeController.clear();
+    _durationController.clear();
+    _addressController.clear();
 
     super.dispose();
   }
@@ -87,20 +90,6 @@ class _BodyState extends State<Body> {
           child: Padding(
             padding: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
             child: _customServiceTypeRadio(list[i].name, i),
-          ),
-        ),
-      );
-    }
-  }
-
-  void initPeriodRadio() {
-    periodRadioWidget.clear();
-    for (int i = 0; i < periodLst.length; i++) {
-      periodRadioWidget.add(
-        SizedBox(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
-            child: _customPeriodRadio(periodLst[i], i),
           ),
         ),
       );
@@ -141,7 +130,6 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     final viewPortHeight = MediaQuery.of(context).size.height;
-    initPeriodRadio();
     initServiceTypeRadio(serviceList.serviceNames);
 
     return UnfocusPrimary(
@@ -166,9 +154,7 @@ class _BodyState extends State<Body> {
                   SizedBox(height: viewPortHeight * 0.02),
                   _appointmentTime(),
                   SizedBox(height: viewPortHeight * 0.02),
-                  _textLabel('服務期限'),
-                  SizedBox(height: viewPortHeight * 0.02),
-                  _servicePeriodRadio(),
+                  _servicePeriod(),
                   SizedBox(height: viewPortHeight * 0.02),
                   GestureDetector(
                     onTap: _navigateToAddressSelector,
@@ -177,6 +163,7 @@ class _BodyState extends State<Body> {
                       child: IgnorePointer(
                         child: AddressField(
                           controller: _addressController,
+                          fontColor: Colors.white,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return '請選擇地址';
@@ -211,6 +198,8 @@ class _BodyState extends State<Body> {
 
     setState(() {
       _addressController.text = addr;
+
+      _inquiryForms.address = _addressController.text;
     });
   }
 
@@ -260,7 +249,7 @@ class _BodyState extends State<Body> {
 
   Widget _appointmentTime() {
     return Container(
-      child: AppointmentTimeField(
+      child: InquiryAppointmentTimeField(
         dateController: _dateController,
         timeController: _timeController,
         dateValue: dateTime,
@@ -282,19 +271,39 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget _servicePeriodRadio() {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(
-              children: periodRadioWidget,
-            ),
-          ),
-        ],
-      ),
+  Widget _servicePeriod() {
+    return ServiceDurationField(
+      controller: _durationController,
+      fontColor: Colors.white,
+      validator: (String v) {
+        if (v == null || v.isEmpty) {
+          return '請輸入服務時長';
+        }
+
+        final doubleDuration = double.tryParse(v);
+
+        if (doubleDuration < 30.0) {
+          return '服務時長最少 30 分鐘';
+        }
+
+        // Check if user input contains decimal fraction.
+        final fraction = doubleDuration - doubleDuration.truncate();
+
+        if (fraction > 0) {
+          return '服務時長必須為整數';
+        }
+
+        return null;
+      },
+      onSaved: (String v) {
+        // Convert duration value to Duration instance.
+        setState(
+          () {
+            _inquiryForms.duration =
+                Duration(minutes: int.tryParse(_durationController.text));
+          },
+        );
+      },
     );
   }
 
@@ -363,38 +372,6 @@ class _BodyState extends State<Body> {
                     : Colors.white,
               ),
             ),
-    );
-  }
-
-  Widget _customPeriodRadio(String txt, int index) {
-    return OutlinedButton(
-      onPressed: () {
-        changeIndexPeriod(index);
-        if (index == 0) {
-          _durationController.text = "60";
-        } else if (index == 1) {
-          _durationController.text = "90";
-        } else if (index == 2) {
-          _durationController.text = "120";
-        } else if (index == 3) {
-          _durationController.text = "150";
-        }
-        _inquiryForms.duration =
-            Duration(minutes: int.tryParse(_durationController.text));
-      },
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        backgroundColor:
-            selectedIndexPeriod == index ? Colors.white : Colors.black,
-        side: BorderSide(color: Color.fromRGBO(106, 109, 137, 1)),
-      ),
-      child: Text(
-        txt,
-        style: TextStyle(
-            color: selectedIndexPeriod == index ? Colors.black : Colors.white),
-      ),
     );
   }
 

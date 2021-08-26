@@ -9,11 +9,13 @@ class AddressField extends StatelessWidget {
     this.controller,
     this.validator,
     this.focusNode,
+    this.fontColor = Colors.white,
   }) : super(key: key);
 
   final TextEditingController controller;
   final ValueChanged<String> validator;
   final FocusNode focusNode;
+  final Color fontColor;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class AddressField extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: fontColor,
           ),
         ),
         SizedBox(height: 10),

@@ -9,6 +9,7 @@ class InquiryForms extends Equatable {
     this.duration,
     this.serviceType,
     this.uuid,
+    this.address,
   });
 
   DateTime inquiryDate;
@@ -17,6 +18,7 @@ class InquiryForms extends Equatable {
   Duration duration;
   String serviceType;
   String uuid;
+  String address;
 
   @override
   List<Object> get props => [
@@ -26,6 +28,7 @@ class InquiryForms extends Equatable {
         budget,
         duration,
         serviceType,
+        address,
 
         // Inquiry date
         inquiryDate.year,

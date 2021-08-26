@@ -39,6 +39,7 @@ class SearchInquiryAPIs extends BaseClient {
         'service_type': body.serviceType,
         'appointment_time': appointmentToUtcToIsoString,
         'service_duration': body.duration.inMinutes,
+        'address': body.address,
       });
 
       final request = http.Request(
@@ -79,6 +80,7 @@ class SearchInquiryAPIs extends BaseClient {
       'service_type': body.serviceType,
       'appointment_time': appointmentToUtcToIsoString,
       'service_duration': body.duration.inMinutes,
+      'address': body.address,
     });
 
     final request = http.Request(

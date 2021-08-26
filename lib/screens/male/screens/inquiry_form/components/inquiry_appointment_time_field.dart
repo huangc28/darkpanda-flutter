@@ -1,7 +1,7 @@
 part of 'body.dart';
 
-class AppointmentTimeField extends StatelessWidget {
-  const AppointmentTimeField({
+class InquiryAppointmentTimeField extends StatelessWidget {
+  const InquiryAppointmentTimeField({
     Key key,
     this.dateController,
     this.timeController,
