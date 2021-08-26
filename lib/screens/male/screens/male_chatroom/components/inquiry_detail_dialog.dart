@@ -320,7 +320,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
               value,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: valueSize != null ? valueSize : 14,
+                fontSize: valueSize != null ? valueSize : 15,
               ),
             ),
           ),

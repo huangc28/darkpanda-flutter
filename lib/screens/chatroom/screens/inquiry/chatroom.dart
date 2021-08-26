@@ -626,9 +626,10 @@ class _ChatroomState extends State<Chatroom>
   Widget _appBar() {
     return AppBar(
       leading: IconButton(
+        alignment: Alignment.centerRight,
         icon: Icon(
           Icons.arrow_back,
-          color: Color.fromRGBO(106, 109, 137, 1),
+          color: Colors.white,
         ),
         onPressed: () {
           // To avoid Duplicate GlobalKey issue
