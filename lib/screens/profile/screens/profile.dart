@@ -134,10 +134,13 @@ class _ProfileState extends State<Profile> {
                             }),
                           );
                         } else {
-                          return Row(
-                            children: <Widget>[
-                              LoadingScreen(),
-                            ],
+                          return Container(
+                            height: SizeConfig.screenHeight * 0.7,
+                            child: Row(
+                              children: <Widget>[
+                                LoadingScreen(),
+                              ],
+                            ),
                           );
                         }
                       },
