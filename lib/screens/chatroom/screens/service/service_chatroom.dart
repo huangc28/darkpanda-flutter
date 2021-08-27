@@ -76,6 +76,7 @@ import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
+import 'components/female_unpaid_info.dart';
 import 'components/send_message_bar.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
 import '../../components/chat_bubble.dart';
@@ -86,7 +87,7 @@ import 'services/service_apis.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
-part 'components/unpaid_info.dart';
+part 'components/male_unpaid_info.dart';
 
 class ServiceChatroom extends StatefulWidget {
   const ServiceChatroom({
@@ -386,7 +387,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                         },
                         child: _servicePaid
                             ? SizedBox.shrink()
-                            : UnpaidInfo(
+                            : MaleUnpaidInfo(
                                 inquirerProfile: _inquirerProfile,
                                 serviceDetails: _serviceDetails,
                                 onGoToPayment: () {
@@ -447,6 +448,36 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                     );
                                   }
                                 },
+                              ),
+                      ),
+                    if (_sender.gender == Gender.female)
+                      BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            developer.log(
+                              'failed to fetch dp balance',
+                              error: state.error,
+                            );
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
+
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _balance = state.myDp.balance;
+                              _inquiryDetail.balance = _balance;
+                            });
+                          }
+                        },
+                        child: _servicePaid
+                            ? SizedBox.shrink()
+                            : FemaleUnpaidInfo(
+                                inquirerProfile: _inquirerProfile,
+                                servicePaid: _servicePaid,
                               ),
                       ),
                     Expanded(

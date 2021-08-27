@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
@@ -36,7 +37,10 @@ class ServiceChatroomGrid extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   flex: 1,
-                  child: UserAvatar(chatroom.chatPartnerAvatarUrl),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UserAvatar(chatroom.chatPartnerAvatarUrl),
+                  ),
                 ),
                 Expanded(
                   flex: 3,
@@ -95,7 +99,29 @@ class ServiceChatroomGrid extends StatelessWidget {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
+                  chatroom.status == ServiceStatus.unpaid.name
+                      ? Text(
+                          '未付款',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        )
+                      : chatroom.status == ServiceStatus.to_be_fulfilled.name
+                          ? Text(
+                              '已付款',
+                              style: TextStyle(
+                                color: Colors.green,
+                              ),
+                            )
+                          : chatroom.status == ServiceStatus.fulfilling.name
+                              ? Text(
+                                  '已開始',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : Container(),
                   Text(
                     DateTimeUtil.timeAgoSinceDate(chatroom.appointmentTime),
                     style: TextStyle(

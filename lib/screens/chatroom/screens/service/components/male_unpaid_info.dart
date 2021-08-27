@@ -1,7 +1,7 @@
 part of '../service_chatroom.dart';
 
-class UnpaidInfo extends StatelessWidget {
-  const UnpaidInfo({
+class MaleUnpaidInfo extends StatelessWidget {
+  const MaleUnpaidInfo({
     Key key,
     this.inquirerProfile,
     this.serviceDetails,
