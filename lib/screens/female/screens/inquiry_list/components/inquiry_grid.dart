@@ -15,18 +15,20 @@ part 'inquiry_grid_actions.dart';
 class InquiryGrid extends StatelessWidget {
   const InquiryGrid({
     Key key,
-    @required this.onTapChat,
+    @required this.onTapPickup,
     @required this.onTapClear,
     @required this.onTapCheckProfile,
     @required this.onTapStartChat,
     this.inquiry,
+    this.isLoading = false,
+    this.inquiryUuid = "",
   }) : super(key: key);
 
   final Inquiry inquiry;
 
   /// Girl is interested in this inquiry and want to start an inquiry chat
   /// with the guy. The girl still has to wait for the reply of the man.
-  final ValueChanged<String> onTapChat;
+  final ValueChanged<String> onTapPickup;
 
   /// When male user denies to chat with the girl. Girl can hide that record by
   /// clicking on `clear` button on the inquiry grid to remove this grid from
@@ -40,6 +42,9 @@ class InquiryGrid extends StatelessWidget {
   /// Male user agrees to chat with the female user. By pressing the `onTapChatting` button,
   /// Female user would be redirect to inquiry chatroom.
   final ValueChanged<Inquiry> onTapStartChat;
+
+  final bool isLoading;
+  final String inquiryUuid;
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +73,13 @@ class InquiryGrid extends StatelessWidget {
                 inquiry: inquiry,
               ),
               InquiryGridActions(
-                onTapChat: onTapChat,
+                onTapPickup: onTapPickup,
                 onTapStartChat: onTapStartChat,
                 onTapClear: onTapClear,
                 onTapCheckProfile: onTapCheckProfile,
                 inquiry: inquiry,
+                isLoading: isLoading,
+                inquiryUuid: inquiryUuid,
               )
             ],
           ),
