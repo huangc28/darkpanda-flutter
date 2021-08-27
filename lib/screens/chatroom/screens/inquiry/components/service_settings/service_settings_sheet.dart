@@ -26,12 +26,14 @@ class ServiceSettingsSheet extends StatefulWidget {
     this.controller,
     @required this.onTapClose,
     @required this.onUpdateInquiry,
+    this.isLoading,
   });
 
   final ServiceSettings serviceSettings;
   final ServiceDetails serviceDetails;
   final SlideUpController controller;
   final VoidCallback onTapClose;
+  final bool isLoading;
 
   /// Triggered when inquiry is updated.
   final Function(ServiceSettings) onUpdateInquiry;
@@ -332,7 +334,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           },
                           text: '發送邀請',
                           theme: DPTextButtonThemes.purple,
-                          disabled: _disableUpdate,
+                          disabled: _disableUpdate || widget.isLoading,
+                          loading: widget.isLoading,
                           // );
                           // }
                         ),

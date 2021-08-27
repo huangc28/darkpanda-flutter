@@ -114,6 +114,8 @@ class _ChatroomState extends State<Chatroom>
   InquirerProfileArguments _inquirerProfileArguments;
   // InquiryChatroomsBloc _inquiryChatroomsBloc;
 
+  bool sendUpdateInquiryIsLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -535,15 +537,32 @@ class _ChatroomState extends State<Chatroom>
                         }
                       },
                     ),
-                    BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
-                        listener: (_, state) {
-                      if (state.status == AsyncLoadingStatus.done) {
-                        _animationController.reverse();
-                      }
-                    }),
+                    // BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
+                    //     listener: (_, state) {
+                    //   if (state.status == AsyncLoadingStatus.done) {
+                    //     _animationController.reverse();
+                    //   }
+                    // }),
                     BlocListener<SendUpdateInquiryMessageBloc,
                         SendUpdateInquiryMessageState>(listener: (_, state) {
+                      if (state.status == AsyncLoadingStatus.initial ||
+                          state.status == AsyncLoadingStatus.loading) {
+                        setState(() {
+                          sendUpdateInquiryIsLoading = true;
+                        });
+                      }
+
+                      if (state.status == AsyncLoadingStatus.error) {
+                        setState(() {
+                          sendUpdateInquiryIsLoading = false;
+                        });
+                      }
+
                       if (state.status == AsyncLoadingStatus.done) {
+                        setState(() {
+                          sendUpdateInquiryIsLoading = false;
+                        });
+
                         _animationController.reverse();
                       }
                     }),
@@ -568,6 +587,7 @@ class _ChatroomState extends State<Chatroom>
                         ),
                       );
                     },
+                    isLoading: sendUpdateInquiryIsLoading,
                   ),
                 ),
               ),
