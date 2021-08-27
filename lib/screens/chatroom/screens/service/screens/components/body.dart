@@ -49,12 +49,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: UserAvatar(widget.historicalService
-                                          .chatPartnerAvatarUrl !=
-                                      null
-                                  ? widget
-                                      .historicalService.chatPartnerAvatarUrl
-                                  : ''),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: UserAvatar(widget.historicalService
+                                            .chatPartnerAvatarUrl !=
+                                        null
+                                    ? widget
+                                        .historicalService.chatPartnerAvatarUrl
+                                    : ''),
+                              ),
                             ),
                             Expanded(
                               flex: 3,
