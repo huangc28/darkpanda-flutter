@@ -60,7 +60,7 @@ Map<DPTextButtonThemes, ThemeConfig> themes = {
   DPTextButtonThemes.disabled: ThemeConfig.setConfig(
     backgroundColor: Color.fromRGBO(214, 214, 215, 1),
     textStyle: baseButtonTextStyle.copyWith(
-      color: Color.fromRGBO(255, 255, 255, 1),
+      color: Color.fromRGBO(102, 102, 102, 1),
     ),
   )
 };
