@@ -53,8 +53,6 @@ class CancelInquiryBloc extends Bloc<CancelInquiryEvent, CancelInquiryState> {
         RemoveLoadInquiry(inquiryUuid: event.inquiryUuid),
       );
 
-      FirebaseMessagingService().fcmUnSubscribe(event.fcmTopic);
-
       yield CancelInquiryState.done();
     } on APIException catch (e) {
       yield CancelInquiryState.error(e);

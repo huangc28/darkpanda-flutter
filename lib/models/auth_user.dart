@@ -9,6 +9,7 @@ class AuthUser extends Equatable {
   final String avatarUrl;
   final String uuid;
   final Gender gender;
+  final String fcmTopic;
 
   AuthUser({
     this.jwt,
@@ -16,6 +17,7 @@ class AuthUser extends Equatable {
     this.avatarUrl,
     this.uuid,
     this.gender,
+    this.fcmTopic,
   });
 
   factory AuthUser.copyFrom(
@@ -25,6 +27,7 @@ class AuthUser extends Equatable {
     String avatarUrl,
     String uuid,
     String gender,
+    String fcmTopic,
   }) {
     return AuthUser(
       jwt: jwt ?? user.jwt,
@@ -32,16 +35,19 @@ class AuthUser extends Equatable {
       avatarUrl: avatarUrl ?? user.avatarUrl,
       uuid: uuid ?? user.uuid,
       gender: gender ?? user.gender,
+      fcmTopic: fcmTopic ?? user.fcmTopic,
     );
   }
 
   factory AuthUser.fromJson(Map<String, dynamic> data) {
     return AuthUser(
-        jwt: data['jwt'],
-        username: data['username'],
-        avatarUrl: data['avatarUrl'],
-        uuid: data['uuid'],
-        gender: EnumToString.fromString(Gender.values, data['gender']));
+      jwt: data['jwt'],
+      username: data['username'],
+      avatarUrl: data['avatarUrl'],
+      uuid: data['uuid'],
+      gender: EnumToString.fromString(Gender.values, data['gender']),
+      fcmTopic: data['fcm_topic'],
+    );
   }
   @override
   List<Object> get props => [
@@ -50,5 +56,6 @@ class AuthUser extends Equatable {
         avatarUrl,
         uuid,
         gender,
+        fcmTopic,
       ];
 }
