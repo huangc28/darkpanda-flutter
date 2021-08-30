@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
+import 'package:darkpanda_flutter/util/notification_service.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +40,9 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
     setState(() {
       _mobileVerifyChars = widget.args.verifyChars;
     });
+
+    NotificationService().init();
+    FirebaseMessagingService().init();
 
     super.initState();
   }

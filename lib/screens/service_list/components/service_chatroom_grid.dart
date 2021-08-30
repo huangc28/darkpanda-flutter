@@ -58,8 +58,9 @@ class ServiceChatroomGrid extends StatelessWidget {
     DateTime today = DateTime.now();
     today = today.add(Duration(hours: 10));
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
+          // flex: 3,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 5.0,
@@ -68,7 +69,7 @@ class ServiceChatroomGrid extends StatelessWidget {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(
                     chatroom.chatPartnerUsername,
                     style: TextStyle(
@@ -91,6 +92,7 @@ class ServiceChatroomGrid extends StatelessWidget {
           ),
         ),
         Expanded(
+          // flex: 4,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -104,7 +106,7 @@ class ServiceChatroomGrid extends StatelessWidget {
                       ? Text(
                           '未付款',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: Color.fromRGBO(255, 0, 0, 1),
                           ),
                         )
                       : chatroom.status == ServiceStatus.to_be_fulfilled.name
@@ -121,9 +123,20 @@ class ServiceChatroomGrid extends StatelessWidget {
                                     color: Colors.green,
                                   ),
                                 )
-                              : Container(),
+                              : chatroom.status ==
+                                      ServiceStatus.payment_failed.name
+                                  ? Text(
+                                      '付款失敗',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(255, 0, 0, 1),
+                                      ),
+                                    )
+                                  : Container(),
                   Text(
-                    DateTimeUtil.timeAgoSinceDate(chatroom.appointmentTime),
+                    chatroom.status == ServiceStatus.fulfilling.name
+                        ? Container()
+                        : DateTimeUtil.timeAgoSinceDate(
+                            chatroom.appointmentTime),
                     style: TextStyle(
                       color: Color.fromRGBO(106, 109, 137, 1),
                     ),
