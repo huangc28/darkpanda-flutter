@@ -185,6 +185,8 @@ class _BodyState extends State<Body> {
   }
 
   void _navigateToAddressSelector() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
     final addr = await Navigator.push(
       context,
       MaterialPageRoute(

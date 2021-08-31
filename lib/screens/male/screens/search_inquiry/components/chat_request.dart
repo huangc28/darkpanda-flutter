@@ -9,9 +9,9 @@ import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
@@ -213,15 +213,21 @@ class _ChatRequestState extends State<ChatRequest> {
           userProfile = state.userProfile;
           return Container(
             child: Column(
-              children: [
+              children: <Widget>[
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: <Widget>[
                     Container(
-                      height: 300,
+                      height: SizeConfig.screenHeight * 0.5,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                          image: userProfile.avatarUrl == ""
+                              ? AssetImage('assets/default_avatar.png')
+                              : NetworkImage(userProfile.avatarUrl),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ],
