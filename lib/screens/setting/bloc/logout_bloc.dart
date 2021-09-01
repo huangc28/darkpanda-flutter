@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -38,11 +39,19 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
         throw APIException.fromJson(json.decode(resp.body));
       }
 
+      String fcmTopic = await SecureStore().readFcmTopic();
+
+      // Unsubscribe fcm topic
+      FirebaseMessagingService().fcmUnSubscribe(fcmTopic);
+
       // Remove jwt token.
       await SecureStore().delJwtToken();
 
       // Remove gender.
       await SecureStore().delGender();
+
+      // Remove fcm topic
+      await SecureStore().delFcmTopic();
 
       // Remove auth user info.
       authUserBloc.add(RemoveAuthUser());

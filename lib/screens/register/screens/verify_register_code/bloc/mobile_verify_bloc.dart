@@ -70,6 +70,8 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
 
       await SecureStore().writeGender(authUser.gender.name);
 
+      await SecureStore().writeFcmTopic(authUser.fcmTopic);
+
       FirebaseMessagingService().fcmSubscribe(authUser.fcmTopic);
 
       authUserBloc.add(
