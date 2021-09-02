@@ -49,11 +49,12 @@ class NotificationService {
     );
   }
 
-  void showNotification(RemoteNotification notification) async {
+  void showNotification(RemoteNotification notification,
+      {String body = ""}) async {
     await flutterLocalNotificationsPlugin.show(
       0,
       notification.title,
-      notification.body,
+      body,
       platformChannelSpecifics,
       payload: '',
     );
