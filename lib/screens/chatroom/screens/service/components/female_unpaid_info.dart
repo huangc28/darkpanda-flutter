@@ -31,8 +31,7 @@ class FemaleUnpaidInfo extends StatelessWidget {
   Widget _tradeInfo() {
     final dateNow = DateTime.now();
     final bufferMinute = 30;
-    final localTime = serviceDetails.appointmentTime.toLocal();
-    final bufferTime = serviceDetails.appointmentTime.toLocal().add(
+    final bufferTime = serviceDetails.createdAt.toLocal().add(
           Duration(minutes: bufferMinute),
         );
     final differenceBufferTime = bufferTime.difference(dateNow);
