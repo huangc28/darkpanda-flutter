@@ -364,6 +364,8 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                       ],
                       child: SizedBox.shrink(),
                     ),
+
+                    // Service started banner
                     _serviceDetails.endTime != null
                         ? BlocListener<ServiceStartNotifierBloc,
                             ServiceStartNotifierState>(
