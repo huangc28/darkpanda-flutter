@@ -11,6 +11,7 @@ import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/models/start_service_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_start_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
 
 import 'package:equatable/equatable.dart';
@@ -44,11 +45,13 @@ class CurrentServiceChatroomBloc
     this.loadIncomingServiceBloc,
     this.currentServiceBloc,
     this.serviceConfirmNotifierBloc,
+    this.serviceStartNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(userApis != null),
         assert(loadIncomingServiceBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
+        assert(serviceStartNotifierBloc != null),
         super(CurrentServiceChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
@@ -57,6 +60,7 @@ class CurrentServiceChatroomBloc
   final LoadIncomingServiceBloc loadIncomingServiceBloc;
   final CurrentServiceBloc currentServiceBloc;
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
+  final ServiceStartNotifierBloc serviceStartNotifierBloc;
 
   @override
   Stream<CurrentServiceChatroomState> mapEventToState(
@@ -294,6 +298,8 @@ class CurrentServiceChatroomBloc
       msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else if (isStartServiceMsg(rawMsg['type'])) {
       msg = StartServiceMessage.fromMap(rawMsg);
+
+      serviceStartNotifierBloc.add(NotifyServiceStarted(msg));
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
     } else if (isCancelServiceMsg(rawMsg['type'])) {

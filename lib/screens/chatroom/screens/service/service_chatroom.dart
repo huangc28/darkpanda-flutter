@@ -76,8 +76,10 @@ import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
+import 'bloc/service_start_notifier_bloc.dart';
 import 'components/female_unpaid_info.dart';
 import 'components/send_message_bar.dart';
+import 'components/service_start_banner.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
 import '../../components/chat_bubble.dart';
 import '../../components/confirmed_service_bubble.dart';
@@ -362,125 +364,110 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                       ],
                       child: SizedBox.shrink(),
                     ),
-                    if (_sender.gender == Gender.male)
-                      BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.error) {
-                            developer.log(
-                              'failed to fetch dp balance',
-                              error: state.error,
-                            );
+                    _serviceDetails.endTime != null
+                        ? BlocListener<ServiceStartNotifierBloc,
+                            ServiceStartNotifierState>(
+                            listener: (context, state) {},
+                            child: ServiceStartBanner(
+                              inquirerProfile: _inquirerProfile,
+                              serviceDetails: _serviceDetails,
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                      listener: (context, state) {
+                        if (state.status == AsyncLoadingStatus.error) {
+                          developer.log(
+                            'failed to fetch dp balance',
+                            error: state.error,
+                          );
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(state.error.message),
-                              ),
-                            );
-                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error.message),
+                            ),
+                          );
+                        }
 
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _balance = state.myDp.balance;
-                              _inquiryDetail.balance = _balance;
-                            });
-                          }
-                        },
-                        child: _servicePaid
-                            ? SizedBox.shrink()
-                            : MaleUnpaidInfo(
-                                inquirerProfile: _inquirerProfile,
-                                serviceDetails: _serviceDetails,
-                                onGoToPayment: () {
-                                  if (_serviceDetails.matchingFee > _balance) {
-                                    print("Go to Top up dp");
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return MultiBlocProvider(
-                                            providers: [
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    LoadMyDpBloc(
-                                                  apiClient: TopUpClient(),
+                        if (state.status == AsyncLoadingStatus.done) {
+                          setState(() {
+                            _balance = state.myDp.balance;
+                            _inquiryDetail.balance = _balance;
+                          });
+                        }
+                      },
+                      child: _servicePaid
+                          ? SizedBox.shrink()
+                          : _sender.gender == Gender.male
+                              ? MaleUnpaidInfo(
+                                  inquirerProfile: _inquirerProfile,
+                                  serviceDetails: _serviceDetails,
+                                  onGoToPayment: () {
+                                    if (_serviceDetails.matchingFee >
+                                        _balance) {
+                                      print("Go to Top up dp");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      LoadMyDpBloc(
+                                                    apiClient: TopUpClient(),
+                                                  ),
                                                 ),
-                                              ),
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    LoadDpPackageBloc(
-                                                  apiClient: TopUpClient(),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      LoadDpPackageBloc(
+                                                    apiClient: TopUpClient(),
+                                                  ),
                                                 ),
+                                              ],
+                                              child: TopupDp(
+                                                args: _inquiryDetail,
                                               ),
-                                            ],
-                                            child: TopupDp(
-                                              args: _inquiryDetail,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  } else {
-                                    print("Go to Payment");
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return MultiBlocProvider(
-                                            providers: [
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    BuyServiceBloc(
-                                                  searchInquiryAPIs:
-                                                      SearchInquiryAPIs(),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      print("Go to Payment");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      BuyServiceBloc(
+                                                    searchInquiryAPIs:
+                                                        SearchInquiryAPIs(),
+                                                  ),
                                                 ),
-                                              ),
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    CancelServiceBloc(
-                                                  serviceAPIs: ServiceAPIs(),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      CancelServiceBloc(
+                                                    serviceAPIs: ServiceAPIs(),
+                                                  ),
                                                 ),
+                                              ],
+                                              child: BuyService(
+                                                args: _inquiryDetail,
                                               ),
-                                            ],
-                                            child: BuyService(
-                                              args: _inquiryDetail,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                      ),
-                    if (_sender.gender == Gender.female)
-                      BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.error) {
-                            developer.log(
-                              'failed to fetch dp balance',
-                              error: state.error,
-                            );
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(state.error.message),
-                              ),
-                            );
-                          }
-
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _balance = state.myDp.balance;
-                              _inquiryDetail.balance = _balance;
-                            });
-                          }
-                        },
-                        child: _servicePaid
-                            ? SizedBox.shrink()
-                            : FemaleUnpaidInfo(
-                                inquirerProfile: _inquirerProfile,
-                                serviceDetails: _serviceDetails,
-                                servicePaid: _servicePaid,
-                              ),
-                      ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              : FemaleUnpaidInfo(
+                                  inquirerProfile: _inquirerProfile,
+                                  serviceDetails: _serviceDetails,
+                                  servicePaid: _servicePaid,
+                                ),
+                    ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,

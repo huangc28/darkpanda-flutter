@@ -134,7 +134,7 @@ class ServiceChatroomGrid extends StatelessWidget {
                                   : Container(),
                   Text(
                     chatroom.status == ServiceStatus.fulfilling.name
-                        ? Container()
+                        ? ''
                         : DateTimeUtil.timeAgoSinceDate(
                             chatroom.appointmentTime),
                     style: TextStyle(
