@@ -226,6 +226,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
           children: <Widget>[
             _buildEachText('pie.png', '價格',
                 '${widget.inquiryDetail.updateInquiryMessage.price}'),
+            SizedBox(height: 8),
             _buildEachText('pie.png', '小計',
                 '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
           ],

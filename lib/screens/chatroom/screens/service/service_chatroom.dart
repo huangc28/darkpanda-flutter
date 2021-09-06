@@ -477,6 +477,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                             ? SizedBox.shrink()
                             : FemaleUnpaidInfo(
                                 inquirerProfile: _inquirerProfile,
+                                serviceDetails: _serviceDetails,
                                 servicePaid: _servicePaid,
                               ),
                       ),

@@ -20,13 +20,6 @@ class NotificationBanner extends StatelessWidget {
             ),
           ),
           SizedBox(height: 6),
-          Text(
-            '還有 13 分鐘保留聊天室',
-            style: TextStyle(
-              color: Color.fromRGBO(106, 109, 137, 1),
-              fontSize: 13,
-            ),
-          ),
         ],
       ),
     );
@@ -56,15 +49,15 @@ class NotificationBanner extends StatelessWidget {
 
             _buildStatusBar(),
 
-            InkWell(
-              onTap: () {
-                print('DEBUG tap proceed');
-              },
-              child: Icon(
-                Icons.navigate_next,
-                size: 22,
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     print('DEBUG tap proceed');
+            //   },
+            //   child: Icon(
+            //     Icons.navigate_next,
+            //     size: 22,
+            //   ),
+            // ),
           ],
         ),
         decoration: BoxDecoration(

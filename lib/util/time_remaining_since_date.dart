@@ -10,7 +10,7 @@ class DateTimeUtil {
     final bufferMinute = 30;
 
     final difference = notificationDate.difference(dateNow);
-    final bufferTime = notificationDate.add(Duration(minutes: 30));
+    final bufferTime = notificationDate.add(Duration(minutes: bufferMinute));
     final differenceBufferTime = bufferTime.difference(dateNow);
 
     if ((difference.inDays / DateTime.daysPerWeek).floor() >= 1) {

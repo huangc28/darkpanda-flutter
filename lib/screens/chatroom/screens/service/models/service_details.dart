@@ -14,6 +14,7 @@ class ServiceDetails extends Equatable {
     this.startTime,
     this.endTime,
     this.matchingFee,
+    this.createdAt,
   });
 
   final String uuid;
@@ -26,6 +27,7 @@ class ServiceDetails extends Equatable {
   final DateTime startTime;
   final DateTime endTime;
   final int matchingFee;
+  final DateTime createdAt;
 
   @override
   List<Object> get props => [
@@ -40,6 +42,7 @@ class ServiceDetails extends Equatable {
         startTime,
         endTime,
         matchingFee,
+        createdAt
       ];
 
   @override
@@ -56,6 +59,7 @@ class ServiceDetails extends Equatable {
     DateTime startTime,
     DateTime endTime,
     int matchingFee,
+    DateTime createdAt,
   }) {
     return ServiceDetails(
       uuid: uuid ?? this.uuid,
@@ -68,6 +72,7 @@ class ServiceDetails extends Equatable {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       matchingFee: matchingFee ?? this.matchingFee,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -75,6 +80,7 @@ class ServiceDetails extends Equatable {
     final DateTime at = tryParseToDateTime(data['appointment_time']);
     final DateTime st = tryParseToDateTime(data['start_time']);
     final DateTime et = tryParseToDateTime(data['end_time']);
+    final DateTime ct = tryParseToDateTime(data['created_at']);
 
     return ServiceDetails(
       uuid: data['uuid'] ?? '',
@@ -89,6 +95,7 @@ class ServiceDetails extends Equatable {
       startTime: st,
       endTime: et,
       matchingFee: data['matching_fee'],
+      createdAt: ct,
     );
   }
 }

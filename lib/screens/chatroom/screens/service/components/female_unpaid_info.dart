@@ -1,15 +1,19 @@
+import 'package:flutter/material.dart';
+
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 
 class FemaleUnpaidInfo extends StatelessWidget {
   const FemaleUnpaidInfo({
     Key key,
     this.inquirerProfile,
+    this.serviceDetails,
     this.servicePaid,
   }) : super(key: key);
 
   final UserProfile inquirerProfile;
+  final ServiceDetails serviceDetails;
   final bool servicePaid;
 
   @override
@@ -25,6 +29,14 @@ class FemaleUnpaidInfo extends StatelessWidget {
   }
 
   Widget _tradeInfo() {
+    final dateNow = DateTime.now();
+    final bufferMinute = 30;
+    final localTime = serviceDetails.appointmentTime.toLocal();
+    final bufferTime = serviceDetails.appointmentTime.toLocal().add(
+          Duration(minutes: bufferMinute),
+        );
+    final differenceBufferTime = bufferTime.difference(dateNow);
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.fromLTRB(15, 5, 15, 10),
@@ -62,7 +74,7 @@ class FemaleUnpaidInfo extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '您還有 9 分鐘可以付款',
+                      '您還有 ${differenceBufferTime.inMinutes} 分鐘可以付款',
                       style: TextStyle(
                         fontSize: 13,
                         color: Color.fromRGBO(106, 109, 137, 1),
