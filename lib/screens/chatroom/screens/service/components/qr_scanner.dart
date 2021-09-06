@@ -14,12 +14,17 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'service_qrcode.dart';
 
+typedef FnValue = Function();
+
 class QrScanner extends StatefulWidget {
   const QrScanner({
     this.args,
+    this.onScanDoneBack,
   });
 
   final QrscannerScreenArguments args;
+  final FnValue onScanDoneBack;
+
   @override
   _QrScannerState createState() => _QrScannerState();
 }
@@ -176,7 +181,7 @@ class _QrScannerState extends State<QrScanner>
                     Navigator.pop(context);
                   } else if (state.status == AsyncLoadingStatus.done) {
                     _snackBar("Scan successfully!");
-                    Navigator.pop(context);
+                    widget.onScanDoneBack();
                   }
                 },
                 child: SizedBox.shrink(),

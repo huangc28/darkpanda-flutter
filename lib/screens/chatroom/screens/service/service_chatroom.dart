@@ -74,10 +74,12 @@ import 'package:image_picker/image_picker.dart';
 import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
+import 'bloc/payment_complete_notifier_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
 import 'bloc/service_start_notifier_bloc.dart';
 import 'components/female_unpaid_info.dart';
+import 'components/payment_complete_banner.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_start_banner.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
@@ -366,16 +368,31 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     ),
 
                     // Service started banner
-                    _serviceDetails.endTime != null
-                        ? BlocListener<ServiceStartNotifierBloc,
-                            ServiceStartNotifierState>(
-                            listener: (context, state) {},
-                            child: ServiceStartBanner(
+                    BlocListener<ServiceStartNotifierBloc,
+                        ServiceStartNotifierState>(
+                      listener: (context, state) {},
+                      child: _serviceDetails.serviceStatus ==
+                              ServiceStatus.fulfilling.name
+                          ? ServiceStartBanner(
                               inquirerProfile: _inquirerProfile,
                               serviceDetails: _serviceDetails,
-                            ),
-                          )
-                        : SizedBox.shrink(),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+
+                    // Payment completed banner
+                    BlocListener<PaymentCompleteNotifierBloc,
+                        PaymentCompleteNotifierState>(
+                      listener: (context, state) {},
+                      child: _serviceDetails.serviceStatus ==
+                              ServiceStatus.to_be_fulfilled.name
+                          ? PaymentCompleteBanner(
+                              inquirerProfile: _inquirerProfile,
+                              serviceDetails: _serviceDetails,
+                            )
+                          : SizedBox.shrink(),
+                    ),
+
                     BlocListener<LoadMyDpBloc, LoadMyDpState>(
                       listener: (context, state) {
                         if (state.status == AsyncLoadingStatus.error) {
@@ -704,6 +721,13 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                 args: QrscannerScreenArguments(
                   serviceUuid: widget.args.serviceUUID,
                 ),
+                onScanDoneBack: () {
+                  Navigator.pop(context);
+
+                  BlocProvider.of<LoadServiceDetailBloc>(context).add(
+                    LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+                  );
+                },
               ),
             ),
           ));
