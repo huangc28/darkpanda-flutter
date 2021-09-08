@@ -73,7 +73,7 @@ class FemaleUnpaidInfo extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '您還有 ${differenceBufferTime.inMinutes} 分鐘可以付款',
+                      '${inquirerProfile.username}還有 ${differenceBufferTime.inMinutes} 分鐘可以付款',
                       style: TextStyle(
                         fontSize: 13,
                         color: Color.fromRGBO(106, 109, 137, 1),
