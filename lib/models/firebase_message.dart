@@ -27,23 +27,40 @@ class FirebaseMessageContent extends Equatable {
   FirebaseMessageContent({
     this.pickerName,
     this.pickerUuid,
+    this.payerName,
+    this.customerName,
+    this.serviceProviderName,
   });
 
   final String pickerName;
   final String pickerUuid;
+  final String payerName;
+  final String customerName;
+  final String serviceProviderName;
 
   factory FirebaseMessageContent.fromMap(Map<String, dynamic> data) {
     return FirebaseMessageContent(
       pickerName: data['picker_name'],
       pickerUuid: data['picker_uuid'],
+      payerName: data['payer_name'],
+      serviceProviderName: data['service_provider_name '],
     );
   }
 
   Map<String, dynamic> toJson() => {
         'picker_name': pickerName,
         'picker_uuid': pickerUuid,
+        'payer_name': payerName,
+        'customer_name': customerName,
+        'service_provider_name ': serviceProviderName,
       };
 
   @override
-  List<Object> get props => [pickerName, pickerUuid];
+  List<Object> get props => [
+        pickerName,
+        pickerUuid,
+        payerName,
+        customerName,
+        serviceProviderName,
+      ];
 }

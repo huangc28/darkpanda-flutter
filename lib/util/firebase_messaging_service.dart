@@ -38,10 +38,10 @@ class FirebaseMessagingService {
         body = firebaseMessage.fcmContent.pickerName + ' 已回覆您的詢問，開始聊聊';
       } else if (firebaseMessage.fcmType ==
           FirebaseMessageType.service_paid.name) {
-        body = firebaseMessage.fcmContent.pickerName + ' 已完成付款';
+        body = firebaseMessage.fcmContent.payerName + ' 已完成付款';
       } else if (firebaseMessage.fcmType ==
           FirebaseMessageType.unpaid_service_expired.name) {
-        body = firebaseMessage.fcmContent.pickerName + ' 在30分鐘內沒完成付款，服務過期';
+        body = firebaseMessage.fcmContent.customerName + ' 在30分鐘內沒完成付款，服務過期';
       }
 
       if (notification != null) {
