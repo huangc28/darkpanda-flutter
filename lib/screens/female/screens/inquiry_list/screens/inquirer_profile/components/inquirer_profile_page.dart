@@ -44,7 +44,9 @@ class InquirerProfilePage extends StatelessWidget {
                       ),
                       RatingBarIndicator(
                         unratedColor: Colors.grey,
-                        rating: 3,
+                        rating: userProfile.rating.score != null
+                            ? userProfile.rating.score
+                            : 0,
                         direction: Axis.horizontal,
                         itemCount: 5,
                         itemSize: 20,

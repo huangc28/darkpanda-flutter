@@ -263,11 +263,17 @@ class _ChatRequestState extends State<ChatRequest> {
                                       color: Colors.amber,
                                       size: 18,
                                     ),
-                                    child: ReviewStar(value: 3),
+                                    child: ReviewStar(
+                                      value: userProfile.rating.score != null
+                                          ? userProfile.rating.score.toInt()
+                                          : 0,
+                                    ),
                                   ),
                                   SizedBox(width: 6),
                                   Text(
-                                    '3/5',
+                                    userProfile.rating.score != null
+                                        ? '${userProfile.rating.score.floor()}/5'
+                                        : '0/5',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],
