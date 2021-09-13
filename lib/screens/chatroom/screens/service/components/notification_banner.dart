@@ -20,13 +20,6 @@ class NotificationBanner extends StatelessWidget {
             ),
           ),
           SizedBox(height: 6),
-          Text(
-            '還有 13 分鐘保留聊天室',
-            style: TextStyle(
-              color: Color.fromRGBO(106, 109, 137, 1),
-              fontSize: 13,
-            ),
-          ),
         ],
       ),
     );

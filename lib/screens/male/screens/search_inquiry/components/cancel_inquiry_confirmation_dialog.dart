@@ -35,25 +35,31 @@ class CancelInquiryConfirmationDialog extends StatelessWidget {
           ),
         ),
         actions: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: DPTextButton(
-              theme: DPTextButtonThemes.grey,
-              onPressed: () async {
-                Navigator.pop(context, false);
-              },
-              text: onCancel,
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: DPTextButton(
-              theme: DPTextButtonThemes.purple,
-              onPressed: () async {
-                Navigator.pop(context, true);
-              },
-              text: onConfirm,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: DPTextButton(
+                  theme: DPTextButtonThemes.grey,
+                  onPressed: () async {
+                    Navigator.pop(context, false);
+                  },
+                  text: onCancel,
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: DPTextButton(
+                  theme: DPTextButtonThemes.purple,
+                  onPressed: () async {
+                    Navigator.pop(context, true);
+                  },
+                  text: onConfirm,
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,7 +74,7 @@ class VerifyLoginCodeBloc
 
       if (fetchUserResp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
-          json.decode(response.body),
+          json.decode(fetchUserResp.body),
         );
       }
 
@@ -83,6 +84,10 @@ class VerifyLoginCodeBloc
       );
 
       await SecureStore().writeGender(authUser.gender.name);
+
+      await SecureStore().writeFcmTopic(authUser.fcmTopic);
+
+      FirebaseMessagingService().fcmSubscribe(authUser.fcmTopic);
 
       authUserBloc.add(
         PutUser(

@@ -14,12 +14,17 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'service_qrcode.dart';
 
+typedef FnValue = Function();
+
 class QrScanner extends StatefulWidget {
   const QrScanner({
     this.args,
+    this.onScanDoneBack,
   });
 
   final QrscannerScreenArguments args;
+  final FnValue onScanDoneBack;
+
   @override
   _QrScannerState createState() => _QrScannerState();
 }
@@ -175,8 +180,8 @@ class _QrScannerState extends State<QrScanner>
                     _snackBar(state.error.message);
                     Navigator.pop(context);
                   } else if (state.status == AsyncLoadingStatus.done) {
-                    _snackBar("Scan successfully!");
-                    Navigator.pop(context);
+                    _snackBar("掃描成功!");
+                    widget.onScanDoneBack();
                   }
                 },
                 child: SizedBox.shrink(),
@@ -274,11 +279,11 @@ class _QrScannerState extends State<QrScanner>
                 ),
               );
             } else {
-              _snackBar("Invalid QR Code!");
+              _snackBar("無效的 QR Code!");
               Navigator.pop(context);
             }
           } catch (error) {
-            _snackBar("Invalid QR Code!");
+            _snackBar("無效的 QR Code!");
             Navigator.pop(context);
           }
         }

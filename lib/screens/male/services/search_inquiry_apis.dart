@@ -39,6 +39,7 @@ class SearchInquiryAPIs extends BaseClient {
         'service_type': body.serviceType,
         'appointment_time': appointmentToUtcToIsoString,
         'service_duration': body.duration.inMinutes,
+        'address': body.address,
       });
 
       final request = http.Request(
@@ -74,10 +75,12 @@ class SearchInquiryAPIs extends BaseClient {
 
     final body = inquiryForms;
     final jsonBody = jsonEncode({
+      'uuid': inquiryForms.uuid,
       'budget': body.budget,
       'service_type': body.serviceType,
       'appointment_time': appointmentToUtcToIsoString,
       'service_duration': body.duration.inMinutes,
+      'address': body.address,
     });
 
     final request = http.Request(

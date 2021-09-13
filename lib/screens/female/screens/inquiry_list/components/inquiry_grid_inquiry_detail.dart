@@ -76,7 +76,12 @@ class InquiryDetail extends StatelessWidget {
                     height: SizeConfig.screenHeight * 0.01, //6
                   ),
                   Bullet(
-                    '項目: ${inquiry.serviceType}',
+                    '項目: ' + inquiry.serviceType == ServiceTypes.sex.name
+                        ? Icon(
+                            Icons.favorite,
+                            color: Colors.pink,
+                          )
+                        : '項目: ' + inquiry.serviceType,
                     style: TextStyle(
                       color: Colors.white,
                       height: 1.3,

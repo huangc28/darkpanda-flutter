@@ -130,30 +130,30 @@ Map<DPTextFieldThemes, ThemeConfig> themes = {
       hintStyle: TextStyle(
         fontSize: 15,
       ),
-      // border: OutlineInputBorder(
-      //   borderRadius: BorderRadius.all(
-      //     Radius.circular(12),
-      //   ),
-      //   borderSide: BorderSide.none,
-      // ),
-      // focusedBorder: OutlineInputBorder(
-      //   borderRadius: BorderRadius.all(
-      //     Radius.circular(12),
-      //   ),
-      //   borderSide: BorderSide.none,
-      // ),
-      // enabledBorder: OutlineInputBorder(
-      //   borderRadius: BorderRadius.all(
-      //     Radius.circular(12),
-      //   ),
-      //   borderSide: BorderSide.none,
-      // ),
-      // errorBorder: OutlineInputBorder(
-      //   borderRadius: BorderRadius.all(
-      //     Radius.circular(12),
-      //   ),
-      //   borderSide: BorderSide.none,
-      // ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        borderSide: BorderSide.none,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+        borderSide: BorderSide.none,
+      ),
     ),
   )
 };

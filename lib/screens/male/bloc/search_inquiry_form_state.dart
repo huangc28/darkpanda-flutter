@@ -3,37 +3,46 @@ part of 'search_inquiry_form_bloc.dart';
 class SearchInquiryFormState<E extends AppBaseException> extends Equatable {
   final E error;
   final AsyncLoadingStatus status;
+  final CreateInquiryResponse createInquiryResponse;
 
   const SearchInquiryFormState._({
     this.error,
     this.status,
+    this.createInquiryResponse,
   });
 
   /// Bloc yields following states
-  const SearchInquiryFormState.initial()
+  SearchInquiryFormState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
+          createInquiryResponse: null,
         );
 
-  const SearchInquiryFormState.loading(SearchInquiryFormState state)
+  SearchInquiryFormState.loading(SearchInquiryFormState state)
       : this._(
           status: AsyncLoadingStatus.loading,
+          createInquiryResponse: state.createInquiryResponse,
         );
 
-  const SearchInquiryFormState.error(SearchInquiryFormState state, {E err})
+  SearchInquiryFormState.error(SearchInquiryFormState state, {E err})
       : this._(
           status: AsyncLoadingStatus.error,
           error: err,
         );
 
-  const SearchInquiryFormState.done()
-      : this._(
+  SearchInquiryFormState.done(
+    SearchInquiryFormState state, {
+    CreateInquiryResponse createInquiryResponse,
+  }) : this._(
           status: AsyncLoadingStatus.done,
+          createInquiryResponse:
+              createInquiryResponse ?? state.createInquiryResponse,
         );
 
   @override
   List<Object> get props => [
         error,
         status,
+        createInquiryResponse,
       ];
 }

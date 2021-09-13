@@ -8,6 +8,7 @@ enum ServiceStatus {
   expired,
   fulfilling,
   completed,
+  negotiating,
 }
 
 /// Make an extension to convert string to enum.

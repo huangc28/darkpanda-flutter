@@ -45,6 +45,16 @@ class _ServiceDetailState extends State<ServiceDetail>
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1), //change your color here
         ),
+        leading: IconButton(
+          alignment: Alignment.centerRight,
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: MultiBlocListener(
         listeners: [

@@ -11,6 +11,7 @@ class ActiveInquiry {
     this.inquiryStatus,
     this.pickerUuid,
     this.budget,
+    this.fcmTopic,
   });
 
   String uuid;
@@ -22,6 +23,7 @@ class ActiveInquiry {
   InquiryStatus inquiryStatus;
   String pickerUuid;
   double budget;
+  String fcmTopic;
 
   ActiveInquiry.fromMap(Map<String, dynamic> data)
       : uuid = data['uuid'],
@@ -32,7 +34,8 @@ class ActiveInquiry {
         address = data['address'],
         inquiryStatus = data['inquiry_status'].toString().toInquiryStatusEnum(),
         pickerUuid = data['picker_uuid'],
-        budget = data['budget']?.toDouble();
+        budget = data['budget']?.toDouble(),
+        fcmTopic = data['fcm_topic'];
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -44,6 +47,7 @@ class ActiveInquiry {
         'inquiry_status': inquiryStatus,
         'picker_uuid': pickerUuid,
         'budget': budget,
+        'fcm_topic': fcmTopic,
       };
 
   ActiveInquiry copyWith({
@@ -56,6 +60,7 @@ class ActiveInquiry {
     String address,
     String pickerUuid,
     double budget,
+    String fcmTopic,
   }) {
     return ActiveInquiry(
       uuid: uuid ?? this.uuid,
@@ -67,6 +72,7 @@ class ActiveInquiry {
       address: address ?? this.address,
       pickerUuid: pickerUuid ?? this.pickerUuid,
       budget: budget ?? this.budget,
+      fcmTopic: fcmTopic ?? this.fcmTopic,
     );
   }
 }

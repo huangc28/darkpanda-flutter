@@ -1,7 +1,10 @@
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/edit_inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/components/color_loader.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -53,138 +56,105 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
       children: <Widget>[
         SizedBox(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => LoadInquiryBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                              ),
-                            ),
-                            BlocProvider(
-                              create: (context) => SearchInquiryFormBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                                loadInquiryBloc:
-                                    BlocProvider.of<LoadInquiryBloc>(context),
-                              ),
-                            ),
-                            BlocProvider(
-                              create: (context) => LoadServiceListBloc(
-                                searchInquiryAPIs: SearchInquiryAPIs(),
-                              ),
-                            ),
-                          ],
-                          child: EditInquiryForm(
-                            activeInquiry: widget.activeInquiry,
-                          ),
-                        );
-                      },
-                    ),
-                  ).then((value) {
-                    setState(() {
-                      BlocProvider.of<LoadInquiryBloc>(context)
-                          .add(LoadInquiry());
-                    });
-                  });
-                },
-                child: SizedBox(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 30, 0, 0),
-                    height: SizeConfig.screenHeight * 0.06,
-                    width: SizeConfig.screenWidth / 2.5,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 20, right: 12),
-                              child: Image.asset(
-                                  "lib/screens/male/assets/editButton.png"),
-                            ),
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 20),
-                              child: Text(
-                                '编织',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+              SizedBox(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  height: SizeConfig.screenHeight * 0.06,
+                  width: SizeConfig.screenWidth / 2.7,
+                  child: DPTextButton(
+                    theme: DPTextButtonThemes.deepGrey,
+                    assetImage: "lib/screens/male/assets/editButton.png",
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => LoadInquiryBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                  ),
                                 ),
+                                BlocProvider(
+                                  create: (context) => SearchInquiryFormBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                    loadInquiryBloc:
+                                        BlocProvider.of<LoadInquiryBloc>(
+                                            context),
+                                  ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => LoadServiceListBloc(
+                                    searchInquiryAPIs: SearchInquiryAPIs(),
+                                  ),
+                                ),
+                              ],
+                              child: EditInquiryForm(
+                                activeInquiry: widget.activeInquiry,
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                    ),
+                      ).then((value) {
+                        setState(() {
+                          BlocProvider.of<LoadInquiryBloc>(context)
+                              .add(LoadInquiry());
+                        });
+                      });
+                    },
+                    text: '編輯',
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CancelInquiryConfirmationDialog(
-                        title: '您確定要刪除需求嗎？',
-                        onCancel: '取消',
-                        onConfirm: '確定刪除',
+              SizedBox(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  height: SizeConfig.screenHeight * 0.06,
+                  width: SizeConfig.screenWidth / 2.7,
+                  child: BlocConsumer<CancelInquiryBloc, CancelInquiryState>(
+                    listener: (context, state) {
+                      if (state.status == AsyncLoadingStatus.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error.message),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return DPTextButton(
+                        loading: state.status == AsyncLoadingStatus.loading,
+                        disabled: state.status == AsyncLoadingStatus.loading,
+                        theme: DPTextButtonThemes.deepGrey,
+                        assetImage: "lib/screens/male/assets/deleteButton.png",
+                        onPressed: () async {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CancelInquiryConfirmationDialog(
+                                title: '您確定要刪除需求嗎？',
+                                onCancel: '取消',
+                                onConfirm: '確定刪除',
+                              );
+                            },
+                          ).then((value) {
+                            if (value) {
+                              BlocProvider.of<CancelInquiryBloc>(context).add(
+                                CancelInquiry(
+                                  inquiryUuid: widget.activeInquiry.uuid,
+                                  fcmTopic: widget.activeInquiry.fcmTopic,
+                                ),
+                              );
+                            }
+                          });
+                        },
+                        text: '删除',
                       );
                     },
-                  ).then((value) {
-                    if (value) {
-                      BlocProvider.of<CancelInquiryBloc>(context).add(
-                        CancelInquiry(widget.activeInquiry.uuid),
-                      );
-                    }
-                  });
-                },
-                child: SizedBox(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
-                    height: SizeConfig.screenHeight * 0.06,
-                    width: SizeConfig.screenWidth / 2.5,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromRGBO(255, 255, 255, 0.18),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 20, right: 12),
-                              child: Image.asset(
-                                  "lib/screens/male/assets/deleteButton.png"),
-                            ),
-                            Container(
-                              padding:
-                                  EdgeInsets.only(top: 0, left: 0, right: 20),
-                              child: Text(
-                                '删除',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -199,21 +169,22 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
     return Center(
       child: Material(
         color: Color.fromRGBO(31, 30, 56, 1),
-        child: Stack(
+        child: Column(
           children: <Widget>[
-            Container(
-              height: SizeConfig.screenHeight / 2.5,
-              width: SizeConfig.screenWidth,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("lib/screens/male/assets/pending.png"),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.only(top: SizeConfig.screenHeight * 0.05),
+                child: ColorLoader(
+                  color1: Colors.deepPurple,
+                  color2: Colors.deepPurpleAccent,
+                  color3: Color.fromRGBO(168, 106, 221, 1),
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(35, 40, 0, 40),
-              margin:
-                  EdgeInsets.fromLTRB(20, SizeConfig.screenHeight / 3, 20, 0),
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(

@@ -133,6 +133,9 @@ class _BodyState extends State<Body> {
                         }
 
                         if (state.status == AsyncLoadingStatus.error) {
+                          setState(() {
+                            _isLoading = false;
+                          });
                           print('sending sms error');
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

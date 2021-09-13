@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_start_notifier_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
@@ -63,6 +66,8 @@ void main() async {
 
     FirebaseApp app = await Firebase.initializeApp();
 
+    FirebaseMessaging.onBackgroundMessage(_messageHandler);
+
     // Pass all uncaught errors from the framework to Crashlytics.
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
@@ -107,6 +112,10 @@ void main() async {
   } catch (err) {
     developer.log('failed to initialize app: ${err.toString()}');
   }
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification?.body}');
 }
 
 class DarkPandaApp extends StatefulWidget {
@@ -201,6 +210,10 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
 
         BlocProvider(create: (context) => ServiceConfirmNotifierBloc()),
 
+        BlocProvider(create: (context) => ServiceStartNotifierBloc()),
+
+        BlocProvider(create: (context) => PaymentCompleteNotifierBloc()),
+
         BlocProvider(
           create: (context) => CurrentChatroomBloc(
             inquiryChatroomApis: InquiryChatroomApis(),
@@ -251,6 +264,10 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
             currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
             serviceConfirmNotifierBloc:
                 BlocProvider.of<ServiceConfirmNotifierBloc>(context),
+            serviceStartNotifierBloc:
+                BlocProvider.of<ServiceStartNotifierBloc>(context),
+            paymentCompleteNotifierBloc:
+                BlocProvider.of<PaymentCompleteNotifierBloc>(context),
           ),
         ),
 

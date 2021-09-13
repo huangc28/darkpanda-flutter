@@ -6,11 +6,13 @@ class ServiceDurationField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onSaved,
+    this.fontColor = Colors.black,
   }) : super(key: key);
 
   final TextEditingController controller;
   final ValueChanged<String> validator;
   final ValueChanged<String> onSaved;
+  final Color fontColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class ServiceDurationField extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
+              color: fontColor,
             ),
           ),
           SizedBox(height: 12),

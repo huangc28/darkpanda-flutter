@@ -15,6 +15,7 @@ class UserProfile {
   final List<UserImage> imageList;
   final List<UserImage> removeImageList;
   final List<UserTrait> traits;
+  final UserRate rating;
 
   const UserProfile({
     this.uuid,
@@ -31,6 +32,7 @@ class UserProfile {
     this.imageList,
     this.removeImageList,
     this.traits,
+    this.rating,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> data) {
@@ -57,6 +59,7 @@ class UserProfile {
           data['weight'] != null ? data['weight'].toDouble() : data['weight'],
       description: data['description'],
       traits: userTraits,
+      rating: UserRate.fromMap(data['rating']),
     );
   }
 
@@ -75,6 +78,7 @@ class UserProfile {
     List<UserImage> imageList,
     List<UserImage> removeImageList,
     List<UserTrait> traits,
+    UserRate rating,
   }) {
     return UserProfile(
       uuid: uuid ?? this.uuid,
@@ -91,6 +95,7 @@ class UserProfile {
       imageList: imageList ?? this.imageList,
       removeImageList: removeImageList ?? this.removeImageList,
       traits: traits ?? this.traits,
+      rating: rating ?? this.rating,
     );
   }
 
@@ -109,6 +114,7 @@ class UserProfile {
         'imageList': imageList,
         'removeImageList': removeImageList,
         'traits': traits,
+        'rating': rating,
       };
 }
 
@@ -128,5 +134,24 @@ class UserTrait {
   Map<String, dynamic> toJson() => {
         'type': type,
         'value': value,
+      };
+}
+
+class UserRate {
+  UserRate({this.score, this.numberOfServices});
+
+  final double score;
+  final int numberOfServices;
+
+  factory UserRate.fromMap(Map<String, dynamic> data) {
+    return UserRate(
+      score: data['score']?.toDouble(),
+      numberOfServices: data['number_of_services'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'score': score,
+        'number_of_services': numberOfServices,
       };
 }

@@ -47,6 +47,12 @@ class _InqiuryListState extends State<InqiuryList> {
   InquiryChatroomsBloc _inquiryChatroomsBloc;
   int isFirstCall = 0;
 
+  bool pickupIsLoading = false;
+
+  // To use for button loading equal to specific inquiry uuid,
+  // so only one button will showing loading instead of all button
+  String inquiryUuid = "";
+
   @override
   initState() {
     _refreshCompleter = Completer();
@@ -100,8 +106,18 @@ class _InqiuryListState extends State<InqiuryList> {
             _buildHeader(),
             BlocListener<PickupInquiryBloc, PickupInquiryState>(
               listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.initial ||
+                    state.status == AsyncLoadingStatus.loading) {
+                  setState(() {
+                    pickupIsLoading = true;
+                  });
+                }
                 // Show message when error occured when picking up inquiry.
                 if (state.status == AsyncLoadingStatus.error) {
+                  setState(() {
+                    pickupIsLoading = false;
+                  });
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -109,6 +125,12 @@ class _InqiuryListState extends State<InqiuryList> {
                       ),
                     ),
                   );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  setState(() {
+                    pickupIsLoading = false;
+                  });
                 }
               },
               child: Container(),
@@ -181,7 +203,7 @@ class _InqiuryListState extends State<InqiuryList> {
                       inquiryItemBuilder: (context, inquiry, ___) =>
                           InquiryGrid(
                         inquiry: inquiry,
-                        onTapChat: _handleTapChat,
+                        onTapPickup: _handleTapPickup,
                         onTapStartChat: _handleStartChat,
                         onTapClear: _handleClearInquiry,
                         onTapCheckProfile: (String userUuid) {
@@ -192,6 +214,8 @@ class _InqiuryListState extends State<InqiuryList> {
                             ),
                           );
                         },
+                        isLoading: pickupIsLoading,
+                        inquiryUuid: inquiryUuid,
                       ),
                       inquiries: state.inquiries,
                     ),
@@ -257,7 +281,8 @@ class _InqiuryListState extends State<InqiuryList> {
     );
   }
 
-  _handleTapChat(String uuid) {
+  _handleTapPickup(String uuid) {
+    inquiryUuid = uuid;
     // Emit chat now event to try to start an inquiry chat.
     BlocProvider.of<PickupInquiryBloc>(context).add(
       PickupInquiry(

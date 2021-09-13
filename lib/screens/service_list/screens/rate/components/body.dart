@@ -1,13 +1,15 @@
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../../../models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
+import '../../../models/historical_service.dart';
 
 class TypeSelection {
   String name;
@@ -20,14 +22,15 @@ class TypeSelection {
 }
 
 class Body extends StatefulWidget {
-  final Function onPressComplete;
-  final HistoricalService historicalService;
-  final GlobalKey<FormState> formKey;
   const Body({
     this.formKey,
     this.historicalService,
     this.onPressComplete,
   });
+
+  final Function onPressComplete;
+  final HistoricalService historicalService;
+  final GlobalKey<FormState> formKey;
 
   @override
   _BodyState createState() => _BodyState();
@@ -46,59 +49,66 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     if (widget.formKey != null) {
       _formKey = widget.formKey;
     }
+
     _typeSelection.add(new TypeSelection(name: '又正又辣', select: false));
     _typeSelection.add(new TypeSelection(name: '技術高超', select: false));
     _typeSelection.add(new TypeSelection(name: '交易愉快', select: false));
     _typeSelection.add(new TypeSelection(name: '好相處', select: false));
     _typeSelection.add(new TypeSelection(name: '很準時', select: false));
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Color.fromRGBO(31, 30, 56, 1),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5.0,
-                      vertical: 10.0,
+      child: UnfocusPrimary(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Color.fromRGBO(31, 30, 56, 1),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        UserAvatar(
+                          widget.historicalService.chatPartnerAvatarUrl,
+                          radius: 36,
+                        ),
+                      ],
                     ),
-                    child: Container(
-                      child: Text(
-                        widget.historicalService.chatPartnerUsername,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5.0,
+                        vertical: 10.0,
+                      ),
+                      child: Container(
+                        child: Text(
+                          widget.historicalService.chatPartnerUsername,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 15),
-            _buildRateDetail(),
-            SizedBox(height: 20),
-            _buildRateForm(),
-          ],
+              SizedBox(height: 15),
+              _buildRateDetail(),
+              SizedBox(height: 20),
+              _buildRateForm(),
+            ],
+          ),
         ),
       ),
     );
@@ -148,11 +158,11 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             _bulidRateInput(),
             if (_rateInput > 0)
               Column(
-                children: [
+                children: <Widget>[
                   SizedBox(height: 20),
                   _buildSelectionInput(),
                   SizedBox(height: 20),
@@ -169,39 +179,42 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildSendButton() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height / 4,
-            left: 20,
-            right: 20,
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(
+              top: _disableSend ? SizeConfig.screenHeight * 0.3 : 0,
+              left: 20,
+              right: 20,
+            ),
+            child: DPTextButton(
+              disabled: _disableSend,
+              onPressed: () {
+                if (!_formKey.currentState.validate()) {
+                  return;
+                }
+
+                _formKey.currentState.save();
+
+                Rating rating = new Rating(
+                  serviceUuid: widget.historicalService.serviceUuid,
+                  rating: _rateInput.toInt(),
+                  comment: _commentController.text,
+                );
+
+                BlocProvider.of<SendRateBloc>(context)
+                    .add(SendRate(rating: rating));
+              },
+              text: '送出評價',
+              theme: DPTextButtonThemes.purple,
+            ),
           ),
-          child: DPTextButton(
-            disabled: _disableSend,
-            onPressed: () {
-              if (!_formKey.currentState.validate()) {
-                return;
-              }
-
-              _formKey.currentState.save();
-
-              Rating rating = new Rating(
-                serviceUuid: widget.historicalService.serviceUuid,
-                rating: _rateInput.toInt(),
-                comment: _commentController.text,
-              );
-
-              BlocProvider.of<SendRateBloc>(context)
-                  .add(SendRate(rating: rating));
-            },
-            text: '送出評價',
-            theme: DPTextButtonThemes.purple,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -270,13 +283,17 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                                   ? false
                                   : true;
 
-                          var concatenate = StringBuffer();
                           _typeSelection.forEach((element) {
-                            if (element.select == true) {
-                              concatenate.write(element.name + ' ');
+                            if (_typeSelection[index].name == element.name) {
+                              if (element.select == true) {
+                                _commentController.text += element.name;
+                              } else {
+                                _commentController.text = _commentController
+                                    .text
+                                    .replaceAll(element.name, '');
+                              }
                             }
                           });
-                          _commentController.text = concatenate.toString();
                         });
                       },
                       child: Text(
@@ -312,7 +329,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             onSaved: (String v) {
               _commentController.text = v;
             },
-            keyboardType: TextInputType.multiline,
+            onEditingComplete: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            keyboardType: TextInputType.text,
             maxLines: 6,
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(

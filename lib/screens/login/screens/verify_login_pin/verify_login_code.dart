@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
+import 'package:darkpanda_flutter/util/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,6 +37,14 @@ class VerifyLoginCode extends StatefulWidget {
 class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   final TextEditingController _pinCodeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    NotificationService().init();
+    FirebaseMessagingService().init();
+  }
 
   Widget _buildDescBlock() {
     return Row(

@@ -72,7 +72,7 @@ class PickupInquiryBloc extends Bloc<PickupInquiryEvent, PickupInquiryState> {
         ),
       );
 
-      PickupInquiryState.loaded(
+      yield PickupInquiryState.loaded(
         state,
       );
     } on APIException catch (err) {

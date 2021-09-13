@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/models/create_inquiry_response.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
@@ -53,7 +53,15 @@ class SearchInquiryFormBloc
         );
       }
 
-      yield SearchInquiryFormState.done();
+      CreateInquiryResponse createInquiryResponse =
+          CreateInquiryResponse.fromMap(
+        json.decode(resp.body),
+      );
+
+      yield SearchInquiryFormState.done(
+        state,
+        createInquiryResponse: createInquiryResponse,
+      );
     } on APIException catch (err) {
       yield SearchInquiryFormState.error(state, err: err);
     } catch (e) {
@@ -77,7 +85,15 @@ class SearchInquiryFormBloc
         );
       }
 
-      yield SearchInquiryFormState.done();
+      CreateInquiryResponse createInquiryResponse =
+          CreateInquiryResponse.fromMap(
+        json.decode(resp.body),
+      );
+
+      yield SearchInquiryFormState.done(
+        state,
+        createInquiryResponse: createInquiryResponse,
+      );
     } on APIException catch (err) {
       yield SearchInquiryFormState.error(state, err: err);
     } catch (e) {

@@ -1,63 +1,59 @@
 import 'dart:io';
 
-import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
-import 'package:darkpanda_flutter/components/full_screen_image.dart';
-import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/models/chat_image.dart';
-import 'package:darkpanda_flutter/models/image_message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
-import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
-import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image/image.dart' as img;
+import 'package:image_picker/image_picker.dart';
 
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
+
+import 'package:darkpanda_flutter/components/camera_screen.dart';
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
+
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+
+import 'package:darkpanda_flutter/models/chat_image.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
-import 'package:darkpanda_flutter/components/loading_screen.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
-import 'package:image_picker/image_picker.dart';
+
+import 'package:darkpanda_flutter/services/user_apis.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
-import 'bloc/send_emit_service_confirm_message_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
 import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
+import 'screens/male_inquiry_detail.dart';
 
 class InquiryChatroom extends StatefulWidget {
   InquiryChatroom({
@@ -143,12 +139,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
     });
   }
 
-  Future _getCameraImage() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.getImage(
-      source: ImageSource.camera,
-      imageQuality: 20,
-    );
+  Future _getCameraImage(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
@@ -167,7 +163,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   }
 
   Future _getGalleryImage() async {
-    final pickedFile = await picker.getImage(
+    final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 20,
     );
@@ -269,69 +265,79 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                 }
                               },
                               builder: (context, state) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    FocusScopeNode currentFocus =
-                                        FocusScope.of(context);
+                                if (_doneInitChatroom) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      FocusScopeNode currentFocus =
+                                          FocusScope.of(context);
 
-                                    // Dismiss keyboard when user clicks on chat window.
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                    }
-                                  },
-                                  child: ChatroomWindow(
-                                    scrollController: scrollController,
-                                    historicalMessages:
-                                        state.historicalMessages,
-                                    currentMessages: state.currentMessages,
-                                    isSendingImage: _isSendingImage,
-                                    builder: (BuildContext context, message) {
-                                      if (message is ServiceConfirmedMessage) {
-                                        return ConfirmedServiceBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                        );
-                                      } else if (message
-                                          is UpdateInquiryMessage) {
-                                        return UpdateInquiryBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                          onTapMessage: (message) {},
-                                        );
-                                      } else if (message
-                                          is DisagreeInquiryMessage) {
-                                        return DisagreeInquiryBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                        );
-                                      } else if (message is ImageMessage) {
-                                        return ImageBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                          onEnlarge: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) {
-                                                  return FullScreenImage(
-                                                    imageUrl:
-                                                        message.imageUrls[0],
-                                                    tag: "chat_image",
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        return ChatBubble(
-                                          isMe: _sender.uuid == message.from,
-                                          message: message,
-                                        );
+                                      // Dismiss keyboard when user clicks on chat window.
+                                      if (!currentFocus.hasPrimaryFocus) {
+                                        currentFocus.unfocus();
                                       }
                                     },
-                                  ),
-                                );
+                                    child: ChatroomWindow(
+                                      scrollController: scrollController,
+                                      historicalMessages:
+                                          state.historicalMessages,
+                                      currentMessages: state.currentMessages,
+                                      isSendingImage: _isSendingImage,
+                                      builder: (BuildContext context, message) {
+                                        if (message
+                                            is ServiceConfirmedMessage) {
+                                          return ConfirmedServiceBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        } else if (message
+                                            is UpdateInquiryMessage) {
+                                          return UpdateInquiryBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                            onTapMessage: (message) {},
+                                          );
+                                        } else if (message
+                                            is DisagreeInquiryMessage) {
+                                          return DisagreeInquiryBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        } else if (message is ImageMessage) {
+                                          return ImageBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                            onEnlarge: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) {
+                                                    return FullScreenImage(
+                                                      imageUrl:
+                                                          message.imageUrls[0],
+                                                      tag: "chat_image",
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          return ChatBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Container(
+                                      height: 50,
+                                      child: LoadingIcon(),
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           ),
@@ -350,21 +356,13 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                   builder: (_) {
                                     return InquiryDetailDialog(
                                       inquiryDetail: inquiryDetail,
+                                      serviceUuid: widget.args.serviceUUID,
+                                      messages: messages,
                                     );
                                   },
                                 ).then((value) {
-                                  // Go to payment
-                                  if (value) {
-                                    BlocProvider.of<
-                                                SendEmitServiceConfirmMessageBloc>(
-                                            context)
-                                        .add(
-                                      EmitServiceConfirmMessage(
-                                          widget.args.serviceUUID),
-                                    );
-                                  }
                                   // Reject inquiry
-                                  else {
+                                  if (!value) {
                                     BlocProvider.of<DisagreeInquiryBloc>(
                                             context)
                                         .add(
@@ -373,107 +371,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                   }
                                 });
                               });
-                            },
-                            child: SizedBox.shrink(),
-                          ),
-
-                          // 2. Load my darkpanda coin balance
-                          // If enough balance will go to service payment screen
-                          // else go to topup dp screen
-                          BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                            listener: (context, state) {
-                              if (state.status == AsyncLoadingStatus.initial ||
-                                  state.status == AsyncLoadingStatus.loading) {
-                                return Row(
-                                  children: [
-                                    LoadingScreen(),
-                                  ],
-                                );
-                              }
-                              if (state.status == AsyncLoadingStatus.done) {
-                                inquiryDetail.balance = state.myDp.balance;
-
-                                // Go to Top Up screen
-                                if (messages.matchingFee > state.myDp.balance) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider(
-                                              create: (context) => LoadMyDpBloc(
-                                                apiClient: TopUpClient(),
-                                              ),
-                                            ),
-                                            BlocProvider(
-                                              create: (context) =>
-                                                  LoadDpPackageBloc(
-                                                apiClient: TopUpClient(),
-                                              ),
-                                            ),
-                                          ],
-                                          child: TopupDp(
-                                            args: inquiryDetail,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                                // Go to Payment screen
-                                else {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider(
-                                              create: (context) =>
-                                                  BuyServiceBloc(
-                                                searchInquiryAPIs:
-                                                    SearchInquiryAPIs(),
-                                              ),
-                                            ),
-                                            BlocProvider(
-                                              create: (context) =>
-                                                  CancelServiceBloc(
-                                                serviceAPIs: ServiceAPIs(),
-                                              ),
-                                            ),
-                                          ],
-                                          child: BuyService(
-                                            args: inquiryDetail,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                            child: SizedBox.shrink(),
-                          ),
-
-                          // 3. Send emit service confirm message
-                          BlocListener<SendEmitServiceConfirmMessageBloc,
-                              SendEmitServiceConfirmMessageState>(
-                            listener: (context, state) {
-                              if (state.status == AsyncLoadingStatus.initial ||
-                                  state.status == AsyncLoadingStatus.loading) {
-                                return Row(
-                                  children: [
-                                    LoadingScreen(),
-                                  ],
-                                );
-                              }
-                              if (state.status == AsyncLoadingStatus.done) {
-                                inquiryDetail.serviceUuid = state
-                                    .emitServiceConfirmMessageResponse
-                                    .serviceChannelUuid;
-                                BlocProvider.of<LoadMyDpBloc>(context).add(
-                                  LoadMyDp(),
-                                );
-                              }
                             },
                             child: SizedBox.shrink(),
                           ),
@@ -530,14 +427,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                     },
                   ),
                 ),
-                _doneInitChatroom
-                    ? _buildMessageBar()
-                    : Center(
-                        child: Container(
-                          height: 50,
-                          child: LoadingIcon(),
-                        ),
-                      ),
+                _doneInitChatroom ? _buildMessageBar() : SizedBox.shrink(),
               ],
             ),
           ),
@@ -549,9 +439,10 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   Widget _appBar() {
     return AppBar(
       leading: IconButton(
+        alignment: Alignment.centerRight,
         icon: Icon(
           Icons.arrow_back,
-          color: Color.fromRGBO(106, 109, 137, 1),
+          color: Colors.white,
         ),
         onPressed: () async {
           await showDialog(
@@ -616,6 +507,34 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           );
         },
       ),
+      actions: <Widget>[
+        _serviceDetailButton(),
+        SizedBox(width: 20),
+      ],
+    );
+  }
+
+  Widget _serviceDetailButton() {
+    return Align(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (context) => MaleInquiryDetail(
+                inquiryUuid: widget.args.inquiryUUID,
+                authUser: _sender,
+              ),
+            ),
+          );
+        },
+        child: Text(
+          '交易明細',
+          style: TextStyle(
+            color: Color.fromRGBO(255, 255, 255, 1),
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 
@@ -644,7 +563,20 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          _getCameraImage();
+          // _getCameraImage();
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                onTakePhoto: (xFile) {
+                  _getCameraImage(xFile);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          );
         },
       ),
     );

@@ -21,7 +21,7 @@ class ImageBubble extends StatelessWidget {
           alignment: Alignment.topRight,
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.80,
+              maxWidth: MediaQuery.of(context).size.width * 0.4,
             ),
             padding: EdgeInsets.all(10),
             margin: EdgeInsets.symmetric(vertical: 10),
@@ -43,8 +43,8 @@ class ImageBubble extends StatelessWidget {
         Container(
           padding: EdgeInsets.fromLTRB(0, 7, 0, 0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://onaliternote.files.wordpress.com/2016/11/wp-1480230666843.jpg"),
+            backgroundColor: Colors.transparent,
+            backgroundImage: AssetImage("assets/default_avatar.png"),
           ),
         ),
         SizedBox(
@@ -56,7 +56,7 @@ class ImageBubble extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: Container(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  maxWidth: MediaQuery.of(context).size.width * 0.4,
                 ),
                 padding: EdgeInsets.all(10),
                 margin: EdgeInsets.symmetric(vertical: 10),

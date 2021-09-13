@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
@@ -68,6 +69,10 @@ class MobileVerifyBloc extends Bloc<MobileVerifyEvent, MobileVerifyState> {
       );
 
       await SecureStore().writeGender(authUser.gender.name);
+
+      await SecureStore().writeFcmTopic(authUser.fcmTopic);
+
+      FirebaseMessagingService().fcmSubscribe(authUser.fcmTopic);
 
       authUserBloc.add(
         PutUser(

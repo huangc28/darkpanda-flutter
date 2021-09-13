@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
@@ -8,9 +9,9 @@ import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
@@ -112,50 +113,22 @@ class _ChatRequestState extends State<ChatRequest> {
 
   Widget _onTapViewProfile() {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          widget.onPush(
-            '/inquirer-profile',
-            InquirerProfileArguments(
-              uuid: userProfile.uuid,
-            ),
-          );
-        },
-        child: SizedBox(
-          child: Container(
-            padding: EdgeInsets.only(right: 15),
-            height: MediaQuery.of(context).size.height * 0.06,
-            child: Material(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromRGBO(255, 255, 255, 0.18),
-              child: Align(
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(top: 0, left: 20, right: 10),
-                      child:
-                          Image.asset("lib/screens/male/assets/editButton.png"),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(
-                        top: 0,
-                        left: 0,
-                        right: SizeConfig.screenWidth * 0.04, //20,
-                      ),
-                      child: Text(
-                        '查看檔案',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: SizeConfig.blockSizeVertical * 2, //16,
-                        ),
-                      ),
-                    ),
-                  ],
+      child: SizedBox(
+        child: Container(
+          padding: EdgeInsets.only(right: 15),
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.deepGrey,
+            assetImage: "lib/screens/male/assets/editButton.png",
+            onPressed: () {
+              widget.onPush(
+                '/inquirer-profile',
+                InquirerProfileArguments(
+                  uuid: userProfile.uuid,
                 ),
-              ),
-            ),
+              );
+            },
+            text: '查看檔案',
           ),
         ),
       ),
@@ -191,46 +164,20 @@ class _ChatRequestState extends State<ChatRequest> {
       },
       builder: (context, state) {
         return Expanded(
-          child: GestureDetector(
-            onTap: () {
-              BlocProvider.of<AgreeInquiryBloc>(context)
-                  .add(AgreeInquiry(widget.activeInquiry.uuid));
-            },
-            child: SizedBox(
-              child: Container(
-                padding: EdgeInsets.only(right: 15),
-                height: MediaQuery.of(context).size.height * 0.06,
-                child: Material(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color.fromRGBO(255, 255, 255, 0.18),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(top: 0, left: 20, right: 10),
-                          child: Image.asset(
-                              "lib/screens/male/assets/deleteButton.png"),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                            top: 0,
-                            left: 0,
-                            right: SizeConfig.screenWidth * 0.04, //20,
-                          ),
-                          child: Text(
-                            '馬上聊聊',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: SizeConfig.blockSizeVertical * 2, //16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+          child: SizedBox(
+            child: Container(
+              padding: EdgeInsets.only(right: 15),
+              height: MediaQuery.of(context).size.height * 0.06,
+              child: DPTextButton(
+                loading: state.status == AsyncLoadingStatus.loading,
+                disabled: state.status == AsyncLoadingStatus.loading,
+                theme: DPTextButtonThemes.deepGrey,
+                assetImage: "lib/screens/male/assets/deleteButton.png",
+                onPressed: () {
+                  BlocProvider.of<AgreeInquiryBloc>(context)
+                      .add(AgreeInquiry(widget.activeInquiry.uuid));
+                },
+                text: '馬上聊聊',
               ),
             ),
           ),
@@ -266,15 +213,21 @@ class _ChatRequestState extends State<ChatRequest> {
           userProfile = state.userProfile;
           return Container(
             child: Column(
-              children: [
+              children: <Widget>[
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: <Widget>[
                     Container(
-                      height: 300,
+                      height: SizeConfig.screenHeight * 0.5,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                          image: userProfile.avatarUrl == ""
+                              ? AssetImage('assets/default_avatar.png')
+                              : NetworkImage(userProfile.avatarUrl),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ],
@@ -310,11 +263,17 @@ class _ChatRequestState extends State<ChatRequest> {
                                       color: Colors.amber,
                                       size: 18,
                                     ),
-                                    child: ReviewStar(value: 3),
+                                    child: ReviewStar(
+                                      value: userProfile.rating.score != null
+                                          ? userProfile.rating.score.toInt()
+                                          : 0,
+                                    ),
                                   ),
                                   SizedBox(width: 6),
                                   Text(
-                                    '3/5',
+                                    userProfile.rating.score != null
+                                        ? '${userProfile.rating.score.floor()}/5'
+                                        : '0/5',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],

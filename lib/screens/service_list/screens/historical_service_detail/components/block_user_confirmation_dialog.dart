@@ -24,25 +24,31 @@ class BlockUserConfirmationDialog extends StatelessWidget {
           ),
         ),
         actions: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: DPTextButton(
-              theme: DPTextButtonThemes.grey,
-              onPressed: () async {
-                Navigator.pop(context, false);
-              },
-              text: '取消',
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: DPTextButton(
-              theme: DPTextButtonThemes.purple,
-              onPressed: () async {
-                Navigator.pop(context, true);
-              },
-              text: '確定',
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: DPTextButton(
+                  theme: DPTextButtonThemes.grey,
+                  onPressed: () async {
+                    Navigator.pop(context, false);
+                  },
+                  text: '取消',
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: DPTextButton(
+                  theme: DPTextButtonThemes.purple,
+                  onPressed: () async {
+                    Navigator.pop(context, true);
+                  },
+                  text: '確定',
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
@@ -36,7 +37,10 @@ class ServiceChatroomGrid extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   flex: 1,
-                  child: UserAvatar(chatroom.chatPartnerAvatarUrl),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: UserAvatar(chatroom.chatPartnerAvatarUrl),
+                  ),
                 ),
                 Expanded(
                   flex: 3,
@@ -54,8 +58,9 @@ class ServiceChatroomGrid extends StatelessWidget {
     DateTime today = DateTime.now();
     today = today.add(Duration(hours: 10));
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
+          // flex: 3,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 5.0,
@@ -64,7 +69,7 @@ class ServiceChatroomGrid extends StatelessWidget {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Text(
                     chatroom.chatPartnerUsername,
                     style: TextStyle(
@@ -87,6 +92,7 @@ class ServiceChatroomGrid extends StatelessWidget {
           ),
         ),
         Expanded(
+          // flex: 4,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -95,9 +101,42 @@ class ServiceChatroomGrid extends StatelessWidget {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                children: <Widget>[
+                  chatroom.status == ServiceStatus.unpaid.name
+                      ? Text(
+                          '未付款',
+                          style: TextStyle(
+                            color: Color.fromRGBO(255, 0, 0, 1),
+                          ),
+                        )
+                      : chatroom.status == ServiceStatus.to_be_fulfilled.name
+                          ? Text(
+                              '已付款',
+                              style: TextStyle(
+                                color: Colors.green,
+                              ),
+                            )
+                          : chatroom.status == ServiceStatus.fulfilling.name
+                              ? Text(
+                                  '已開始',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : chatroom.status ==
+                                      ServiceStatus.payment_failed.name
+                                  ? Text(
+                                      '付款失敗',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(255, 0, 0, 1),
+                                      ),
+                                    )
+                                  : Container(),
                   Text(
-                    DateTimeUtil.timeAgoSinceDate(chatroom.appointmentTime),
+                    chatroom.status == ServiceStatus.fulfilling.name
+                        ? ''
+                        : DateTimeUtil.timeAgoSinceDate(
+                            chatroom.appointmentTime),
                     style: TextStyle(
                       color: Color.fromRGBO(106, 109, 137, 1),
                     ),

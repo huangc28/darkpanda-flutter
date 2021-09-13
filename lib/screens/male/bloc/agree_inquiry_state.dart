@@ -42,5 +42,6 @@ class AgreeInquiryState<E extends AppBaseException> extends Equatable {
   List<Object> get props => [
         error,
         status,
+        agreeInquiry,
       ];
 }

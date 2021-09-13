@@ -279,6 +279,12 @@ class CurrentChatroomBloc
       msg = DisagreeInquiryMessage.fromMap(rawMsg);
     } else if (isQuitChatroomMsg(rawMsg['type'])) {
       msg = QuitChatroomMessage.fromMap(rawMsg);
+
+      // **
+      // Have to delete chatroom message as well
+      // inquiryChatroomsBloc.add(
+      //   LeaveMaleChatroom(channelUUID: channelUUID),
+      // );
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else if (isImagesMsg(rawMsg['type'])) {

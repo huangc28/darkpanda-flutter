@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/main.dart';
 import 'package:darkpanda_flutter/components/navigate_to_login.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
+import 'package:darkpanda_flutter/util/notification_service.dart';
 
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
@@ -39,9 +41,12 @@ class _FemaleAppState extends State<FemaleApp> {
 
   @override
   void initState() {
+    super.initState();
+
     _currentTab = widget.selectedTab;
 
-    super.initState();
+    NotificationService().init();
+    FirebaseMessagingService().init();
   }
 
   @override

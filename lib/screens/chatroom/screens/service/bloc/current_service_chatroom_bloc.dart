@@ -11,6 +11,8 @@ import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/models/start_service_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_start_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
 
 import 'package:equatable/equatable.dart';
@@ -44,11 +46,15 @@ class CurrentServiceChatroomBloc
     this.loadIncomingServiceBloc,
     this.currentServiceBloc,
     this.serviceConfirmNotifierBloc,
+    this.serviceStartNotifierBloc,
+    this.paymentCompleteNotifierBloc,
   })  : assert(inquiryChatroomApis != null),
         assert(userApis != null),
         assert(loadIncomingServiceBloc != null),
         assert(currentServiceBloc != null),
         assert(serviceConfirmNotifierBloc != null),
+        assert(serviceStartNotifierBloc != null),
+        assert(paymentCompleteNotifierBloc != null),
         super(CurrentServiceChatroomState.init());
 
   final InquiryChatroomApis inquiryChatroomApis;
@@ -57,6 +63,8 @@ class CurrentServiceChatroomBloc
   final LoadIncomingServiceBloc loadIncomingServiceBloc;
   final CurrentServiceBloc currentServiceBloc;
   final ServiceConfirmNotifierBloc serviceConfirmNotifierBloc;
+  final ServiceStartNotifierBloc serviceStartNotifierBloc;
+  final PaymentCompleteNotifierBloc paymentCompleteNotifierBloc;
 
   @override
   Stream<CurrentServiceChatroomState> mapEventToState(
@@ -292,8 +300,12 @@ class CurrentServiceChatroomBloc
       msg = QuitChatroomMessage.fromMap(rawMsg);
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
+
+      paymentCompleteNotifierBloc.add(NotifyPaymentCompleted(msg));
     } else if (isStartServiceMsg(rawMsg['type'])) {
       msg = StartServiceMessage.fromMap(rawMsg);
+
+      serviceStartNotifierBloc.add(NotifyServiceStarted(msg));
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
     } else if (isCancelServiceMsg(rawMsg['type'])) {

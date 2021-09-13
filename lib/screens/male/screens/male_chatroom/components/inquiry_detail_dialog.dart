@@ -1,15 +1,47 @@
-import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class InquiryDetailDialog extends StatelessWidget {
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
+
+class InquiryDetailDialog extends StatefulWidget {
   const InquiryDetailDialog({
     Key key,
     this.inquiryDetail,
+    this.serviceUuid,
+    this.messages,
   }) : super(key: key);
 
   final InquiryDetail inquiryDetail;
+  final String serviceUuid;
+  final UpdateInquiryMessage messages;
+
+  @override
+  _InquiryDetailDialogState createState() => _InquiryDetailDialogState();
+}
+
+class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
+  InquiryDetail inquiryDetail;
+
+  @override
+  void initState() {
+    super.initState();
+
+    inquiryDetail = widget.inquiryDetail;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +69,90 @@ class InquiryDetailDialog extends StatelessWidget {
               children: <Widget>[
                 _rejectButton(context),
                 SizedBox(width: 16),
-                _payButton(context),
+
+                // Load my darkpanda coin balance
+                // If enough balance will go to service payment screen
+                // else go to topup dp screen
+                BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                  listener: (context, state) {
+                    if (state.status == AsyncLoadingStatus.error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.error.message),
+                        ),
+                      );
+                    }
+
+                    if (state.status == AsyncLoadingStatus.done) {
+                      // Dismiss inquiry_detail_dialog
+                      Navigator.pop(context, true);
+
+                      inquiryDetail.balance = state.myDp.balance;
+
+                      // Go to Top Up screen
+                      if (widget.messages.matchingFee > state.myDp.balance) {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                    create: (context) => LoadMyDpBloc(
+                                      apiClient: TopUpClient(),
+                                    ),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => LoadDpPackageBloc(
+                                      apiClient: TopUpClient(),
+                                    ),
+                                  ),
+                                ],
+                                child: TopupDp(
+                                  args: inquiryDetail,
+                                ),
+                              );
+                            },
+                          ),
+                          ModalRoute.withName('/'),
+                        );
+                      }
+                      // Go to Payment screen
+                      else {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                    create: (context) => BuyServiceBloc(
+                                      searchInquiryAPIs: SearchInquiryAPIs(),
+                                    ),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => CancelServiceBloc(
+                                      serviceAPIs: ServiceAPIs(),
+                                    ),
+                                  ),
+                                ],
+                                child: BuyService(
+                                  args: inquiryDetail,
+                                ),
+                              );
+                            },
+                          ),
+                          ModalRoute.withName('/'),
+                        );
+                      }
+                    }
+                  },
+                  child: _payButton(context),
+                ),
               ],
             ),
           ),
@@ -47,15 +162,42 @@ class InquiryDetailDialog extends StatelessWidget {
   }
 
   Widget _payButton(context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.3,
-      child: DPTextButton(
-        theme: DPTextButtonThemes.purple,
-        onPressed: () async {
-          Navigator.pop(context, true);
-        },
-        text: '去支付',
-      ),
+    return BlocConsumer<SendEmitServiceConfirmMessageBloc,
+        SendEmitServiceConfirmMessageState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          inquiryDetail.serviceUuid =
+              state.emitServiceConfirmMessageResponse.serviceChannelUuid;
+          BlocProvider.of<LoadMyDpBloc>(context).add(
+            LoadMyDp(),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.purple,
+            loading: state.status == AsyncLoadingStatus.loading,
+            disabled: state.status == AsyncLoadingStatus.loading,
+            onPressed: () async {
+              // Navigator.pop(context, true);
+              BlocProvider.of<SendEmitServiceConfirmMessageBloc>(context).add(
+                EmitServiceConfirmMessage(widget.serviceUuid),
+              );
+            },
+            text: '去支付',
+          ),
+        );
+      },
     );
   }
 
@@ -82,8 +224,11 @@ class InquiryDetailDialog extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
+            _buildEachText('pie.png', '價格',
+                '${widget.inquiryDetail.updateInquiryMessage.price}'),
+            SizedBox(height: 8),
             _buildEachText('pie.png', '小計',
-                '${inquiryDetail.updateInquiryMessage.matchingFee}DP'),
+                '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
           ],
         ),
       ),
@@ -91,8 +236,9 @@ class InquiryDetailDialog extends StatelessWidget {
   }
 
   Widget _inquiryDetail() {
-    final durationSplit =
-        inquiryDetail.updateInquiryMessage.duration.toString().split(':');
+    final durationSplit = widget.inquiryDetail.updateInquiryMessage.duration
+        .toString()
+        .split(':');
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -105,24 +251,24 @@ class InquiryDetailDialog extends StatelessWidget {
             _buildEachText(
                 'place.png',
                 '地址',
-                inquiryDetail.updateInquiryMessage.address != null
-                    ? inquiryDetail.updateInquiryMessage.address
+                widget.inquiryDetail.updateInquiryMessage.address != null
+                    ? widget.inquiryDetail.updateInquiryMessage.address
                     : ''),
             SizedBox(height: 8),
             _buildEachText(
                 'clock.png',
                 '時間',
-                inquiryDetail.updateInquiryMessage.serviceTime != null
-                    ? '${DateFormat("MM/dd/yy, hh: mm a").format(inquiryDetail.updateInquiryMessage.serviceTime)}'
+                widget.inquiryDetail.updateInquiryMessage.serviceTime != null
+                    ? '${DateFormat("MM/dd/yy, hh: mm a").format(widget.inquiryDetail.updateInquiryMessage.serviceTime)}'
                     : ''),
             SizedBox(height: 8),
             if (durationSplit.length > 0)
               _buildEachText(
                 'countDown.png',
                 '時長',
-                inquiryDetail.updateInquiryMessage.duration >
+                widget.inquiryDetail.updateInquiryMessage.duration >
                             Duration(hours: 0, minutes: 1) &&
-                        inquiryDetail.updateInquiryMessage.duration <=
+                        widget.inquiryDetail.updateInquiryMessage.duration <=
                             Duration(hours: 0, minutes: 59)
                     ? '${durationSplit[1]} 分'
                     : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
@@ -135,7 +281,7 @@ class InquiryDetailDialog extends StatelessWidget {
 
   Widget _titleText() {
     return Text(
-      inquiryDetail.username + '已向你發送請求',
+      widget.inquiryDetail.username + '已向你發送請求',
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
@@ -175,7 +321,7 @@ class InquiryDetailDialog extends StatelessWidget {
               value,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: valueSize != null ? valueSize : 14,
+                fontSize: valueSize != null ? valueSize : 15,
               ),
             ),
           ),

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:equatable/equatable.dart';
@@ -33,9 +32,6 @@ class LoadRateBloc extends Bloc<LoadRateEvent, LoadRateState> {
     try {
       yield LoadRateState.loading();
 
-      // final jwt = await SecureStore().fsc.read(key: 'jwt');
-
-      // rateApiClient.jwtToken = jwt;
       final resp = await rateApiClient.fetchUserRate(event.uuid);
 
       if (resp.statusCode != HttpStatus.ok) {

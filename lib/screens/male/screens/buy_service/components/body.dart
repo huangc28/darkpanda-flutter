@@ -47,9 +47,7 @@ class _BodyState extends State<Body> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: UserAvatar(
-                          'https://www.w3schools.com/howto/img_avatar.png',
-                        ),
+                        child: UserAvatar(""),
                       ),
                       Expanded(
                         flex: 3,

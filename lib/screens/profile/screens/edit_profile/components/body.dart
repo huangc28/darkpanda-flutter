@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:image/image.dart' as img;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,10 +23,12 @@ class Body extends StatefulWidget {
     Key key,
     this.args,
     this.imageList,
+    this.isLoading,
   }) : super(key: key);
 
   final UserProfile args;
   final List<UserImage> imageList;
+  final bool isLoading;
 
   @override
   _BodyState createState() => _BodyState();
@@ -67,6 +72,93 @@ class _BodyState extends State<Body> {
     _descriptionTextController.clear();
 
     super.dispose();
+  }
+
+  void _showPicker() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
+                    onTap: () {
+                      getGalleryImage();
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    // getCameraImage();
+                    Navigator.of(context).pop();
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          onTakePhoto: (xFile) {
+                            getCameraImage(xFile);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPickerAvatar() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_library),
+                    title: new Text('Photo Library'),
+                    onTap: () {
+                      getGalleryImageAvatar();
+                      Navigator.of(context).pop();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text('Camera'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          onTakePhoto: (xFile) {
+                            getCameraImageAvatar(xFile);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -137,31 +229,42 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Future getCameraImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+  Future getCameraImage(XFile image) async {
+    try {
+      final img.Image capturedImage =
+          img.decodeImage(await File(image.path).readAsBytes());
+      final img.Image orientedImage = img.bakeOrientation(capturedImage);
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        UserImage demoImage = UserImage(
-          url: null,
-          fileName: _image,
-        );
+      await File(image.path).writeAsBytes(img.encodeJpg(orientedImage));
 
-        if (images.length > 0) {
-          images.removeAt(images.length - 1);
+      setState(() {
+        if (image != null) {
+          _image = File(image.path);
+          UserImage demoImage = UserImage(
+            url: null,
+            fileName: _image,
+          );
+
+          if (images.length > 0) {
+            images.removeAt(images.length - 1);
+          }
+
+          images.add(demoImage);
+          images.add(userImageAdd);
+        } else {
+          print('No image selected.');
         }
-
-        images.add(demoImage);
-        images.add(userImageAdd);
-      } else {
-        print('No image selected.');
-      }
-    });
+      });
+    } catch (error) {
+      print('error taking picture ${error.toString()}');
+    }
   }
 
   Future getGalleryImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
@@ -184,7 +287,10 @@ class _BodyState extends State<Body> {
   }
 
   Future getGalleryImageAvatar() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
 
     setState(() {
       if (pickedFile != null) {
@@ -195,8 +301,12 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future getCameraImageAvatar() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+  Future getCameraImageAvatar(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
@@ -212,13 +322,13 @@ class _BodyState extends State<Body> {
       alignment: Alignment.center,
       child: CircleAvatar(
         radius: 50,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.transparent,
         backgroundImage: _avatarImageFile != null
             ? FileImage(_avatarImageFile)
             : widget.args.avatarUrl != ""
                 ? NetworkImage(widget.args.avatarUrl)
                 : _avatarImageFile == null
-                    ? AssetImage('assets/logo.png')
+                    ? AssetImage('assets/default_avatar.png')
                     : FileImage(_avatarImageFile),
         child: Align(
           alignment: Alignment.topRight,
@@ -227,7 +337,7 @@ class _BodyState extends State<Body> {
             backgroundColor: Colors.grey[400],
             child: IconButton(
               onPressed: () {
-                print('pet edit');
+                print('edit');
                 _showPickerAvatar();
               },
               icon: Icon(
@@ -449,6 +559,8 @@ class _BodyState extends State<Body> {
           Image.file(
             images[index].fileName,
             height: 150,
+            width: 115,
+            fit: BoxFit.fill,
           ),
           Positioned(
             top: 5,
@@ -485,8 +597,9 @@ class _BodyState extends State<Body> {
         children: <Widget>[
           Image.network(
             widget.imageList[index].url,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             height: 150,
+            width: 115,
           ),
           Positioned(
             top: 5,
@@ -524,6 +637,8 @@ class _BodyState extends State<Body> {
           child: SizedBox(
             height: 44,
             child: DPTextButton(
+              disabled: widget.isLoading,
+              loading: widget.isLoading,
               theme: DPTextButtonThemes.purple,
               onPressed: () {
                 BlocProvider.of<UpdateProfileBloc>(context).add(
@@ -570,68 +685,6 @@ class _BodyState extends State<Body> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.photo_library),
-                    title: new Text('Photo Library'),
-                    onTap: () {
-                      getGalleryImage();
-                      Navigator.of(context).pop();
-                    }),
-                new ListTile(
-                  leading: new Icon(Icons.photo_camera),
-                  title: new Text('Camera'),
-                  onTap: () {
-                    getCameraImage();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showPickerAvatar() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SafeArea(
-          child: Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.photo_library),
-                    title: new Text('Photo Library'),
-                    onTap: () {
-                      getGalleryImageAvatar();
-                      Navigator.of(context).pop();
-                    }),
-                new ListTile(
-                  leading: new Icon(Icons.photo_camera),
-                  title: new Text('Camera'),
-                  onTap: () {
-                    getCameraImageAvatar();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

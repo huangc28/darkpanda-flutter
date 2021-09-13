@@ -12,6 +12,9 @@ class NavitgateToLogin extends StatelessWidget {
 
     // Remove gender.
     await SecureStore().delGender();
+
+    // Remove fcm topic
+    await SecureStore().delFcmTopic();
   }
 
   @override

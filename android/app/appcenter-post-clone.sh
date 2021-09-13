@@ -14,6 +14,10 @@ git clone -b stable https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
 
 flutter channel stable
+
+# accepting all licenses
+yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
 flutter doctor
 
 echo "Installed flutter to `pwd`/flutter"

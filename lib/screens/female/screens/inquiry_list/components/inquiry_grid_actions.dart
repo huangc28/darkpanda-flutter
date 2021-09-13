@@ -3,18 +3,22 @@ part of 'inquiry_grid.dart';
 // @Issue: https://stackoverflow.com/questions/58812778/a-borderradius-can-only-be-given-for-uniform-borders
 class InquiryGridActions extends StatelessWidget {
   const InquiryGridActions({
-    @required this.onTapChat,
+    @required this.onTapPickup,
     @required this.inquiry,
     @required this.onTapClear,
     @required this.onTapCheckProfile,
     @required this.onTapStartChat,
+    this.isLoading = false,
+    this.inquiryUuid = "",
   });
 
-  final ValueChanged<String> onTapChat;
+  final ValueChanged<String> onTapPickup;
   final ValueChanged<String> onTapClear;
   final ValueChanged<String> onTapCheckProfile;
   final ValueChanged<Inquiry> onTapStartChat;
   final Inquiry inquiry;
+  final bool isLoading;
+  final String inquiryUuid;
 
   Widget _buildChatButton() {
     String btnText = ' ';
@@ -25,7 +29,7 @@ class InquiryGridActions extends StatelessWidget {
     if (inquiry.inquiryStatus == InquiryStatus.inquiring) {
       btnText = '立即洽談';
       btnHandler = () {
-        onTapChat(inquiry.uuid);
+        onTapPickup(inquiry.uuid);
       };
     }
 
@@ -44,6 +48,8 @@ class InquiryGridActions extends StatelessWidget {
       child: SizedBox(
         height: 44,
         child: DPTextButton(
+          disabled: inquiryUuid == inquiry.uuid && isLoading,
+          loading: inquiryUuid == inquiry.uuid && isLoading,
           theme: theme,
           onPressed: btnHandler,
           text: btnText,
@@ -138,7 +144,7 @@ class InquiryGridActions extends StatelessWidget {
           height: 44,
           width: 77,
           child: DPTextButton(
-            theme: DPTextButtonThemes.grey,
+            theme: DPTextButtonThemes.purple,
             text: '開始洽談',
             onPressed: () {
               onTapStartChat(inquiry);

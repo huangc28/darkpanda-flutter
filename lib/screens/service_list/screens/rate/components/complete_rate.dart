@@ -1,14 +1,18 @@
-import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 
 class CompleteRate extends StatefulWidget {
   const CompleteRate({
     Key key,
+    this.historicalService,
   }) : super(key: key);
+
+  final HistoricalService historicalService;
 
   @override
   _CompleteRateState createState() => _CompleteRateState();
@@ -31,8 +35,7 @@ class _CompleteRateState extends State<CompleteRate>
           children: <Widget>[
             SizedBox(height: 100),
             Center(
-              child:
-                  UserAvatar('https://www.w3schools.com/howto/img_avatar.png'),
+              child: UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
             ),
             SizedBox(height: 30),
             Text(

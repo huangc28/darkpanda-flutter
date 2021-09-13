@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +23,7 @@ class _InquiryFormState extends State<InquiryForm> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("編輯需求"),
+        title: Text('編輯需求 ~'),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(
@@ -42,6 +43,12 @@ class _InquiryFormState extends State<InquiryForm> {
               ),
             );
           } else if (state.status == AsyncLoadingStatus.done) {
+            if (state.createInquiryResponse.fcmTopic != null) {
+              FirebaseMessagingService()
+                  .fcmSubscribe(state.createInquiryResponse.fcmTopic);
+              print('FCM topic: ' + state.createInquiryResponse.fcmTopic);
+            }
+
             Navigator.of(context).pop(null);
           }
         },

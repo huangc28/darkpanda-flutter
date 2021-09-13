@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
@@ -72,9 +74,14 @@ import 'package:image_picker/image_picker.dart';
 import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
+import 'bloc/payment_complete_notifier_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
+import 'bloc/service_start_notifier_bloc.dart';
+import 'components/female_unpaid_info.dart';
+import 'components/payment_complete_banner.dart';
 import 'components/send_message_bar.dart';
+import 'components/service_start_banner.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
 import '../../components/chat_bubble.dart';
 import '../../components/confirmed_service_bubble.dart';
@@ -84,7 +91,7 @@ import 'services/service_apis.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
-part 'components/unpaid_info.dart';
+part 'components/male_unpaid_info.dart';
 
 class ServiceChatroom extends StatefulWidget {
   const ServiceChatroom({
@@ -148,6 +155,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+    _inquiryDetail.avatarUrl = _sender.avatarUrl;
 
     BlocProvider.of<CurrentServiceChatroomBloc>(context).add(
       InitCurrentServiceChatroom(
@@ -191,12 +199,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     super.deactivate();
   }
 
-  Future _getCameraImage() async {
-    await Future.delayed(Duration(milliseconds: 500)); // To avoid app crash
-    final pickedFile = await picker.getImage(
-      source: ImageSource.camera,
-      imageQuality: 20,
-    );
+  Future _getCameraImage(XFile pickedFile) async {
+    final img.Image capturedImage =
+        img.decodeImage(await File(pickedFile.path).readAsBytes());
+    final img.Image orientedImage = img.bakeOrientation(capturedImage);
+
+    await File(pickedFile.path).writeAsBytes(img.encodeJpg(orientedImage));
 
     setState(() {
       if (pickedFile != null) {
@@ -215,7 +223,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   }
 
   Future _getGalleryImage() async {
-    final pickedFile = await picker.getImage(
+    final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 20,
     );
@@ -358,94 +366,127 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                       ],
                       child: SizedBox.shrink(),
                     ),
-                    if (_sender.gender == Gender.male)
-                      BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                        listener: (context, state) {
-                          if (state.status == AsyncLoadingStatus.error) {
-                            developer.log(
-                              'failed to fetch dp balance',
-                              error: state.error,
-                            );
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(state.error.message),
-                              ),
-                            );
-                          }
+                    // Service started banner
+                    BlocListener<ServiceStartNotifierBloc,
+                        ServiceStartNotifierState>(
+                      listener: (context, state) {},
+                      child: _serviceDetails.serviceStatus ==
+                              ServiceStatus.fulfilling.name
+                          ? ServiceStartBanner(
+                              inquirerProfile: _inquirerProfile,
+                              serviceDetails: _serviceDetails,
+                            )
+                          : SizedBox.shrink(),
+                    ),
 
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _balance = state.myDp.balance;
-                              _inquiryDetail.balance = _balance;
-                            });
-                          }
-                        },
-                        child: _servicePaid
-                            ? SizedBox.shrink()
-                            : UnpaidInfo(
-                                inquirerProfile: _inquirerProfile,
-                                serviceDetails: _serviceDetails,
-                                onGoToPayment: () {
-                                  if (_serviceDetails.matchingFee > _balance) {
-                                    print("Go to Top up dp");
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return MultiBlocProvider(
-                                            providers: [
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    LoadMyDpBloc(
-                                                  apiClient: TopUpClient(),
+                    // Payment completed banner
+                    BlocListener<PaymentCompleteNotifierBloc,
+                        PaymentCompleteNotifierState>(
+                      listener: (context, state) {},
+                      child: _serviceDetails.serviceStatus ==
+                              ServiceStatus.to_be_fulfilled.name
+                          ? PaymentCompleteBanner(
+                              inquirerProfile: _inquirerProfile,
+                              serviceDetails: _serviceDetails,
+                            )
+                          : SizedBox.shrink(),
+                    ),
+
+                    BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                      listener: (context, state) {
+                        if (state.status == AsyncLoadingStatus.error) {
+                          developer.log(
+                            'failed to fetch dp balance',
+                            error: state.error,
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error.message),
+                            ),
+                          );
+                        }
+
+                        if (state.status == AsyncLoadingStatus.done) {
+                          setState(() {
+                            _balance = state.myDp.balance;
+                            _inquiryDetail.balance = _balance;
+                          });
+                        }
+                      },
+                      child: _servicePaid
+                          ? SizedBox.shrink()
+                          : _sender.gender == Gender.male
+                              ? MaleUnpaidInfo(
+                                  inquirerProfile: _inquirerProfile,
+                                  serviceDetails: _serviceDetails,
+                                  onGoToPayment: () {
+                                    if (_serviceDetails.matchingFee >
+                                        _balance) {
+                                      print("Go to Top up dp");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      LoadMyDpBloc(
+                                                    apiClient: TopUpClient(),
+                                                  ),
                                                 ),
-                                              ),
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    LoadDpPackageBloc(
-                                                  apiClient: TopUpClient(),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      LoadDpPackageBloc(
+                                                    apiClient: TopUpClient(),
+                                                  ),
                                                 ),
+                                              ],
+                                              child: TopupDp(
+                                                args: _inquiryDetail,
                                               ),
-                                            ],
-                                            child: TopupDp(
-                                              args: _inquiryDetail,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  } else {
-                                    print("Go to Payment");
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return MultiBlocProvider(
-                                            providers: [
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    BuyServiceBloc(
-                                                  searchInquiryAPIs:
-                                                      SearchInquiryAPIs(),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      print("Go to Payment");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      BuyServiceBloc(
+                                                    searchInquiryAPIs:
+                                                        SearchInquiryAPIs(),
+                                                  ),
                                                 ),
-                                              ),
-                                              BlocProvider(
-                                                create: (context) =>
-                                                    CancelServiceBloc(
-                                                  serviceAPIs: ServiceAPIs(),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      CancelServiceBloc(
+                                                    serviceAPIs: ServiceAPIs(),
+                                                  ),
                                                 ),
+                                              ],
+                                              child: BuyService(
+                                                args: _inquiryDetail,
                                               ),
-                                            ],
-                                            child: BuyService(
-                                              args: _inquiryDetail,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                      ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              : FemaleUnpaidInfo(
+                                  inquirerProfile: _inquirerProfile,
+                                  serviceDetails: _serviceDetails,
+                                  servicePaid: _servicePaid,
+                                ),
+                    ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
@@ -490,86 +531,105 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   }
                                 },
                                 builder: (context, state) {
-                                  return UnfocusPrimary(
-                                    child: ChatroomWindow(
-                                      scrollController: scrollController,
-                                      historicalMessages:
-                                          state.historicalMessages,
-                                      currentMessages: state.currentMessages,
-                                      isSendingImage: _isSendingImage,
-                                      builder: (BuildContext context, message) {
-                                        // Render different chat bubble based on message type.
-                                        if (message
-                                            is ServiceConfirmedMessage) {
-                                          return ConfirmedServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is UpdateInquiryMessage) {
-                                          return UpdateInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onTapMessage: (message) {},
-                                          );
-                                        } else if (message
-                                            is DisagreeInquiryMessage) {
-                                          return DisagreeInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is QuitChatroomMessage) {
-                                          return QuitChatroomBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is PaymentCompletedMessage) {
-                                          return PaymentCompletedBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is StartServiceMessage) {
-                                          return StartServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is CancelServiceMessage) {
-                                          return CancelServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message is ImageMessage) {
-                                          return ImageBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onEnlarge: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) {
-                                                    return FullScreenImage(
-                                                      imageUrl:
-                                                          message.imageUrls[0],
-                                                      tag: "chat_image",
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          return ChatBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  );
+                                  if (_doneInitChatroom) {
+                                    return UnfocusPrimary(
+                                      child: ChatroomWindow(
+                                        scrollController: scrollController,
+                                        historicalMessages:
+                                            state.historicalMessages,
+                                        currentMessages: state.currentMessages,
+                                        isSendingImage: _isSendingImage,
+                                        builder:
+                                            (BuildContext context, message) {
+                                          // Render different chat bubble based on message type.
+                                          if (message
+                                              is ServiceConfirmedMessage) {
+                                            return ConfirmedServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is UpdateInquiryMessage) {
+                                            return UpdateInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onTapMessage: (message) {},
+                                            );
+                                          } else if (message
+                                              is DisagreeInquiryMessage) {
+                                            return DisagreeInquiryBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is QuitChatroomMessage) {
+                                            return QuitChatroomBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is PaymentCompletedMessage) {
+                                            return PaymentCompletedBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is StartServiceMessage) {
+                                            return StartServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message
+                                              is CancelServiceMessage) {
+                                            return CancelServiceBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          } else if (message is ImageMessage) {
+                                            return ImageBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                              onEnlarge: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) {
+                                                      return FullScreenImage(
+                                                        imageUrl: message
+                                                            .imageUrls[0],
+                                                        tag: "chat_image",
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            return ChatBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: Container(
+                                        height: 50,
+                                        child: LoadingIcon(),
+                                      ),
+                                    );
+                                  }
                                 },
                               ),
                             ],
@@ -577,14 +637,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                         },
                       ),
                     ),
-                    _doneInitChatroom
-                        ? _buildMessageBar()
-                        : Center(
-                            child: Container(
-                              height: 50,
-                              child: LoadingIcon(),
-                            ),
-                          ),
+                    _doneInitChatroom ? _buildMessageBar() : SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -599,7 +652,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     return Align(
       child: GestureDetector(
         onTap: () {
-          print('交易明細');
+          print('服務內容');
           HistoricalService historicalService = HistoricalService(
             serviceUuid: widget.args.serviceUUID,
             chatPartnerUsername: _inquiryDetail.username,
@@ -632,7 +685,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           ));
         },
         child: Text(
-          '交易明細',
+          '服務內容',
           style: TextStyle(
             color: Color.fromRGBO(255, 255, 255, 1),
             fontSize: 16,
@@ -668,6 +721,13 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                 args: QrscannerScreenArguments(
                   serviceUuid: widget.args.serviceUUID,
                 ),
+                onScanDoneBack: () {
+                  Navigator.pop(context);
+
+                  BlocProvider.of<LoadServiceDetailBloc>(context).add(
+                    LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+                  );
+                },
               ),
             ),
           ));
@@ -702,7 +762,20 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          _getCameraImage();
+          // _getCameraImage();
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).push(
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                onTakePhoto: (xFile) {
+                  _getCameraImage(xFile);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          );
         },
       ),
     );
@@ -711,9 +784,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   Widget _appBar() {
     return AppBar(
       leading: IconButton(
+        alignment: Alignment.centerRight,
         icon: Icon(
           Icons.arrow_back,
-          color: Color.fromRGBO(106, 109, 137, 1),
+          color: Colors.white,
         ),
         onPressed: () {
           // If is female, use pop

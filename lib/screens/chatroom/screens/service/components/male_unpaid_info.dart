@@ -1,7 +1,7 @@
 part of '../service_chatroom.dart';
 
-class UnpaidInfo extends StatelessWidget {
-  const UnpaidInfo({
+class MaleUnpaidInfo extends StatelessWidget {
+  const MaleUnpaidInfo({
     Key key,
     this.inquirerProfile,
     this.serviceDetails,
@@ -85,6 +85,13 @@ class UnpaidInfo extends StatelessWidget {
   }
 
   Widget _tradeInfo() {
+    final dateNow = DateTime.now();
+    final bufferMinute = 30;
+    final bufferTime = serviceDetails.createdAt.toLocal().add(
+          Duration(minutes: bufferMinute),
+        );
+    final differenceBufferTime = bufferTime.difference(dateNow);
+
     return Container(
       width: double.infinity,
       margin: EdgeInsets.fromLTRB(15, 5, 15, 10),
@@ -127,7 +134,7 @@ class UnpaidInfo extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '您還有 9 分鐘可以付款',
+                      '您還有 ${differenceBufferTime.inMinutes} 分鐘可以付款',
                       style: TextStyle(
                         fontSize: 13,
                         color: Color.fromRGBO(106, 109, 137, 1),

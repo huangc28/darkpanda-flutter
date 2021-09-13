@@ -28,17 +28,15 @@ class PickupInquiryState<E extends AppBaseException> extends Equatable {
         );
 
   PickupInquiryState.loaded(
-    PickupInquiryState state, {
-    Map<String, StreamSubscription> inquiryStreamMap,
-  }) : this._(
+    PickupInquiryState state,
+  ) : this._(
           status: AsyncLoadingStatus.done,
           error: state.error,
         );
 
   PickupInquiryState.putInquiryStreamMap(
-    PickupInquiryState state, {
-    Map<String, StreamSubscription> inquiryStreamMap,
-  }) : this._(
+    PickupInquiryState state,
+  ) : this._(
           status: state.status,
           error: state.error,
         );
