@@ -24,7 +24,7 @@ class DateTimeUtil {
     }
 
     if (difference.inHours >= 1) {
-      return '${difference.inMinutes}個小時後開始';
+      return '${difference.inHours}個小時後開始';
     }
 
     if (difference.inMinutes >= 1) {
