@@ -21,7 +21,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
     _tabController = TabController(
       vsync: this,
-      length: 2,
+      length: 1,
     );
 
     BlocProvider.of<LoadGeneralRecommendBloc>(context)
@@ -32,7 +32,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return SafeArea(
       child: DefaultTabController(
-        length: 2,
+        length: 1,
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -53,7 +53,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   ),
                   tabs: [
                     Tab(text: '普通推薦'),
-                    Tab(text: '經紀人推薦'),
+                    // Tab(text: '經紀人推薦'),
                   ],
                 ),
               ],
@@ -67,7 +67,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   controller: _tabController,
                   children: [
                     normal(),
-                    manager(),
+                    // manager(),
                   ],
                 ),
               ),
