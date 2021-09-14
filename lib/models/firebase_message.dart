@@ -45,6 +45,7 @@ class FirebaseMessageContent extends Equatable {
       pickerName: data['picker_name'],
       pickerUuid: data['picker_uuid'],
       payerName: data['payer_name'],
+      customerName: data['customer_name'],
       serviceProviderName: data['service_provider_name'],
       serviceUuid: data['service_uuid'],
     );
