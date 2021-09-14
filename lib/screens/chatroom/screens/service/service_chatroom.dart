@@ -430,12 +430,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                           builder: (context) {
                                             return MultiBlocProvider(
                                               providers: [
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      LoadMyDpBloc(
-                                                    apiClient: TopUpClient(),
-                                                  ),
-                                                ),
+                                                // BlocProvider(
+                                                //   create: (context) =>
+                                                //       LoadMyDpBloc(
+                                                //     apiClient: TopUpClient(),
+                                                //   ),
+                                                // ),
                                                 BlocProvider(
                                                   create: (context) =>
                                                       LoadDpPackageBloc(

@@ -29,9 +29,16 @@ class TopupDp extends StatefulWidget {
 class _TopupDpState extends State<TopupDp> {
   LoadIncomingServiceBloc _loadIncomingServiceBloc;
 
+  bool isIncomingServiceLoaded;
+
   @override
   void initState() {
     super.initState();
+
+    // to handle topup_payment.dart TextFormField triggered
+    // LoadIncomingServiceBloc, this is to make sure the bloc
+    // is only trigger when click back button on this screen
+    isIncomingServiceLoaded = false;
 
     _loadIncomingServiceBloc =
         BlocProvider.of<LoadIncomingServiceBloc>(context);
@@ -40,6 +47,7 @@ class _TopupDpState extends State<TopupDp> {
   @override
   void dispose() {
     _loadIncomingServiceBloc.add(ClearIncomingServiceState());
+
     super.dispose();
   }
 
@@ -89,6 +97,8 @@ class _TopupDpState extends State<TopupDp> {
               // 1. If widget.args is not null, means is from male inquiry
               // 2. Or route is from inquiry_chatroom
               else {
+                isIncomingServiceLoaded = true;
+
                 BlocProvider.of<LoadIncomingServiceBloc>(context)
                     .add(LoadIncomingService());
               }
@@ -97,6 +107,7 @@ class _TopupDpState extends State<TopupDp> {
         ),
         body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
           listener: (context, state) {
+            print('[Debug] ' + state.status.toString());
             if (state.status == AsyncLoadingStatus.loading ||
                 state.status == AsyncLoadingStatus.initial) {
               return Row(
@@ -107,19 +118,24 @@ class _TopupDpState extends State<TopupDp> {
             }
 
             if (state.status == AsyncLoadingStatus.done) {
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).pushNamed(
-                MainRoutes.serviceChatroom,
-                arguments: ServiceChatroomScreenArguments(
-                  channelUUID: widget.args.channelUuid,
-                  inquiryUUID: widget.args.inquiryUuid,
-                  counterPartUUID: widget.args.counterPartUuid,
-                  serviceUUID: widget.args.serviceUuid,
-                  routeTypes: RouteTypes.fromBuyService,
-                ),
-              );
+              print('Topup_dp LoadIncomingServiceBloc: ' +
+                  isIncomingServiceLoaded.toString());
+
+              if (isIncomingServiceLoaded) {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pushNamed(
+                  MainRoutes.serviceChatroom,
+                  arguments: ServiceChatroomScreenArguments(
+                    channelUUID: widget.args.channelUuid,
+                    inquiryUUID: widget.args.inquiryUuid,
+                    counterPartUUID: widget.args.counterPartUuid,
+                    serviceUUID: widget.args.serviceUuid,
+                    routeTypes: RouteTypes.fromBuyService,
+                  ),
+                );
+              }
             }
           },
           child: Body(

@@ -21,15 +21,9 @@ import 'service_historical_list.dart';
 class Body extends StatefulWidget {
   const Body({
     this.tabController,
-    this.incomingServicesStatus,
-    this.incomingServices = const [],
   });
 
   final TabController tabController;
-
-  final AsyncLoadingStatus incomingServicesStatus;
-
-  final List<IncomingService> incomingServices;
 
   @override
   _BodyState createState() => _BodyState();
@@ -88,15 +82,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         }
       },
       builder: (BuildContext context, LoadIncomingServiceState state) {
-        return widget.incomingServicesStatus == AsyncLoadingStatus.initial ||
-                widget.incomingServicesStatus == AsyncLoadingStatus.loading
+        return state.status == AsyncLoadingStatus.initial ||
+                state.status == AsyncLoadingStatus.loading
             ? Row(
                 children: [
                   LoadingScreen(),
                 ],
               )
             : ServiceChatroomList(
-                chatrooms: widget.incomingServices,
+                chatrooms: state.services,
                 onRefresh: () {
                   BlocProvider.of<LoadIncomingServiceBloc>(context)
                       .add(LoadIncomingService());

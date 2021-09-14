@@ -27,9 +27,6 @@ class _ServiceListState extends State<ServiceList>
     ServiceListTabs.historical,
   ];
 
-  List<IncomingService> _incomingServices = [];
-
-  AsyncLoadingStatus _incomingServicesStatus = AsyncLoadingStatus.initial;
   LoadIncomingServiceBloc _loadIncomingServiceBloc;
 
   @override
@@ -47,8 +44,9 @@ class _ServiceListState extends State<ServiceList>
 
   @override
   void dispose() {
-    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
     super.dispose();
+
+    _loadIncomingServiceBloc.add(ClearIncomingServiceState());
   }
 
   @override
@@ -84,23 +82,8 @@ class _ServiceListState extends State<ServiceList>
           ],
         ),
       ),
-      body: BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
-        listener: (context, state) {
-          if (state.status == AsyncLoadingStatus.done) {
-            setState(() {
-              _incomingServices = state.services;
-            });
-          }
-
-          setState(() {
-            _incomingServicesStatus = state.status;
-          });
-        },
-        child: Body(
-          incomingServices: _incomingServices,
-          incomingServicesStatus: _incomingServicesStatus,
-          tabController: _tabController,
-        ),
+      body: Body(
+        tabController: _tabController,
       ),
     );
   }

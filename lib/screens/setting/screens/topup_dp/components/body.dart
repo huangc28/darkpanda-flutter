@@ -51,6 +51,8 @@ class _BodyState extends State<Body> {
     loadMyDpBloc.add(ClearMyDpState());
     loadDpPackageBloc.add(ClearDpPackageState());
 
+    loadDpPackageBloc.close();
+
     super.dispose();
   }
 
@@ -75,7 +77,7 @@ class _BodyState extends State<Body> {
       },
     );
 
-    Navigator.push(context, route).then(onGoBack);
+    Navigator.of(context, rootNavigator: true).push(route).then(onGoBack);
   }
 
   FutureOr onGoBack(dynamic value) {
@@ -99,7 +101,7 @@ class _BodyState extends State<Body> {
                 SizeConfig.screenHeight * 0.03,
               ),
               child: Column(
-                children: [
+                children: <Widget>[
                   InputTextLabel(label: "充值金額"),
                   SizedBox(
                     height: SizeConfig.screenHeight * 0.03, //30
@@ -109,7 +111,7 @@ class _BodyState extends State<Body> {
                     height: SizeConfig.screenHeight * 0.03, //30
                   ),
                   Row(
-                    children: [
+                    children: <Widget>[
                       Text(
                         "*您只能在 Dark Panda 上使用 DP幣。",
                         style: TextStyle(
