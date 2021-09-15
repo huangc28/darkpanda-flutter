@@ -35,6 +35,9 @@ class ServiceDurationField extends StatelessWidget {
             theme: DPTextFieldThemes.inquiryForm,
             keyboardType: TextInputType.number,
             validator: validator,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
           ),
         ],
       ),

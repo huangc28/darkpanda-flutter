@@ -34,6 +34,9 @@ class PriceField extends StatelessWidget {
             theme: DPTextFieldThemes.inquiryForm,
             hintText: '請輸入價格',
             keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
           ),
         ),
       ],
