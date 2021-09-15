@@ -16,58 +16,25 @@ class NicknameChanged extends UpdateProfileEvent {
   List<Object> get props => [nickname];
 }
 
-class AgeChanged extends UpdateProfileEvent {
-  const AgeChanged(this.age);
-
-  final int age;
-
-  @override
-  List<Object> get props => [age];
-}
-
-class HeightChanged extends UpdateProfileEvent {
-  const HeightChanged(this.height);
-
-  final double height;
-
-  @override
-  List<Object> get props => [height];
-}
-
-class WeightChanged extends UpdateProfileEvent {
-  const WeightChanged(this.weight);
-
-  final double weight;
-
-  @override
-  List<Object> get props => [weight];
-}
-
-class DescriptionChanged extends UpdateProfileEvent {
-  const DescriptionChanged(this.description);
-
-  final String description;
-
-  @override
-  List<Object> get props => [description];
-}
-
 class UpdateUserProfile extends UpdateProfileEvent {
   const UpdateUserProfile(
     this.imageList,
     this.removeImageList,
     this.avatarImage,
+    this.userProfile,
   );
 
   final List<UserImage> imageList;
   final List<UserImage> removeImageList;
   final File avatarImage;
+  final UserProfile userProfile;
 
   @override
   List<Object> get props => [
         imageList,
         removeImageList,
         avatarImage,
+        userProfile,
       ];
 }
 
