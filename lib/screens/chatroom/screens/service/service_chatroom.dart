@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
+import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
@@ -250,7 +251,19 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       onWillPop: () async {
         // If is female, use pop
         if (_sender.gender == Gender.female) {
-          Navigator.of(context).pop();
+          // If user is from inquiry chatroom
+          if (widget.args.routeTypes == RouteTypes.fromInquiry) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamedAndRemoveUntil(
+              MainRoutes.female,
+              ModalRoute.withName('/'),
+              arguments: TabItem.manage,
+            );
+          } else {
+            Navigator.of(context).pop();
+          }
         }
         // If is male, go to MaleApp()
         else {
@@ -792,7 +805,19 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         onPressed: () {
           // If is female, use pop
           if (_sender.gender == Gender.female) {
-            Navigator.of(context).pop();
+            // If user is from inquiry chatroom
+            if (widget.args.routeTypes == RouteTypes.fromInquiry) {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamedAndRemoveUntil(
+                MainRoutes.female,
+                ModalRoute.withName('/'),
+                arguments: TabItem.manage,
+              );
+            } else {
+              Navigator.of(context).pop();
+            }
           }
           // If is male, go to MaleApp()
           else {

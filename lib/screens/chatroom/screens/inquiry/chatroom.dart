@@ -1,11 +1,24 @@
 import 'dart:io';
-import 'package:darkpanda_flutter/components/camera_screen.dart';
+
 import 'package:image/image.dart' as img;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
+
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/cancel_service_message.dart';
@@ -15,29 +28,23 @@ import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
+
 import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
-import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
+import 'package:darkpanda_flutter/components/camera_screen.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
@@ -49,8 +56,6 @@ import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'bloc/current_chatroom_bloc.dart';
-import 'bloc/update_inquiry_bloc.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_settings/service_settings.dart';
 
@@ -484,11 +489,50 @@ class _ChatroomState extends State<Chatroom>
 
                                 // When we receive service confirmed message, we will
                                 // display this top notification banner.
-                                _serviceConfirmed
-                                    ? NotificationBanner(
-                                        avatarUrl: _inquirerProfile.avatarUrl,
-                                      )
-                                    : Container(),
+                                BlocListener<LoadIncomingServiceBloc,
+                                    LoadIncomingServiceState>(
+                                  listener: (context, state) {
+                                    if (state.status ==
+                                        AsyncLoadingStatus.error) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(state.error.message),
+                                        ),
+                                      );
+                                    }
+
+                                    // Enable message bar once done initializing.
+                                    if (state.status ==
+                                        AsyncLoadingStatus.done) {
+                                      Navigator.of(
+                                        context,
+                                        rootNavigator: true,
+                                      ).pushNamed(
+                                        MainRoutes.serviceChatroom,
+                                        arguments:
+                                            ServiceChatroomScreenArguments(
+                                          channelUUID: widget.args.channelUUID,
+                                          inquiryUUID: widget.args.inquiryUUID,
+                                          counterPartUUID:
+                                              widget.args.counterPartUUID,
+                                          serviceUUID: widget.args.serviceUUID,
+                                          routeTypes: RouteTypes.fromInquiry,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: _serviceConfirmed
+                                      ? NotificationBanner(
+                                          avatarUrl: _inquirerProfile.avatarUrl,
+                                          goToServiceChatroom: () {
+                                            BlocProvider.of<
+                                                        LoadIncomingServiceBloc>(
+                                                    context)
+                                                .add(LoadIncomingService());
+                                          })
+                                      : Container(),
+                                )
                               ],
                             );
                           },
