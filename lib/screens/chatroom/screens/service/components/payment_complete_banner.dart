@@ -66,7 +66,7 @@ class PaymentCompleteBanner extends StatelessWidget {
                     Text(
                       '服務將在' +
                           DateTimeUtil.timeAgoSinceDate(
-                              serviceDetails.appointmentTime),
+                              serviceDetails.appointmentTime.toLocal()),
                       // '服務將在 ${DateFormat("hh:mm").format(serviceDetails.endTime.toLocal())} 結束',
                       style: TextStyle(
                         fontSize: 13,

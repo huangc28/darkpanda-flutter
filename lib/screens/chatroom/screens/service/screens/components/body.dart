@@ -50,7 +50,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                             Expanded(
                               flex: 1,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
                                 child: UserAvatar(widget.historicalService
                                             .chatPartnerAvatarUrl !=
                                         null

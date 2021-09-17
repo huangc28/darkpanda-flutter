@@ -1,8 +1,9 @@
-import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
+import 'package:intl/intl.dart';
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 
 import 'review_star.dart';
 
@@ -44,13 +45,6 @@ class Review extends StatelessWidget {
             Row(
               children: <Widget>[
                 UserAvatar(review.raterAvatarUrl, radius: 20),
-                // CircleAvatar(
-                //   radius: 20,
-                //   backgroundColor: Colors.transparent,
-                //   backgroundImage: review.raterAvatarUrl == null
-                //       ? AssetImage('assets/default_avatar.png')
-                //       : NetworkImage(review.raterAvatarUrl),
-                // ),
                 SizedBox(
                   width: SizeConfig.screenWidth * 0.04, //15,
                 ),
@@ -84,8 +78,8 @@ class Review extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            // review.date,
-                            '2021.06.24',
+                            DateFormat('yyyy.MM.dd').format(review.createdAt),
+                            // '2021.06.24',
                             style: TextStyle(
                               fontSize: 14,
                               color: Color.fromRGBO(106, 109, 137, 1),

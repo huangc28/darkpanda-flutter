@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 enum DPTextFieldThemes {
   transparent,
@@ -175,6 +176,7 @@ class DPTextFormField extends StatelessWidget {
     this.hintStyle,
     this.contentPadding,
     this.textAlign = TextAlign.start,
+    this.inputFormatters,
   }) : super(key: key);
 
   final InputDecoration decoration;
@@ -191,6 +193,7 @@ class DPTextFormField extends StatelessWidget {
   final TextStyle hintStyle;
   final EdgeInsetsGeometry contentPadding;
   final TextAlign textAlign;
+  final List<TextInputFormatter> inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +216,7 @@ class DPTextFormField extends StatelessWidget {
       style: chosenTheme.style,
       decoration: inputDecoration,
       focusNode: focusNode,
+      inputFormatters: inputFormatters,
     );
   }
 }

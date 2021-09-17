@@ -236,39 +236,38 @@ class _ProfileState extends State<Profile> {
                     ),
                     SizedBox(width: SizeConfig.screenWidth * 0.04),
                     Expanded(
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                state?.userProfile?.username == null
-                                    ? ''
-                                    : state?.userProfile?.username,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                      child: InkWell(
+                        onTap: () {
+                          navigateUpdateProfilePage(state, userImageList);
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  state?.userProfile?.username == null
+                                      ? ''
+                                      : state?.userProfile?.username,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: SizeConfig.screenHeight * 0.025),
-                          Row(
-                            children: <Widget>[
-                              InkWell(
-                                onTap: () {
-                                  navigateUpdateProfilePage(
-                                      state, userImageList);
-                                },
-                                child: Image(
+                              ],
+                            ),
+                            SizedBox(height: SizeConfig.screenHeight * 0.025),
+                            Row(
+                              children: <Widget>[
+                                Image(
                                   width: 24,
                                   fit: BoxFit.fitWidth,
                                   image: AssetImage(
                                       "lib/screens/profile/assets/edit_profile.png"),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

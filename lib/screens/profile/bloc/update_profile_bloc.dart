@@ -38,14 +38,6 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       yield _mapAvatarImageChangedToState(event, state);
     } else if (event is NicknameChanged) {
       yield _mapNicknameChangedToState(event, state);
-    } else if (event is AgeChanged) {
-      yield _mapAgeChangedToState(event, state);
-    } else if (event is HeightChanged) {
-      yield _mapHeightChangedToState(event, state);
-    } else if (event is WeightChanged) {
-      yield _mapWeightChangedToState(event, state);
-    } else if (event is DescriptionChanged) {
-      yield _mapDescriptionChangedToState(event, state);
     }
   }
 
@@ -103,7 +95,12 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
       // 3. Update user profile
       UserProfile userProfile = await getUserProfile(
-          state, imageStringList, removeImageList, avatarImageLink);
+        state,
+        imageStringList,
+        removeImageList,
+        avatarImageLink,
+        event.userProfile,
+      );
 
       updateProfile = new UpdateProfile(userProfile: userProfile);
 
@@ -153,50 +150,6 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     );
   }
 
-  UpdateProfileState _mapAgeChangedToState(
-    AgeChanged event,
-    UpdateProfileState state,
-  ) {
-    final age = event.age;
-
-    return state.copyWith(
-      age: age,
-    );
-  }
-
-  UpdateProfileState _mapHeightChangedToState(
-    HeightChanged event,
-    UpdateProfileState state,
-  ) {
-    final height = event.height;
-
-    return state.copyWith(
-      height: height,
-    );
-  }
-
-  UpdateProfileState _mapWeightChangedToState(
-    WeightChanged event,
-    UpdateProfileState state,
-  ) {
-    final weight = event.weight;
-
-    return state.copyWith(
-      weight: weight,
-    );
-  }
-
-  UpdateProfileState _mapDescriptionChangedToState(
-    DescriptionChanged event,
-    UpdateProfileState state,
-  ) {
-    final description = event.description;
-
-    return state.copyWith(
-      description: description,
-    );
-  }
-
   Stream<UpdateProfileState> _mapUserLoadedToState(
     FetchProfileEdit event,
     UpdateProfileState state,
@@ -238,16 +191,16 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
   }
 
   Future<UserProfile> getUserProfile(
-      state, imageList, removeImageList, avatarUrl) async {
+      state, imageList, removeImageList, avatarUrl, userProfile) async {
     UserProfile createPetObject;
 
     createPetObject = new UserProfile(
       uuid: state.uuid,
       username: state.username,
-      age: state.age,
-      height: state.height,
-      weight: state.weight,
-      description: state.description,
+      age: userProfile.age,
+      height: userProfile.height,
+      weight: userProfile.weight,
+      description: userProfile.description,
       imageList: imageList,
       removeImageList: removeImageList,
       avatarUrl: avatarUrl,

@@ -13,6 +13,7 @@ import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart
 
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -389,6 +390,9 @@ class _BodyState extends State<Body> {
           _inquiryForms.budget = double.tryParse(value);
         },
         keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 20),
           hintText: "請輸入您的預算",

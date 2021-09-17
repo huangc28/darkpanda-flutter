@@ -24,15 +24,10 @@ class InquiryDetail extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Inquirer avatar.
-              SizedBox(
-                height: 64, //SizeConfig.screenHeight * 0.072, //64,
-                width: 64, //SizeConfig.screenWidth * 0.15, //64,
-                child: CircleAvatar(
-                    // backgroundImage: NetworkImage(
-                    //   'https://www.fillmurray.com/640/360',
-                    // ),
-                    ),
+              // Inquirer avatar
+              UserAvatar(
+                inquiry.inquirer.avatarURL,
+                radius: SizeConfig.screenWidth * 0.08,
               ),
 
               SizedBox(

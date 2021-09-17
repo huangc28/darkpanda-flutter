@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:async';
 
-import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:darkpanda_flutter/components/camera_screen.dart';
+import 'package:darkpanda_flutter/util/validator.dart';
 
 import 'package:image/image.dart' as img;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart';
-import 'package:darkpanda_flutter/util/decimal_text_input_formatter.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
 class Body extends StatefulWidget {
@@ -48,6 +48,9 @@ class _BodyState extends State<Body> {
 
   File _avatarImageFile;
   List<UserImage> images = [];
+
+  UserProfile _userProfile = UserProfile();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -167,62 +170,65 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 0.0),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              _avatarImage(),
-              InputTextLabel(label: "暱稱*"),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildNicknameInput(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.028, //24
-              ),
-              InputTextLabel(label: "年齡"),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildAgeInput(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.028, //24
-              ),
-              InputTextLabel(label: "身高"),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildHeightInput(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.028, //24
-              ),
-              InputTextLabel(label: "體重"),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildWeightInput(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.028, //24
-              ),
-              InputTextLabel(label: "簡介"),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildDescriptionInput(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.028, //24
-              ),
-              InputTextLabel(label: "照片*（至少上傳兩張）"),
-              buildAddImage(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-              buildUpdateButton(),
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.022, //20
-              ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                _avatarImage(),
+                InputTextLabel(label: "暱稱*"),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildNicknameInput(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.028, //24
+                ),
+                InputTextLabel(label: "年齡"),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildAgeInput(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.028, //24
+                ),
+                InputTextLabel(label: "身高"),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildHeightInput(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.028, //24
+                ),
+                InputTextLabel(label: "體重"),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildWeightInput(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.028, //24
+                ),
+                InputTextLabel(label: "簡介"),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildDescriptionInput(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.028, //24
+                ),
+                InputTextLabel(label: "照片*（至少上傳兩張）"),
+                buildAddImage(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+                buildUpdateButton(),
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.022, //20
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -383,147 +389,106 @@ class _BodyState extends State<Body> {
   }
 
   Widget buildAgeInput() {
-    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-      buildWhen: (previous, current) => previous.age != current.age,
-      builder: (context, state) {
+    return BlocListener<UpdateProfileBloc, UpdateProfileState>(
+      listener: (context, state) {
         _ageTextController.text = state.age == null ? '' : state.age.toString();
-        return Column(
-          children: <Widget>[
-            TextFormField(
-              controller: new TextEditingController.fromValue(
-                new TextEditingValue(
-                  text: _ageTextController.text,
-                  selection: new TextSelection.collapsed(
-                      offset: _ageTextController.text.length),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              onChanged: (age) {
-                context.read<UpdateProfileBloc>().add(
-                      AgeChanged(int.parse(age)),
-                    );
-              },
-              style: TextStyle(color: Colors.white),
-              decoration: inputDecoration("請選擇您的年齡"),
-            ),
-          ],
-        );
       },
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: _ageTextController,
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            style: TextStyle(color: Colors.white),
+            decoration: inputDecoration("請選擇您的年齡"),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildHeightInput() {
-    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-      builder: (context, state) {
+    return BlocListener<UpdateProfileBloc, UpdateProfileState>(
+      listener: (context, state) {
         _heightTextController.text =
             state.height == null ? '' : state.height.toString();
-        return Column(
-          children: <Widget>[
-            TextFormField(
-              controller: new TextEditingController.fromValue(
-                new TextEditingValue(
-                  text: _heightTextController.text,
-                  selection: new TextSelection.collapsed(
-                      offset: _heightTextController.text.length == 0
-                          ? _heightTextController.text.length
-                          : _heightTextController.text.length - 2),
-                ),
-              ),
-              inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (height) {
-                context
-                    .read<UpdateProfileBloc>()
-                    .add(HeightChanged(double.parse(height)));
-              },
-              style: TextStyle(color: Colors.white),
-              decoration: inputDecoration("請輸入您的身高"),
-            ),
-          ],
-        );
       },
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: _heightTextController,
+            inputFormatters: [
+              ValidatorInputFormatter(
+                editingValidator: DecimalNumberEditingRegexValidator(),
+              ),
+            ],
+            keyboardType: TextInputType.number,
+            style: TextStyle(color: Colors.white),
+            decoration: inputDecoration("請輸入您的身高"),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildWeightInput() {
-    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-      builder: (context, state) {
+    return BlocListener<UpdateProfileBloc, UpdateProfileState>(
+      listener: (context, state) {
         _weightTextController.text =
             state.weight == null ? '' : state.weight.toString();
-        return Column(
-          children: <Widget>[
-            TextFormField(
-              controller: new TextEditingController.fromValue(
-                new TextEditingValue(
-                  text: _weightTextController.text,
-                  selection: new TextSelection.collapsed(
-                      offset: _weightTextController.text.length == 0
-                          ? _weightTextController.text.length
-                          : _weightTextController.text.length - 2),
-                ),
-              ),
-              inputFormatters: [DecimalTextInputFormatter(decimalRange: 3)],
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (weight) {
-                context
-                    .read<UpdateProfileBloc>()
-                    .add(WeightChanged(double.parse(weight)));
-              },
-              style: TextStyle(color: Colors.white),
-              decoration: inputDecoration("請輸入您的體重"),
-            ),
-          ],
-        );
       },
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: _weightTextController,
+            inputFormatters: [
+              ValidatorInputFormatter(
+                editingValidator: DecimalNumberEditingRegexValidator(),
+              ),
+            ],
+            keyboardType: TextInputType.number,
+            style: TextStyle(color: Colors.white),
+            decoration: inputDecoration("請輸入您的體重"),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildDescriptionInput() {
-    return BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-      builder: (context, state) {
+    return BlocListener<UpdateProfileBloc, UpdateProfileState>(
+      listener: (context, state) {
         _descriptionTextController.text = state.description;
-        return TextFormField(
-          controller: new TextEditingController.fromValue(
-            new TextEditingValue(
-              text: _descriptionTextController.text,
-              selection: new TextSelection.collapsed(
-                  offset: _descriptionTextController.text.length),
-            ),
-          ),
-          onChanged: (description) {
-            context
-                .read<UpdateProfileBloc>()
-                .add(DescriptionChanged(description));
-          },
-          keyboardType: TextInputType.multiline,
-          maxLines: 4,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: "請輸入您的自我介紹",
-            border: InputBorder.none,
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color.fromRGBO(255, 255, 255, 0.1),
-              ),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-            ),
-            contentPadding:
-                const EdgeInsets.only(left: 20.0, bottom: 8.0, top: 8.0),
-            filled: true,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.1),
-          ),
-        );
       },
+      child: TextFormField(
+        controller: _descriptionTextController,
+        keyboardType: TextInputType.multiline,
+        maxLines: 4,
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: "請輸入您的自我介紹",
+          border: InputBorder.none,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color.fromRGBO(255, 255, 255, 0.1),
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(16),
+            ),
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(16),
+            ),
+          ),
+          contentPadding:
+              const EdgeInsets.only(left: 20.0, bottom: 8.0, top: 8.0),
+          filled: true,
+          fillColor: Color.fromRGBO(255, 255, 255, 0.1),
+        ),
+      ),
     );
   }
 
@@ -641,11 +606,19 @@ class _BodyState extends State<Body> {
               loading: widget.isLoading,
               theme: DPTextButtonThemes.purple,
               onPressed: () {
+                _userProfile = _userProfile.copyWith(
+                  age: int.tryParse(_ageTextController.text),
+                  height: double.tryParse(_heightTextController.text),
+                  weight: double.tryParse(_weightTextController.text),
+                  description: _descriptionTextController.text,
+                );
+
                 BlocProvider.of<UpdateProfileBloc>(context).add(
                   UpdateUserProfile(
                     widget.imageList,
                     removeImageList,
                     _avatarImageFile,
+                    _userProfile,
                   ),
                 );
               },
@@ -744,4 +717,9 @@ InputDecoration inputDecoration(String hintText) {
       borderRadius: BorderRadius.circular(25.7),
     ),
   );
+}
+
+class DecimalNumberEditingRegexValidator extends RegexValidator {
+  DecimalNumberEditingRegexValidator()
+      : super(regexSource: "^\$|^(0|([1-9][0-9]{0,2}))(\\.[0-9]{0,2})?\$");
 }

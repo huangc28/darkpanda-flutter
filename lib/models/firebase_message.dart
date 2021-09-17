@@ -30,6 +30,7 @@ class FirebaseMessageContent extends Equatable {
     this.payerName,
     this.customerName,
     this.serviceProviderName,
+    this.serviceUuid,
   });
 
   final String pickerName;
@@ -37,13 +38,16 @@ class FirebaseMessageContent extends Equatable {
   final String payerName;
   final String customerName;
   final String serviceProviderName;
+  final String serviceUuid;
 
   factory FirebaseMessageContent.fromMap(Map<String, dynamic> data) {
     return FirebaseMessageContent(
       pickerName: data['picker_name'],
       pickerUuid: data['picker_uuid'],
       payerName: data['payer_name'],
-      serviceProviderName: data['service_provider_name '],
+      customerName: data['customer_name'],
+      serviceProviderName: data['service_provider_name'],
+      serviceUuid: data['service_uuid'],
     );
   }
 
@@ -52,7 +56,8 @@ class FirebaseMessageContent extends Equatable {
         'picker_uuid': pickerUuid,
         'payer_name': payerName,
         'customer_name': customerName,
-        'service_provider_name ': serviceProviderName,
+        'service_provider_name': serviceProviderName,
+        'service_uuid': serviceUuid,
       };
 
   @override
@@ -62,5 +67,6 @@ class FirebaseMessageContent extends Equatable {
         payerName,
         customerName,
         serviceProviderName,
+        serviceUuid,
       ];
 }

@@ -1,9 +1,9 @@
-import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tappay/flutter_tappay.dart';
 
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
@@ -40,9 +40,10 @@ class _TopupPaymentState extends State<TopupPayment> {
   TextEditingController _numberController = TextEditingController();
 
   FlutterTappay _payer = FlutterTappay();
+  FlutterTappay payer = FlutterTappay();
 
   PaymentCard _paymentCard = PaymentCard();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyTopup = GlobalKey<FormState>();
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
 
   bool isLoading = false;
@@ -50,7 +51,19 @@ class _TopupPaymentState extends State<TopupPayment> {
   @override
   void initState() {
     super.initState();
+
     _initTappay();
+
+    payer
+        .init(
+      appKey:
+          'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+      appId: 17098,
+      serverType: FlutterTappayServerType.Sandbox,
+    )
+        .then((_) {
+      print('tappay instance instantiated.');
+    });
   }
 
   @override
@@ -71,7 +84,8 @@ class _TopupPaymentState extends State<TopupPayment> {
   }
 
   void _validateInputs() async {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKeyTopup.currentState;
+
     if (!form.validate()) {
       setState(() {
         _autoValidateMode =
@@ -115,19 +129,6 @@ class _TopupPaymentState extends State<TopupPayment> {
 
   @override
   Widget build(BuildContext context) {
-    FlutterTappay payer = FlutterTappay();
-
-    payer
-        .init(
-      appKey:
-          'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
-      appId: 17098,
-      serverType: FlutterTappayServerType.Sandbox,
-    )
-        .then((_) {
-      print('tappay instance instantiated.');
-    });
-
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
@@ -239,7 +240,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                 SizeConfig.screenHeight * 0.03,
               ),
               child: Form(
-                key: _formKey,
+                key: _formKeyTopup,
                 autovalidateMode: _autoValidateMode,
                 child: Column(
                   children: <Widget>[

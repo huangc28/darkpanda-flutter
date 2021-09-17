@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:date_format/date_format.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
-import 'package:flutter/material.dart';
-import 'package:date_format/date_format.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -419,6 +421,9 @@ class _EditBodyState extends State<EditBody> {
           _inquiryForms.budget = double.tryParse(value);
         },
         keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 20),
           hintText: "請輸入您的預算",
