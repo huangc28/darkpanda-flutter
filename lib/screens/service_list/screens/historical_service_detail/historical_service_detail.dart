@@ -116,6 +116,12 @@ class _HistoricalServiceDetailState extends State<HistoricalServiceDetail>
           BlocListener<BlockUserBloc, BlockUserState>(
               listener: (context, state) {
             if (state.status == AsyncLoadingStatus.done) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('用戶已被封鎖'),
+                ),
+              );
+
               BlocProvider.of<LoadPaymentDetailBloc>(context).add(
                   LoadPaymentDetail(
                       serviceUuid: widget.historicalService.serviceUuid));
