@@ -63,7 +63,7 @@ class ServiceStartBanner extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '服務將在 ${DateFormat("hh:mm").format(serviceDetails.endTime.toLocal())} 結束',
+                      '服務將在 ${DateFormat("hh:mm a").format(serviceDetails.endTime.toLocal())} 結束',
                       style: TextStyle(
                         fontSize: 13,
                         color: Color.fromRGBO(106, 109, 137, 1),
