@@ -141,10 +141,12 @@ class _BodyState extends State<Body> {
                         }
 
                         if (state.status == AsyncLoadingStatus.done) {
-                          // setState(() {
-                          //   blacklistUserList.removeWhere(
-                          //       (item) => item.uuid == blacklistUser.uuid);
-                          // });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('用戶已被解除封鎖'),
+                            ),
+                          );
+
                           BlocProvider.of<LoadBlacklistUserBloc>(context).add(
                             LoadBlacklistUser(uuid: _sender.uuid),
                           );
