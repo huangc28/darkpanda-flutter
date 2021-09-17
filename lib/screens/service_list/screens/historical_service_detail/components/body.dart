@@ -59,12 +59,18 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                           children: [
                             Expanded(
                               flex: 1,
-                              child: UserAvatar(widget.historicalService
-                                          .chatPartnerAvatarUrl !=
-                                      null
-                                  ? widget
-                                      .historicalService.chatPartnerAvatarUrl
-                                  : ''),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: UserAvatar(
+                                  widget.historicalService
+                                              .chatPartnerAvatarUrl !=
+                                          null
+                                      ? widget.historicalService
+                                          .chatPartnerAvatarUrl
+                                      : '',
+                                ),
+                              ),
                             ),
                             Expanded(
                               flex: 3,
@@ -125,14 +131,24 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                                   color: Colors.red,
                                 ),
                               )
-                            : Text(
-                                '已完成',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.green,
-                                ),
-                              ),
+                            : widget.historicalService.status ==
+                                    ServiceStatus.payment_failed.name
+                                ? Text(
+                                    '付款失敗',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : Text(
+                                    '已完成',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.green,
+                                    ),
+                                  ),
                       ),
                     ],
                   ),
@@ -161,9 +177,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Text(
-            '您給予 ${widget.rateDetail.raterUsername} 的評價',
+            '您給予 ${widget.historicalService.chatPartnerUsername} 的評價',
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,
@@ -291,6 +307,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildDpCardInfo() {
+    final price =
+        widget.paymentDetail.price == null ? 0 : widget.paymentDetail.price;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -306,7 +324,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '${widget.paymentDetail.price}DP'),
+          _buildEachText('pie.png', '小計', '${price}DP'),
         ],
       ),
     );

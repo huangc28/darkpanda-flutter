@@ -11,7 +11,6 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatr
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 
-import '../models/incoming_service.dart';
 import '../bloc/load_incoming_service_bloc.dart';
 
 import 'service_chatroom_list.dart';

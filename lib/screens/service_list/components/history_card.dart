@@ -42,8 +42,11 @@ class _HistoryCardState extends State<HistoryCard> {
               children: <Widget>[
                 Expanded(
                   flex: 1,
-                  child:
-                      UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: UserAvatar(
+                        widget.historicalService.chatPartnerAvatarUrl),
+                  ),
                 ),
                 Expanded(
                   flex: 3,
@@ -74,14 +77,24 @@ class _HistoryCardState extends State<HistoryCard> {
                                       color: Colors.red,
                                     ),
                                   )
-                                : Text(
-                                    '已完成',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.green,
-                                    ),
-                                  ),
+                                : widget.historicalService.status ==
+                                        ServiceStatus.payment_failed.name
+                                    ? Text(
+                                        '付款失敗',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    : Text(
+                                        '已完成',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.green,
+                                        ),
+                                      ),
                           ),
                         ],
                       ),
