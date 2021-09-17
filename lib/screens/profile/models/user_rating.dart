@@ -1,9 +1,11 @@
+import 'package:darkpanda_flutter/util/try_parse_to_date_time.dart';
+
 class UserRating {
   UserRating({
     this.raterUsername,
     this.raterUuid,
     this.rating,
-    // this.createdAt,
+    this.createdAt,
     this.comment,
     this.raterAvatarUrl,
   });
@@ -11,23 +13,28 @@ class UserRating {
   final String raterUsername;
   final String raterUuid;
   final int rating;
-  // final DateTime createdAt;
+  final DateTime createdAt;
   final String comment;
   final String raterAvatarUrl;
 
-  UserRating.fromMap(Map<String, dynamic> data)
-      : raterUsername = data['rater_username'],
-        raterUuid = data['rater_uuid'],
-        rating = data['rating'],
-        // createdAt = DateTime.parse(data['created_at']),
-        comment = data['comment'],
-        raterAvatarUrl = data['rater_avatar_url'];
+  static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
+
+  factory UserRating.fromMap(Map<String, dynamic> data) {
+    return UserRating(
+      raterUsername: data['rater_username'],
+      raterUuid: data['rater_uuid'],
+      rating: data['rating'],
+      createdAt: UserRating.fieldToDateTime(data['created_at']).toLocal(),
+      comment: data['comment'],
+      raterAvatarUrl: data['rater_avatar_url'],
+    );
+  }
 
   Map<String, dynamic> toMap() => {
         'username': raterUsername,
         'rater_uuid': raterUuid,
         'rating': rating,
-        // 'created_at': createdAt.toIso8601String(),
+        'created_at': createdAt.toIso8601String(),
         'comment': comment,
         'rater_avatar_url': raterAvatarUrl,
       };
