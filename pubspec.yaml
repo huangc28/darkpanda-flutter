@@ -50,6 +50,7 @@ dependencies:
   easy_debounce: ^2.0.0
   qr_code_scanner: ^0.4.0
   qr_flutter: ^4.0.0
+  scrollable_positioned_list: ^0.1.10
 
   # Google map relatives.
   google_maps_flutter: ^2.0.1
