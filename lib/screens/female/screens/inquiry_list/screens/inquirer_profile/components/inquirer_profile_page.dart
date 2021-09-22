@@ -119,8 +119,11 @@ class InquirerProfilePage extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {},
-                                  child:
-                                      ImageCard(image: userImages[index].url),
+                                  child: ImageCard(
+                                    image: userImages[index].url,
+                                    userImage: userImages,
+                                    index: index,
+                                  ),
                                 );
                               },
                             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
+import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -323,19 +324,22 @@ class _ProfileState extends State<Profile> {
                 height: 190,
                 padding: EdgeInsets.only(top: 25),
                 child: ListView.builder(
-                  itemCount:
-                      // state.userImages[state.userImages.length - 1].url == ""
-                      //     ? state.userImages.length - 1
-                      //     :
-                      state.userImages.length,
+                  itemCount: state.userImages.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {},
                       child: state.userImages[index].fileName != null
-                          ? _imageCardFile(state.userImages[index].fileName)
+                          ? _imageCardFile(
+                              state.userImages[index].fileName,
+                              state.userImages,
+                            )
                           : state.userImages[index].url != ""
-                              ? ImageCard(image: state.userImages[index].url)
+                              ? ImageCard(
+                                  image: state.userImages[index].url,
+                                  userImage: state.userImages,
+                                  index: index,
+                                )
                               : SizedBox.shrink(),
                     );
                   },
@@ -444,7 +448,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _imageCardFile(image) {
+  Widget _imageCardFile(image, images) {
     return InkWell(
       onTap: () {
         Navigator.of(context, rootNavigator: true).push(
@@ -453,6 +457,7 @@ class _ProfileState extends State<Profile> {
               return FullScreenImage(
                 imageUrl: image,
                 tag: "user_image",
+                // images: images,
               );
             },
           ),
@@ -479,12 +484,16 @@ class _ProfileState extends State<Profile> {
 }
 
 class ImageCard extends StatefulWidget {
-  final String image;
-
   const ImageCard({
     Key key,
     this.image,
+    this.userImage,
+    this.index,
   }) : super(key: key);
+
+  final String image;
+  final List<UserImage> userImage;
+  final int index;
 
   @override
   _ImageCardState createState() => _ImageCardState(this.image);
@@ -502,9 +511,10 @@ class _ImageCardState extends State<ImageCard> {
         Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
             builder: (_) {
-              return FullScreenImage(
-                imageUrl: image,
+              return ScrollableFullScreenImage(
                 tag: "user_image",
+                images: widget.userImage,
+                index: widget.index,
               );
             },
           ),
