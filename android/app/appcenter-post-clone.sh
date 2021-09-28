@@ -16,7 +16,6 @@ export PATH=`pwd`/flutter/bin:$PATH
 # switch flutter channel to 'stable' and upgrade to latest build
 # flutter channel stable
 flutter channel dev
-flutter upgrade
 
 # accepting all licenses
 yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
