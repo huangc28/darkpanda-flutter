@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.darkpanda_flutter"
+    package="com.dev.darkpanda_flutter"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Geolocation flutter needs the following 2 permissions enabled. 
