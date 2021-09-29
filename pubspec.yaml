@@ -51,6 +51,7 @@ dependencies:
   qr_code_scanner: ^0.4.0
   qr_flutter: ^4.0.0
   scrollable_positioned_list: ^0.1.10
+  sentry_flutter: ^6.0.1
 
   # Google map relatives.
   google_maps_flutter: ^2.0.1

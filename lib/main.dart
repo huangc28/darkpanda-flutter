@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
@@ -13,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
@@ -61,52 +60,77 @@ import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
 void main() async {
-  runZonedGuarded<Future<void>>(
-    () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      FirebaseApp app = await Firebase.initializeApp();
-      FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  // runZonedGuarded<Future<void>>(
+  //   () async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseApp app = await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-      Isolate.current.addErrorListener(RawReceivePort((pair) async {
-        final List<dynamic> errorAndStacktrace = pair;
-        await FirebaseCrashlytics.instance.recordError(
-          errorAndStacktrace.first,
-          errorAndStacktrace.last,
-        );
-      }).sendPort);
+  // Isolate.current.addErrorListener(RawReceivePort((pair) async {
+  //   final List<dynamic> errorAndStacktrace = pair;
+  //   await FirebaseCrashlytics.instance.recordError(
+  //     errorAndStacktrace.first,
+  //     errorAndStacktrace.last,
+  //   );
+  // }).sendPort);
 
-      // Pass all uncaught errors from the framework to Crashlytics.
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  // Pass all uncaught errors from the framework to Crashlytics.
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-      // Force disable Crashlytics collection while doing every day development.
-      // Temporarily toggle this to true if you want to test crash reporting in your app.
-      await FirebaseCrashlytics.instance
-          .setCrashlyticsCollectionEnabled(!kDebugMode);
+  // Force disable Crashlytics collection while doing every day development.
+  // Temporarily toggle this to true if you want to test crash reporting in your app.
+  // await FirebaseCrashlytics.instance
+  //     .setCrashlyticsCollectionEnabled(!kDebugMode);
 
-      assert(app != null);
+  try {
+    assert(app != null);
 
-      // Initialize application config.
-      await Config.AppConfig.initConfig();
+    // Initialize application config.
+    await Config.AppConfig.initConfig();
 
-      WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
 
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
-      String _gender = await SecureStore().readGender();
-      String _jwt = await SecureStore().readJwtToken();
+    String _gender = await SecureStore().readGender();
+    String _jwt = await SecureStore().readJwtToken();
 
-      runApp(
+    await SentryFlutter.init(
+      (options) {
+        options.dsn =
+            'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
+      },
+      appRunner: () => runApp(
         DarkPandaApp(
           gender: _gender,
           jwt: _jwt,
         ),
-      );
-    },
-    FirebaseCrashlytics.instance.recordError,
-  );
+      ),
+    );
+  } catch (e, stackTrace) {
+    await Sentry.captureException(
+      e,
+      stackTrace: stackTrace,
+    );
+  }
+// await SentryFlutter.init(
+//   (option) {
+//     options.dsn = 'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
+//   }
+
+// )
+//   runApp(
+//     DarkPandaApp(
+//       gender: _gender,
+//       jwt: _jwt,
+//     ),
+//   );
+  // },
+  //   FirebaseCrashlytics.instance.recordError,
+  // );
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
