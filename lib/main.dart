@@ -62,55 +62,61 @@ import './bloc/auth_user_bloc.dart';
 
 void main() async {
   try {
-    WidgetsFlutterBinding.ensureInitialized();
+    runZonedGuarded<Future<void>>(
+      () async {
+        WidgetsFlutterBinding.ensureInitialized();
+        FirebaseApp app = await Firebase.initializeApp();
+        FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-    FirebaseApp app = await Firebase.initializeApp();
+        // Pass all uncaught errors from the framework to Crashlytics.
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-    FirebaseMessaging.onBackgroundMessage(_messageHandler);
+        // Force disable Crashlytics collection while doing every day development.
+        // Temporarily toggle this to true if you want to test crash reporting in your app.
+        await FirebaseCrashlytics.instance
+            .setCrashlyticsCollectionEnabled(!kDebugMode);
 
-    // Pass all uncaught errors from the framework to Crashlytics.
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+        // Isolate.current.addErrorListener(RawReceivePort((pair) async {
+        //   final List<dynamic> errorAndStacktrace = pair;
+        //   await FirebaseCrashlytics.instance.recordError(
+        //     errorAndStacktrace.first,
+        //     errorAndStacktrace.last,
+        //   );
+        // }).sendPort);
 
-    if (kDebugMode) {
-      // Force disable Crashlytics collection while doing every day development.
-      // Temporarily toggle this to true if you want to test crash reporting in your app.
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-    }
+        assert(app != null);
 
-    assert(app != null);
+        // Initialize application config.
+        await Config.AppConfig.initConfig();
 
-    // Initialize application config.
-    await Config.AppConfig.initConfig();
+        WidgetsFlutterBinding.ensureInitialized();
 
-    WidgetsFlutterBinding.ensureInitialized();
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
 
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+        String _gender = await SecureStore().readGender();
+        String _jwt = await SecureStore().readJwtToken();
 
-    String _gender = await SecureStore().readGender();
-    String _jwt = await SecureStore().readJwtToken();
-
-    ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
-          body: Center(
-            child: Text(
-              'Something went wrong',
-              style: TextStyle(color: Colors.white),
-            ),
+        runApp(
+          DarkPandaApp(
+            gender: _gender,
+            jwt: _jwt,
           ),
         );
-
-    runZonedGuarded(() {
-      runApp(
-        DarkPandaApp(
-          gender: _gender,
-          jwt: _jwt,
-        ),
-      );
-    }, FirebaseCrashlytics.instance.recordError);
+      },
+      FirebaseCrashlytics.instance.recordError,
+    );
   } catch (err) {
-    developer.log('failed to initialize app: ${err.toString()}');
+    await FirebaseCrashlytics.instance.recordError(
+      err,
+      null,
+      reason: 'failed to initialize app',
+      fatal: true,
+    );
+
+    FirebaseCrashlytics.instance.crash();
   }
 }
 
