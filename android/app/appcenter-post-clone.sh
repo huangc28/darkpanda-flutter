@@ -26,7 +26,7 @@ echo "Installed flutter to `pwd`/flutter"
 
 # create .env file specified in pubspec.yaml for build to pass.
 # write env vars to .env file.
-ENV_FILE = "$APPCENTER_SOURCE_DIRECTORY/.env"
+ENV_FILE="$APPCENTER_SOURCE_DIRECTORY/.env"
 touch $ENV_FILE
 cat > $ENV_FILE <<- EOM  
 ENV=$ENV
