@@ -369,6 +369,8 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                     _serviceDetails.appointmentTime;
                                 _updateInquiryMessage.matchingFee =
                                     _serviceDetails.matchingFee;
+                                _updateInquiryMessage.price =
+                                    _serviceDetails.price;
 
                                 _inquiryDetail.updateInquiryMessage =
                                     _updateInquiryMessage;
@@ -435,20 +437,16 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   inquirerProfile: _inquirerProfile,
                                   serviceDetails: _serviceDetails,
                                   onGoToPayment: () {
-                                    if (_serviceDetails.matchingFee >
-                                        _balance) {
+                                    final total = _serviceDetails.price +
+                                        _serviceDetails.matchingFee;
+
+                                    if (total > _balance) {
                                       print("Go to Top up dp");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) {
                                             return MultiBlocProvider(
                                               providers: [
-                                                // BlocProvider(
-                                                //   create: (context) =>
-                                                //       LoadMyDpBloc(
-                                                //     apiClient: TopUpClient(),
-                                                //   ),
-                                                // ),
                                                 BlocProvider(
                                                   create: (context) =>
                                                       LoadDpPackageBloc(
@@ -692,7 +690,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     ),
                   ),
                 ],
-                child: ServiceDetail(historicalService: historicalService),
+                child: ServiceDetail(
+                  historicalService: historicalService,
+                  serviceDetails: _serviceDetails,
+                ),
               );
             },
           ));

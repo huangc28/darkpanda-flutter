@@ -125,6 +125,7 @@ class _BodyState extends State<Body> {
   Widget _buildAddressTimeCardInfo() {
     final durationSplit =
         widget.args.updateInquiryMessage.duration.toString().split(':');
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -168,6 +169,9 @@ class _BodyState extends State<Body> {
   }
 
   Widget _buildDpCardInfo() {
+    final total = widget.args.updateInquiryMessage.price +
+        widget.args.updateInquiryMessage.matchingFee;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -184,7 +188,19 @@ class _BodyState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildEachText('pie.png', '小計',
+              widget.args.updateInquiryMessage.price.toString() + 'DP'),
+          SizedBox(height: 15),
+          _buildEachText('heart.png', '服務費',
               widget.args.updateInquiryMessage.matchingFee.toString() + 'DP'),
+          SizedBox(height: 15),
+          _buildEachText(
+            'coin.png',
+            '合計',
+            total.toString() + 'DP',
+            titleSize: 14,
+            valueSize: 16,
+            titleColor: Colors.white,
+          ),
         ],
       ),
     );
@@ -207,7 +223,7 @@ class _BodyState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '我的DP幣：' + widget.args.balance.toString() + 'DP',
+            '我的DP幣：${widget.args.balance}DP',
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
