@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,63 +61,52 @@ import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
 void main() async {
-  try {
-    runZonedGuarded<Future<void>>(
-      () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        FirebaseApp app = await Firebase.initializeApp();
-        FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      FirebaseApp app = await Firebase.initializeApp();
+      FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-        // Pass all uncaught errors from the framework to Crashlytics.
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-        // Force disable Crashlytics collection while doing every day development.
-        // Temporarily toggle this to true if you want to test crash reporting in your app.
-        await FirebaseCrashlytics.instance
-            .setCrashlyticsCollectionEnabled(!kDebugMode);
-
-        // Isolate.current.addErrorListener(RawReceivePort((pair) async {
-        //   final List<dynamic> errorAndStacktrace = pair;
-        //   await FirebaseCrashlytics.instance.recordError(
-        //     errorAndStacktrace.first,
-        //     errorAndStacktrace.last,
-        //   );
-        // }).sendPort);
-
-        assert(app != null);
-
-        // Initialize application config.
-        await Config.AppConfig.initConfig();
-
-        WidgetsFlutterBinding.ensureInitialized();
-
-        await SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-          DeviceOrientation.portraitDown,
-        ]);
-
-        String _gender = await SecureStore().readGender();
-        String _jwt = await SecureStore().readJwtToken();
-
-        runApp(
-          DarkPandaApp(
-            gender: _gender,
-            jwt: _jwt,
-          ),
+      Isolate.current.addErrorListener(RawReceivePort((pair) async {
+        final List<dynamic> errorAndStacktrace = pair;
+        await FirebaseCrashlytics.instance.recordError(
+          errorAndStacktrace.first,
+          errorAndStacktrace.last,
         );
-      },
-      FirebaseCrashlytics.instance.recordError,
-    );
-  } catch (err) {
-    await FirebaseCrashlytics.instance.recordError(
-      err,
-      null,
-      reason: 'failed to initialize app',
-      fatal: true,
-    );
+      }).sendPort);
 
-    FirebaseCrashlytics.instance.crash();
-  }
+      // Pass all uncaught errors from the framework to Crashlytics.
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+      // Force disable Crashlytics collection while doing every day development.
+      // Temporarily toggle this to true if you want to test crash reporting in your app.
+      await FirebaseCrashlytics.instance
+          .setCrashlyticsCollectionEnabled(!kDebugMode);
+
+      assert(app != null);
+
+      // Initialize application config.
+      await Config.AppConfig.initConfig();
+
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+
+      String _gender = await SecureStore().readGender();
+      String _jwt = await SecureStore().readJwtToken();
+
+      runApp(
+        DarkPandaApp(
+          gender: _gender,
+          jwt: _jwt,
+        ),
+      );
+    },
+    FirebaseCrashlytics.instance.recordError,
+  );
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {

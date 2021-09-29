@@ -27,13 +27,17 @@ echo "Installed flutter to `pwd`/flutter"
 # create .env file specified in pubspec.yaml for build to pass.
 touch .env
 
+echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY" 
+
 # create google-services.json for firestore to work.
 GOOGLE_JSON_FILE=android/app/google-services.json
 touch $GOOGLE_JSON_FILE
 echo "Updating Google Json"
 echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
 sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
-echo "File updated"
+
+echo "File content:"
+cat $GOOGLE_JSON_FILE
 
 # create `key.properties` at build time that stores credentials of keystore file.  
 # keystore is essential to build sign apk on appstore:
