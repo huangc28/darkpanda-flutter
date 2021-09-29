@@ -29,8 +29,12 @@ touch .env
 
 echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY" 
 
+
+[ -d "$APPCENTER_SOURCE_DIRECTORY/android/app" ] && echo "Directory $APPCENTER_SOURCE_DIRECTORY/android/app exists."
+
 # create google-services.json for firestore to work.
-GOOGLE_JSON_FILE=android/app/google-services.json
+# GOOGLE_JSON_FILE=android/app/google-services.json
+GOOGLE_JSON_FILE="$APPCENTER_SOURCE_DIRECTORY/android/app/google-services.json"
 touch $GOOGLE_JSON_FILE
 echo "Updating Google Json"
 echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
