@@ -1,4 +1,4 @@
-package com.example.darkpanda_flutter
+package com.dev.darkpanda_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
