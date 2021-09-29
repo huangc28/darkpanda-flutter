@@ -25,12 +25,25 @@ flutter doctor
 echo "Installed flutter to `pwd`/flutter"
 
 # create .env file specified in pubspec.yaml for build to pass.
-touch .env
+# write env vars to .env file.
+ENV_FILE = "$APPCENTER_SOURCE_DIRECTORY/.env"
+touch $ENV_FILE
+cat > $ENV_FILE <<- EOM  
+ENV=$ENV
+SERVER_HOST=$SERVER_HOST
+PUBNUB_PUBLISH_KEY=$PUBNUB_PUBLISH_KEY
+PUBNUB_SUBSCRIBE_KEY=$PUBNUB_SUBSCRIBE_KEY
+PUBNUB_SECRET_KEY=$PUBNUB_SECRET_KEY
+GEOCODING_APIS=$GEOCODING_APIS
+APPCENTER_ANDROID_APP_SECRET=$APPCENTER_ANDROID_APP_SECRET
+EOM
 
-echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY" 
+echo ".env content:"
+cat $ENV_FILE
 
+# echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY" 
 
-[ -d "$APPCENTER_SOURCE_DIRECTORY/android/app" ] && echo "Directory $APPCENTER_SOURCE_DIRECTORY/android/app exists."
+# [ -d "$APPCENTER_SOURCE_DIRECTORY/android/app" ] && echo "Directory $APPCENTER_SOURCE_DIRECTORY/android/app exists."
 
 # create google-services.json for firestore to work.
 # GOOGLE_JSON_FILE=android/app/google-services.json
