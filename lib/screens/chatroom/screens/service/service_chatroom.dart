@@ -663,7 +663,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     return Align(
       child: GestureDetector(
         onTap: () {
-          print('服務內容');
           HistoricalService historicalService = HistoricalService(
             serviceUuid: widget.args.serviceUUID,
             chatPartnerUsername: _inquiryDetail.username,
@@ -797,6 +796,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   Widget _appBar() {
     return AppBar(
+      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       leading: IconButton(
         alignment: Alignment.centerRight,
         icon: Icon(

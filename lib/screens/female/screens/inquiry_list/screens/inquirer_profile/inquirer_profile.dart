@@ -78,6 +78,7 @@ class _InquirerProfileState extends State<InquirerProfile>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('檔案'),
         centerTitle: true,
       ),

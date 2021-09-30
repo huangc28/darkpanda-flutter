@@ -73,6 +73,7 @@ class _BankAccountDetailState extends State<BankAccountDetail> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('銀行帳戶'),
         centerTitle: true,
         iconTheme: IconThemeData(

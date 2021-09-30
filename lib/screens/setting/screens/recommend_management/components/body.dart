@@ -35,6 +35,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         length: 1,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Color.fromRGBO(17, 16, 41, 1),
             automaticallyImplyLeading: false,
             flexibleSpace: Column(
               mainAxisAlignment: MainAxisAlignment.end,

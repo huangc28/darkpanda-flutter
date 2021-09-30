@@ -50,7 +50,10 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('註冊')),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
+        title: Text('註冊'),
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(

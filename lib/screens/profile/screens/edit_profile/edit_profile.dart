@@ -32,6 +32,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('編輯個人檔案'),
         centerTitle: true,
         iconTheme: IconThemeData(

@@ -209,6 +209,7 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('登入'),
         iconTheme: IconThemeData(
           color: Color.fromRGBO(106, 109, 137, 1),

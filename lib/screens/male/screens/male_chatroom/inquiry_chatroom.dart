@@ -438,6 +438,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
 
   Widget _appBar() {
     return AppBar(
+      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       leading: IconButton(
         alignment: Alignment.centerRight,
         icon: Icon(

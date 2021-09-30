@@ -44,6 +44,7 @@ class _ServiceDetailState extends State<ServiceDetail>
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('交易'),
         centerTitle: true,
         iconTheme: IconThemeData(

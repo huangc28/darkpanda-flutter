@@ -64,6 +64,7 @@ class _SendRegisterVerifyCodeState<Error extends AppBaseException>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('註冊'),
       ),
       body: UnfocusPrimary(

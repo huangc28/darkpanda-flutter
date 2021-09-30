@@ -137,6 +137,7 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
