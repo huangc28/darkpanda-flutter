@@ -46,3 +46,4 @@ app.*.map.json
 # Firebase firestore google service credentials 
 android/app/google-services.json
 
+ios/build/
