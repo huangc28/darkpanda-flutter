@@ -68,10 +68,8 @@ class _EditBodyState extends State<EditBody> {
     _inquiryForms.uuid = widget.activeInquiry.uuid;
     _budgetController.text = widget.activeInquiry.budget == null
         ? '0'
-        : widget.activeInquiry.budget.toString();
+        : isInteger(widget.activeInquiry.budget);
 
-    // DateTime dateTime = DateTime.now();
-    // TimeOfDay timeOfDay = TimeOfDay(hour: 00, minute: 00);
     // Convert string date into Date format
     if (widget.activeInquiry.appointmentTime != null) {
       String date = widget.activeInquiry.appointmentTime;
@@ -105,6 +103,16 @@ class _EditBodyState extends State<EditBody> {
     _addressController.clear();
 
     super.dispose();
+  }
+
+  // convert double to int if no decimal value
+  String isInteger(double value) {
+    if ((value % 1) == 0) {
+      int number = value.toInt();
+      return number.toString();
+    } else {
+      return value.toStringAsFixed(2);
+    }
   }
 
   void initServiceTypeRadio(list) {
