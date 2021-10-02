@@ -497,7 +497,7 @@ class _BodyState extends State<Body> {
   Widget buildAddImage() {
     print("ImageList length: " + images.length.toString());
     return Container(
-      height: 190,
+      height: 176,
       padding: EdgeInsets.only(top: 25),
       child: ListView.builder(
         itemCount: images.length,
@@ -633,34 +633,37 @@ class _BodyState extends State<Body> {
   }
 
   Widget _addImageButton() {
-    return GestureDetector(
-      onTap: () {
-        _showPicker();
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 16),
-        width: 123,
-        height: 150,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Color.fromRGBO(255, 255, 255, 0.1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '+',
-              style: TextStyle(
-                fontSize: 55,
-                color: Colors.white,
-                fontWeight: FontWeight.w200,
+    // Max add 9 images
+    return images.length > 9
+        ? Container()
+        : GestureDetector(
+            onTap: () {
+              _showPicker();
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 16),
+              width: 123,
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Color.fromRGBO(255, 255, 255, 0.1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '+',
+                    style: TextStyle(
+                      fontSize: 55,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
 
