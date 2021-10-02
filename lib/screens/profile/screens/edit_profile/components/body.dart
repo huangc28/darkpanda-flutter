@@ -346,6 +346,8 @@ class _BodyState extends State<Body> {
                 print('edit');
                 _showPickerAvatar();
               },
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               icon: Icon(
                 Icons.edit,
                 color: Colors.black,
