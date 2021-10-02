@@ -541,9 +541,15 @@ class _BodyState extends State<Body> {
                   print('set new state of images');
                 });
               },
-              child: Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Color.fromRGBO(0, 0, 0, 0.3),
+                ),
+                child: Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.red,
+                ),
               ),
             ),
           ),
@@ -578,9 +584,16 @@ class _BodyState extends State<Body> {
                   images.removeAt(index);
                 });
               },
-              child: Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
+              child: Container(
+                // color: Color.fromRGBO(255, 255, 255, 0.1),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Color.fromRGBO(0, 0, 0, 0.3),
+                ),
+                child: Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.red,
+                ),
               ),
             ),
           ),
