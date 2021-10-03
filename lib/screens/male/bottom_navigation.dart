@@ -30,7 +30,7 @@ Map<MaleAppTabItem, TabItemAsset> TabLabelMap = {
     ),
   ),
   MaleAppTabItem.manage: TabItemAsset(
-    label: '管理',
+    label: '服務',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/manage_active.png'),
     ),
