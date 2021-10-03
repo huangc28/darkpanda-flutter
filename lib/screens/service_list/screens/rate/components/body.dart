@@ -144,6 +144,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     return BlocListener<SendRateBloc, SendRateState>(
       listener: (context, state) {
         loading = state.status == AsyncLoadingStatus.loading;
+
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
         //user done send rating.
         if (state.status == AsyncLoadingStatus.done) {
           widget.onPressComplete();

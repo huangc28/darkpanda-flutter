@@ -31,10 +31,12 @@ class _RateState extends State<Rate> with SingleTickerProviderStateMixin {
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(null),
-          ),
+          complete == false
+              ? new IconButton(
+                  icon: new Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(null),
+                )
+              : Container(),
           SizedBox(width: 20),
         ],
         iconTheme: IconThemeData(

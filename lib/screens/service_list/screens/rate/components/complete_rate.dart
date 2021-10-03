@@ -1,3 +1,7 @@
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/service_list/service_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
@@ -5,6 +9,7 @@ import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompleteRate extends StatefulWidget {
   const CompleteRate({
@@ -61,18 +66,34 @@ class _CompleteRateState extends State<CompleteRate>
               ),
               child: DPTextButton(
                 onPressed: () {
-                  print('回到項目管理');
+                  print('回到項目服務');
                   // Navigator.of(context).pop(true);
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamedAndRemoveUntil(
-                    MainRoutes.male,
-                    ModalRoute.withName('/'),
-                    arguments: MaleAppTabItem.manage,
-                  );
+                  final gender =
+                      BlocProvider.of<AuthUserBloc>(context).state.user.gender;
+
+                  if (gender == Gender.female) {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamedAndRemoveUntil(
+                      MainRoutes.female,
+                      ModalRoute.withName('/'),
+                      arguments: TabItem.manage,
+                    );
+                  }
+
+                  if (gender == Gender.male) {
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushNamedAndRemoveUntil(
+                      MainRoutes.male,
+                      ModalRoute.withName('/'),
+                      arguments: MaleAppTabItem.manage,
+                    );
+                  }
                 },
-                text: '回到項目管理',
+                text: '回到項目服務',
                 theme: DPTextButtonThemes.purple,
               ),
             ),
