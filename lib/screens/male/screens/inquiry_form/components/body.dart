@@ -61,6 +61,10 @@ class _BodyState extends State<Body> {
     super.initState();
     BlocProvider.of<LoadServiceListBloc>(context).add(LoadServiceList());
 
+    timeOfDay = TimeOfDay(
+        hour: _inquiryForms.inquiryTime.hour,
+        minute: _inquiryForms.inquiryTime.minute);
+
     _dateController.text = _formatDate(_inquiryForms.inquiryDate);
     _timeController.text = _formatTime(
       _inquiryForms.inquiryTime,
