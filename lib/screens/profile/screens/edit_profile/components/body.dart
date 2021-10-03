@@ -466,9 +466,12 @@ class _BodyState extends State<Body> {
       },
       child: TextFormField(
         controller: _descriptionTextController,
-        keyboardType: TextInputType.multiline,
+        keyboardType: TextInputType.text,
         maxLines: 4,
         style: TextStyle(color: Colors.white),
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
         decoration: InputDecoration(
           hintText: "請輸入您的自我介紹",
           border: InputBorder.none,
