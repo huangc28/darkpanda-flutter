@@ -142,7 +142,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
     return Container(
       padding: EdgeInsets.only(top: 30, right: 16, left: 16, bottom: 16),
       child: Row(
-        children: [
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,

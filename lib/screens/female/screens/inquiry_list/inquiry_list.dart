@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/inquiry.dart';
 import 'package:darkpanda_flutter/routes.dart';
@@ -68,33 +69,6 @@ class _InqiuryListState extends State<InqiuryList> {
     super.dispose();
 
     _inquiryChatroomsBloc.add(ClearInquiryChatList());
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.only(
-        top: SizeConfig.screenHeight * 0.034, //30,
-        right: SizeConfig.screenWidth * 0.038, //16,
-        left: SizeConfig.screenWidth * 0.038, //16,
-      ),
-      child: Row(
-        children: [
-          Image(
-            image: AssetImage('assets/panda_head_logo.png'),
-            width: 31,
-            height: 31,
-          ),
-          SizedBox(width: 8),
-          Text(
-            '需求總覽',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -184,6 +158,7 @@ class _InqiuryListState extends State<InqiuryList> {
                       left: SizeConfig.screenWidth * 0.038, //16,
                       right: SizeConfig.screenWidth * 0.038, //16,
                     ),
+                    height: SizeConfig.screenHeight * 0.2,
                     child: InquiryList(
                       onLoadMore: () {
                         print('DEBUG trigger load more');
@@ -261,6 +236,33 @@ class _InqiuryListState extends State<InqiuryList> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: EdgeInsets.only(
+        top: SizeConfig.screenHeight * 0.034, //30,
+        right: SizeConfig.screenWidth * 0.038, //16,
+        left: SizeConfig.screenWidth * 0.038, //16,
+      ),
+      child: Row(
+        children: <Widget>[
+          Image(
+            image: AssetImage('assets/panda_head_logo.png'),
+            width: 31,
+            height: 31,
+          ),
+          SizedBox(width: 8),
+          Text(
+            '需求總覽',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ],
       ),
     );
   }
