@@ -35,7 +35,6 @@ class InquiryList extends StatelessWidget {
           child: ListView.builder(
             controller: scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
-            // physics: const NeverScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: inquiries.length,
