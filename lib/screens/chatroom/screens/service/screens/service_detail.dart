@@ -7,16 +7,20 @@ import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dar
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 
 import 'components/body.dart';
 import 'components/cancel_service_confirmation_dialog.dart';
 
 class ServiceDetail extends StatefulWidget {
-  final HistoricalService historicalService;
   const ServiceDetail({
     Key key,
     @required this.historicalService,
+    this.serviceDetails,
   }) : super(key: key);
+
+  final HistoricalService historicalService;
+  final ServiceDetails serviceDetails;
 
   @override
   _ServiceDetailState createState() => _ServiceDetailState();
@@ -40,6 +44,7 @@ class _ServiceDetailState extends State<ServiceDetail>
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('交易'),
         centerTitle: true,
         iconTheme: IconThemeData(
@@ -104,6 +109,7 @@ class _ServiceDetailState extends State<ServiceDetail>
         child: Body(
           historicalService: widget.historicalService,
           paymentDetail: _paymentDetail,
+          serviceDetails: widget.serviceDetails,
           paymentDetailStatus: _paymentDetailStatus,
           onCancelService: () {
             showDialog(

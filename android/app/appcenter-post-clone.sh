@@ -13,7 +13,9 @@ cd ..
 git clone -b stable https://github.com/flutter/flutter.git
 export PATH=`pwd`/flutter/bin:$PATH
 
+# switch flutter channel to 'stable' and upgrade to latest build
 flutter channel stable
+flutter upgrade
 
 # accepting all licenses
 yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
@@ -23,15 +25,36 @@ flutter doctor
 echo "Installed flutter to `pwd`/flutter"
 
 # create .env file specified in pubspec.yaml for build to pass.
-touch .env
+# write env vars to .env file.
+ENV_FILE="$APPCENTER_SOURCE_DIRECTORY/.env"
+touch $ENV_FILE
+cat > $ENV_FILE <<- EOM  
+ENV=$ENV
+SERVER_HOST=$SERVER_HOST
+PUBNUB_PUBLISH_KEY=$PUBNUB_PUBLISH_KEY
+PUBNUB_SUBSCRIBE_KEY=$PUBNUB_SUBSCRIBE_KEY
+PUBNUB_SECRET_KEY=$PUBNUB_SECRET_KEY
+GEOCODING_APIS=$GEOCODING_APIS
+APPCENTER_ANDROID_APP_SECRET=$APPCENTER_ANDROID_APP_SECRET
+EOM
+
+echo ".env content:"
+cat $ENV_FILE
+
+# echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY" 
+
+# [ -d "$APPCENTER_SOURCE_DIRECTORY/android/app" ] && echo "Directory $APPCENTER_SOURCE_DIRECTORY/android/app exists."
 
 # create google-services.json for firestore to work.
-GOOGLE_JSON_FILE=android/app/google-services.json
+# GOOGLE_JSON_FILE=android/app/google-services.json
+GOOGLE_JSON_FILE="$APPCENTER_SOURCE_DIRECTORY/android/app/google-services.json"
 touch $GOOGLE_JSON_FILE
 echo "Updating Google Json"
 echo "$GOOGLE_JSON" > $GOOGLE_JSON_FILE
 sed -i -e 's/\\"/'\"'/g' $GOOGLE_JSON_FILE
-echo "File updated"
+
+echo "File content:"
+cat $GOOGLE_JSON_FILE
 
 # create `key.properties` at build time that stores credentials of keystore file.  
 # keystore is essential to build sign apk on appstore:

@@ -26,7 +26,7 @@ class TopupUPaymentConfirmationDialog extends StatelessWidget {
         actions: <Widget>[
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Container(
                 width: MediaQuery.of(context).size.width * 0.3,

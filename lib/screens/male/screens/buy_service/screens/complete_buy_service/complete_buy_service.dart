@@ -45,6 +45,7 @@ class _CompleteBuyServiceState extends State<CompleteBuyService> {
       child: Scaffold(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         appBar: AppBar(
+          backgroundColor: Color.fromRGBO(17, 16, 41, 1),
           automaticallyImplyLeading: false,
           title: Text('支付'),
           centerTitle: true,

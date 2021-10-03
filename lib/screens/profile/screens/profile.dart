@@ -230,6 +230,8 @@ class _ProfileState extends State<Profile> {
                           );
                         }
                       },
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
                       child: UserAvatar(
                         state?.userProfile?.avatarUrl,
                         radius: 38,
@@ -241,6 +243,8 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           navigateUpdateProfilePage(state, userImageList);
                         },
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
                         child: Column(
                           children: <Widget>[
                             Row(

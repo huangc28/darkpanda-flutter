@@ -1,5 +1,4 @@
 import 'package:clipboard/clipboard.dart';
-import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/recommend_management/bloc/load_general_recommend_bloc.dart';
@@ -35,6 +34,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         length: 1,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Color.fromRGBO(17, 16, 41, 1),
             automaticallyImplyLeading: false,
             flexibleSpace: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -104,7 +104,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-          nameList("普通推薦名單"),
+          // nameList("普通推薦名單"),
         ],
       ),
     );

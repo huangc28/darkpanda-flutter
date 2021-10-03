@@ -27,6 +27,8 @@ class MaleUnpaidInfo extends StatelessWidget {
   }
 
   Widget _totalDpInfo() {
+    final total = serviceDetails.matchingFee + serviceDetails.price;
+
     return Container(
       padding: EdgeInsets.only(top: 15, left: 25, right: 25),
       child: Row(
@@ -60,7 +62,7 @@ class MaleUnpaidInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    serviceDetails.matchingFee?.toStringAsFixed(0),
+                    total?.toStringAsFixed(0),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 38,

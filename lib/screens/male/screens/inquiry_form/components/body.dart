@@ -46,7 +46,8 @@ class _BodyState extends State<Body> {
 
   InquiryForms _inquiryForms = InquiryForms(
     inquiryDate: DateTime.now(),
-    inquiryTime: TimeOfDay(hour: 00, minute: 00),
+    inquiryTime:
+        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
     duration: Duration(hours: 1, minutes: 0),
   );
 
@@ -384,7 +385,7 @@ class _BodyState extends State<Body> {
       child: TextFormField(
         controller: _budgetController,
         validator: (String v) {
-          return v.isEmpty || v == '0' ? 'Budget can not be empty' : null;
+          return v.isEmpty || v == '0' ? '請輸入預算' : null;
         },
         onSaved: (value) {
           _inquiryForms.budget = double.tryParse(value);

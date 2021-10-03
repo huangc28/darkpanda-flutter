@@ -87,10 +87,14 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                       // Dismiss inquiry_detail_dialog
                       Navigator.pop(context, true);
 
+                      final total = widget
+                              .inquiryDetail.updateInquiryMessage.price +
+                          widget.inquiryDetail.updateInquiryMessage.matchingFee;
+
                       inquiryDetail.balance = state.myDp.balance;
 
                       // Go to Top Up screen
-                      if (widget.messages.matchingFee > state.myDp.balance) {
+                      if (total > state.myDp.balance) {
                         Navigator.of(
                           context,
                           rootNavigator: true,
@@ -176,6 +180,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         if (state.status == AsyncLoadingStatus.done) {
           inquiryDetail.serviceUuid =
               state.emitServiceConfirmMessageResponse.serviceChannelUuid;
+
           BlocProvider.of<LoadMyDpBloc>(context).add(
             LoadMyDp(),
           );
@@ -215,6 +220,9 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   }
 
   Widget _inquiryAmountDetail() {
+    final total = widget.inquiryDetail.updateInquiryMessage.price +
+        widget.inquiryDetail.updateInquiryMessage.matchingFee;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -224,11 +232,18 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
-            _buildEachText('pie.png', '價格',
-                '${widget.inquiryDetail.updateInquiryMessage.price}'),
-            SizedBox(height: 8),
             _buildEachText('pie.png', '小計',
+                '${widget.inquiryDetail.updateInquiryMessage.price}DP'),
+            SizedBox(height: 8),
+            _buildEachText('heart.png', '服務費',
                 '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
+            SizedBox(height: 8),
+            _buildEachText(
+              'coin.png',
+              '合計',
+              '${total}DP',
+              fontWeight: FontWeight.bold,
+            ),
           ],
         ),
       ),
@@ -292,7 +307,10 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   }
 
   Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+      {Color titleColor,
+      double titleSize,
+      double valueSize,
+      FontWeight fontWeight = FontWeight.normal}) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,6 +331,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                   ? titleColor
                   : Color.fromRGBO(106, 109, 137, 1),
               fontSize: titleSize != null ? titleSize : 13,
+              fontWeight: fontWeight,
             ),
           ),
           SizedBox(width: 10),
@@ -322,6 +341,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
               style: TextStyle(
                 color: Colors.black,
                 fontSize: valueSize != null ? valueSize : 15,
+                fontWeight: fontWeight,
               ),
             ),
           ),

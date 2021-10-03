@@ -53,6 +53,7 @@ class _ServiceListState extends State<ServiceList>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: TabBar(
           onTap: (index) {
             if (_tabs[index] == ServiceListTabs.incoming) {

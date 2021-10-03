@@ -23,7 +23,7 @@ class _InquiryFormState extends State<InquiryForm> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('編輯需求 ~'),
+        title: Text('編輯需求'),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(

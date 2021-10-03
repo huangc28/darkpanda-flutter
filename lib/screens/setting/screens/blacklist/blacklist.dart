@@ -13,6 +13,7 @@ class _BlackListState extends State<BlackList> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('封鎖名單'),
         centerTitle: true,
         iconTheme: IconThemeData(

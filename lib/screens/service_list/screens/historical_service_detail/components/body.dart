@@ -309,6 +309,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget _buildDpCardInfo() {
     final price =
         widget.paymentDetail.price == null ? 0 : widget.paymentDetail.price;
+
+    final total = price + widget.paymentDetail.matchingFee;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -325,6 +328,18 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildEachText('pie.png', '小計', '${price}DP'),
+          SizedBox(height: 15),
+          _buildEachText(
+              'heart.png', '服務費', '${widget.paymentDetail.matchingFee}DP'),
+          SizedBox(height: 15),
+          _buildEachText(
+            'coin.png',
+            '合計',
+            '${total}DP',
+            titleSize: 14,
+            valueSize: 16,
+            titleColor: Colors.white,
+          ),
         ],
       ),
     );

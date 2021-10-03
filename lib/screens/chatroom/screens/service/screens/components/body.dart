@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -13,12 +14,14 @@ class Body extends StatefulWidget {
     Key key,
     @required this.historicalService,
     @required this.paymentDetail,
+    this.serviceDetails,
     @required this.paymentDetailStatus,
     this.onCancelService,
   }) : super(key: key);
 
   final HistoricalService historicalService;
   final PaymentDetail paymentDetail;
+  final ServiceDetails serviceDetails;
   final AsyncLoadingStatus paymentDetailStatus;
   final VoidCallback onCancelService;
 
@@ -206,6 +209,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildDpCardInfo() {
+    final total =
+        widget.serviceDetails.price + widget.serviceDetails.matchingFee;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -221,8 +227,19 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildEachText('pie.png', '小計', '${widget.serviceDetails.price}DP'),
+          SizedBox(height: 15),
           _buildEachText(
-              'pie.png', '小計', '${widget.paymentDetail.matchingFee}DP'),
+              'heart.png', '服務費', '${widget.serviceDetails.matchingFee}DP'),
+          SizedBox(height: 15),
+          _buildEachText(
+            'coin.png',
+            '合計',
+            '${total}DP',
+            titleSize: 14,
+            valueSize: 16,
+            titleColor: Colors.white,
+          ),
         ],
       ),
     );

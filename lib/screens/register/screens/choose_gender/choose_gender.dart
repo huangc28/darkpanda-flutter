@@ -29,6 +29,7 @@ class _ChooseGenderState extends State<ChooseGender> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('註冊'),
       ),
       body: SafeArea(

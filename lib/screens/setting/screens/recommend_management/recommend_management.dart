@@ -19,6 +19,7 @@ class _RecommendManagementState extends State<RecommendManagement>
     return Scaffold(
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: Text('推薦管理'),
         centerTitle: true,
         iconTheme: IconThemeData(

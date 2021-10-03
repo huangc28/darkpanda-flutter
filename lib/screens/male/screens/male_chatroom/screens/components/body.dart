@@ -45,10 +45,14 @@ class _BodyState extends State<Body> {
                           children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: UserAvatar(
-                                  widget.authUser.avatarUrl != null
-                                      ? widget.authUser.avatarUrl
-                                      : ''),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: UserAvatar(
+                                    widget.authUser.avatarUrl != null
+                                        ? widget.authUser.avatarUrl
+                                        : ''),
+                              ),
                             ),
                             Expanded(
                               flex: 3,

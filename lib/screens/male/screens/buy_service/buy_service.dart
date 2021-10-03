@@ -64,6 +64,7 @@ class _BuyServiceState extends State<BuyService> {
       child: Scaffold(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         appBar: AppBar(
+          backgroundColor: Color.fromRGBO(17, 16, 41, 1),
           leadingWidth: 85,
           leading: Row(
             children: <Widget>[

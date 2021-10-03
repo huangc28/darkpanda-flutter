@@ -46,6 +46,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
+      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       title: Text('註冊'),
     );
     var _appBarSize = appBar.preferredSize.height;
