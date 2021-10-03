@@ -45,6 +45,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/phone_authenticate.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush(SettingRoutes.verify_phone, null);
                           },
@@ -54,6 +56,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/recommend_management.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush(
                                 SettingRoutes.recommend_management, null);
@@ -64,6 +68,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/buy_dp.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush(SettingRoutes.topup_dp, null);
                           },
@@ -73,6 +79,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush('/blacklist', null);
                           },
@@ -84,6 +92,8 @@ class _MaleSettingsState extends State<MaleSettings> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
                       onTap: () {},
                     ),
                     Padding(

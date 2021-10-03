@@ -28,6 +28,8 @@ class _InquiryFormState extends State<InquiryForm> {
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.close),
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onPressed: () => Navigator.of(context).pop(null),
           ),
         ],

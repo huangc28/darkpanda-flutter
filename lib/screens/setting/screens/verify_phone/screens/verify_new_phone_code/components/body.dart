@@ -269,6 +269,8 @@ class _BodyState extends State<Body> {
               letterSpacing: 0.5,
             ),
           ),
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onTap: state.status == TimerStatus.progressing
               ? null
               : handleTriggerResend,

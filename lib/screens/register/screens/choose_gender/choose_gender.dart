@@ -79,6 +79,8 @@ class _ChooseGenderState extends State<ChooseGender> {
                               _femaleBtnActive = true;
                             });
                           },
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           child: Container(
                             child: _femaleBtnActive
                                 ? SizedBox(
@@ -103,6 +105,8 @@ class _ChooseGenderState extends State<ChooseGender> {
                               _femaleBtnActive = false;
                             });
                           },
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           child: _femaleBtnActive
                               ? SizedBox(
                                   width: SizeConfig.screenWidth * 0.4,

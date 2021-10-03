@@ -28,6 +28,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
       ),
       iconSize: 22,
       color: Colors.white,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onPressed: widget.onImageGallery,
     );
   }
@@ -37,6 +39,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
       icon: Icon(Icons.send),
       iconSize: 22,
       color: Colors.white,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onPressed: widget.onSend,
     );
   }
@@ -46,6 +50,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
       icon: Icon(
         Icons.camera_alt_rounded,
       ),
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       iconSize: 22,
       color: Colors.white,
       onPressed: widget.onCamera,

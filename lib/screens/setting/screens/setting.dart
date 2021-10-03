@@ -74,6 +74,8 @@ class _SettingState extends State<Setting> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/phone_authenticate.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(builder: (context) {
@@ -98,6 +100,8 @@ class _SettingState extends State<Setting> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/recommend_management.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(builder: (context) {
@@ -121,6 +125,8 @@ class _SettingState extends State<Setting> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/bank_account.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush('/bank-account', null);
                           },
@@ -130,6 +136,8 @@ class _SettingState extends State<Setting> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush('/blacklist', null);
                           },
@@ -141,6 +149,8 @@ class _SettingState extends State<Setting> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
                       onTap: () {},
                     ),
                     Padding(

@@ -73,6 +73,8 @@ class _BuyServiceState extends State<BuyService> {
                   Icons.arrow_back,
                   color: Color.fromRGBO(106, 109, 137, 1),
                 ),
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 onPressed: () {
                   // If route is from service_chatroom, should use pop
                   if (widget.args.routeTypes ==

@@ -190,6 +190,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                         onPressed: () {
                           widget.onTapClose();
                         },
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
                         icon: Icon(Icons.cancel_outlined),
                         iconSize: 22,
                       ),

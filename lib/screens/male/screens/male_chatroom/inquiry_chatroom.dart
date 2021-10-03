@@ -445,6 +445,8 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onPressed: () async {
           await showDialog(
             barrierDismissible: false,

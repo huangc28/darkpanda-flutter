@@ -34,6 +34,8 @@ class _RateState extends State<Rate> with SingleTickerProviderStateMixin {
           complete == false
               ? new IconButton(
                   icon: new Icon(Icons.close),
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   onPressed: () => Navigator.of(context).pop(null),
                 )
               : Container(),

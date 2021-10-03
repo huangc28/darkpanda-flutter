@@ -803,6 +803,8 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onPressed: () {
           // If is female, use pop
           if (_sender.gender == Gender.female) {
