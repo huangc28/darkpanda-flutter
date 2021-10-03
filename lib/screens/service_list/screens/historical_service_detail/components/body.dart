@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -339,6 +340,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             titleSize: 14,
             valueSize: 16,
             titleColor: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ],
       ),
@@ -371,8 +373,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -393,6 +402,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   ? titleColor
                   : Color.fromRGBO(106, 109, 137, 1),
               fontSize: titleSize != null ? titleSize : 13,
+              fontWeight: fontWeight,
             ),
           ),
           SizedBox(width: 10),
@@ -404,6 +414,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,
+                fontWeight: fontWeight,
               ),
             ),
           ),
