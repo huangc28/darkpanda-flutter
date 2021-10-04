@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
@@ -68,7 +69,7 @@ class _EditBodyState extends State<EditBody> {
     _inquiryForms.uuid = widget.activeInquiry.uuid;
     _budgetController.text = widget.activeInquiry.budget == null
         ? '0'
-        : isInteger(widget.activeInquiry.budget);
+        : convertZeroDecimalToInt(widget.activeInquiry.budget);
 
     // Convert string date into Date format
     if (widget.activeInquiry.appointmentTime != null) {
@@ -103,16 +104,6 @@ class _EditBodyState extends State<EditBody> {
     _addressController.clear();
 
     super.dispose();
-  }
-
-  // convert double to int if no decimal value
-  String isInteger(double value) {
-    if ((value % 1) == 0) {
-      int number = value.toInt();
-      return number.toString();
-    } else {
-      return value.toStringAsFixed(2);
-    }
   }
 
   void initServiceTypeRadio(list) {

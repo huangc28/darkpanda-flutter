@@ -48,9 +48,13 @@ class _TopupPaymentState extends State<TopupPayment> {
 
   bool isLoading = false;
 
+  InquiryDetail _inquiryDetail;
+
   @override
   void initState() {
     super.initState();
+
+    _inquiryDetail = widget.args;
 
     _initTappay();
 
@@ -159,6 +163,8 @@ class _TopupPaymentState extends State<TopupPayment> {
                     isLoading = false;
                   });
 
+                  _inquiryDetail.balance += widget.amount;
+
                   _showInSnackBar('充值成功！');
                   // If args is null, means topup is from settings
 
@@ -185,7 +191,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                               ),
                             ],
                             child: BuyService(
-                              args: widget.args,
+                              args: _inquiryDetail,
                             ),
                           );
                         },

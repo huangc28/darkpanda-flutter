@@ -20,7 +20,7 @@ class Review extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         SizeConfig.screenWidth * 0.04, //16.0,
-        SizeConfig.screenHeight * 0.02, //16.0,
+        SizeConfig.screenHeight * 0.0, //16.0,
         SizeConfig.screenWidth * 0.04, //16.0,
         SizeConfig.screenHeight * 0.02, //16.0,
       ),
@@ -41,7 +41,7 @@ class Review extends StatelessWidget {
           ),
         ),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               children: <Widget>[
                 UserAvatar(review.raterAvatarUrl, radius: 20),

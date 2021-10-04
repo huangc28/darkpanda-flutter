@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -113,6 +114,7 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   children: <Widget>[
                     _buildProfileDetail(),
+                    SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {
                         if (state.status == AsyncLoadingStatus.error) {
@@ -395,7 +397,7 @@ class _ProfileState extends State<Profile> {
 
     if (trait.type == 'age') {
       label = '岁';
-      value = trait.value.toInt();
+      value = trait.value;
     } else if (trait.type == 'height') {
       label = 'm';
       value = trait.value;
@@ -417,7 +419,7 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                value.toString() + label,
+                convertZeroDecimalToInt(value) + label,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

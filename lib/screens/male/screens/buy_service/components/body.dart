@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
@@ -187,8 +188,11 @@ class _BodyState extends State<Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計',
-              widget.args.updateInquiryMessage.price.toString() + 'DP'),
+          _buildEachText(
+              'pie.png',
+              '小計',
+              convertZeroDecimalToInt(widget.args.updateInquiryMessage.price) +
+                  'DP'),
           SizedBox(height: 15),
           _buildEachText('heart.png', '服務費',
               widget.args.updateInquiryMessage.matchingFee.toString() + 'DP'),
@@ -196,10 +200,11 @@ class _BodyState extends State<Body> {
           _buildEachText(
             'coin.png',
             '合計',
-            total.toString() + 'DP',
+            convertZeroDecimalToInt(total) + 'DP',
             titleSize: 14,
             valueSize: 16,
             titleColor: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ],
       ),
@@ -289,8 +294,15 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       // height: 30,
       child: Row(
@@ -312,6 +324,7 @@ class _BodyState extends State<Body> {
                   ? titleColor
                   : Color.fromRGBO(106, 109, 137, 1),
               fontSize: titleSize != null ? titleSize : 13,
+              fontWeight: fontWeight,
             ),
           ),
           SizedBox(width: 10),
@@ -321,6 +334,7 @@ class _BodyState extends State<Body> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,
+                fontWeight: fontWeight,
               ),
             ),
           ),

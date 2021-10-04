@@ -306,11 +306,15 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor,
-      double titleSize,
-      double valueSize,
-      FontWeight fontWeight = FontWeight.normal}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
