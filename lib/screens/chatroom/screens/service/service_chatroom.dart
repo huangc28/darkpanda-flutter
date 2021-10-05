@@ -385,7 +385,15 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     // Service started banner
                     BlocListener<ServiceStartNotifierBloc,
                         ServiceStartNotifierState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        print('[Debug] Service start notifier');
+
+                        setState(() {
+                          _serviceDetails.copyWith(
+                            serviceStatus: ServiceStatus.fulfilling.name,
+                          );
+                        });
+                      },
                       child: _serviceDetails.serviceStatus ==
                               ServiceStatus.fulfilling.name
                           ? ServiceStartBanner(
@@ -398,7 +406,15 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     // Payment completed banner
                     BlocListener<PaymentCompleteNotifierBloc,
                         PaymentCompleteNotifierState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        print('[Debug] Payment complete notifier');
+
+                        setState(() {
+                          _serviceDetails.copyWith(
+                            serviceStatus: ServiceStatus.to_be_fulfilled.name,
+                          );
+                        });
+                      },
                       child: _serviceDetails.serviceStatus ==
                               ServiceStatus.to_be_fulfilled.name
                           ? PaymentCompleteBanner(
