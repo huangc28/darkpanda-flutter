@@ -163,8 +163,6 @@ class _TopupPaymentState extends State<TopupPayment> {
                     isLoading = false;
                   });
 
-                  _inquiryDetail.balance += widget.amount;
-
                   _showInSnackBar('充值成功！');
                   // If args is null, means topup is from settings
 
@@ -173,6 +171,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                   }
                   // Else not enough DP which is from male accept to pay inquiry
                   else {
+                    _inquiryDetail.balance += widget.amount;
                     // Go to payment screen
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
