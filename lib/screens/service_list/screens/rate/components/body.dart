@@ -10,6 +10,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
 import '../../../models/historical_service.dart';
+import 'complete_rate.dart';
 
 class TypeSelection {
   String name;
@@ -25,10 +26,8 @@ class Body extends StatefulWidget {
   const Body({
     this.formKey,
     this.historicalService,
-    this.onPressComplete,
   });
 
-  final Function onPressComplete;
   final HistoricalService historicalService;
   final GlobalKey<FormState> formKey;
 
@@ -155,7 +154,20 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
         //user done send rating.
         if (state.status == AsyncLoadingStatus.done) {
-          widget.onPressComplete();
+          // widget.onPressComplete();
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) {
+                return CompleteRate(
+                  historicalService: widget.historicalService,
+                );
+              },
+            ),
+            ModalRoute.withName('/'),
+          );
         }
       },
       child: Form(
