@@ -1,7 +1,8 @@
-import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/slideup_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/slideup_provider.dart';
 
 class ServiceQrCode extends StatefulWidget {
   const ServiceQrCode({

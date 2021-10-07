@@ -287,4 +287,22 @@ class SearchInquiryAPIs extends BaseClient {
       );
     }
   }
+
+  // PerPage int `form:"perpage,default=5"`
+  // Page    int `form:"page,default=1"`
+  Future<http.Response> fetchFemaleList([int perPage = 5, page = 1]) async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/users/girls', {
+        'per_page': '$perPage',
+        'page': '$page',
+      }),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
 }

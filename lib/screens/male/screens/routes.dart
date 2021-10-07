@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
@@ -12,6 +16,7 @@ import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart'
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/search_inquiry_list.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
@@ -21,22 +26,31 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguem
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import 'male_chatroom/bloc/disagree_inquiry_bloc.dart';
 import 'male_chatroom/bloc/exit_chatroom_bloc.dart';
 
 class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';
+  static const randomSearch = '/random-search';
   static const inquiry_form = '/inquiry-form';
   static const inquirerProfile = '/inquirer-profile';
   static const topup_dp = '/topup-dp';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
-      SearchInquiryRoutes.root: (contect) => MultiProvider(
+      SearchInquiryRoutes.root: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => LoadInquiryBloc(
+                  searchInquiryAPIs: SearchInquiryAPIs(),
+                  loadUserBloc: BlocProvider.of<LoadUserBloc>(context),
+                ),
+              ),
+            ],
+            child: SearchInquiryList(),
+          ),
+      SearchInquiryRoutes.randomSearch: (contect) => MultiProvider(
             providers: [
               BlocProvider(
                 create: (context) => LoadInquiryBloc(

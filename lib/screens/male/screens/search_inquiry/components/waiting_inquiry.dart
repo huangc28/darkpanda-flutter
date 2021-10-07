@@ -222,13 +222,14 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
 
   Widget _buildHeader() {
     return Container(
+      color: Colors.transparent,
       padding: EdgeInsets.only(
-        top: 30,
+        top: 20,
         right: 16,
         left: 16,
       ),
       child: Row(
-        children: [
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,
