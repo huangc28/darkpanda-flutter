@@ -3,11 +3,11 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/models/female_list.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
-import 'package:darkpanda_flutter/screens/male/screens/direct_search_inquiry/models/female_list.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 part 'load_female_list_event.dart';

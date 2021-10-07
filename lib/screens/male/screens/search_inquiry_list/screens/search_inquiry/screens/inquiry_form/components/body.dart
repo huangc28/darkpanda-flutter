@@ -1,38 +1,32 @@
-import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:darkpanda_flutter/components/bullet.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/service_types.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/service_list.dart';
+
 import 'package:date_format/date_format.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
-import 'package:darkpanda_flutter/components/bullet.dart';
-import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/enums/service_types.dart';
-import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
+part 'inquiry_appointment_time_field.dart';
 
-import 'package:darkpanda_flutter/components/unfocus_primary.dart';
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/service_list.dart';
-
-import 'body.dart';
-
-class EditBody extends StatefulWidget {
-  const EditBody({
-    this.activeInquiry,
-  });
-
-  final ActiveInquiry activeInquiry;
-
+// @TODOs
+//  - duration list should be coming from the API.
+class Body extends StatefulWidget {
   @override
-  _EditBodyState createState() => _EditBodyState();
+  _BodyState createState() => _BodyState();
 }
 
-class _EditBodyState extends State<EditBody> {
+class _BodyState extends State<Body> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int selectedIndexServiceType = 0;
@@ -52,7 +46,8 @@ class _EditBodyState extends State<EditBody> {
 
   InquiryForms _inquiryForms = InquiryForms(
     inquiryDate: DateTime.now(),
-    inquiryTime: TimeOfDay(hour: 00, minute: 00),
+    inquiryTime:
+        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
     duration: Duration(hours: 1, minutes: 0),
   );
 
@@ -66,30 +61,17 @@ class _EditBodyState extends State<EditBody> {
     super.initState();
     BlocProvider.of<LoadServiceListBloc>(context).add(LoadServiceList());
 
-    _inquiryForms.uuid = widget.activeInquiry.uuid;
-    _budgetController.text = widget.activeInquiry.budget == null
-        ? '0'
-        : convertZeroDecimalToInt(widget.activeInquiry.budget);
+    timeOfDay = TimeOfDay(
+        hour: _inquiryForms.inquiryTime.hour,
+        minute: _inquiryForms.inquiryTime.minute);
 
-    // Convert string date into Date format
-    if (widget.activeInquiry.appointmentTime != null) {
-      String date = widget.activeInquiry.appointmentTime;
-      dateTime = DateTime.parse(date).toLocal();
-      timeOfDay = TimeOfDay.fromDateTime(dateTime);
-    }
+    _dateController.text = _formatDate(_inquiryForms.inquiryDate);
+    _timeController.text = _formatTime(
+      _inquiryForms.inquiryTime,
+    );
 
-    _dateController.text = widget.activeInquiry.appointmentTime == null
-        ? _formatDate(_inquiryForms.inquiryDate)
-        : _formatDate(dateTime);
-
-    _timeController.text = widget.activeInquiry.appointmentTime == null
-        ? _formatTime(timeOfDay)
-        : _formatTime(timeOfDay);
-    ;
-
-    _durationController.text = widget.activeInquiry.duration.toString();
-    _addressController.text = widget.activeInquiry.address;
-
+    _durationController.text = '30';
+    _addressController.text = '';
     serviceList.serviceNames = [];
   }
 
@@ -126,9 +108,14 @@ class _EditBodyState extends State<EditBody> {
     });
   }
 
-  String _formatDate(DateTime dateTime) {
-    return DateFormat.yMd().format(dateTime);
+  void changeIndexPeriod(int index) {
+    setState(() {
+      selectedIndexPeriod = index;
+    });
   }
+
+  String _formatDate(DateTime dateTime) =>
+      DateFormat.yMd().format(_inquiryForms.inquiryDate);
 
   String _formatTime(TimeOfDay time) {
     final now = DateTime.now();
@@ -146,30 +133,8 @@ class _EditBodyState extends State<EditBody> {
     ).toString();
   }
 
-  void _navigateToAddressSelector() async {
-    FocusScope.of(context).requestFocus(FocusNode());
-
-    final addr = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return AddressSelector(
-            initialAddress: _addressController.text,
-          );
-        },
-      ),
-    );
-
-    setState(() {
-      _addressController.text = addr;
-
-      _inquiryForms.address = _addressController.text;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final viewPortWidth = MediaQuery.of(context).size.width;
     final viewPortHeight = MediaQuery.of(context).size.height;
     initServiceTypeRadio(serviceList.serviceNames);
 
@@ -178,13 +143,13 @@ class _EditBodyState extends State<EditBody> {
         child: SizedBox(
           width: double.infinity,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: (20.0 / 375.0) * viewPortWidth),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: viewPortHeight * 0.05),
+                  SizedBox(height: viewPortHeight * 0.02),
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   _textLabel('服務類型'),
@@ -225,6 +190,27 @@ class _EditBodyState extends State<EditBody> {
     );
   }
 
+  void _navigateToAddressSelector() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    final addr = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return AddressSelector(
+            initialAddress: _addressController.text,
+          );
+        },
+      ),
+    );
+
+    setState(() {
+      _addressController.text = addr;
+
+      _inquiryForms.address = _addressController.text;
+    });
+  }
+
   Widget _confirmButton() {
     return BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
       listener: (context, state) {
@@ -237,6 +223,12 @@ class _EditBodyState extends State<EditBody> {
           setState(() {
             isLoading = false;
           });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
         } else if (state.status == AsyncLoadingStatus.done) {
           setState(() {
             isLoading = false;
@@ -255,10 +247,10 @@ class _EditBodyState extends State<EditBody> {
           _formKey.currentState.save();
 
           BlocProvider.of<SearchInquiryFormBloc>(context).add(
-            SubmitEditSearchInquiryForm(_inquiryForms),
+            SubmitSearchInquiryForm(_inquiryForms),
           );
         },
-        text: '編輯',
+        text: '提交需求',
       ),
     );
   }
@@ -329,25 +321,8 @@ class _EditBodyState extends State<EditBody> {
         if (state.status == AsyncLoadingStatus.done) {
           setState(() {
             serviceList = state.serviceList;
-            // _serviceTypeController.text = serviceList.serviceNames[0].name;
-            // _inquiryForms.serviceType = _serviceTypeController.text;
-
-            // To get index of selected value from widget.activeInquiry.serviceType
-            // If widget.activeInquiry.serviceType is null, get the first index
-            final index = serviceList.serviceNames.indexWhere((element) =>
-                element.name ==
-                (widget.activeInquiry.serviceType == null
-                    ? serviceList.serviceNames[0].name
-                    : widget.activeInquiry.serviceType));
-
-            _serviceTypeController.text =
-                widget.activeInquiry.serviceType == null
-                    ? serviceList.serviceNames[0].name
-                    : widget.activeInquiry.serviceType;
-
+            _serviceTypeController.text = serviceList.serviceNames[0].name;
             _inquiryForms.serviceType = _serviceTypeController.text;
-
-            changeIndexServiceType(index);
           });
         }
       },
@@ -414,7 +389,7 @@ class _EditBodyState extends State<EditBody> {
       child: TextFormField(
         controller: _budgetController,
         validator: (String v) {
-          return v.isEmpty || v == '0' ? 'Budget can not be empty' : null;
+          return v.isEmpty || v == '0' ? '請輸入預算' : null;
         },
         onSaved: (value) {
           _inquiryForms.budget = double.tryParse(value);
@@ -447,14 +422,12 @@ class _EditBodyState extends State<EditBody> {
     );
   }
 
-  Widget _textLabel(String text) {
-    return Bullet(
-      text,
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
-    );
-  }
+  Widget _textLabel(String text) => Bullet(
+        text,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      );
 }

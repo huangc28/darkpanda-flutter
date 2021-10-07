@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 class CreateInquiry extends StatefulWidget {

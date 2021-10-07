@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/screens/setting/routes.dart';
 
-import 'screens/routes.dart';
+import 'screens/chats/routes.dart';
+import 'screens/search_inquiry_list/routes.dart';
 
 import './bottom_navigation.dart';
 
 // Each tag keeps it's own navigator instance to track navigation history.
 final Map<MaleAppTabItem, String> _initialRouteMap = {
   MaleAppTabItem.waitingInquiry: SearchInquiryRoutes.root,
+  MaleAppTabItem.chat: ServiceChatroomRoutes.root,
   MaleAppTabItem.manage: ServiceChatroomRoutes.root,
   MaleAppTabItem.settings: SettingRoutes.root,
   MaleAppTabItem.profile: ProfileRoutes.root,
@@ -29,6 +31,7 @@ class TabNavigator extends StatelessWidget {
   final MaleAppTabItem currentTab;
 
   final SearchInquiryRoutes _searchInquiryRoutes = SearchInquiryRoutes();
+  final ChatRoutes _chatRoutes = ChatRoutes();
   final ServiceChatroomRoutes _servicesRoutes = ServiceChatroomRoutes();
   final SettingRoutes _settingRoutes = SettingRoutes();
   final ProfileRoutes _profileRoutes = ProfileRoutes();
@@ -37,6 +40,10 @@ class TabNavigator extends StatelessWidget {
       BuildContext context, MaleAppTabItem tabItem) {
     if (tabItem == MaleAppTabItem.waitingInquiry) {
       return _searchInquiryRoutes.routeBuilder(context);
+    }
+
+    if (tabItem == MaleAppTabItem.chat) {
+      return _chatRoutes.routeBuilder(context);
     }
 
     if (tabItem == MaleAppTabItem.manage) {

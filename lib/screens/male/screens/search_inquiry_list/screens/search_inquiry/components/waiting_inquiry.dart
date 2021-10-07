@@ -1,19 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/edit_inquiry_form.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/components/color_loader.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/edit_inquiry_form.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 
 import 'cancel_inquiry_confirmation_dialog.dart';
+import 'color_loader.dart';
 
 class WaitingInquiry extends StatefulWidget {
   const WaitingInquiry({

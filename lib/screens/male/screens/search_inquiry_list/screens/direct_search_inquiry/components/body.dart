@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-import 'package:darkpanda_flutter/screens/male/screens/direct_search_inquiry/screens/female_profile/female_profile.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/screens/female_profile/female_profile.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
 
 List<String> images = [
   "https://thumbs.dreamstime.com/b/portrait-beautiful-asian-girl-summer-hat-105033823.jpg",

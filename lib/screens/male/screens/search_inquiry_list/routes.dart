@@ -14,8 +14,6 @@ import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/inquiry_form.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/search_inquiry_list.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
@@ -27,8 +25,10 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
-import 'male_chatroom/bloc/disagree_inquiry_bloc.dart';
-import 'male_chatroom/bloc/exit_chatroom_bloc.dart';
+import '../male_chatroom/bloc/disagree_inquiry_bloc.dart';
+import '../male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'screens/search_inquiry/screens/inquiry_form/inquiry_form.dart';
+import 'screens/search_inquiry/search_inquiry.dart';
 
 class SearchInquiryRoutes extends BaseRoutes {
   static const root = '/';

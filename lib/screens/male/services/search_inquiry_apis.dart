@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 
 class SearchInquiryAPIs extends BaseClient {
   Future<http.Response> fetchServiceList() async {

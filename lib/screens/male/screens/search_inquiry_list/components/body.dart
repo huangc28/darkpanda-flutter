@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry/search_inquiry.dart';
-import 'package:darkpanda_flutter/screens/male/screens/direct_search_inquiry/direct_search_inquiry.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/search_inquiry.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/direct_search_inquiry.dart';
 
 class Body extends StatefulWidget {
   const Body({
