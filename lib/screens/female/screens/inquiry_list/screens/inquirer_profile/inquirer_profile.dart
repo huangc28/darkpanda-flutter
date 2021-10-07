@@ -13,6 +13,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
+import 'package:darkpanda_flutter/components/user_traits.dart';
 
 import './models/historical_service.dart';
 import '../../screen_arguments/args.dart';

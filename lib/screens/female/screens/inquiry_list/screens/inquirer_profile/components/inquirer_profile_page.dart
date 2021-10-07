@@ -42,6 +42,7 @@ class InquirerProfilePage extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           userProfile.username,
+                          maxLines: 1,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -77,7 +78,7 @@ class InquirerProfilePage extends StatelessWidget {
                       itemCount: userProfile.traits.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return traitsLabel(userProfile.traits[index]);
+                        return UserTraits(userTrait: userProfile.traits[index]);
                       },
                     ),
                   ),
@@ -171,54 +172,6 @@ class InquirerProfilePage extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-
-  Widget traitsLabel(trait) {
-    String label = '岁';
-    dynamic value = '';
-
-    if (trait.type == 'age') {
-      label = '岁';
-      value = trait.value.toInt();
-    } else if (trait.type == 'height') {
-      label = 'm';
-      value = trait.value;
-    } else {
-      label = 'kg';
-      value = trait.value;
-    }
-
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                value.toString() + label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  BoxDecoration tagBoxDecoration() {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(20.0),
-      color: Color.fromRGBO(190, 172, 255, 0.3),
     );
   }
 }
