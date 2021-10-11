@@ -8,11 +8,12 @@ import './screens/inquiry_chats/routes.dart';
 import '../profile/screens/routes.dart';
 import '../setting/routes.dart';
 import '../service_list/routes.dart';
+import 'screens/inquiry_chat_list/routes.dart';
 
 // Each tag keeps it's own navigator instance to track navigation history.
 final Map<TabItem, String> initialRouteMap = {
   TabItem.inquiries: InquiriesRoutes.root,
-  TabItem.inquiryChats: InquiryChatsRoutes.root,
+  TabItem.inquiryChats: InquiryChatListRoutes.root,
   TabItem.manage: ServiceChatroomRoutes.root,
   TabItem.settings: SettingRoutes.root,
   TabItem.profile: ProfileRoutes.root,
@@ -32,7 +33,7 @@ class TabNavigator extends StatelessWidget {
   final TabItem currentTab;
 
   final InquiriesRoutes _inquiriesRoutes = InquiriesRoutes();
-  final InquiryChatsRoutes _inquiryChatsRoutes = InquiryChatsRoutes();
+  final InquiryChatListRoutes _inquiryChatsRoutes = InquiryChatListRoutes();
   final ServiceChatroomRoutes _servicesRoutes = ServiceChatroomRoutes();
   final ProfileRoutes _profileRoutes = ProfileRoutes();
   final SettingRoutes _settingRoutes = SettingRoutes();

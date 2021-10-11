@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
-import 'screens/direct_search_inquiry/bloc/load_female_list_bloc.dart';
 
-enum SearchInquiryListTabs {
-  random,
-  specific,
+enum InquiryChatListTabs {
+  request,
+  chat,
 }
 
-class SearchInquiryList extends StatefulWidget {
-  const SearchInquiryList({Key key}) : super(key: key);
+class InquiryChatList extends StatefulWidget {
+  const InquiryChatList({Key key}) : super(key: key);
 
   @override
-  _SearchInquiryListState createState() => _SearchInquiryListState();
+  _InquiryChatListState createState() => _InquiryChatListState();
 }
 
-class _SearchInquiryListState extends State<SearchInquiryList>
+class _InquiryChatListState extends State<InquiryChatList>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   static const _tabs = [
-    SearchInquiryListTabs.random,
-    SearchInquiryListTabs.specific,
+    InquiryChatListTabs.request,
+    InquiryChatListTabs.chat,
   ];
 
   @override
@@ -36,26 +34,20 @@ class _SearchInquiryListState extends State<SearchInquiryList>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: TabBar(
           onTap: (index) {
-            if (_tabs[index] == SearchInquiryListTabs.random) {
+            if (_tabs[index] == InquiryChatListTabs.request) {
               // BlocProvider.of<LoadIncomingServiceBloc>(context)
               // .add(LoadIncomingService());
             }
 
-            if (_tabs[index] == SearchInquiryListTabs.specific) {
-              BlocProvider.of<LoadFemaleListBloc>(context)
-                  .add(LoadFemaleList());
+            if (_tabs[index] == InquiryChatListTabs.chat) {
+              // BlocProvider.of<LoadFemaleListBloc>(context)
+              //     .add(LoadFemaleList());
             }
           },
           controller: _tabController,
@@ -70,8 +62,8 @@ class _SearchInquiryListState extends State<SearchInquiryList>
             letterSpacing: 0.53,
           ),
           tabs: [
-            Tab(text: '隨機配對'),
-            Tab(text: '指定配對'),
+            Tab(text: '聊天請求'),
+            Tab(text: '聊天室'),
           ],
         ),
       ),

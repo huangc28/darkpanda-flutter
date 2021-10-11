@@ -38,6 +38,8 @@ class _ChatRoomsState extends State<ChatRooms> {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
 
+    _inquiryChatroomsBloc.add(FetchChatrooms());
+
     super.initState();
   }
 
@@ -49,96 +51,98 @@ class _ChatRoomsState extends State<ChatRooms> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SystemUiOverlayLayout(
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              // Inquiry chatrooms title
-              _buildHeader(),
-              BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
-                listener: (context, state) {
-                  // Display error in snack bar.
-                  if (state.status == AsyncLoadingStatus.error) {
-                    _refreshCompleter.completeError(state.error);
-                    _refreshCompleter = Completer();
-                    developer.log(
-                      'failed to fetch inquiry chatroom',
-                      error: state.error,
-                    );
+    return
+        // Scaffold(
+        //   body:
+        SystemUiOverlayLayout(
+      child: SafeArea(
+        child: Column(
+          children: <Widget>[
+            // Inquiry chatrooms title
+            _buildHeader(),
+            BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
+              listener: (context, state) {
+                // Display error in snack bar.
+                if (state.status == AsyncLoadingStatus.error) {
+                  _refreshCompleter.completeError(state.error);
+                  _refreshCompleter = Completer();
+                  developer.log(
+                    'failed to fetch inquiry chatroom',
+                    error: state.error,
+                  );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error.message),
-                      ),
-                    );
-                  }
-
-                  if (state.status == AsyncLoadingStatus.done) {
-                    _refreshCompleter.complete();
-                    _refreshCompleter = Completer();
-                  }
-                },
-                builder: (context, state) {
-                  if (state.status == AsyncLoadingStatus.loading ||
-                      state.status == AsyncLoadingStatus.initial) {
-                    return LoadingScreen();
-                  }
-
-                  return Expanded(
-                    child: ChatroomList(
-                      chatrooms: state.chatrooms,
-                      onRefresh: () {
-                        print('DEBUG trigger onRefresh');
-                        BlocProvider.of<InquiryChatroomsBloc>(context)
-                            .add(FetchChatrooms());
-
-                        return _refreshCompleter.future;
-                      },
-                      onLoadMore: () {
-                        print('DEBUG trigger onLoadMore');
-                        BlocProvider.of<InquiryChatroomsBloc>(context)
-                            .add(LoadMoreChatrooms());
-                      },
-                      chatroomBuilder: (context, chatroom, ___) {
-                        final lastMsg =
-                            state.chatroomLastMessage[chatroom.channelUUID];
-
-                        // Loading inquirier info before proceeding to chatroom.
-                        return Container(
-                          margin: EdgeInsets.only(
-                            bottom: 20,
-                          ),
-                          child: ChatroomGrid(
-                            onEnterChat: (chatroomModel.Chatroom chatroom) {
-                              Navigator.of(
-                                context,
-                                rootNavigator: true,
-                              ).pushNamed(
-                                MainRoutes.chatroom,
-                                arguments: ChatroomScreenArguments(
-                                  channelUUID: chatroom.channelUUID,
-                                  inquiryUUID: chatroom.inquiryUUID,
-                                  counterPartUUID: chatroom.inquirerUUID,
-                                  serviceType: chatroom.serviceType,
-                                  routeTypes: RouteTypes.fromInquiryChats,
-                                  serviceUUID: chatroom.serviceUUID,
-                                ),
-                              );
-                            },
-                            chatroom: chatroom,
-                            lastMessage: lastMsg.content,
-                          ),
-                        );
-                      },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
                     ),
                   );
-                },
-              ),
-            ],
-          ),
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  _refreshCompleter.complete();
+                  _refreshCompleter = Completer();
+                }
+              },
+              builder: (context, state) {
+                if (state.status == AsyncLoadingStatus.loading ||
+                    state.status == AsyncLoadingStatus.initial) {
+                  return LoadingScreen();
+                }
+
+                return Expanded(
+                  child: ChatroomList(
+                    chatrooms: state.chatrooms,
+                    onRefresh: () {
+                      print('DEBUG trigger onRefresh');
+                      BlocProvider.of<InquiryChatroomsBloc>(context)
+                          .add(FetchChatrooms());
+
+                      return _refreshCompleter.future;
+                    },
+                    onLoadMore: () {
+                      print('DEBUG trigger onLoadMore');
+                      BlocProvider.of<InquiryChatroomsBloc>(context)
+                          .add(LoadMoreChatrooms());
+                    },
+                    chatroomBuilder: (context, chatroom, ___) {
+                      final lastMsg =
+                          state.chatroomLastMessage[chatroom.channelUUID];
+
+                      // Loading inquirier info before proceeding to chatroom.
+                      return Container(
+                        margin: EdgeInsets.only(
+                          bottom: 20,
+                        ),
+                        child: ChatroomGrid(
+                          onEnterChat: (chatroomModel.Chatroom chatroom) {
+                            Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).pushNamed(
+                              MainRoutes.chatroom,
+                              arguments: ChatroomScreenArguments(
+                                channelUUID: chatroom.channelUUID,
+                                inquiryUUID: chatroom.inquiryUUID,
+                                counterPartUUID: chatroom.inquirerUUID,
+                                serviceType: chatroom.serviceType,
+                                routeTypes: RouteTypes.fromInquiryChats,
+                                serviceUUID: chatroom.serviceUUID,
+                              ),
+                            );
+                          },
+                          chatroom: chatroom,
+                          lastMessage: lastMsg.content,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
+      // ),
     );
   }
 

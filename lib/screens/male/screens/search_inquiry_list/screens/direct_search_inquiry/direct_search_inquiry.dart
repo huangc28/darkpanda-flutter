@@ -73,7 +73,6 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
       ),
       child: LoadMoreScrollable(
         onLoadMore: widget.onLoadMore,
-        // onLoadMore: () {},
         builder: (context, scrollController) => RefreshIndicator(
           onRefresh: widget.onRefresh,
           child: Container(
