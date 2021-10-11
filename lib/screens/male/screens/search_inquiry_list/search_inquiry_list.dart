@@ -1,6 +1,9 @@
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
+import 'screens/direct_search_inquiry/bloc/load_female_list_bloc.dart';
 
 enum SearchInquiryListTabs {
   random,
@@ -52,8 +55,8 @@ class _SearchInquiryListState extends State<SearchInquiryList>
             }
 
             if (_tabs[index] == SearchInquiryListTabs.specific) {
-              // BlocProvider.of<LoadHistoricalServiceBloc>(context)
-              // .add(LoadHistoricalService());
+              BlocProvider.of<LoadFemaleListBloc>(context)
+                  .add(LoadFemaleList());
             }
           },
           controller: _tabController,

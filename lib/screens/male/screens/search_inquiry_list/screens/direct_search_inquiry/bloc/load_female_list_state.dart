@@ -3,49 +3,57 @@ part of 'load_female_list_bloc.dart';
 class LoadFemaleListState<E extends AppBaseException> extends Equatable {
   const LoadFemaleListState._({
     this.status,
-    this.femaleUserList,
+    this.femaleUsers,
     this.error,
+    this.currentPage,
   });
 
   final AsyncLoadingStatus status;
-
-  final FemaleUserList femaleUserList;
-
+  final List<FemaleUser> femaleUsers;
   final E error;
+  final int currentPage;
 
-  const LoadFemaleListState.initial()
+  LoadFemaleListState.initial()
       : this._(
           status: AsyncLoadingStatus.initial,
+          currentPage: 0,
         );
 
-  const LoadFemaleListState.loading()
+  LoadFemaleListState.loading(LoadFemaleListState state)
       : this._(
           status: AsyncLoadingStatus.loading,
+          currentPage: state.currentPage,
         );
 
-  const LoadFemaleListState.loadFailed(E error)
+  LoadFemaleListState.loadFailed(LoadFemaleListState state, E error)
       : this._(
           status: AsyncLoadingStatus.error,
           error: error,
+          currentPage: state.currentPage,
         );
 
-  const LoadFemaleListState.loaded({
-    FemaleUserList femaleUserList,
+  LoadFemaleListState.loaded(
+    LoadFemaleListState state, {
+    List<FemaleUser> femaleUsers,
+    int currentPage,
   }) : this._(
           status: AsyncLoadingStatus.done,
-          femaleUserList: femaleUserList,
+          femaleUsers: femaleUsers ?? state.femaleUsers,
+          currentPage: currentPage ?? state.currentPage,
         );
 
-  const LoadFemaleListState.clearState()
+  LoadFemaleListState.clearState(LoadFemaleListState state)
       : this._(
-          femaleUserList: null,
+          femaleUsers: [],
           status: AsyncLoadingStatus.initial,
+          currentPage: 0,
         );
 
   @override
   List<Object> get props => [
         status,
         error,
-        femaleUserList,
+        femaleUsers,
+        currentPage,
       ];
 }

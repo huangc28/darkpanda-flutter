@@ -8,9 +8,21 @@ abstract class LoadFemaleListEvent extends Equatable {
 }
 
 class LoadFemaleList extends LoadFemaleListEvent {
-  final String uuid;
+  const LoadFemaleList({
+    this.perPage = 6,
+    this.nextPage = 1,
+  });
 
-  const LoadFemaleList({this.uuid});
+  final int perPage;
+  final int nextPage;
+}
+
+class LoadMoreFemaleList extends LoadFemaleListEvent {
+  final int perPage;
+
+  const LoadMoreFemaleList({
+    this.perPage = 6,
+  });
 }
 
 class ClearFemaleListState extends LoadFemaleListEvent {

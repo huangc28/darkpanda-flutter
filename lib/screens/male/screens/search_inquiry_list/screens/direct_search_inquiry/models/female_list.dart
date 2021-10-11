@@ -1,86 +1,75 @@
-import 'dart:developer' as developer;
+import 'package:darkpanda_flutter/models/user_profile.dart';
 
 class FemaleUser {
   FemaleUser({
-    this.serviceUuid,
-    this.status,
-    this.appointmentTime,
-    this.channelUuid,
-    this.inquiryUuid,
-    this.inquirerUuid,
-    this.chatPartnerAvatarUrl,
-    this.chatPartnerUsername,
-    this.chatPartnerUserUuid,
+    this.uuid,
+    this.username,
+    this.avatarUrl,
+    this.age,
+    this.height,
+    this.weight,
+    this.breastSize,
+    this.description,
+    this.userRating,
   });
 
-  String serviceUuid;
-  String status;
-  DateTime appointmentTime;
-  String channelUuid;
-  String inquiryUuid;
-  String inquirerUuid;
-  String chatPartnerAvatarUrl;
-  String chatPartnerUsername;
-  String chatPartnerUserUuid;
+  final String uuid;
+  final String username;
+  final String avatarUrl;
+  final int age;
+  final double height;
+  final double weight;
+  final String breastSize;
+  final String description;
+  final UserRating userRating;
 
   Map<String, dynamic> toMap() => {
-        'service_uuid': serviceUuid,
-        'status': status,
-        'appointment_time': appointmentTime,
-        'channel_uuid': channelUuid,
-        'inquiry_uuid': inquiryUuid,
-        'inquirer_uuid': inquirerUuid,
-        'chat_partner_avatar_url': chatPartnerAvatarUrl,
-        'chat_partner_username': chatPartnerUsername,
-        'chat_partner_user_uuid': chatPartnerUserUuid,
+        'uuid': uuid,
+        'username': username,
+        'avatar_url': avatarUrl,
+        'age': age,
+        'height': height,
+        'weight': weight,
+        'breast_size': breastSize,
+        'description': description,
+        'user_rating': userRating,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
-    var parsedAppointmentTime = DateTime.now();
-
-    if (data['appointment_time'] != null) {
-      parsedAppointmentTime = DateTime.tryParse(data['appointment_time']);
-    } else {
-      developer.log(
-        '${data['uuid']}: ${data['appointment_time']} can not be parse to DateTime object',
-        name: 'Failed to parse datetime string to DateTime object',
-      );
-    }
-
     return FemaleUser(
-      serviceUuid: data['service_uuid'],
-      status: data['status'],
-      appointmentTime: parsedAppointmentTime.toLocal(),
-      channelUuid: data['channel_uuid'],
-      inquiryUuid: data['inquiry_uuid'],
-      inquirerUuid: data['inquirer_uuid'],
-      chatPartnerAvatarUrl: data['chat_partner_avatar_url'],
-      chatPartnerUsername: data['chat_partner_username'],
-      chatPartnerUserUuid: data['chat_partner_user_uuid'],
+      uuid: data['uuid'],
+      username: data['username'],
+      avatarUrl: data['avatar_url'],
+      age: data['age'],
+      height: data['height']?.toDouble(),
+      weight: data['weight']?.toDouble(),
+      breastSize: data['breast_size'],
+      description: data['description'],
+      userRating: UserRating.fromMap(data['user_rating']),
     );
   }
 
   FemaleUser copyWith({
-    String serviceUuid,
-    String status,
-    DateTime appointmentTime,
-    String channelUuid,
-    String inquiryUuid,
-    String inquirerUuid,
-    String chatPartnerAvatarUrl,
-    String chatPartnerUsername,
-    String chatPartnerUserUuid,
+    String uuid,
+    String username,
+    String avatarUrl,
+    int age,
+    double height,
+    double weight,
+    String breastSize,
+    String description,
+    UserRating userRating,
   }) {
     return FemaleUser(
-      serviceUuid: serviceUuid ?? this.serviceUuid,
-      status: status ?? this.status,
-      appointmentTime: appointmentTime ?? this.appointmentTime,
-      channelUuid: channelUuid ?? this.channelUuid,
-      inquiryUuid: inquiryUuid ?? this.inquiryUuid,
-      inquirerUuid: inquirerUuid ?? this.inquirerUuid,
-      chatPartnerAvatarUrl: chatPartnerAvatarUrl ?? this.chatPartnerAvatarUrl,
-      chatPartnerUsername: chatPartnerUsername ?? this.chatPartnerUsername,
-      chatPartnerUserUuid: chatPartnerUserUuid ?? this.chatPartnerUserUuid,
+      uuid: uuid ?? this.uuid,
+      username: username ?? this.username,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      age: age ?? this.age,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      breastSize: breastSize ?? this.breastSize,
+      description: description ?? this.description,
+      userRating: userRating ?? this.userRating,
     );
   }
 }
@@ -91,20 +80,46 @@ class FemaleUserList {
   List<FemaleUser> femaleUsers;
 
   Map<String, dynamic> toJson() => {
-        'services': femaleUsers,
+        'girls': femaleUsers,
       };
 
   static FemaleUserList fromJson(Map<String, dynamic> data) {
-    List<FemaleUser> serviceList = [];
+    List<FemaleUser> femaleUser = [];
 
-    if (data['services'] != null) {
-      serviceList = data['services'].map<FemaleUser>((v) {
+    if (data['girls'] != null) {
+      femaleUser = data['girls'].map<FemaleUser>((v) {
         return FemaleUser.fromMap(v);
       }).toList();
     }
 
     return FemaleUserList(
-      femaleUsers: serviceList,
+      femaleUsers: femaleUser,
     );
   }
+}
+
+class UserRating {
+  UserRating({
+    this.rateeId,
+    this.score,
+    this.numberOfServices,
+  });
+
+  final int rateeId;
+  final double score;
+  final int numberOfServices;
+
+  factory UserRating.fromMap(Map<String, dynamic> data) {
+    return UserRating(
+      rateeId: data['ratee_id'],
+      score: data['score']?.toDouble(),
+      numberOfServices: data['number_of_services'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'ratee_id': rateeId,
+        'score': score,
+        'number_of_services': numberOfServices,
+      };
 }

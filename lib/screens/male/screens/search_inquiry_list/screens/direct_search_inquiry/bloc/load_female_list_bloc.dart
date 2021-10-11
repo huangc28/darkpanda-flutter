@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/models/female_list.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -26,17 +27,27 @@ class LoadFemaleListBloc
     LoadFemaleListEvent event,
   ) async* {
     if (event is LoadFemaleList) {
-      yield* _mapLoadUserToState(event);
+      yield* _mapLoadFemaleListToState(event);
+    } else if (event is LoadMoreFemaleList) {
+      yield* _mapLoadMoreFemaleListToState(event);
     } else if (event is ClearFemaleListState) {
       yield* _mapClearUserStateToState(event);
     }
   }
 
-  Stream<LoadFemaleListState> _mapLoadUserToState(LoadFemaleList event) async* {
+  Stream<LoadFemaleListState> _mapLoadFemaleListToState(
+      LoadFemaleList event) async* {
     try {
-      yield LoadFemaleListState.loading();
+      yield LoadFemaleListState.loading(state);
 
-      final resp = await searchInquiryAPIs.fetchFemaleList();
+      final offset = calcNextPageOffset(
+        nextPage: event.nextPage,
+        perPage: event.perPage,
+      );
+
+      final resp = await searchInquiryAPIs.fetchFemaleList(
+        offset: offset,
+      );
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -49,12 +60,61 @@ class LoadFemaleListBloc
       );
 
       yield LoadFemaleListState.loaded(
-        femaleUserList: femaleUserList,
+        state,
+        femaleUsers: [...femaleUserList.femaleUsers],
+        currentPage: state.currentPage + 1,
       );
     } on APIException catch (e) {
-      yield LoadFemaleListState.loadFailed(e);
+      yield LoadFemaleListState.loadFailed(state, e);
     } catch (e) {
       yield LoadFemaleListState.loadFailed(
+        state,
+        AppGeneralExeption(message: e.toString()),
+      );
+    }
+  }
+
+  Stream<LoadFemaleListState> _mapLoadMoreFemaleListToState(
+      LoadMoreFemaleList event) async* {
+    try {
+      // yield LoadFemaleListState.loading(state);
+
+      final offset = calcNextPageOffset(
+        nextPage: state.currentPage + 1,
+        perPage: event.perPage,
+      );
+
+      final resp = await searchInquiryAPIs.fetchFemaleList(
+        offset: offset,
+      );
+
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
+
+      final Map<String, dynamic> respMap = json.decode(resp.body);
+
+      final femaleUsers = respMap['girls'].map<FemaleUser>((v) {
+        return FemaleUser.fromMap(v);
+      }).toList();
+
+      final appended = <FemaleUser>[
+        ...state.femaleUsers,
+        ...?femaleUsers,
+      ].toList();
+
+      yield LoadFemaleListState.loaded(
+        state,
+        femaleUsers: appended,
+        currentPage: state.currentPage + 1,
+      );
+    } on APIException catch (e) {
+      yield LoadFemaleListState.loadFailed(state, e);
+    } catch (e) {
+      yield LoadFemaleListState.loadFailed(
+        state,
         AppGeneralExeption(message: e.toString()),
       );
     }
@@ -62,6 +122,6 @@ class LoadFemaleListBloc
 
   Stream<LoadFemaleListState> _mapClearUserStateToState(
       ClearFemaleListState event) async* {
-    yield LoadFemaleListState.clearState();
+    yield LoadFemaleListState.clearState(state);
   }
 }
