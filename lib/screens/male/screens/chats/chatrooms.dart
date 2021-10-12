@@ -1,4 +1,5 @@
-import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/models/chatroom.dart';
 
 import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
@@ -20,15 +22,17 @@ class Chatrooms extends StatefulWidget {
 
 class _ChatroomsState extends State<Chatrooms> {
   LoadDirectInquiryChatroomsBloc _loadDirectInquiryChatroomsBloc;
+  Completer<void> _refreshCompleter;
 
   @override
   void initState() {
+    super.initState();
+
+    _refreshCompleter = Completer();
     _loadDirectInquiryChatroomsBloc =
         BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context);
 
     _loadDirectInquiryChatroomsBloc.add(FetchDirectInquiryChatrooms());
-
-    super.initState();
   }
 
   @override
@@ -49,8 +53,8 @@ class _ChatroomsState extends State<Chatrooms> {
                   LoadDirectInquiryChatroomsState>(
                 listener: (context, state) {
                   if (state.status == AsyncLoadingStatus.error) {
-                    // _refreshCompleter.completeError(state.error);
-                    // _refreshCompleter = Completer();
+                    _refreshCompleter.completeError(state.error);
+                    _refreshCompleter = Completer();
                     developer.log(
                       'failed to fetch inquiry chatroom',
                       error: state.error,
@@ -62,6 +66,11 @@ class _ChatroomsState extends State<Chatrooms> {
                       ),
                     );
                   }
+
+                  if (state.status == AsyncLoadingStatus.done) {
+                    _refreshCompleter.complete();
+                    _refreshCompleter = Completer();
+                  }
                 },
                 builder: (context, state) {
                   if (state.status == AsyncLoadingStatus.loading ||
@@ -72,8 +81,16 @@ class _ChatroomsState extends State<Chatrooms> {
                   return Expanded(
                     child: ChatroomList(
                       chatrooms: state.chatrooms,
-                      onRefresh: () {},
-                      onLoadMore: () {},
+                      onRefresh: () {
+                        BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
+                            .add(FetchDirectInquiryChatrooms());
+
+                        return _refreshCompleter.future;
+                      },
+                      onLoadMore: () {
+                        BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
+                            .add(LoadMoreChatrooms());
+                      },
                       chatroomBuilder: (context, chatroom, ____) {
                         final lastMsg =
                             state.chatroomLastMessage[chatroom.channelUUID];

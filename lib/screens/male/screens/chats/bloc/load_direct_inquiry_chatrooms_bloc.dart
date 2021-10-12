@@ -46,7 +46,9 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     LoadDirectInquiryChatroomsEvent event,
   ) async* {
     if (event is FetchDirectInquiryChatrooms) {
-      yield* _mapFetchChatroomToState(event);
+      yield* _mapFetchDirectInquiryChatroomToState(event);
+    } else if (event is LoadMoreChatrooms) {
+      yield* _mapLoadMoreChatroomsToState(event);
     }
     // if (event is LeaveChatroom) {
     //   yield* _mapLeaveChatroomToState(event);
@@ -54,11 +56,7 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     }
-    // else
-
-    // else if (event is LoadMoreChatrooms) {
-    //   yield* _mapLoadMoreChatroomsToState(event);
-    // } else if (event is PutLatestMessage) {
+    // else if (event is PutLatestMessage) {
     //   yield* _mapPutLatestMessage(event);
     // } else if (event is ClearInquiryChatList) {
     //   yield* _mapClearInquiryChatListToState(event);
@@ -241,7 +239,7 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
   //   }
   // }
 
-  Stream<LoadDirectInquiryChatroomsState> _mapFetchChatroomToState(
+  Stream<LoadDirectInquiryChatroomsState> _mapFetchDirectInquiryChatroomToState(
       FetchDirectInquiryChatrooms event) async* {
     try {
       yield LoadDirectInquiryChatroomsState.loading(state);
@@ -293,60 +291,59 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     }
   }
 
-  // Stream<InquiryChatroomsState> _mapLoadMoreChatroomsToState(
-  //     LoadMoreChatrooms event) async* {
-  //   try {
-  //     // yield InquiryChatroomsState.loading(state);
-  //     final offset = calcNextPageOffset(
-  //       nextPage: state.currentPage + 1,
-  //       perPage: event.perPage,
-  //     );
+  Stream<LoadDirectInquiryChatroomsState> _mapLoadMoreChatroomsToState(
+      LoadMoreChatrooms event) async* {
+    try {
+      final offset = calcNextPageOffset(
+        nextPage: state.currentPage + 1,
+        perPage: event.perPage,
+      );
 
-  //     final resp = await inquiryChatroomApis.fetchInquiryChatrooms(
-  //       offset: offset,
-  //     );
+      final resp = await searchInquiryAPIs.fetchDirectInquiryChatrooms(
+        offset: offset,
+      );
 
-  //     if (resp.statusCode != HttpStatus.ok) {
-  //       throw APIException.fromJson(
-  //         json.decode(resp.body),
-  //       );
-  //     }
+      if (resp.statusCode != HttpStatus.ok) {
+        throw APIException.fromJson(
+          json.decode(resp.body),
+        );
+      }
 
-  //     final Map<String, dynamic> respMap = json.decode(resp.body);
+      final Map<String, dynamic> respMap = json.decode(resp.body);
 
-  //     final chatrooms = respMap['chats']
-  //         .map<Chatroom>((chat) => Chatroom.fromMap(chat))
-  //         .toList();
+      final chatrooms = respMap['chats']
+          .map<Chatroom>((chat) => Chatroom.fromMap(chat))
+          .toList();
 
-  //     final appended = <Chatroom>[
-  //       ...state.chatrooms,
-  //       ...?chatrooms,
-  //     ].toList();
+      final appended = <Chatroom>[
+        ...state.chatrooms,
+        ...?chatrooms,
+      ].toList();
 
-  //     add(
-  //       AddChatrooms(appended),
-  //     );
-  //   } on APIException catch (err) {
-  //     developer.log(
-  //       err.toString(),
-  //       name: "APIException: fetch_chats_bloc",
-  //     );
+      add(
+        AddChatrooms(appended),
+      );
+    } on APIException catch (err) {
+      developer.log(
+        err.toString(),
+        name: "APIException: fetch_chats_bloc",
+      );
 
-  //     yield InquiryChatroomsState.loadFailed(state, err);
-  //   } on AppGeneralExeption catch (e) {
-  //     developer.log(
-  //       e.toString(),
-  //       name: "AppGeneralExeption: fetch_chats_bloc",
-  //     );
+      yield LoadDirectInquiryChatroomsState.loadFailed(state, err);
+    } on AppGeneralExeption catch (e) {
+      developer.log(
+        e.toString(),
+        name: "AppGeneralExeption: fetch_chats_bloc",
+      );
 
-  //     yield InquiryChatroomsState.loadFailed(
-  //       state,
-  //       AppGeneralExeption(
-  //         message: e.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
+      yield LoadDirectInquiryChatroomsState.loadFailed(
+        state,
+        AppGeneralExeption(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   // Stream<InquiryChatroomsState> _mapPutLatestMessage(
   //     PutLatestMessage event) async* {
