@@ -1,19 +1,19 @@
-import 'dart:async';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/services/user_apis.dart';
 
+import 'bloc/direct_inquiry_form_bloc.dart';
 import 'models/female_list.dart';
 import 'screens/female_profile/female_profile.dart';
-
-List<String> images = [
-  "https://thumbs.dreamstime.com/b/portrait-beautiful-asian-girl-summer-hat-105033823.jpg",
-  "https://image.winudf.com/v2/image/dHJhbm1pbmgudHVhbi5iZWF1dHlnaXJsYXNpYW5fc2NyZWVuXzdfMTUzMTcyNzk5OV8wNjA/screen-7.jpg?fakeurl=1&type=.jpg",
-  "https://i.pinimg.com/originals/43/9a/b2/439ab2a8ad2dc976c583e8660cdce6e3.jpg",
-  "https://images.unsplash.com/photo-1541823709867-1b206113eafd?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXNpYW4lMjBnaXJsfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"
-];
 
 class DirectSearchInquiry extends StatefulWidget {
   const DirectSearchInquiry({
@@ -39,9 +39,30 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
     super.initState();
   }
 
-  Route _createRoute() {
+  Route _createRoute(String uuid) {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => FemaleProfile(),
+      pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => LoadUserImagesBloc(
+              userApi: UserApis(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => LoadRateBloc(
+              rateApiClient: RateApiClient(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => DirectInquiryFormBloc(
+              searchInquiryAPIs: SearchInquiryAPIs(),
+            ),
+          ),
+        ],
+        child: FemaleProfile(
+          uuid: uuid,
+        ),
+      ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
@@ -95,7 +116,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                     Navigator.of(
                       context,
                       rootNavigator: true,
-                    ).push(_createRoute());
+                    ).push(_createRoute(widget.femaleUserList[index].uuid));
                   },
                   child: _userList(widget.femaleUserList[index], index),
                 );
@@ -135,7 +156,6 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                           SizedBox(width: 1),
                           Flexible(
                             child: Text(
-                              // 'Joanne',
                               user.username,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -156,11 +176,11 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                               color: Colors.amber,
                               size: 15,
                             ),
-                            child: ReviewStar(value: 5
-                                // value: userProfile.rating.score != null
-                                //     ? userProfile.rating.score.toInt()
-                                //     : 0,
-                                ),
+                            child: ReviewStar(
+                              value: user.userRating.score != null
+                                  ? user.userRating.score.toInt()
+                                  : 0,
+                            ),
                           ),
                         ],
                       ),
@@ -172,13 +192,12 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '沒有內容 沒有內容 沒有內容 沒有內容',
+                                user.description == null ||
+                                        user.description.isEmpty
+                                    ? '沒有內容'
+                                    : user.description,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                // userProfile.description == null ||
-                                //         userProfile.description.isEmpty
-                                //     ? '沒有內容'
-                                //     : userProfile.description,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.white,

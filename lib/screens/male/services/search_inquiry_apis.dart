@@ -324,4 +324,48 @@ class SearchInquiryAPIs extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> directInquiry(InquiryForms inquiryForms) async {
+    try {
+      final appointmentTime = DateTime(
+        inquiryForms.inquiryDate.year,
+        inquiryForms.inquiryDate.month,
+        inquiryForms.inquiryDate.day,
+        inquiryForms.inquiryTime.hour,
+        inquiryForms.inquiryTime.minute,
+      );
+
+      String appointmentToUtcToIsoString =
+          appointmentTime.toUtc().toIso8601String();
+
+      final body = inquiryForms;
+      final jsonBody = jsonEncode({
+        'inquiry_type': 'direct',
+        'female_uuid': body.uuid,
+        'budget': body.budget,
+        'service_type': body.serviceType,
+        'appointment_time': appointmentToUtcToIsoString,
+        'service_duration': body.duration.inMinutes,
+        'address': body.address,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/inquiries'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
 }

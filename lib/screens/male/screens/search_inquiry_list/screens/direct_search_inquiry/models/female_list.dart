@@ -1,5 +1,3 @@
-import 'package:darkpanda_flutter/models/user_profile.dart';
-
 class FemaleUser {
   FemaleUser({
     this.uuid,
