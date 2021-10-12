@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_start_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/load_female_list_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -245,6 +246,15 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 BlocProvider.of<ServiceConfirmNotifierBloc>(context),
             updateInquiryNotifierBloc:
                 BlocProvider.of<UpdateInquiryNotifierBloc>(context),
+          ),
+        ),
+
+        // Load direct inquiry chatroom
+        BlocProvider(
+          create: (context) => LoadDirectInquiryChatroomsBloc(
+            inquiryChatMesssagesBloc:
+                BlocProvider.of<InquiryChatMessagesBloc>(context),
+            searchInquiryAPIs: SearchInquiryAPIs(),
           ),
         ),
 

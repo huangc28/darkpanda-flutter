@@ -288,7 +288,7 @@ class SearchInquiryAPIs extends BaseClient {
     }
   }
 
-  // PerPage int `form:"perpage,default=5"`
+  // PerPage int `form:"perpage,default=6"`
   // Page    int `form:"page,default=1"`
   Future<http.Response> fetchFemaleList({int perPage = 6, offset = 0}) async {
     final request = http.Request(
@@ -304,5 +304,24 @@ class SearchInquiryAPIs extends BaseClient {
     final res = await sendWithResponse(request);
 
     return res;
+  }
+
+  Future<http.Response> fetchDirectInquiryChatrooms({int offset = 0}) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/chat/direct-inquiry-chatrooms', {
+          'offset': '$offset',
+        }),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
