@@ -1,18 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
+
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/components/cancel_inquiry_confirmation_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 
 class DirectInquiryRequestDetail extends StatelessWidget {
-  const DirectInquiryRequestDetail({
-    Key key,
-    this.inquiry,
-  }) : super(key: key);
+  const DirectInquiryRequestDetail(
+      {Key key, this.inquiry, this.onTapSkip, this.onTapViewProfile})
+      : super(key: key);
 
   final DirectInquiryRequests inquiry;
+  final ValueChanged<String> onTapSkip;
+  final ValueChanged<String> onTapViewProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
                     child: DPTextButton(
                       theme: DPTextButtonThemes.deepGrey,
                       onPressed: () {
-                        // onTapCheckProfile(inquiry.inquirer.uuid);
+                        // onTapViewProfile(inquiry.uuid);
                       },
                       text: '立即洽談',
                     ),
@@ -98,11 +100,9 @@ class DirectInquiryRequestDetail extends StatelessWidget {
                             );
                           },
                         ).then((value) {
-                          //   if (value) {
-                          //     BlocProvider.of<CancelInquiryBloc>(context).add(
-                          //       SkipInquiry(widget.activeInquiry.uuid),
-                          //     );
-                          //   }
+                          if (value) {
+                            onTapSkip(inquiry.inquiryUuid);
+                          }
                         });
                       },
                     ),

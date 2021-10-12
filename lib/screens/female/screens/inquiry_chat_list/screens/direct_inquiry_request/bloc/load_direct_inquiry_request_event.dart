@@ -17,16 +17,16 @@ class FetchDirectInquiries extends LoadDirectInquiryRequestEvent {
   final int nextPage;
 
   const FetchDirectInquiries({
-    this.perPage = 7,
+    this.perPage = 6,
     this.nextPage = 1,
   }) : assert(nextPage > 0);
 }
 
-class LoadMoreInquiries extends LoadDirectInquiryRequestEvent {
+class LoadMorehDirectInquiries extends LoadDirectInquiryRequestEvent {
   final int perPage;
 
-  const LoadMoreInquiries({
-    this.perPage = 7,
+  const LoadMorehDirectInquiries({
+    this.perPage = 6,
   });
 }
 

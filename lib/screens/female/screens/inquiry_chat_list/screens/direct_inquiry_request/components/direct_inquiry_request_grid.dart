@@ -1,9 +1,8 @@
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/components/direct_inquiry_request_detail.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
-import 'package:darkpanda_flutter/models/inquiry.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/components/direct_inquiry_request_detail.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 
 class DirectInquiryRequestGrid extends StatelessWidget {
   const DirectInquiryRequestGrid({
@@ -11,11 +10,13 @@ class DirectInquiryRequestGrid extends StatelessWidget {
     this.inquiry,
     this.onTapStartChat,
     this.onTapSkip,
+    this.onTapViewProfile,
   }) : super(key: key);
 
   final DirectInquiryRequests inquiry;
-  final ValueChanged<Inquiry> onTapStartChat;
-  final ValueChanged<Inquiry> onTapSkip;
+  final ValueChanged<DirectInquiryRequests> onTapStartChat;
+  final ValueChanged<String> onTapSkip;
+  final ValueChanged<String> onTapViewProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +40,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
             children: <Widget>[
               DirectInquiryRequestDetail(
                 inquiry: inquiry,
+                onTapSkip: onTapSkip,
               ),
             ],
           ),
