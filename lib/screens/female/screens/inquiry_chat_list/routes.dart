@@ -1,5 +1,3 @@
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/bloc/inquiries_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/services/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
 
 import 'inquiry_chat_list.dart';
+import 'screens/direct_inquiry_request/bloc/load_direct_inquiry_request_bloc.dart';
+import 'services/inquiry_chat_list_api_client.dart';
 
 class InquiryChatListRoutes extends BaseRoutes {
   static const root = '/';
@@ -17,10 +17,10 @@ class InquiryChatListRoutes extends BaseRoutes {
         return MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => InquiriesBloc(
-                apiClient: ApiClient(),
+              create: (context) => LoadDirectInquiryRequestBloc(
+                inquiryChatListApiClient: InquiryChatListApiClient(),
               )..add(
-                  FetchInquiries(nextPage: 1),
+                  FetchDirectInquiries(nextPage: 1),
                 ),
             ),
           ],

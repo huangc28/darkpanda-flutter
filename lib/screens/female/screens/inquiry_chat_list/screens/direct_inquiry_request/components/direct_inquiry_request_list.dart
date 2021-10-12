@@ -1,9 +1,10 @@
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
-import 'package:darkpanda_flutter/models/inquiry.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/components/inquiry_list.dart';
+typedef DirectInquiryRequestItemBuilder = Widget Function(
+    BuildContext context, DirectInquiryRequests inquiry, int index);
 
 class DirectInquiryRequestList extends StatelessWidget {
   const DirectInquiryRequestList({
@@ -18,9 +19,9 @@ class DirectInquiryRequestList extends StatelessWidget {
 
   final Function onLoadMore;
 
-  final List<Inquiry> inquiries;
+  final List<DirectInquiryRequests> inquiries;
 
-  final InquiryItemBuilder inquiryItemBuilder;
+  final DirectInquiryRequestItemBuilder inquiryItemBuilder;
 
   @override
   Widget build(BuildContext context) {

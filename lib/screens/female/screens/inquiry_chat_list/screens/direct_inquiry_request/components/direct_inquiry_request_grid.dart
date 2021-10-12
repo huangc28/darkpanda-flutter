@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/components/direct_inquiry_request_detail.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
@@ -12,7 +13,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
     this.onTapSkip,
   }) : super(key: key);
 
-  final Inquiry inquiry;
+  final DirectInquiryRequests inquiry;
   final ValueChanged<Inquiry> onTapStartChat;
   final ValueChanged<Inquiry> onTapSkip;
 

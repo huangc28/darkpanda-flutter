@@ -1,4 +1,6 @@
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/bloc/load_direct_inquiry_request_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/body.dart';
 
@@ -41,8 +43,8 @@ class _InquiryChatListState extends State<InquiryChatList>
         title: TabBar(
           onTap: (index) {
             if (_tabs[index] == InquiryChatListTabs.request) {
-              // BlocProvider.of<LoadIncomingServiceBloc>(context)
-              // .add(LoadIncomingService());
+              BlocProvider.of<LoadDirectInquiryRequestBloc>(context)
+                  .add(FetchDirectInquiries());
             }
 
             if (_tabs[index] == InquiryChatListTabs.chat) {

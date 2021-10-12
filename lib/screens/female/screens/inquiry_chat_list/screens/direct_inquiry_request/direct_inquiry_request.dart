@@ -2,11 +2,11 @@ import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/bloc/inquiries_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/load_direct_inquiry_request_bloc.dart';
 import 'components/direct_inquiry_request_grid.dart';
 import 'components/direct_inquiry_request_list.dart';
 
@@ -23,7 +23,8 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          BlocConsumer<InquiriesBloc, InquiriesState>(
+          BlocConsumer<LoadDirectInquiryRequestBloc,
+              LoadDirectInquiryRequestState>(
             listener: (context, state) {
               if (state.status == AsyncLoadingStatus.error) {
                 // _refreshCompleter.completeError(state.error);

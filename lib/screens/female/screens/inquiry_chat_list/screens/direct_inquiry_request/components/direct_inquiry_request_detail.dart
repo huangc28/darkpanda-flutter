@@ -1,10 +1,10 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/components/cancel_inquiry_confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/models/inquiry.dart';
 
 class DirectInquiryRequestDetail extends StatelessWidget {
   const DirectInquiryRequestDetail({
@@ -12,7 +12,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
     this.inquiry,
   }) : super(key: key);
 
-  final Inquiry inquiry;
+  final DirectInquiryRequests inquiry;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
             children: <Widget>[
               // Inquirer avatar
               UserAvatar(
-                inquiry.inquirer.avatarURL,
+                inquiry.avatarUrl,
                 radius: SizeConfig.screenWidth * 0.08,
               ),
 
@@ -42,7 +42,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
 
               // Inquirer name
               Text(
-                inquiry.inquirer.username,
+                inquiry.username,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
