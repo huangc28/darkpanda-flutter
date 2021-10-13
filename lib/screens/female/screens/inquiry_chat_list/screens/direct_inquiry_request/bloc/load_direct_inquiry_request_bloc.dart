@@ -36,13 +36,13 @@ class LoadDirectInquiryRequestBloc
       yield* _mapLoadMoreInquiries(event);
     }
 
-    // if (event is UpdateInquiryStatus) {
-    //   yield* _mapUpdateInquiryStatusToState(event);
-    // }
+    if (event is UpdateInquiryStatus) {
+      yield* _mapUpdateInquiryStatusToState(event);
+    }
 
-    // if (event is RemoveInquiry) {
-    //   yield* _mapRemoveInquiryToState(event);
-    // }
+    if (event is RemoveInquiry) {
+      yield* _mapRemoveInquiryToState(event);
+    }
 
     // if (event is AddInquirySubscription) {
     //   yield* _mapAddInquirySubscriptionToState(event);
@@ -86,7 +86,7 @@ class LoadDirectInquiryRequestBloc
         // hasMore: dataMap['has_more'],
 
         // We need to subscribe those inquiry with status `asking`. Organize an inquiry subscription map here.
-        // inquiryStreamMap: _createInquirySubscriptionStreamMap(parsedIqs),
+        inquiryStreamMap: _createInquirySubscriptionStreamMap(parsedIqs),
       );
     } on APIException catch (e) {
       yield LoadDirectInquiryRequestState.fetchFailed(
@@ -162,58 +162,60 @@ class LoadDirectInquiryRequestBloc
     }
   }
 
-  // Stream<InquiriesState> _mapUpdateInquiryStatusToState(
-  //     UpdateInquiryStatus event) async* {
-  //   // Iterate through current inquiries try to find the one that matches
-  //   // the `uuid`. Update it's status.
-  //   final updatedInquiries = state.inquiries.map<Inquiry>((inquiry) {
-  //     // If matches in uuid, update it's inquiry status.
-  //     if (inquiry.uuid == event.inquiryUuid) {
-  //       developer.log(
-  //           'Inquiry found: ${event.inquiryUuid}, updating status: ${event.inquiryStatus.toString()}');
+  Stream<LoadDirectInquiryRequestState> _mapUpdateInquiryStatusToState(
+      UpdateInquiryStatus event) async* {
+    // Iterate through current inquiries try to find the one that matches
+    // the `uuid`. Update it's status.
+    final updatedInquiries =
+        state.inquiries.map<DirectInquiryRequests>((inquiry) {
+      // If matches in uuid, update it's inquiry status.
+      if (inquiry.inquiryUuid == event.inquiryUuid) {
+        developer.log(
+            'Inquiry found: ${event.inquiryUuid}, updating status: ${event.inquiryStatus.toString()}');
 
-  //       return inquiry.copyWith(
-  //         inquiryStatus: event.inquiryStatus,
-  //         channelUuid: event.channelUuid,
-  //         serviceUUID: event.serviceUuid,
-  //       );
-  //     }
+        return inquiry.copyWith(
+          inquiryStatus: event.inquiryStatus,
+          // channelUuid: event.channelUuid,
+          // serviceUUID: event.serviceUuid,
+        );
+      }
 
-  //     return inquiry;
-  //   }).toList();
+      return inquiry;
+    }).toList();
 
-  //   // Replace current inquiry list witht updated list.
-  //   yield InquiriesState.putInquiries(
-  //     state,
-  //     inquiries: updatedInquiries,
-  //   );
-  // }
+    // Replace current inquiry list witht updated list.
+    yield LoadDirectInquiryRequestState.putInquiries(
+      state,
+      inquiries: updatedInquiries,
+    );
+  }
 
-  // Stream<InquiriesState> _mapRemoveInquiryToState(RemoveInquiry event) async* {
-  //   // Remove inquiry subscription on firestore if the key exists.
-  //   if (state.inquiryStreamMap.containsKey(event.inquiryUuid)) {
-  //     developer.log('remove inqiury subscription: ${event.inquiryUuid}');
+  Stream<LoadDirectInquiryRequestState> _mapRemoveInquiryToState(
+      RemoveInquiry event) async* {
+    // Remove inquiry subscription on firestore if the key exists.
+    if (state.inquiryStreamMap.containsKey(event.inquiryUuid)) {
+      developer.log('remove inqiury subscription: ${event.inquiryUuid}');
 
-  //     // Stop subscribing to firestore document of that inquiry.
-  //     state.inquiryStreamMap[event.inquiryUuid].cancel();
+      // Stop subscribing to firestore document of that inquiry.
+      state.inquiryStreamMap[event.inquiryUuid].cancel();
 
-  //     state.inquiryStreamMap.remove(event.inquiryUuid);
+      state.inquiryStreamMap.remove(event.inquiryUuid);
 
-  //     yield InquiriesState.putInquiryStreamMap(
-  //       state,
-  //       inquiryStreamMap: state.inquiryStreamMap,
-  //     );
-  //   }
+      yield LoadDirectInquiryRequestState.putInquiryStreamMap(
+        state,
+        inquiryStreamMap: state.inquiryStreamMap,
+      );
+    }
 
-  //   final filteredInquiries = state.inquiries
-  //       .where((inquiry) => inquiry.uuid != event.inquiryUuid)
-  //       .toList();
+    final filteredInquiries = state.inquiries
+        .where((inquiry) => inquiry.inquiryUuid != event.inquiryUuid)
+        .toList();
 
-  //   yield InquiriesState.putInquiries(
-  //     state,
-  //     inquiries: filteredInquiries,
-  //   );
-  // }
+    yield LoadDirectInquiryRequestState.putInquiries(
+      state,
+      inquiries: filteredInquiries,
+    );
+  }
 
   Map<String, StreamSubscription<DocumentSnapshot>>
       _createInquirySubscriptionStreamMap(

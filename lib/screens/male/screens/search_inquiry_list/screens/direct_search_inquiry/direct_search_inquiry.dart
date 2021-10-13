@@ -39,7 +39,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
     super.initState();
   }
 
-  Route _createRoute(String uuid) {
+  Route _createRoute(FemaleUser femaleUser) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
         providers: [
@@ -60,7 +60,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
           ),
         ],
         child: FemaleProfile(
-          uuid: uuid,
+          femaleUser: femaleUser,
         ),
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -116,7 +116,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                     Navigator.of(
                       context,
                       rootNavigator: true,
-                    ).push(_createRoute(widget.femaleUserList[index].uuid));
+                    ).push(_createRoute(widget.femaleUserList[index]));
                   },
                   child: _userList(widget.femaleUserList[index], index),
                 );

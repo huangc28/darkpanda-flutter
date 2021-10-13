@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,10 +101,12 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                     },
                     inquiries: state.inquiries,
                     inquiryItemBuilder: (context, inquiry, ___) {
-                      return DirectInquiryRequestGrid(
-                        inquiry: inquiry,
-                        onTapSkip: _handleSkip,
-                      );
+                      return inquiry.inquiryStatus != InquiryStatus.inquiring
+                          ? DirectInquiryRequestGrid(
+                              inquiry: inquiry,
+                              onTapSkip: _handleSkip,
+                            )
+                          : Container();
                     },
                   ),
                 ),

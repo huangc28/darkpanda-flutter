@@ -37,7 +37,7 @@ class DirectInquiryRequests extends Equatable {
       createdAt: parsedCreatedAt.toLocal(),
       username: data['username'],
       avatarUrl: data['avatar_url'],
-      // inquiryStatus: iqStatus.toInquiryStatusEnum(),
+      inquiryStatus: iqStatus.toInquiryStatusEnum(),
     );
   }
 

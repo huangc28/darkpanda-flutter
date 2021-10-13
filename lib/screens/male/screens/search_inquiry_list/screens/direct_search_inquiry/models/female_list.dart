@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+
 class FemaleUser {
   FemaleUser({
     this.uuid,
@@ -9,6 +11,9 @@ class FemaleUser {
     this.breastSize,
     this.description,
     this.userRating,
+    this.hasInquiry,
+    this.inquiryUuid,
+    this.inquiryStatus,
   });
 
   final String uuid;
@@ -20,6 +25,9 @@ class FemaleUser {
   final String breastSize;
   final String description;
   final UserRating userRating;
+  final bool hasInquiry;
+  final String inquiryUuid;
+  final InquiryStatus inquiryStatus;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -31,9 +39,18 @@ class FemaleUser {
         'breast_size': breastSize,
         'description': description,
         'user_rating': userRating,
+        'has_inquiry': hasInquiry,
+        'inquiry_uuid': inquiryUuid,
+        'inquiry_status': inquiryStatus,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
+    String iqStatus = '';
+
+    if (data['inquiry_status'] != null) {
+      iqStatus = data['inquiry_status'] as String;
+    }
+
     return FemaleUser(
       uuid: data['uuid'],
       username: data['username'],
@@ -44,6 +61,9 @@ class FemaleUser {
       breastSize: data['breast_size'],
       description: data['description'],
       userRating: UserRating.fromMap(data['user_rating']),
+      hasInquiry: data['has_inquiry'],
+      inquiryUuid: data['inquiry_uuid'],
+      inquiryStatus: iqStatus?.toInquiryStatusEnum(),
     );
   }
 
@@ -57,6 +77,9 @@ class FemaleUser {
     String breastSize,
     String description,
     UserRating userRating,
+    bool hasInquiry,
+    String inquiryUuid,
+    String inquiryStatus,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -68,6 +91,9 @@ class FemaleUser {
       breastSize: breastSize ?? this.breastSize,
       description: description ?? this.description,
       userRating: userRating ?? this.userRating,
+      hasInquiry: hasInquiry ?? this.hasInquiry,
+      inquiryUuid: inquiryUuid ?? this.inquiryUuid,
+      inquiryStatus: inquiryStatus ?? this.inquiryStatus,
     );
   }
 }
