@@ -1,5 +1,9 @@
-import 'package:darkpanda_flutter/enums/service_types.dart';
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/direct_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/models/female_list.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,19 +12,19 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 
 import 'components/body.dart';
+import 'components/direct_inquiry_form.dart';
 
 class FemaleProfile extends StatefulWidget {
   const FemaleProfile({
     Key key,
-    this.uuid,
+    this.femaleUser,
   }) : super(key: key);
 
-  final String uuid;
+  final FemaleUser femaleUser;
 
   @override
   _FemaleProfileState createState() => _FemaleProfileState();
@@ -35,28 +39,26 @@ class _FemaleProfileState extends State<FemaleProfile> {
   AsyncLoadingStatus _userRatingsStatus = AsyncLoadingStatus.initial;
   AsyncLoadingStatus _userImagesStatus = AsyncLoadingStatus.initial;
 
-  InquiryForms _inquiryForms = InquiryForms(
-    inquiryDate: DateTime.now(),
-    inquiryTime:
-        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
-    duration: Duration(hours: 1, minutes: 0),
-    budget: 100,
-    serviceType: ServiceTypes.chat.name,
-    address: 'taiwan',
-  );
-
   String _chatNowButton = '馬上聊聊';
 
   @override
   void initState() {
     super.initState();
 
-    BlocProvider.of<LoadUserBloc>(context).add(LoadUser(uuid: widget.uuid));
+    if (widget.femaleUser.inquiryStatus == InquiryStatus.asking.name) {
+      _chatNowButton = '等待回應';
+    } else if (widget.femaleUser.inquiryStatus == InquiryStatus.chatting.name) {
+      _chatNowButton = '正在聊天';
+    }
+
+    BlocProvider.of<LoadUserBloc>(context)
+        .add(LoadUser(uuid: widget.femaleUser.uuid));
 
     BlocProvider.of<LoadUserImagesBloc>(context)
-        .add(LoadUserImages(uuid: widget.uuid));
+        .add(LoadUserImages(uuid: widget.femaleUser.uuid));
 
-    BlocProvider.of<LoadRateBloc>(context).add(LoadRate(uuid: widget.uuid));
+    BlocProvider.of<LoadRateBloc>(context)
+        .add(LoadRate(uuid: widget.femaleUser.uuid));
   }
 
   @override
@@ -85,8 +87,36 @@ class _FemaleProfileState extends State<FemaleProfile> {
               onTap: () {
                 if (_chatNowButton == '馬上聊聊') {
                   print('[Debug] 馬上聊聊');
-                  BlocProvider.of<DirectInquiryFormBloc>(context).add(
-                    SubmitDirectInquiryForm(_inquiryForms),
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => LoadInquiryBloc(
+                                searchInquiryAPIs: SearchInquiryAPIs(),
+                              ),
+                            ),
+                            BlocProvider(
+                              create: (context) => DirectInquiryFormBloc(
+                                searchInquiryAPIs: SearchInquiryAPIs(),
+                              ),
+                            ),
+                            BlocProvider(
+                              create: (context) => LoadServiceListBloc(
+                                searchInquiryAPIs: SearchInquiryAPIs(),
+                              ),
+                            ),
+                          ],
+                          child: DirectInquiryForm(
+                            uuid: userProfile.uuid,
+                          ),
+                        );
+                      },
+                    ),
+                    // ).then(
+                    //   (_) => BlocProvider.of<LoadInquiryBloc>(context)
+                    //       .add(LoadInquiry()),
                   );
                 }
               },
@@ -120,7 +150,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   userProfile = state.userProfile;
-                  _inquiryForms.uuid = userProfile.uuid;
                 }
 
                 setState(() {

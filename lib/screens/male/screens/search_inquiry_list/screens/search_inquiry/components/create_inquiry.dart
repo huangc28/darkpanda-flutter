@@ -56,8 +56,9 @@ class _CreateInquiryState extends State<CreateInquiry> {
               );
             },
           ),
-        ).then((_) =>
-            BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry()));
+        ).then(
+          (_) => BlocProvider.of<LoadInquiryBloc>(context).add(LoadInquiry()),
+        );
       },
       child: Container(
         decoration: BoxDecoration(

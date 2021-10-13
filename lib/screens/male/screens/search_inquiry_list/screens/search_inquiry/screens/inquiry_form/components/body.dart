@@ -6,7 +6,6 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/service_list.dart';
@@ -19,9 +18,18 @@ import 'package:intl/intl.dart';
 
 part 'inquiry_appointment_time_field.dart';
 
-// @TODOs
-//  - duration list should be coming from the API.
 class Body extends StatefulWidget {
+  const Body({
+    Key key,
+    this.onSubmit,
+    this.submitButtonText = '提交需求',
+    this.inquiryFormStatus,
+  }) : super(key: key);
+
+  final ValueChanged<InquiryForms> onSubmit;
+  final String submitButtonText;
+  final AsyncLoadingStatus inquiryFormStatus;
+
   @override
   _BodyState createState() => _BodyState();
 }
@@ -212,46 +220,55 @@ class _BodyState extends State<Body> {
   }
 
   Widget _confirmButton() {
-    return BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
-      listener: (context, state) {
-        if (state.status == AsyncLoadingStatus.loading ||
-            state.status == AsyncLoadingStatus.initial) {
-          setState(() {
-            isLoading = true;
-          });
-        } else if (state.status == AsyncLoadingStatus.error) {
-          setState(() {
-            isLoading = false;
-          });
+    if (widget.inquiryFormStatus == AsyncLoadingStatus.loading) {
+      isLoading = true;
+    } else {
+      isLoading = false;
+    }
+    return
+        //  BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
+        //   listener: (context, state) {
+        //     if (state.status == AsyncLoadingStatus.loading ||
+        //         state.status == AsyncLoadingStatus.initial) {
+        //       setState(() {
+        //         isLoading = true;
+        //       });
+        //     } else if (state.status == AsyncLoadingStatus.error) {
+        //       setState(() {
+        //         isLoading = false;
+        //       });
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error.message),
-            ),
-          );
-        } else if (state.status == AsyncLoadingStatus.done) {
-          setState(() {
-            isLoading = false;
-          });
+        //       ScaffoldMessenger.of(context).showSnackBar(
+        //         SnackBar(
+        //           content: Text(state.error.message),
+        //         ),
+        //       );
+        //     } else if (state.status == AsyncLoadingStatus.done) {
+        //       setState(() {
+        //         isLoading = false;
+        //       });
+        //     }
+        //   },
+        //   child:
+        DPTextButton(
+      loading: isLoading,
+      disabled: isLoading,
+      theme: DPTextButtonThemes.purple,
+      onPressed: () async {
+        if (!_formKey.currentState.validate()) {
+          return;
         }
+
+        _formKey.currentState.save();
+
+        widget.onSubmit(_inquiryForms);
+
+        // BlocProvider.of<SearchInquiryFormBloc>(context).add(
+        //   SubmitSearchInquiryForm(_inquiryForms),
+        // );
       },
-      child: DPTextButton(
-        loading: isLoading,
-        disabled: isLoading,
-        theme: DPTextButtonThemes.purple,
-        onPressed: () async {
-          if (!_formKey.currentState.validate()) {
-            return;
-          }
-
-          _formKey.currentState.save();
-
-          BlocProvider.of<SearchInquiryFormBloc>(context).add(
-            SubmitSearchInquiryForm(_inquiryForms),
-          );
-        },
-        text: '提交需求',
-      ),
+      text: widget.submitButtonText,
+      // ),
     );
   }
 

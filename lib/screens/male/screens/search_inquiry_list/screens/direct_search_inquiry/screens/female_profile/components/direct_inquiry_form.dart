@@ -1,24 +1,26 @@
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/direct_inquiry_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/search_inquiry_form_bloc.dart';
 import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 
-import 'components/body.dart';
-import 'models/inquiry_forms.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/components/body.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 
-class InquiryForm extends StatefulWidget {
-  const InquiryForm({
+class DirectInquiryForm extends StatefulWidget {
+  const DirectInquiryForm({
     this.onPush,
+    this.uuid,
   });
 
   final Function(String) onPush;
+  final String uuid;
 
   @override
-  State<InquiryForm> createState() => _InquiryFormState();
+  State<DirectInquiryForm> createState() => _DirectInquiryForm();
 }
 
-class _InquiryFormState extends State<InquiryForm> {
+class _DirectInquiryForm extends State<DirectInquiryForm> {
   AsyncLoadingStatus _inquiryFormStatus = AsyncLoadingStatus.initial;
 
   @override
@@ -39,7 +41,7 @@ class _InquiryFormState extends State<InquiryForm> {
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       ),
       backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-      body: BlocConsumer<SearchInquiryFormBloc, SearchInquiryFormState>(
+      body: BlocConsumer<DirectInquiryFormBloc, DirectInquiryFormState>(
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -65,6 +67,7 @@ class _InquiryFormState extends State<InquiryForm> {
           return Body(
             onSubmit: _handleSubmit,
             inquiryFormStatus: _inquiryFormStatus,
+            submitButtonText: '馬上聊聊',
           );
         },
       ),
@@ -72,8 +75,10 @@ class _InquiryFormState extends State<InquiryForm> {
   }
 
   _handleSubmit(InquiryForms inquiryForms) {
-    BlocProvider.of<SearchInquiryFormBloc>(context).add(
-      SubmitSearchInquiryForm(inquiryForms),
+    inquiryForms.uuid = widget.uuid;
+
+    BlocProvider.of<DirectInquiryFormBloc>(context).add(
+      SubmitDirectInquiryForm(inquiryForms),
     );
   }
 }
