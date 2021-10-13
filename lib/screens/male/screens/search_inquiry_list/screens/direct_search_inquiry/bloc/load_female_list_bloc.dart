@@ -39,6 +39,7 @@ class LoadFemaleListBloc
       LoadFemaleList event) async* {
     try {
       yield LoadFemaleListState.loading(state);
+      yield LoadFemaleListState.initial();
 
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,
@@ -77,8 +78,6 @@ class LoadFemaleListBloc
   Stream<LoadFemaleListState> _mapLoadMoreFemaleListToState(
       LoadMoreFemaleList event) async* {
     try {
-      // yield LoadFemaleListState.loading(state);
-
       final offset = calcNextPageOffset(
         nextPage: state.currentPage + 1,
         perPage: event.perPage,
