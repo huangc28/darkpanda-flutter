@@ -9,6 +9,7 @@ class DirectInquiryRequests extends Equatable {
     this.username,
     this.avatarUrl,
     this.inquiryStatus,
+    this.inquirerUuid,
   });
 
   final String inquiryUuid;
@@ -16,6 +17,7 @@ class DirectInquiryRequests extends Equatable {
   final String username;
   final String avatarUrl;
   final InquiryStatus inquiryStatus;
+  final String inquirerUuid;
 
   factory DirectInquiryRequests.fromJson(Map<String, dynamic> data) {
     var parsedCreatedAt = DateTime.now();
@@ -38,6 +40,7 @@ class DirectInquiryRequests extends Equatable {
       username: data['username'],
       avatarUrl: data['avatar_url'],
       inquiryStatus: iqStatus.toInquiryStatusEnum(),
+      inquirerUuid: data['inquirer_uuid'],
     );
   }
 
@@ -47,6 +50,7 @@ class DirectInquiryRequests extends Equatable {
     String username,
     String avatarUrl,
     InquiryStatus inquiryStatus,
+    String inquirerUuid,
   }) {
     return DirectInquiryRequests(
       inquiryUuid: inquiryUuid ?? this.inquiryUuid,
@@ -54,6 +58,7 @@ class DirectInquiryRequests extends Equatable {
       username: username ?? this.username,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
+      inquirerUuid: inquirerUuid ?? this.inquirerUuid,
     );
   }
 
@@ -64,5 +69,6 @@ class DirectInquiryRequests extends Equatable {
         username,
         avatarUrl,
         inquiryStatus,
+        inquirerUuid,
       ];
 }

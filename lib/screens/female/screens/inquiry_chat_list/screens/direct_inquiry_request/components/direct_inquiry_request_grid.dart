@@ -41,6 +41,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
               DirectInquiryRequestDetail(
                 inquiry: inquiry,
                 onTapSkip: onTapSkip,
+                onTapViewProfile: onTapViewProfile,
               ),
             ],
           ),

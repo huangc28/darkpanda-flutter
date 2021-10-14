@@ -29,32 +29,37 @@ class DirectInquiryRequestDetail extends StatelessWidget {
             right: SizeConfig.screenWidth * 0.06,
             bottom: SizeConfig.screenHeight * 0.014,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Inquirer avatar
-              UserAvatar(
-                inquiry.avatarUrl,
-                radius: SizeConfig.screenWidth * 0.08,
-              ),
-
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.01, //10
-              ),
-
-              // Inquirer name
-              Text(
-                inquiry.username,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          child: InkWell(
+            onTap: () {
+              onTapViewProfile(inquiry.inquirerUuid);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Inquirer avatar
+                UserAvatar(
+                  inquiry.avatarUrl,
+                  radius: SizeConfig.screenWidth * 0.08,
                 ),
-              ),
-            ],
+
+                SizedBox(
+                  height: SizeConfig.screenHeight * 0.01, //10
+                ),
+
+                // Inquirer name
+                Text(
+                  inquiry.username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Expanded(
