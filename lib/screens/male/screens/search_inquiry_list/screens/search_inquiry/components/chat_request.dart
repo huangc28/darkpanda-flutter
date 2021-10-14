@@ -2,6 +2,7 @@ import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
@@ -64,7 +65,7 @@ class _ChatRequestState extends State<ChatRequest> {
 
   Widget _actionButton() {
     return Column(
-      children: [
+      children: <Widget>[
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Row(

@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,6 +36,8 @@ class MainRoutes extends BaseRoutes {
   static const serviceChatroom = '/service-chatroom';
 
   static const maleChatroom = '/male-chatroom';
+
+  static const directChatroom = '/direct-chatroom';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
@@ -80,6 +83,11 @@ class MainRoutes extends BaseRoutes {
         final MaleChatroomScreenArguments maleChatroomArgs = args;
 
         return InquiryChatroom(args: maleChatroomArgs);
+      },
+      MainRoutes.directChatroom: (context) {
+        final MaleChatroomScreenArguments maleChatroomArgs = args;
+
+        return DirectChatroom(args: maleChatroomArgs);
       }
     };
   }

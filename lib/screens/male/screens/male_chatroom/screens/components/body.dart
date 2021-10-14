@@ -49,8 +49,8 @@ class _BodyState extends State<Body> {
                                 padding: const EdgeInsets.only(
                                     left: 20.0, right: 20.0),
                                 child: UserAvatar(
-                                    widget.authUser.avatarUrl != null
-                                        ? widget.authUser.avatarUrl
+                                    widget.authUser?.avatarUrl != null
+                                        ? widget.authUser?.avatarUrl
                                         : ''),
                               ),
                             ),
