@@ -101,10 +101,11 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                     },
                     inquiries: state.inquiries,
                     inquiryItemBuilder: (context, inquiry, ___) {
-                      return inquiry.inquiryStatus != InquiryStatus.inquiring
+                      return inquiry.inquiryStatus != InquiryStatus.canceled
                           ? DirectInquiryRequestGrid(
                               inquiry: inquiry,
                               onTapSkip: _handleSkip,
+                              onTapViewProfile: _handleViewProfile,
                             )
                           : Container();
                     },
@@ -120,13 +121,13 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
 
   _handleSkip(String uuid) {
     BlocProvider.of<CancelInquiryBloc>(context).add(
-      SkipInquiry(uuid),
+      CancelInquiry(inquiryUuid: uuid),
     );
   }
 
-  _handleViewProfile(String uuid) {
+  _handleViewProfile(String inquirerUuid) {
     InquirerProfileArguments _inquirerProfileArguments =
-        InquirerProfileArguments(uuid: uuid);
+        InquirerProfileArguments(uuid: inquirerUuid);
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -138,11 +139,6 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                   userApi: UserApis(),
                 ),
               ),
-              // BlocProvider(
-              //   create: (context) => LoadHistoricalServicesBloc(
-              //     userApi: UserApis(),
-              //   ),
-              // ),
               BlocProvider(
                 create: (context) => LoadRateBloc(
                   rateApiClient: RateApiClient(),
