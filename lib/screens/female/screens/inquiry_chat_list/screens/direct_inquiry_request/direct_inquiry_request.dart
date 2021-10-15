@@ -141,10 +141,8 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
               }
 
               if (state.status == AsyncLoadingStatus.done) {
-                // setState(() {
                 agreeInquiryResponse = state.agreeInquiry;
 
-                // });
               }
             },
             child: Container(),

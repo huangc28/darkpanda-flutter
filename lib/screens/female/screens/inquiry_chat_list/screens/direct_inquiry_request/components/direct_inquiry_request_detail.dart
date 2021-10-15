@@ -84,7 +84,9 @@ class DirectInquiryRequestDetail extends StatelessWidget {
                     ? _startToChatButton()
                     : _agreeToChatButton(),
                 SizedBox(width: 10),
-                _cancelButton(context),
+                inquiry.inquiryStatus == InquiryStatus.chatting
+                    ? Container()
+                    : _cancelButton(context),
               ],
             ),
           ),
