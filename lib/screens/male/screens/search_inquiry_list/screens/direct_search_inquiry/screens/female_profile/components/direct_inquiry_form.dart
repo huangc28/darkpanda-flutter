@@ -50,13 +50,7 @@ class _DirectInquiryForm extends State<DirectInquiryForm> {
               ),
             );
           } else if (state.status == AsyncLoadingStatus.done) {
-            if (state.createInquiryResponse.fcmTopic != null) {
-              FirebaseMessagingService()
-                  .fcmSubscribe(state.createInquiryResponse.fcmTopic);
-              print('FCM topic: ' + state.createInquiryResponse.fcmTopic);
-            }
-
-            Navigator.of(context).pop(null);
+            Navigator.of(context).pop(state.createInquiryResponse);
           }
 
           setState(() {

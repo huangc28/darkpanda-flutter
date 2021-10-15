@@ -79,7 +79,7 @@ class FemaleUser {
     UserRating userRating,
     bool hasInquiry,
     String inquiryUuid,
-    String inquiryStatus,
+    InquiryStatus inquiryStatus,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -96,6 +96,22 @@ class FemaleUser {
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
     );
   }
+
+  @override
+  List<Object> get props => [
+        uuid,
+        username,
+        avatarUrl,
+        age,
+        height,
+        weight,
+        breastSize,
+        description,
+        userRating,
+        hasInquiry,
+        inquiryUuid,
+        inquiryStatus,
+      ];
 }
 
 class FemaleUserList {

@@ -1,4 +1,3 @@
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +9,10 @@ import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 
 import 'bloc/direct_inquiry_form_bloc.dart';
+import 'bloc/update_female_inquiry_bloc.dart';
 import 'models/female_list.dart';
 import 'screens/female_profile/female_profile.dart';
 
@@ -58,9 +59,13 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
               searchInquiryAPIs: SearchInquiryAPIs(),
             ),
           ),
+          BlocProvider(
+            create: (context) => UpdateFemaleInquiryBloc(),
+          ),
         ],
         child: FemaleProfile(
           femaleUser: femaleUser,
+          onInquiryStatusChanged: _handleInquiryStatusChanged,
         ),
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -79,12 +84,29 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
     );
   }
 
+  _handleInquiryStatusChanged(FemaleUser femaleUser) {
+    for (int i = 0; i < femaleUsers.length; i++) {
+      if (femaleUsers[i].hasInquiry) {
+        if (femaleUsers[i].uuid == femaleUser.uuid) {
+          final updatedInquiry = femaleUsers[i].copyWith(
+            inquiryUuid: femaleUser.inquiryUuid,
+            inquiryStatus: femaleUser.inquiryStatus,
+          );
+
+          femaleUsers[i] = updatedInquiry;
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     /*24 is for notification bar on Android*/
     final double itemHeight =
         (SizeConfig.screenHeight - kToolbarHeight - 24) / 2;
     final double itemWidth = SizeConfig.screenWidth / 2;
+
+    femaleUsers = widget.femaleUserList;
 
     return Container(
       padding: EdgeInsets.only(
@@ -102,7 +124,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
               physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               controller: scrollController,
-              itemCount: widget.femaleUserList?.length,
+              itemCount: femaleUsers?.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 5.0,
@@ -116,9 +138,9 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                     Navigator.of(
                       context,
                       rootNavigator: true,
-                    ).push(_createRoute(widget.femaleUserList[index]));
+                    ).push(_createRoute(femaleUsers[index]));
                   },
-                  child: _userList(widget.femaleUserList[index], index),
+                  child: _userList(femaleUsers[index], index),
                 );
               },
             ),

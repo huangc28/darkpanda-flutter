@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/direct_inquiry_form_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/update_female_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/models/female_list.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -22,9 +24,11 @@ class FemaleProfile extends StatefulWidget {
   const FemaleProfile({
     Key key,
     this.femaleUser,
+    this.onInquiryStatusChanged,
   }) : super(key: key);
 
   final FemaleUser femaleUser;
+  final ValueChanged<FemaleUser> onInquiryStatusChanged;
 
   @override
   _FemaleProfileState createState() => _FemaleProfileState();
@@ -41,15 +45,16 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
   String _chatNowButton = '馬上聊聊';
 
+  FemaleUser _femaleUser;
+
+  InquiryStatus _inquiryStatus;
+
   @override
   void initState() {
     super.initState();
 
-    if (widget.femaleUser.inquiryStatus == InquiryStatus.asking.name) {
-      _chatNowButton = '等待回應';
-    } else if (widget.femaleUser.inquiryStatus == InquiryStatus.chatting.name) {
-      _chatNowButton = '正在聊天';
-    }
+    _femaleUser = widget.femaleUser;
+    _inquiryStatus = _femaleUser.inquiryStatus;
 
     BlocProvider.of<LoadUserBloc>(context)
         .add(LoadUser(uuid: widget.femaleUser.uuid));
@@ -59,10 +64,21 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
     BlocProvider.of<LoadRateBloc>(context)
         .add(LoadRate(uuid: widget.femaleUser.uuid));
+
+    if (widget.femaleUser.hasInquiry) {
+      BlocProvider.of<UpdateFemaleInquiryBloc>(context)
+          .add(UpdateFemaleInquiry(femaleUser: widget.femaleUser));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_inquiryStatus == InquiryStatus.asking) {
+      _chatNowButton = '等待回應';
+    } else if (_inquiryStatus == InquiryStatus.chatting) {
+      _chatNowButton = '正在聊天';
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
@@ -114,9 +130,25 @@ class _FemaleProfileState extends State<FemaleProfile> {
                         );
                       },
                     ),
-                    // ).then(
-                    //   (_) => BlocProvider.of<LoadInquiryBloc>(context)
-                    //       .add(LoadInquiry()),
+                  ).then(
+                    (value) {
+                      // Return new created inquiry data
+                      if (value != null) {
+                        setState(() {
+                          _inquiryStatus = value.inquiryStatus;
+
+                          final updatedinquiry = _femaleUser.copyWith(
+                            inquiryUuid: value.inquiryUuid,
+                            inquiryStatus: value.inquiryStatus,
+                          );
+
+                          _femaleUser = updatedinquiry;
+
+                          // Return updated value to female list
+                          widget.onInquiryStatusChanged(_femaleUser);
+                        });
+                      }
+                    },
                   );
                 }
               },
@@ -195,7 +227,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 });
               },
             ),
-            BlocListener<DirectInquiryFormBloc, DirectInquiryFormState>(
+            BlocListener<UpdateFemaleInquiryBloc, UpdateFemaleInquiryState>(
               listener: (context, state) {
                 if (state.status == AsyncLoadingStatus.error) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -207,8 +239,12 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   setState(() {
-                    _chatNowButton = '等待回應';
+                    print('[Debug] female profile inquiry status ' +
+                        state.femaleUser.inquiryStatus.name);
+                    _inquiryStatus = state.femaleUser.inquiryStatus;
                   });
+
+                  // widget.onInquiryStatusChanged(_femaleUser);
                 }
               },
             ),
