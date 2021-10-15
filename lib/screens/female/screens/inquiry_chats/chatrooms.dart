@@ -131,7 +131,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                             );
                           },
                           chatroom: chatroom,
-                          lastMessage: lastMsg.content,
+                          lastMessage: lastMsg?.content,
                         ),
                       );
                     },

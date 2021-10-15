@@ -55,10 +55,10 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     // }
     else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
+    } else if (event is PutLatestMessage) {
+      yield* _mapPutLatestMessage(event);
     }
-    // else if (event is PutLatestMessage) {
-    //   yield* _mapPutLatestMessage(event);
-    // } else if (event is ClearInquiryChatList) {
+    //else if (event is ClearInquiryChatList) {
     //   yield* _mapClearInquiryChatListToState(event);
     // } else if (event is AddChatroom) {
     //   yield* _mapAddChatroomToState(event);
@@ -345,16 +345,16 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     }
   }
 
-  // Stream<InquiryChatroomsState> _mapPutLatestMessage(
-  //     PutLatestMessage event) async* {
-  //   final newMap = Map.of(state.chatroomLastMessage);
-  //   newMap[event.channelUUID] = event.message;
+  Stream<LoadDirectInquiryChatroomsState> _mapPutLatestMessage(
+      PutLatestMessage event) async* {
+    final newMap = Map.of(state.chatroomLastMessage);
+    newMap[event.channelUUID] = event.message;
 
-  //   yield InquiryChatroomsState.putChatroomLatestMessage(
-  //     state,
-  //     chatroomLastMessage: newMap,
-  //   );
-  // }
+    yield LoadDirectInquiryChatroomsState.putChatroomLatestMessage(
+      state,
+      chatroomLastMessage: newMap,
+    );
+  }
 
   // Stream<InquiryChatroomsState> _mapClearInquiryChatListToState(
   //     ClearInquiryChatList event) async* {

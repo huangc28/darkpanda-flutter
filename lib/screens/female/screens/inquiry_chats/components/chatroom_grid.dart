@@ -65,7 +65,7 @@ class ChatroomGrid extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  lastMessage,
+                  lastMessage == null ? '' : lastMessage,
                   style: TextStyle(
                     fontSize: 13,
                     color: Color.fromRGBO(106, 109, 137, 1),
