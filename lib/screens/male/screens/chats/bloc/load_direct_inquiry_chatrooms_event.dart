@@ -63,8 +63,8 @@ class PutLatestMessage extends LoadDirectInquiryChatroomsEvent {
   });
 }
 
-class ClearInquiryChatList extends LoadDirectInquiryChatroomsEvent {
-  const ClearInquiryChatList();
+class ClearDirectInquiryChatList extends LoadDirectInquiryChatroomsEvent {
+  const ClearDirectInquiryChatList();
 }
 
 class ClearInquiryList extends LoadDirectInquiryChatroomsEvent {

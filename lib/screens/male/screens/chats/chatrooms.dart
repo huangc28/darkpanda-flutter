@@ -40,7 +40,7 @@ class _ChatroomsState extends State<Chatrooms> {
 
   @override
   void dispose() {
-    // _inquiryChatroomsBloc.add(ClearInquiryChatList());
+    _loadDirectInquiryChatroomsBloc.add(ClearDirectInquiryChatList());
     super.dispose();
   }
 
