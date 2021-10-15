@@ -246,6 +246,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                   setState(() {
                     print('[Debug] female profile inquiry status ' +
                         state.femaleUser.inquiryStatus.name);
+
                     _inquiryStatus = state.femaleUser.inquiryStatus;
                   });
                 }

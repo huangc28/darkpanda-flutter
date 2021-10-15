@@ -66,11 +66,11 @@ class UpdateFemaleInquiryBloc
     //     }
     //   },
     // );
-    // if (femaleUsers.inquiryStatus == InquiryStatus.asking ||
-    //     femaleUsers.inquiryStatus == InquiryStatus.chatting) {
-    _streamMap[femaleUsers.inquiryUuid] =
-        _createInquirySubscriptionStream(femaleUsers.inquiryUuid);
-    // }
+    if (femaleUsers.inquiryStatus == InquiryStatus.asking ||
+        femaleUsers.inquiryStatus == InquiryStatus.chatting) {
+      _streamMap[femaleUsers.inquiryUuid] =
+          _createInquirySubscriptionStream(femaleUsers.inquiryUuid);
+    }
 
     return _streamMap;
   }
