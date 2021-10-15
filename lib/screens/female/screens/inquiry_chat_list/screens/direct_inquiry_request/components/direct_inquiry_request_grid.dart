@@ -8,15 +8,17 @@ class DirectInquiryRequestGrid extends StatelessWidget {
   const DirectInquiryRequestGrid({
     Key key,
     this.inquiry,
-    this.onTapStartChat,
+    this.onTapAgreeToChat,
     this.onTapSkip,
     this.onTapViewProfile,
+    this.onTapStartToChat,
   }) : super(key: key);
 
   final DirectInquiryRequests inquiry;
-  final ValueChanged<DirectInquiryRequests> onTapStartChat;
+  final ValueChanged<String> onTapAgreeToChat;
   final ValueChanged<String> onTapSkip;
   final ValueChanged<String> onTapViewProfile;
+  final ValueChanged<String> onTapStartToChat;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,9 @@ class DirectInquiryRequestGrid extends StatelessWidget {
               DirectInquiryRequestDetail(
                 inquiry: inquiry,
                 onTapSkip: onTapSkip,
+                onTapAgreeToChat: onTapAgreeToChat,
                 onTapViewProfile: onTapViewProfile,
+                onTapStartToChat: onTapStartToChat,
               ),
             ],
           ),

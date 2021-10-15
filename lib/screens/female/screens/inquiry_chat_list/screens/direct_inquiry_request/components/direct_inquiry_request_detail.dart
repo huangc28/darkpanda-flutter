@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
@@ -8,13 +9,20 @@ import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/scree
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 
 class DirectInquiryRequestDetail extends StatelessWidget {
-  const DirectInquiryRequestDetail(
-      {Key key, this.inquiry, this.onTapSkip, this.onTapViewProfile})
-      : super(key: key);
+  const DirectInquiryRequestDetail({
+    Key key,
+    this.inquiry,
+    this.onTapSkip,
+    this.onTapViewProfile,
+    this.onTapAgreeToChat,
+    this.onTapStartToChat,
+  }) : super(key: key);
 
   final DirectInquiryRequests inquiry;
+  final ValueChanged<String> onTapAgreeToChat;
   final ValueChanged<String> onTapSkip;
   final ValueChanged<String> onTapViewProfile;
+  final ValueChanged<String> onTapStartToChat;
 
   @override
   Widget build(BuildContext context) {
@@ -72,52 +80,76 @@ class DirectInquiryRequestDetail extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Expanded(
-                  child: SizedBox(
-                    height: 44,
-                    child: DPTextButton(
-                      theme: DPTextButtonThemes.deepGrey,
-                      onPressed: () {
-                        // onTapViewProfile(inquiry.uuid);
-                      },
-                      text: '立即洽談',
-                    ),
-                  ),
-                ),
+                inquiry.inquiryStatus == InquiryStatus.chatting
+                    ? _startToChatButton()
+                    : _agreeToChatButton(),
                 SizedBox(width: 10),
-                Expanded(
-                  child: SizedBox(
-                    child: InkWell(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        child: Image.asset(
-                            "lib/screens/male/assets/cancelButton.png"),
-                      ),
-                      onTap: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CancelInquiryConfirmationDialog(
-                              title: '確定跳過此男生？',
-                              onCancel: '取消',
-                              onConfirm: '確定跳過',
-                            );
-                          },
-                        ).then((value) {
-                          if (value) {
-                            onTapSkip(inquiry.inquiryUuid);
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ),
+                _cancelButton(context),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _agreeToChatButton() {
+    return Expanded(
+      child: SizedBox(
+        height: 44,
+        child: DPTextButton(
+          theme: DPTextButtonThemes.deepGrey,
+          onPressed: () {
+            onTapAgreeToChat(inquiry.inquiryUuid);
+          },
+          text: '立即洽談',
+        ),
+      ),
+    );
+  }
+
+  Widget _startToChatButton() {
+    return Expanded(
+      child: SizedBox(
+        height: 44,
+        child: DPTextButton(
+          theme: DPTextButtonThemes.purple,
+          onPressed: () {
+            onTapStartToChat(inquiry.inquiryUuid);
+          },
+          text: '開始洽談',
+        ),
+      ),
+    );
+  }
+
+  Widget _cancelButton(context) {
+    return Expanded(
+      child: SizedBox(
+        child: InkWell(
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.06,
+            child: Image.asset("lib/screens/male/assets/cancelButton.png"),
+          ),
+          onTap: () {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return CancelInquiryConfirmationDialog(
+                  title: '確定跳過此男生？',
+                  onCancel: '取消',
+                  onConfirm: '確定跳過',
+                );
+              },
+            ).then((value) {
+              if (value) {
+                onTapSkip(inquiry.inquiryUuid);
+              }
+            });
+          },
+        ),
+      ),
     );
   }
 }

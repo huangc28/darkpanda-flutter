@@ -77,6 +77,8 @@ class _FemaleProfileState extends State<FemaleProfile> {
       _chatNowButton = '等待回應';
     } else if (_inquiryStatus == InquiryStatus.chatting) {
       _chatNowButton = '正在聊天';
+    } else {
+      _chatNowButton = '馬上聊聊';
     }
 
     return Scaffold(
@@ -243,8 +245,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
                         state.femaleUser.inquiryStatus.name);
                     _inquiryStatus = state.femaleUser.inquiryStatus;
                   });
-
-                  // widget.onInquiryStatusChanged(_femaleUser);
                 }
               },
             ),

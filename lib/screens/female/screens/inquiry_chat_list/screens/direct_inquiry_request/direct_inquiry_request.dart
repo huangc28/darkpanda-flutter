@@ -2,6 +2,12 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +28,12 @@ import 'components/direct_inquiry_request_grid.dart';
 import 'components/direct_inquiry_request_list.dart';
 
 class DirectInquiryRequest extends StatefulWidget {
-  const DirectInquiryRequest({Key key}) : super(key: key);
+  const DirectInquiryRequest({
+    Key key,
+    this.onTabBarChanged,
+  }) : super(key: key);
+
+  final ValueChanged<int> onTabBarChanged;
 
   @override
   _DirectInquiryRequestState createState() => _DirectInquiryRequestState();
@@ -30,6 +41,9 @@ class DirectInquiryRequest extends StatefulWidget {
 
 class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
   Completer<void> _refreshCompleter;
+
+  AgreeInquiryResponse agreeInquiryResponse = new AgreeInquiryResponse();
+  // String _inquiryUuid;
 
   @override
   initState() {
@@ -105,7 +119,9 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                           ? DirectInquiryRequestGrid(
                               inquiry: inquiry,
                               onTapSkip: _handleSkip,
+                              onTapAgreeToChat: _handleAgreeToChat,
                               onTapViewProfile: _handleViewProfile,
+                              onTapStartToChat: _handleStartToChat,
                             )
                           : Container();
                     },
@@ -114,15 +130,58 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
               );
             },
           ),
+          BlocListener<AgreeInquiryBloc, AgreeInquiryState>(
+            listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error.message),
+                  ),
+                );
+              }
+
+              if (state.status == AsyncLoadingStatus.done) {
+                // setState(() {
+                agreeInquiryResponse = state.agreeInquiry;
+
+                // });
+              }
+            },
+            child: Container(),
+          ),
         ],
       ),
     );
   }
 
-  _handleSkip(String uuid) {
+  _handleSkip(String inquiryUuid) {
     BlocProvider.of<CancelInquiryBloc>(context).add(
-      CancelInquiry(inquiryUuid: uuid),
+      CancelInquiry(inquiryUuid: inquiryUuid),
     );
+  }
+
+  _handleAgreeToChat(String inquiryUuid) {
+    BlocProvider.of<AgreeInquiryBloc>(context).add(AgreeInquiry(inquiryUuid));
+  }
+
+  _handleStartToChat(String inquiryUuid) {
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).pushNamed(
+      MainRoutes.chatroom,
+      arguments: ChatroomScreenArguments(
+        channelUUID: agreeInquiryResponse.channelUuid,
+        inquiryUUID: inquiryUuid,
+        counterPartUUID: agreeInquiryResponse.picker.uuid,
+        serviceType: agreeInquiryResponse.serviceType,
+        routeTypes: RouteTypes.fromInquiryChats,
+        serviceUUID: agreeInquiryResponse.serviceUuid,
+      ),
+    );
+
+    // Change to chat tab
+    widget.onTabBarChanged(1);
   }
 
   _handleViewProfile(String inquirerUuid) {

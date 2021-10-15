@@ -26,7 +26,9 @@ class _BodyState extends State<Body> {
               physics: NeverScrollableScrollPhysics(),
               controller: widget.tabController,
               children: <Widget>[
-                DirectInquiryRequest(),
+                DirectInquiryRequest(
+                  onTabBarChanged: _handleTabBarChange,
+                ),
                 ChatRooms(),
               ],
             ),
@@ -34,5 +36,9 @@ class _BodyState extends State<Body> {
         ],
       ),
     );
+  }
+
+  _handleTabBarChange(int index) {
+    widget.tabController.animateTo(index);
   }
 }
