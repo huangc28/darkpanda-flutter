@@ -16,6 +16,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
     this.onTapViewProfile,
     this.onTapAgreeToChat,
     this.onTapStartToChat,
+    this.agreeToChatIsLoading,
   }) : super(key: key);
 
   final DirectInquiryRequests inquiry;
@@ -23,6 +24,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
   final ValueChanged<String> onTapSkip;
   final ValueChanged<String> onTapViewProfile;
   final ValueChanged<String> onTapStartToChat;
+  final bool agreeToChatIsLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +102,8 @@ class DirectInquiryRequestDetail extends StatelessWidget {
       child: SizedBox(
         height: 44,
         child: DPTextButton(
+          loading: agreeToChatIsLoading,
+          disabled: agreeToChatIsLoading,
           theme: DPTextButtonThemes.deepGrey,
           onPressed: () {
             onTapAgreeToChat(inquiry.inquiryUuid);

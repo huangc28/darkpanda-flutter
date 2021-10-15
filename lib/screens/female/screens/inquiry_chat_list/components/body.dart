@@ -1,7 +1,9 @@
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_chats/chatrooms.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/direct_inquiry_request.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -40,5 +42,7 @@ class _BodyState extends State<Body> {
 
   _handleTabBarChange(int index) {
     widget.tabController.animateTo(index);
+
+    BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
   }
 }

@@ -7,7 +7,6 @@ import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +42,7 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
   Completer<void> _refreshCompleter;
 
   AgreeInquiryResponse agreeInquiryResponse = new AgreeInquiryResponse();
-  // String _inquiryUuid;
+  bool _agreeToChatIsLoading = false;
 
   @override
   initState() {
@@ -122,6 +121,7 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                               onTapAgreeToChat: _handleAgreeToChat,
                               onTapViewProfile: _handleViewProfile,
                               onTapStartToChat: _handleStartToChat,
+                              agreeToChatIsLoading: _agreeToChatIsLoading,
                             )
                           : Container();
                     },
@@ -132,6 +132,13 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
           ),
           BlocListener<AgreeInquiryBloc, AgreeInquiryState>(
             listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.initial ||
+                  state.status == AsyncLoadingStatus.loading) {
+                setState(() {
+                  _agreeToChatIsLoading = true;
+                });
+              }
+
               if (state.status == AsyncLoadingStatus.error) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -142,7 +149,6 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
 
               if (state.status == AsyncLoadingStatus.done) {
                 agreeInquiryResponse = state.agreeInquiry;
-
               }
             },
             child: Container(),
