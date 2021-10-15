@@ -16,9 +16,11 @@ class Body extends StatefulWidget {
   const Body({
     Key key,
     this.tabController,
+    this.onPush,
   }) : super(key: key);
 
   final TabController tabController;
+  final OnPushInquiryDetail onPush;
 
   @override
   _BodyState createState() => _BodyState();
@@ -57,7 +59,9 @@ class _BodyState extends State<Body> {
               physics: NeverScrollableScrollPhysics(),
               controller: widget.tabController,
               children: <Widget>[
-                SearchInquiry(),
+                SearchInquiry(
+                  onPush: widget.onPush,
+                ),
                 _directSearchInquiry(),
               ],
             ),

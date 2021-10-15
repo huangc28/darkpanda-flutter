@@ -48,7 +48,10 @@ class SearchInquiryRoutes extends BaseRoutes {
                 ),
               ),
             ],
-            child: SearchInquiryList(),
+            child: SearchInquiryList(
+              onPush: (String routeName, InquirerProfileArguments args) =>
+                  this.push(context, routeName, args),
+            ),
           ),
       SearchInquiryRoutes.randomSearch: (contect) => MultiProvider(
             providers: [

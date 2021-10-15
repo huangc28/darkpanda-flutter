@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/inquirer_profile_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,8 +10,16 @@ enum SearchInquiryListTabs {
   specific,
 }
 
+typedef OnPushInquiryDetail = void Function(
+    String routeName, InquirerProfileArguments args);
+
 class SearchInquiryList extends StatefulWidget {
-  const SearchInquiryList({Key key}) : super(key: key);
+  const SearchInquiryList({
+    Key key,
+    this.onPush,
+  }) : super(key: key);
+
+  final OnPushInquiryDetail onPush;
 
   @override
   _SearchInquiryListState createState() => _SearchInquiryListState();
@@ -77,6 +86,7 @@ class _SearchInquiryListState extends State<SearchInquiryList>
       ),
       body: Body(
         tabController: _tabController,
+        onPush: widget.onPush,
       ),
     );
   }
