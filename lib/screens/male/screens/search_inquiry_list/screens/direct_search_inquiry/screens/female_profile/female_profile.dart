@@ -67,7 +67,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
     if (widget.femaleUser.hasInquiry) {
       BlocProvider.of<UpdateFemaleInquiryBloc>(context)
-          .add(UpdateFemaleInquiry(femaleUser: widget.femaleUser));
+          .add(UpdateFemaleInquiry(femaleUser: _femaleUser));
     }
   }
 
@@ -148,6 +148,9 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                           // Return updated value to female list
                           widget.onInquiryStatusChanged(_femaleUser);
+
+                          BlocProvider.of<UpdateFemaleInquiryBloc>(context).add(
+                              UpdateFemaleInquiry(femaleUser: _femaleUser));
                         });
                       }
                     },

@@ -38,7 +38,7 @@ class _ChatRoomsState extends State<ChatRooms> {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
 
-    _inquiryChatroomsBloc.add(FetchChatrooms());
+    // _inquiryChatroomsBloc.add(FetchChatrooms());
 
     super.initState();
   }
@@ -149,7 +149,7 @@ class _ChatRoomsState extends State<ChatRooms> {
   Widget _buildHeader() {
     return Container(
       padding: EdgeInsets.only(
-        top: 30,
+        top: 20,
         right: 16,
         left: 16,
       ),

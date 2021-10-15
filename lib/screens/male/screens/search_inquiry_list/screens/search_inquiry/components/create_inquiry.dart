@@ -101,7 +101,7 @@ class _CreateInquiryState extends State<CreateInquiry> {
   Widget _buildHeader() {
     return Container(
       padding: EdgeInsets.only(
-        top: 30,
+        top: 20,
         right: 16,
         left: 16,
       ),

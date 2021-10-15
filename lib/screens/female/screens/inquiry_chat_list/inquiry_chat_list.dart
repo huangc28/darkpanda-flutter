@@ -1,6 +1,8 @@
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/bloc/load_direct_inquiry_request_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/bloc/load_direct_inquiry_request_bloc.dart';
 
 import 'components/body.dart';
 
@@ -48,8 +50,8 @@ class _InquiryChatListState extends State<InquiryChatList>
             }
 
             if (_tabs[index] == InquiryChatListTabs.chat) {
-              // BlocProvider.of<LoadFemaleListBloc>(context)
-              //     .add(LoadFemaleList());
+              BlocProvider.of<InquiryChatroomsBloc>(context)
+                  .add(FetchChatrooms());
             }
           },
           controller: _tabController,

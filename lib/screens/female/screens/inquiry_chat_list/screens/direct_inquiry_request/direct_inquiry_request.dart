@@ -180,7 +180,8 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
       ),
     );
 
-    // Change to chat tab
+    // Change tab to 聊天室 because current tab is 聊天請求
+    // After user back from chatroom will show 聊天室
     widget.onTabBarChanged(1);
   }
 
