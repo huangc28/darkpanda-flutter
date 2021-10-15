@@ -290,6 +290,8 @@ class _BodyState extends State<Body> {
           setState(() {
             _inquiryForms.inquiryTime = time;
             _timeController = TextEditingController()..text = _formatTime(time);
+
+            timeOfDay = TimeOfDay(hour: time.hour, minute: time.minute);
           });
         },
       ),

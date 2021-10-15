@@ -61,9 +61,9 @@ class InquiryAppointmentTimeField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: [
+        children: <Widget>[
           Row(
-            children: [
+            children: <Widget>[
               /// Show native datePicker when click on the date field.
               Expanded(
                 child: GestureDetector(
