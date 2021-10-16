@@ -15,6 +15,7 @@ import 'package:darkpanda_flutter/models/chatroom.dart';
 
 import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
+import 'screen_arguments/direct_chatroom_screen_arguments.dart';
 
 class Chatrooms extends StatefulWidget {
   const Chatrooms({Key key}) : super(key: key);
@@ -109,11 +110,12 @@ class _ChatroomsState extends State<Chatrooms> {
                                 rootNavigator: true,
                               ).pushNamed(
                                 MainRoutes.directChatroom,
-                                arguments: MaleChatroomScreenArguments(
+                                arguments: DirectChatroomScreenArguments(
                                   channelUUID: chatroom.channelUUID,
                                   inquiryUUID: chatroom.inquiryUUID,
                                   counterPartUUID: chatroom.pickerUUID,
                                   serviceUUID: chatroom.serviceUUID,
+                                  routeTypes: RouteTypes.fromMaleChats,
                                 ),
                               );
                             },

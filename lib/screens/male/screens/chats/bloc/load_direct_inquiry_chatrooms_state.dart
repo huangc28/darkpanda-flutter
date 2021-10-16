@@ -72,7 +72,7 @@ class LoadDirectInquiryChatroomsState<E extends AppBaseException>
   }) : this._(
           privateChatStreamMap: state.privateChatStreamMap,
           chatrooms: state.chatrooms,
-          status: state.status,
+          // status: state.status,
           chatroomLastMessage: chatroomLastMessage ?? state.chatroomLastMessage,
           currentPage: state.currentPage,
         );

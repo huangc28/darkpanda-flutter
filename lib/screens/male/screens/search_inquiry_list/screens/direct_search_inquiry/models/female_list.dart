@@ -14,6 +14,8 @@ class FemaleUser {
     this.hasInquiry,
     this.inquiryUuid,
     this.inquiryStatus,
+    this.channelUuid,
+    this.serviceUuid,
   });
 
   final String uuid;
@@ -28,6 +30,8 @@ class FemaleUser {
   final bool hasInquiry;
   final String inquiryUuid;
   final InquiryStatus inquiryStatus;
+  final String channelUuid;
+  final String serviceUuid;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -42,6 +46,8 @@ class FemaleUser {
         'has_inquiry': hasInquiry,
         'inquiry_uuid': inquiryUuid,
         'inquiry_status': inquiryStatus,
+        'channel_uuid': channelUuid,
+        'service_uuid': serviceUuid,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
@@ -64,6 +70,8 @@ class FemaleUser {
       hasInquiry: data['has_inquiry'],
       inquiryUuid: data['inquiry_uuid'],
       inquiryStatus: iqStatus?.toInquiryStatusEnum(),
+      channelUuid: data['channel_uuid'],
+      serviceUuid: data['service_uuid'],
     );
   }
 
@@ -80,6 +88,8 @@ class FemaleUser {
     bool hasInquiry,
     String inquiryUuid,
     InquiryStatus inquiryStatus,
+    String channelUuid,
+    String serviceUuid,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -94,6 +104,8 @@ class FemaleUser {
       hasInquiry: hasInquiry ?? this.hasInquiry,
       inquiryUuid: inquiryUuid ?? this.inquiryUuid,
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
+      channelUuid: channelUuid ?? this.channelUuid,
+      serviceUuid: serviceUuid ?? this.serviceUuid,
     );
   }
 
@@ -111,6 +123,8 @@ class FemaleUser {
         hasInquiry,
         inquiryUuid,
         inquiryStatus,
+        channelUuid,
+        serviceUuid,
       ];
 }
 

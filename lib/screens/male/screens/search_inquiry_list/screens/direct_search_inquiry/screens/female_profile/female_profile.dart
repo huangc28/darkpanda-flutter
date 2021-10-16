@@ -1,3 +1,8 @@
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -156,6 +161,11 @@ class _FemaleProfileState extends State<FemaleProfile> {
                     },
                   );
                 }
+
+                if (_chatNowButton == '正在聊天') {
+                  BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
+                      .add(FetchDirectInquiryChatrooms());
+                }
               },
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
@@ -249,6 +259,34 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                     _inquiryStatus = state.femaleUser.inquiryStatus;
                   });
+                }
+              },
+            ),
+            BlocListener<LoadDirectInquiryChatroomsBloc,
+                LoadDirectInquiryChatroomsState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(
+                    MainRoutes.directChatroom,
+                    arguments: DirectChatroomScreenArguments(
+                      channelUUID: _femaleUser.channelUuid,
+                      inquiryUUID: _femaleUser.inquiryUuid,
+                      counterPartUUID: _femaleUser.uuid,
+                      serviceUUID: _femaleUser.serviceUuid,
+                      routeTypes: RouteTypes.fromMaleDirectInqiury,
+                    ),
+                  );
                 }
               },
             ),

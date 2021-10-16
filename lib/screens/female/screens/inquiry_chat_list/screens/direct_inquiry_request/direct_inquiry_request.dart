@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
@@ -172,7 +173,8 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
     Navigator.of(
       context,
       rootNavigator: true,
-    ).pushNamed(
+    )
+        .pushNamed(
       MainRoutes.chatroom,
       arguments: ChatroomScreenArguments(
         channelUUID: agreeInquiryResponse.channelUuid,
@@ -182,7 +184,10 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
         routeTypes: RouteTypes.fromInquiryChats,
         serviceUUID: agreeInquiryResponse.serviceUuid,
       ),
-    );
+    )
+        .then((value) {
+      BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+    });
 
     // Change tab to 聊天室 because current tab is 聊天請求
     // After user back from chatroom will show 聊天室

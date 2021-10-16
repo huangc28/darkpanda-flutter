@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -44,7 +45,7 @@ import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screens/mal
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 
 class DirectChatroom extends StatefulWidget {
   const DirectChatroom({
@@ -52,7 +53,7 @@ class DirectChatroom extends StatefulWidget {
     this.args,
   }) : super(key: key);
 
-  final MaleChatroomScreenArguments args;
+  final DirectChatroomScreenArguments args;
 
   @override
   _DirectChatroomState createState() => _DirectChatroomState();
@@ -178,7 +179,18 @@ class _DirectChatroomState extends State<DirectChatroom>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop();
+        if (widget.args.routeTypes == RouteTypes.fromMaleDirectInqiury) {
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushNamedAndRemoveUntil(
+            MainRoutes.male,
+            ModalRoute.withName('/'),
+            arguments: MaleAppTabItem.chat,
+          );
+        } else {
+          Navigator.of(context).pop();
+        }
 
         return false;
       },
@@ -419,7 +431,18 @@ class _DirectChatroomState extends State<DirectChatroom>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onPressed: () async {
-          Navigator.of(context).pop();
+          if (widget.args.routeTypes == RouteTypes.fromMaleDirectInqiury) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamedAndRemoveUntil(
+              MainRoutes.male,
+              ModalRoute.withName('/'),
+              arguments: MaleAppTabItem.chat,
+            );
+          } else {
+            Navigator.of(context).pop();
+          }
         },
       ),
       title: BlocBuilder<DirectCurrentChatroomBloc, DirectCurrentChatroomState>(

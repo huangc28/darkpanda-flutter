@@ -118,7 +118,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                             Navigator.of(
                               context,
                               rootNavigator: true,
-                            ).pushNamed(
+                            )
+                                .pushNamed(
                               MainRoutes.chatroom,
                               arguments: ChatroomScreenArguments(
                                 channelUUID: chatroom.channelUUID,
@@ -128,7 +129,11 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 routeTypes: RouteTypes.fromInquiryChats,
                                 serviceUUID: chatroom.serviceUUID,
                               ),
-                            );
+                            )
+                                .then((value) {
+                              BlocProvider.of<InquiryChatroomsBloc>(context)
+                                  .add(FetchChatrooms());
+                            });
                           },
                           chatroom: chatroom,
                           lastMessage: lastMsg?.content,

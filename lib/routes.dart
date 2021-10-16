@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -85,7 +86,7 @@ class MainRoutes extends BaseRoutes {
         return InquiryChatroom(args: maleChatroomArgs);
       },
       MainRoutes.directChatroom: (context) {
-        final MaleChatroomScreenArguments maleChatroomArgs = args;
+        final DirectChatroomScreenArguments maleChatroomArgs = args;
 
         return DirectChatroom(args: maleChatroomArgs);
       }
