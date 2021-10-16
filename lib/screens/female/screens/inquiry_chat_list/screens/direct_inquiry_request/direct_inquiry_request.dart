@@ -177,7 +177,7 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
       arguments: ChatroomScreenArguments(
         channelUUID: agreeInquiryResponse.channelUuid,
         inquiryUUID: inquiryUuid,
-        counterPartUUID: agreeInquiryResponse.picker.uuid,
+        counterPartUUID: agreeInquiryResponse.inquirer.uuid,
         serviceType: agreeInquiryResponse.serviceType,
         routeTypes: RouteTypes.fromInquiryChats,
         serviceUUID: agreeInquiryResponse.serviceUuid,
@@ -193,7 +193,10 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
     InquirerProfileArguments _inquirerProfileArguments =
         InquirerProfileArguments(uuid: inquirerUuid);
 
-    Navigator.of(context).push(
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(
       MaterialPageRoute(
         builder: (context) {
           return MultiBlocProvider(
