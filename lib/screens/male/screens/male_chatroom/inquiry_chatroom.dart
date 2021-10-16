@@ -566,7 +566,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          // _getCameraImage();
           Navigator.of(
             context,
             rootNavigator: true,
