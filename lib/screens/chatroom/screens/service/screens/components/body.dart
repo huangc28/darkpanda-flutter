@@ -210,8 +210,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildDpCardInfo() {
-    final total =
-        widget.serviceDetails.price + widget.serviceDetails.matchingFee;
+    // final total =
+    //     widget.serviceDetails.price + widget.serviceDetails.matchingFee;
 
     return Container(
       width: double.infinity,
@@ -228,21 +228,21 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計',
+          _buildEachText('pie.png', '服務費',
               '${convertZeroDecimalToInt(widget.serviceDetails.price)}DP'),
           SizedBox(height: 15),
           _buildEachText(
-              'heart.png', '服務費', '${widget.serviceDetails.matchingFee}DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-            'coin.png',
-            '合計',
-            '${convertZeroDecimalToInt(total)}DP',
-            titleSize: 14,
-            valueSize: 16,
-            titleColor: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+              'heart.png', '媒合費', '${widget.serviceDetails.matchingFee}DP'),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //   'coin.png',
+          //   '合計',
+          //   '${convertZeroDecimalToInt(total)}DP',
+          //   titleSize: 14,
+          //   valueSize: 16,
+          //   titleColor: Colors.white,
+          //   fontWeight: FontWeight.bold,
+          // ),
         ],
       ),
     );

@@ -170,8 +170,8 @@ class _BodyState extends State<Body> {
   }
 
   Widget _buildDpCardInfo() {
-    final total = widget.args.updateInquiryMessage.price +
-        widget.args.updateInquiryMessage.matchingFee;
+    // final total = widget.args.updateInquiryMessage.price +
+    //     widget.args.updateInquiryMessage.matchingFee;
 
     return Container(
       width: double.infinity,
@@ -190,22 +190,22 @@ class _BodyState extends State<Body> {
         children: [
           _buildEachText(
               'pie.png',
-              '小計',
+              '服務費',
               convertZeroDecimalToInt(widget.args.updateInquiryMessage.price) +
                   'DP'),
           SizedBox(height: 15),
-          _buildEachText('heart.png', '服務費',
+          _buildEachText('heart.png', '媒合費',
               widget.args.updateInquiryMessage.matchingFee.toString() + 'DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-            'coin.png',
-            '合計',
-            convertZeroDecimalToInt(total) + 'DP',
-            titleSize: 14,
-            valueSize: 16,
-            titleColor: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //   'coin.png',
+          //   '合計',
+          //   convertZeroDecimalToInt(total) + 'DP',
+          //   titleSize: 14,
+          //   valueSize: 16,
+          //   titleColor: Colors.white,
+          //   fontWeight: FontWeight.bold,
+          // ),
         ],
       ),
     );
