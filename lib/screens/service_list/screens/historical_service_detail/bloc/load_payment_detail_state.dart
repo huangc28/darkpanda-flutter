@@ -26,9 +26,10 @@ class LoadPaymentDetailState<E extends AppBaseException> extends Equatable {
       {PaymentDetail paymentDetail, RateDetail rateDetail})
       : this._(status: AsyncLoadingStatus.done, paymentDetail: paymentDetail);
 
-  LoadPaymentDetailState.loadFailed(LoadPaymentDetailState state, E err)
+  LoadPaymentDetailState.loadFailed(LoadPaymentDetailState state, E error)
       : this._(
           status: AsyncLoadingStatus.error,
+          error: error,
         );
 
   @override
