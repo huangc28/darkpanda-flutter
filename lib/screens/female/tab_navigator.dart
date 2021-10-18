@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import './bottom_navigation.dart';
 
 import './screens/inquiry_list/routes.dart';
-import './screens/inquiry_chats/routes.dart';
 
 import '../profile/screens/routes.dart';
 import '../setting/routes.dart';
