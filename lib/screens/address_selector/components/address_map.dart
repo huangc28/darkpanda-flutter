@@ -268,12 +268,14 @@ class _AddressMapState extends State<AddressMap> {
               right: 16,
             ),
             child: Row(
-              children: [
+              children: <Widget>[
                 // Back button.
                 IconButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   icon: Icon(Icons.arrow_back),
                   iconSize: 25,
                   color: Color.fromRGBO(106, 109, 137, 1),

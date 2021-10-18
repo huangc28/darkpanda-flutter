@@ -385,7 +385,15 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     // Service started banner
                     BlocListener<ServiceStartNotifierBloc,
                         ServiceStartNotifierState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        print('[Debug] Service start notifier');
+
+                        setState(() {
+                          _serviceDetails.copyWith(
+                            serviceStatus: ServiceStatus.fulfilling.name,
+                          );
+                        });
+                      },
                       child: _serviceDetails.serviceStatus ==
                               ServiceStatus.fulfilling.name
                           ? ServiceStartBanner(
@@ -398,7 +406,15 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     // Payment completed banner
                     BlocListener<PaymentCompleteNotifierBloc,
                         PaymentCompleteNotifierState>(
-                      listener: (context, state) {},
+                      listener: (context, state) {
+                        print('[Debug] Payment complete notifier');
+
+                        setState(() {
+                          _serviceDetails.copyWith(
+                            serviceStatus: ServiceStatus.to_be_fulfilled.name,
+                          );
+                        });
+                      },
                       child: _serviceDetails.serviceStatus ==
                               ServiceStatus.to_be_fulfilled.name
                           ? PaymentCompleteBanner(
@@ -437,8 +453,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   inquirerProfile: _inquirerProfile,
                                   serviceDetails: _serviceDetails,
                                   onGoToPayment: () {
-                                    final total = _serviceDetails.price +
-                                        _serviceDetails.matchingFee;
+                                    final total = _serviceDetails.matchingFee;
 
                                     if (total > _balance) {
                                       print("Go to Top up dp");
@@ -803,6 +818,8 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onPressed: () {
           // If is female, use pop
           if (_sender.gender == Gender.female) {

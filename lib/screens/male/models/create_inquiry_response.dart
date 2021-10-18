@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+
 class CreateInquiryResponse extends Equatable {
   const CreateInquiryResponse({
     this.inquiryUuid,
@@ -14,7 +16,7 @@ class CreateInquiryResponse extends Equatable {
   final String inquiryUuid;
   final double budget;
   final String serviceType;
-  final String inquiryStatus;
+  final InquiryStatus inquiryStatus;
   final String fcmTopic;
   final DateTime appointmentTime;
 
@@ -30,11 +32,13 @@ class CreateInquiryResponse extends Equatable {
       );
     }
 
+    String iqStatus = data['inquiry_status'] as String;
+
     return CreateInquiryResponse(
       inquiryUuid: data['inquiry_uuid'],
       budget: data['budget'].toDouble(),
       serviceType: data['service_type'],
-      inquiryStatus: data['inquiry_status'],
+      inquiryStatus: iqStatus?.toInquiryStatusEnum(),
       fcmTopic: data['fcm_topic'],
       appointmentTime: parsedAppointmentTime.toLocal(),
     );

@@ -44,6 +44,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Expanded(
             child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
               controller: widget.tabController,
               children: <Widget>[
                 comingTab(),

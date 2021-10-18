@@ -26,6 +26,8 @@ class _HistoryCardState extends State<HistoryCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.press,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(

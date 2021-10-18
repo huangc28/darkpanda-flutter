@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 
 class SearchInquiryAPIs extends BaseClient {
   Future<http.Response> fetchServiceList() async {
@@ -271,6 +271,87 @@ class SearchInquiryAPIs extends BaseClient {
       final request = http.Request(
         'POST',
         buildUri('/v1/payments'),
+      );
+
+      request.body = jsonBody;
+
+      await withTokenFromSecureStore(request);
+      withApplicationJsonHeader(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (err) {
+      throw AppGeneralExeption(
+        message: err.toString(),
+      );
+    }
+  }
+
+  // PerPage int `form:"perpage,default=6"`
+  // Page    int `form:"page,default=1"`
+  Future<http.Response> fetchFemaleList({int perPage = 6, offset = 0}) async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/users/girls', {
+        'per_page': '$perPage',
+        'offset': '$offset',
+      }),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
+
+  Future<http.Response> fetchDirectInquiryChatrooms({int offset = 0}) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/chat/direct-inquiry-chatrooms', {
+          'offset': '$offset',
+        }),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      final res = await sendWithResponse(request);
+
+      return res;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<http.Response> directInquiry(InquiryForms inquiryForms) async {
+    try {
+      final appointmentTime = DateTime(
+        inquiryForms.inquiryDate.year,
+        inquiryForms.inquiryDate.month,
+        inquiryForms.inquiryDate.day,
+        inquiryForms.inquiryTime.hour,
+        inquiryForms.inquiryTime.minute,
+      );
+
+      String appointmentToUtcToIsoString =
+          appointmentTime.toUtc().toIso8601String();
+
+      final body = inquiryForms;
+      final jsonBody = jsonEncode({
+        'inquiry_type': 'direct',
+        'female_uuid': body.uuid,
+        'budget': body.budget,
+        'service_type': body.serviceType,
+        'appointment_time': appointmentToUtcToIsoString,
+        'service_duration': body.duration.inMinutes,
+        'address': body.address,
+      });
+
+      final request = http.Request(
+        'POST',
+        buildUri('/v1/inquiries'),
       );
 
       request.body = jsonBody;

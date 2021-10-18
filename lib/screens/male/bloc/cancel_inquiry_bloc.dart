@@ -3,11 +3,11 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
-import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 

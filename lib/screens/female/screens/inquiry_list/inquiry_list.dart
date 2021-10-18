@@ -70,33 +70,6 @@ class _InqiuryListState extends State<InqiuryList> {
     _inquiryChatroomsBloc.add(ClearInquiryChatList());
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.only(
-        top: SizeConfig.screenHeight * 0.034, //30,
-        right: SizeConfig.screenWidth * 0.038, //16,
-        left: SizeConfig.screenWidth * 0.038, //16,
-      ),
-      child: Row(
-        children: [
-          Image(
-            image: AssetImage('assets/panda_head_logo.png'),
-            width: 31,
-            height: 31,
-          ),
-          SizedBox(width: 8),
-          Text(
-            '需求總覽',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,6 +157,7 @@ class _InqiuryListState extends State<InqiuryList> {
                       left: SizeConfig.screenWidth * 0.038, //16,
                       right: SizeConfig.screenWidth * 0.038, //16,
                     ),
+                    height: SizeConfig.screenHeight * 0.2,
                     child: InquiryList(
                       onLoadMore: () {
                         print('DEBUG trigger load more');
@@ -261,6 +235,33 @@ class _InqiuryListState extends State<InqiuryList> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: EdgeInsets.only(
+        top: SizeConfig.screenHeight * 0.034, //30,
+        right: SizeConfig.screenWidth * 0.038, //16,
+        left: SizeConfig.screenWidth * 0.038, //16,
+      ),
+      child: Row(
+        children: <Widget>[
+          Image(
+            image: AssetImage('assets/panda_head_logo.png'),
+            width: 31,
+            height: 31,
+          ),
+          SizedBox(width: 8),
+          Text(
+            '需求總覽',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ],
       ),
     );
   }

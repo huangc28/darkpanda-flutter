@@ -241,6 +241,15 @@ class _BodyState extends State<Body> {
           img.decodeImage(await File(image.path).readAsBytes());
       final img.Image orientedImage = img.bakeOrientation(capturedImage);
 
+      // double screenHeight = SizeConfig.screenHeight * 0.5;
+
+      // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
+      // final img.Image thumbnail = img.copyResize(
+      // orientedImage,
+      // width: SizeConfig.screenWidth.toInt(),
+      // height: screenHeight.toInt(),
+      // );
+
       await File(image.path).writeAsBytes(img.encodeJpg(orientedImage));
 
       setState(() {
@@ -466,9 +475,12 @@ class _BodyState extends State<Body> {
       },
       child: TextFormField(
         controller: _descriptionTextController,
-        keyboardType: TextInputType.multiline,
+        keyboardType: TextInputType.text,
         maxLines: 4,
         style: TextStyle(color: Colors.white),
+        onEditingComplete: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
         decoration: InputDecoration(
           hintText: "請輸入您的自我介紹",
           border: InputBorder.none,

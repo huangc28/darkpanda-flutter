@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
@@ -29,14 +30,17 @@ class InquiryList extends StatelessWidget {
       onLoadMore: onLoadMore,
       builder: (context, scrollController) => RefreshIndicator(
         onRefresh: onRefresh,
-        child: ListView.builder(
-          controller: scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: inquiries.length,
-          itemBuilder: (BuildContext context, int idx) =>
-              inquiryItemBuilder(context, inquiries[idx], idx),
+        child: Container(
+          height: SizeConfig.screenHeight,
+          child: ListView.builder(
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: inquiries.length,
+            itemBuilder: (BuildContext context, int idx) =>
+                inquiryItemBuilder(context, inquiries[idx], idx),
+          ),
         ),
       ),
     );

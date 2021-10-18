@@ -102,7 +102,7 @@ class ServiceSettings extends Equatable {
       duration: Duration(
         minutes: data['duration'] ?? 0,
       ),
-      serviceDate: ap,
+      serviceDate: ap.toLocal(),
       serviceTime: TimeOfDay.fromDateTime(ap.toLocal()),
       budget: data['budget']?.toDouble(),
     );

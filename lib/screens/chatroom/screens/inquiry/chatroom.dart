@@ -696,6 +696,8 @@ class _ChatroomState extends State<Chatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onPressed: () {
           // To avoid Duplicate GlobalKey issue
           if (widget.args.routeTypes == RouteTypes.fromInquiryChats) {

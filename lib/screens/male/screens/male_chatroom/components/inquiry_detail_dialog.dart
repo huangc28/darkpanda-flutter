@@ -87,8 +87,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                       // Dismiss inquiry_detail_dialog
                       Navigator.pop(context, true);
 
-                      final total = widget
-                              .inquiryDetail.updateInquiryMessage.price +
+                      final total =
                           widget.inquiryDetail.updateInquiryMessage.matchingFee;
 
                       inquiryDetail.balance = state.myDp.balance;
@@ -220,8 +219,8 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   }
 
   Widget _inquiryAmountDetail() {
-    final total = widget.inquiryDetail.updateInquiryMessage.price +
-        widget.inquiryDetail.updateInquiryMessage.matchingFee;
+    // final total = widget.inquiryDetail.updateInquiryMessage.price +
+    //     widget.inquiryDetail.updateInquiryMessage.matchingFee;
 
     return Container(
       decoration: BoxDecoration(
@@ -232,18 +231,18 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
-            _buildEachText('pie.png', '小計',
+            _buildEachText('pie.png', '服務費',
                 '${widget.inquiryDetail.updateInquiryMessage.price}DP'),
             SizedBox(height: 8),
-            _buildEachText('heart.png', '服務費',
+            _buildEachText('heart.png', '媒合費',
                 '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
-            SizedBox(height: 8),
-            _buildEachText(
-              'coin.png',
-              '合計',
-              '${total}DP',
-              fontWeight: FontWeight.bold,
-            ),
+            // SizedBox(height: 8),
+            // _buildEachText(
+            //   'coin.png',
+            //   '合計',
+            //   '${total}DP',
+            //   fontWeight: FontWeight.bold,
+            // ),
           ],
         ),
       ),
@@ -306,11 +305,15 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor,
-      double titleSize,
-      double valueSize,
-      FontWeight fontWeight = FontWeight.normal}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

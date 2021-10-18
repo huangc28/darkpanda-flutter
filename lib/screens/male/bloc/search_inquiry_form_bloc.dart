@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/create_inquiry_response.dart';
-import 'package:darkpanda_flutter/screens/male/screens/inquiry_form/models/inquiry_forms.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

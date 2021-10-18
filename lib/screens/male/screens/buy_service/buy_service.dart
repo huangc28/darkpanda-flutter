@@ -63,46 +63,7 @@ class _BuyServiceState extends State<BuyService> {
       },
       child: Scaffold(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(17, 16, 41, 1),
-          leadingWidth: 85,
-          leading: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Color.fromRGBO(106, 109, 137, 1),
-                ),
-                onPressed: () {
-                  // If route is from service_chatroom, should use pop
-                  if (widget.args.routeTypes ==
-                      RouteTypes.fromServiceChatroom) {
-                    Navigator.of(context).pop();
-                  }
-                  // 1. Route is from inquiry_chatroom
-                  // 2. From service_chatroom to topup_dp
-                  else {
-                    BlocProvider.of<LoadIncomingServiceBloc>(context)
-                        .add(LoadIncomingService());
-                  }
-                },
-              ),
-              Text(
-                '聊天',
-                style: TextStyle(
-                  color: Color.fromRGBO(106, 109, 137, 1),
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          automaticallyImplyLeading: false,
-          title: Text('交易'),
-          centerTitle: true,
-          iconTheme: IconThemeData(
-            color: Color.fromRGBO(106, 109, 137, 1),
-          ),
-        ),
+        appBar: _appBar(),
         body: MultiBlocListener(
           listeners: [
             BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
@@ -201,6 +162,50 @@ class _BuyServiceState extends State<BuyService> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _appBar() {
+    return AppBar(
+      backgroundColor: Color.fromRGBO(17, 16, 41, 1),
+      leadingWidth: 85,
+      leading: Row(
+        children: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Color.fromRGBO(106, 109, 137, 1),
+            ),
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onPressed: () {
+              // If route is from service_chatroom, should use pop
+              if (widget.args.routeTypes == RouteTypes.fromServiceChatroom) {
+                Navigator.of(context).pop();
+              }
+              // 1. Route is from inquiry_chatroom
+              // 2. From service_chatroom to topup_dp
+              else {
+                BlocProvider.of<LoadIncomingServiceBloc>(context)
+                    .add(LoadIncomingService());
+              }
+            },
+          ),
+          Text(
+            '聊天',
+            style: TextStyle(
+              color: Color.fromRGBO(106, 109, 137, 1),
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+      automaticallyImplyLeading: false,
+      title: Text('交易'),
+      centerTitle: true,
+      iconTheme: IconThemeData(
+        color: Color.fromRGBO(106, 109, 137, 1),
       ),
     );
   }

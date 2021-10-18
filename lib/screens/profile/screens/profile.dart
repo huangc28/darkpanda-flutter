@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/components/user_traits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -113,6 +113,7 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   children: <Widget>[
                     _buildProfileDetail(),
+                    SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {
                         if (state.status == AsyncLoadingStatus.error) {
@@ -284,7 +285,8 @@ class _ProfileState extends State<Profile> {
                     itemCount: state.userProfile.traits.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return traitsLabel(state.userProfile.traits[index]);
+                      return UserTraits(
+                          userTrait: state.userProfile.traits[index]);
                     },
                   ),
                 ),
@@ -387,48 +389,6 @@ class _ProfileState extends State<Profile> {
       loadUserImagesBloc.add(ClearUserImagesState());
       loadUserImagesBloc.add(LoadUserImages(uuid: _sender.uuid));
     });
-  }
-
-  Widget traitsLabel(trait) {
-    String label = '岁';
-    dynamic value = '';
-
-    if (trait.type == 'age') {
-      label = '岁';
-      value = trait.value.toInt();
-    } else if (trait.type == 'height') {
-      label = 'm';
-      value = trait.value;
-    } else {
-      label = 'kg';
-      value = trait.value;
-    }
-
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Color.fromRGBO(190, 172, 255, 0.3),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                value.toString() + label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _descriptionText(state) {

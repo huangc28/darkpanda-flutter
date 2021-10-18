@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
+import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -209,8 +210,8 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildDpCardInfo() {
-    final total =
-        widget.serviceDetails.price + widget.serviceDetails.matchingFee;
+    // final total =
+    //     widget.serviceDetails.price + widget.serviceDetails.matchingFee;
 
     return Container(
       width: double.infinity,
@@ -227,19 +228,21 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '${widget.serviceDetails.price}DP'),
+          _buildEachText('pie.png', '服務費',
+              '${convertZeroDecimalToInt(widget.serviceDetails.price)}DP'),
           SizedBox(height: 15),
           _buildEachText(
-              'heart.png', '服務費', '${widget.serviceDetails.matchingFee}DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-            'coin.png',
-            '合計',
-            '${total}DP',
-            titleSize: 14,
-            valueSize: 16,
-            titleColor: Colors.white,
-          ),
+              'heart.png', '媒合費', '${widget.serviceDetails.matchingFee}DP'),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //   'coin.png',
+          //   '合計',
+          //   '${convertZeroDecimalToInt(total)}DP',
+          //   titleSize: 14,
+          //   valueSize: 16,
+          //   titleColor: Colors.white,
+          //   fontWeight: FontWeight.bold,
+          // ),
         ],
       ),
     );
@@ -265,8 +268,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -287,6 +297,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   ? titleColor
                   : Color.fromRGBO(106, 109, 137, 1),
               fontSize: titleSize != null ? titleSize : 13,
+              fontWeight: fontWeight,
             ),
           ),
           SizedBox(width: 10),
@@ -298,6 +309,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,
+                fontWeight: fontWeight,
               ),
             ),
           ),

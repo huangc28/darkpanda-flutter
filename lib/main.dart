@@ -3,6 +3,12 @@ import 'dart:async';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/payment_complete_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/service_start_notifier_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/bloc/load_direct_inquiry_request_bloc.dart';
+import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/services/inquiry_chat_list_api_client.dart';
+import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/direct_current_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/direct_search_inquiry/bloc/load_female_list_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -215,6 +221,13 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
           ),
         ),
         BlocProvider(
+          create: (context) => AgreeInquiryBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
+            inquiryChatroomsBloc:
+                BlocProvider.of<InquiryChatroomsBloc>(context),
+          ),
+        ),
+        BlocProvider(
           create: (context) => SendEmitServiceConfirmMessageBloc(
             searchInquiryAPIs: SearchInquiryAPIs(),
           ),
@@ -244,6 +257,36 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 BlocProvider.of<ServiceConfirmNotifierBloc>(context),
             updateInquiryNotifierBloc:
                 BlocProvider.of<UpdateInquiryNotifierBloc>(context),
+          ),
+        ),
+
+        // Load direct inquiry chatroom
+        BlocProvider(
+          create: (context) => LoadDirectInquiryChatroomsBloc(
+            inquiryChatMesssagesBloc:
+                BlocProvider.of<InquiryChatMessagesBloc>(context),
+            searchInquiryAPIs: SearchInquiryAPIs(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => DirectCurrentChatroomBloc(
+            inquiryChatroomApis: InquiryChatroomApis(),
+            userApis: UserApis(),
+            loadDirectInquiryChatroomsBloc:
+                BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context),
+            currentServiceBloc: BlocProvider.of<CurrentServiceBloc>(context),
+            serviceConfirmNotifierBloc:
+                BlocProvider.of<ServiceConfirmNotifierBloc>(context),
+            updateInquiryNotifierBloc:
+                BlocProvider.of<UpdateInquiryNotifierBloc>(context),
+          ),
+        ),
+
+        // Load direct inquiry request
+        BlocProvider(
+          create: (context) => LoadDirectInquiryRequestBloc(
+            inquiryChatListApiClient: InquiryChatListApiClient(),
           ),
         ),
 
@@ -311,6 +354,12 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
         BlocProvider(
           create: (_) => UpdateInquiryBloc(
             apis: InquiryAPIClient(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => LoadFemaleListBloc(
+            searchInquiryAPIs: SearchInquiryAPIs(),
           ),
         ),
       ],
@@ -392,6 +441,13 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 }
 
                 if (settings.name == MainRoutes.female) {
+                  final routeBuilder =
+                      mainRoutes.routeBuilder(context, settings.arguments);
+
+                  return routeBuilder[settings.name](context);
+                }
+
+                if (settings.name == MainRoutes.directChatroom) {
                   final routeBuilder =
                       mainRoutes.routeBuilder(context, settings.arguments);
 

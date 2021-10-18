@@ -445,6 +445,8 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           Icons.arrow_back,
           color: Colors.white,
         ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onPressed: () async {
           await showDialog(
             barrierDismissible: false,
@@ -564,7 +566,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          // _getCameraImage();
           Navigator.of(
             context,
             rootNavigator: true,

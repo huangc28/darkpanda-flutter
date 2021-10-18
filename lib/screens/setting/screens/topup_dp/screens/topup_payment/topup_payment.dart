@@ -48,9 +48,13 @@ class _TopupPaymentState extends State<TopupPayment> {
 
   bool isLoading = false;
 
+  InquiryDetail _inquiryDetail;
+
   @override
   void initState() {
     super.initState();
+
+    _inquiryDetail = widget.args;
 
     _initTappay();
 
@@ -167,6 +171,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                   }
                   // Else not enough DP which is from male accept to pay inquiry
                   else {
+                    _inquiryDetail.balance += widget.amount;
                     // Go to payment screen
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
@@ -185,7 +190,7 @@ class _TopupPaymentState extends State<TopupPayment> {
                               ),
                             ],
                             child: BuyService(
-                              args: widget.args,
+                              args: _inquiryDetail,
                             ),
                           );
                         },

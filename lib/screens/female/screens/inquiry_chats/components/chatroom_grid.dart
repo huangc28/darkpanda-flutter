@@ -33,7 +33,10 @@ class ChatroomGrid extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: UserAvatar(chatroom.avatarURL),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: UserAvatar(chatroom.avatarURL),
+                  ),
                 ),
                 Expanded(
                   flex: 3,
@@ -65,7 +68,7 @@ class ChatroomGrid extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  lastMessage,
+                  lastMessage == null ? '' : lastMessage,
                   style: TextStyle(
                     fontSize: 13,
                     color: Color.fromRGBO(106, 109, 137, 1),

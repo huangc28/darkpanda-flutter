@@ -85,6 +85,8 @@ class _TopupDpState extends State<TopupDp> {
               Icons.arrow_back,
               color: Color.fromRGBO(106, 109, 137, 1),
             ),
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             onPressed: () {
               // If widget.args is null, means is from settings
               if (widget.args == null) {

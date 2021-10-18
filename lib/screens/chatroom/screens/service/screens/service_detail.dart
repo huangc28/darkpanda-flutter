@@ -56,6 +56,8 @@ class _ServiceDetailState extends State<ServiceDetail>
             Icons.arrow_back,
             color: Colors.white,
           ),
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onPressed: () {
             Navigator.pop(context);
           },

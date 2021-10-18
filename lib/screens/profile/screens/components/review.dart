@@ -20,7 +20,7 @@ class Review extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         SizeConfig.screenWidth * 0.04, //16.0,
-        SizeConfig.screenHeight * 0.02, //16.0,
+        SizeConfig.screenHeight * 0.0, //16.0,
         SizeConfig.screenWidth * 0.04, //16.0,
         SizeConfig.screenHeight * 0.02, //16.0,
       ),
@@ -41,7 +41,7 @@ class Review extends StatelessWidget {
           ),
         ),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               children: <Widget>[
                 UserAvatar(review.raterAvatarUrl, radius: 20),
@@ -55,6 +55,8 @@ class Review extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         review.raterUsername,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -92,19 +94,23 @@ class Review extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.02, //16,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                review.comment,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            review.comment != ""
+                ? SizedBox(
+                    height: SizeConfig.screenHeight * 0.02, //16,
+                  )
+                : Container(),
+            review.comment != ""
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      review.comment,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

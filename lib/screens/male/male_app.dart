@@ -10,6 +10,7 @@ import './tab_navigator.dart';
 
 Map<MaleAppTabItem, GlobalKey<NavigatorState>> _tabGlobalKeyMap = {
   MaleAppTabItem.waitingInquiry: GlobalKey<NavigatorState>(),
+  MaleAppTabItem.chat: GlobalKey<NavigatorState>(),
   MaleAppTabItem.manage: GlobalKey<NavigatorState>(),
   MaleAppTabItem.settings: GlobalKey<NavigatorState>(),
   MaleAppTabItem.profile: GlobalKey<NavigatorState>(),
@@ -82,6 +83,7 @@ class _MaleAppState extends State<MaleApp> {
     return Stack(
       children: [
         _buildOffstageNavigator(MaleAppTabItem.waitingInquiry),
+        _buildOffstageNavigator(MaleAppTabItem.chat),
         _buildOffstageNavigator(MaleAppTabItem.manage),
         _buildOffstageNavigator(MaleAppTabItem.settings),
         _buildOffstageNavigator(MaleAppTabItem.profile),

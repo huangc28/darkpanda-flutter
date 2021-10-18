@@ -46,6 +46,8 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/phone_authenticate.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush(SettingRoutes.verify_phone, null);
                           },
@@ -55,6 +57,8 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/recommend_management.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush(
                                 SettingRoutes.recommend_management, null);
@@ -65,6 +69,8 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/bank_account.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush('/bank-account', null);
                           },
@@ -74,6 +80,8 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             image: AssetImage(
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
                           onTap: () {
                             widget.onPush('/blacklist', null);
                           },
@@ -85,6 +93,8 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                         image: AssetImage(
                             "lib/screens/setting/assets/feedback.png"),
                       ),
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
                       onTap: () {},
                     ),
                     Padding(
@@ -132,7 +142,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
     return Container(
       padding: EdgeInsets.only(top: 30, right: 16, left: 16, bottom: 16),
       child: Row(
-        children: [
+        children: <Widget>[
           Image(
             image: AssetImage('assets/panda_head_logo.png'),
             width: 31,

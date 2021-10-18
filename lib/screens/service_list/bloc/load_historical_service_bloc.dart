@@ -69,6 +69,7 @@ class LoadHistoricalServiceBloc
       yield LoadHistoricalServiceState.loadSuccess(
         state,
         services: [...serviceList],
+        currentPage: state.currentPage + 1,
       );
     } on APIException catch (err) {
       yield LoadHistoricalServiceState.loadFailed(state, err: err);

@@ -24,6 +24,8 @@ class _ChatCardState extends State<ChatCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.press,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 20,

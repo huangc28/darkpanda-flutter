@@ -6,4 +6,6 @@ enum RouteTypes {
   fromTopupDp,
   fromInquiryList,
   fromInquiryChats,
+  fromMaleDirectInqiury,
+  fromMaleChats,
 }

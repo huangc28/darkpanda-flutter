@@ -14,7 +14,7 @@ class NotificationBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '服務已成立! 請至管理繼續交談',
+            '服務已成立! 請至服務繼續交談',
             style: TextStyle(
               color: Colors.white,
             ),

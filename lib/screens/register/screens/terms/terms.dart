@@ -143,6 +143,8 @@ class _TermsState extends State<Terms> with SingleTickerProviderStateMixin {
             Icons.arrow_back,
             color: Colors.white,
           ),
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onPressed: () {
             Navigator.of(
               context,

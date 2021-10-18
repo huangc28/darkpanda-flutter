@@ -1,5 +1,12 @@
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/enums/service_cancel_cause.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
@@ -37,6 +44,80 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
+  String _cancelCause;
+  String _gender;
+  String _refundStatus = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getGender().then((value) {
+      _gender = value;
+
+      _serviceCancelCause();
+    });
+  }
+
+  Future<String> _getGender() async {
+    return await SecureStore().readGender();
+  }
+
+  void _serviceCancelCause() {
+    if (_gender == Gender.male.name) {
+      if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.girl_cancel_after_appointment_time) {
+        _cancelCause = '* 對方在約定时间後取消';
+
+        if (widget.historicalService.refunded == true) {
+          _refundStatus = ' - 已退款';
+        } else {
+          _refundStatus = ' - 未退款';
+        }
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.girl_cancel_before_appointment_time) {
+        _cancelCause = '* 對方在約定时间前取消';
+
+        if (widget.historicalService.refunded == true) {
+          _refundStatus = ' - 已退款';
+        } else {
+          _refundStatus = ' - 未退款';
+        }
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.guy_cancel_before_appointment_time) {
+        _cancelCause = '* 您在約定时间前取消';
+
+        if (widget.historicalService.refunded == true) {
+          _refundStatus = ' - 已退款';
+        } else {
+          _refundStatus = ' - 未退款';
+        }
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.guy_cancel_after_appointment_time) {
+        // No refund needed
+        _cancelCause = '* 您在約定时间後取消';
+      } else {
+        _cancelCause = '';
+      }
+    } else {
+      if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.girl_cancel_after_appointment_time) {
+        _cancelCause = '* 您在約定时间後取消';
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.girl_cancel_before_appointment_time) {
+        _cancelCause = '* 您在約定时间前取消';
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.guy_cancel_before_appointment_time) {
+        _cancelCause = '* 對方在約定时间前取消';
+      } else if (widget.historicalService.cancelCause ==
+          ServiceCancelCause.guy_cancel_after_appointment_time) {
+        _cancelCause = '* 對方在約定时间後取消';
+      } else {
+        _cancelCause = '';
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -51,33 +132,23 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   color: Color.fromRGBO(31, 30, 56, 1),
                 ),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     SizedBox(height: 15),
                     Column(
-                      children: [
+                      children: <Widget>[
                         Row(
-                          children: [
+                          children: <Widget>[
                             Expanded(
                               flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20.0, right: 20.0),
-                                child: UserAvatar(
-                                  widget.historicalService
-                                              .chatPartnerAvatarUrl !=
-                                          null
-                                      ? widget.historicalService
-                                          .chatPartnerAvatarUrl
-                                      : '',
-                                ),
-                              ),
+                              child: _buildUserInfo(),
                             ),
                             Expanded(
                               flex: 3,
-                              child: _buildUserInfo(),
+                              child: _buildServiceStatus(),
                             ),
                           ],
                         ),
+                        _buildCancelCause(),
                         if (widget.rateDetailStatus == AsyncLoadingStatus.done)
                           _buildRateDetail(),
                         SizedBox(height: 20),
@@ -94,8 +165,19 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildUserInfo() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+      child: UserAvatar(
+        widget.historicalService.chatPartnerAvatarUrl != null
+            ? widget.historicalService.chatPartnerAvatarUrl
+            : '',
+      ),
+    );
+  }
+
+  Widget _buildServiceStatus() {
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -159,6 +241,30 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  Widget _buildCancelCause() {
+    return widget.historicalService.cancelCause != ServiceCancelCause.none &&
+            widget.historicalService.cancelCause !=
+                ServiceCancelCause.payment_failed
+        ? Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 25, top: 20, right: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  _cancelCause + _refundStatus,
+                  style: TextStyle(
+                    color: Color.fromRGBO(106, 109, 137, 1),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   Widget _buildRateDetail() {
@@ -310,7 +416,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     final price =
         widget.paymentDetail.price == null ? 0 : widget.paymentDetail.price;
 
-    final total = price + widget.paymentDetail.matchingFee;
+    // final total = price + widget.paymentDetail.matchingFee;
 
     return Container(
       width: double.infinity,
@@ -327,19 +433,20 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '小計', '${price}DP'),
+          _buildEachText('pie.png', '服務費', '${price}DP'),
           SizedBox(height: 15),
           _buildEachText(
-              'heart.png', '服務費', '${widget.paymentDetail.matchingFee}DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-            'coin.png',
-            '合計',
-            '${total}DP',
-            titleSize: 14,
-            valueSize: 16,
-            titleColor: Colors.white,
-          ),
+              'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //   'coin.png',
+          //   '合計',
+          //   '${total}DP',
+          //   titleSize: 14,
+          //   valueSize: 16,
+          //   titleColor: Colors.white,
+          //   fontWeight: FontWeight.bold,
+          // ),
         ],
       ),
     );
@@ -371,8 +478,15 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -393,6 +507,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                   ? titleColor
                   : Color.fromRGBO(106, 109, 137, 1),
               fontSize: titleSize != null ? titleSize : 13,
+              fontWeight: fontWeight,
             ),
           ),
           SizedBox(width: 10),
@@ -404,6 +519,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,
+                fontWeight: fontWeight,
               ),
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 enum MaleAppTabItem {
   waitingInquiry,
+  chat,
   manage,
   settings,
   profile,
@@ -29,8 +30,17 @@ Map<MaleAppTabItem, TabItemAsset> TabLabelMap = {
       image: AssetImage('assets/bottombar_items/inquiries_inactive.png'),
     ),
   ),
+  MaleAppTabItem.chat: TabItemAsset(
+    label: '聊天',
+    activeIcon: Image(
+      image: AssetImage('assets/bottombar_items/chat_active.png'),
+    ),
+    inactiveIcon: Image(
+      image: AssetImage('assets/bottombar_items/chat_inactive.png'),
+    ),
+  ),
   MaleAppTabItem.manage: TabItemAsset(
-    label: '管理',
+    label: '服務',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/manage_active.png'),
     ),
@@ -82,6 +92,7 @@ class BottomNavigation extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           _buildBarItem(item: MaleAppTabItem.waitingInquiry),
+          _buildBarItem(item: MaleAppTabItem.chat),
           _buildBarItem(item: MaleAppTabItem.manage),
           _buildBarItem(item: MaleAppTabItem.settings),
           _buildBarItem(item: MaleAppTabItem.profile),
