@@ -67,7 +67,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     if (_gender == Gender.male.name) {
       if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_after_appointment_time) {
-        _cancelCause = '* 對方在約定时间後取消';
+        _cancelCause = '* 對方在約定時間後取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -76,7 +76,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         }
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_before_appointment_time) {
-        _cancelCause = '* 對方在約定时间前取消';
+        _cancelCause = '* 對方在約定時間前取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -85,7 +85,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         }
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_before_appointment_time) {
-        _cancelCause = '* 您在約定时间前取消';
+        _cancelCause = '* 您在約定時間前取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -95,23 +95,23 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_after_appointment_time) {
         // No refund needed
-        _cancelCause = '* 您在約定时间後取消';
+        _cancelCause = '* 您在約定時間後取消';
       } else {
         _cancelCause = '';
       }
     } else {
       if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_after_appointment_time) {
-        _cancelCause = '* 您在約定时间後取消';
+        _cancelCause = '* 您在約定時間後取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_before_appointment_time) {
-        _cancelCause = '* 您在約定时间前取消';
+        _cancelCause = '* 您在約定時間前取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_before_appointment_time) {
-        _cancelCause = '* 對方在約定时间前取消';
+        _cancelCause = '* 對方在約定時間前取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_after_appointment_time) {
-        _cancelCause = '* 對方在約定时间後取消';
+        _cancelCause = '* 對方在約定時間後取消';
       } else {
         _cancelCause = '';
       }
