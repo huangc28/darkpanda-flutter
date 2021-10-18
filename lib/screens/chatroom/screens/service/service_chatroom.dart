@@ -453,8 +453,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                   inquirerProfile: _inquirerProfile,
                                   serviceDetails: _serviceDetails,
                                   onGoToPayment: () {
-                                    final total = _serviceDetails.price +
-                                        _serviceDetails.matchingFee;
+                                    final total = _serviceDetails.matchingFee;
 
                                     if (total > _balance) {
                                       print("Go to Top up dp");

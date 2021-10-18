@@ -35,6 +35,7 @@ class _HistoricalServiceDetailState extends State<HistoricalServiceDetail>
   RateDetail _rateDetail;
   AsyncLoadingStatus _paymentDetailStatus = AsyncLoadingStatus.initial;
   AsyncLoadingStatus _rateDetailStatus = AsyncLoadingStatus.initial;
+
   @override
   void initState() {
     super.initState();

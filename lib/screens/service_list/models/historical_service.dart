@@ -1,5 +1,7 @@
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/enums/service_cancel_cause.dart';
+
 class HistoricalService {
   HistoricalService({
     this.serviceUuid,
@@ -11,6 +13,8 @@ class HistoricalService {
     this.chatPartnerAvatarUrl,
     this.chatPartnerUsername,
     this.chatPartnerUserUuid,
+    this.refunded,
+    this.cancelCause,
   });
 
   String serviceUuid;
@@ -23,6 +27,8 @@ class HistoricalService {
   String chatPartnerAvatarUrl;
   String chatPartnerUsername;
   String chatPartnerUserUuid;
+  bool refunded;
+  ServiceCancelCause cancelCause;
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
@@ -34,6 +40,8 @@ class HistoricalService {
         'chat_partner_avatar_url': chatPartnerAvatarUrl,
         'chat_partner_username': chatPartnerUsername,
         'chat_partner_user_uuid': chatPartnerUserUuid,
+        'refunded': refunded,
+        'cancel_cause': cancelCause,
       };
 
   factory HistoricalService.fromMap(Map<String, dynamic> data) {
@@ -48,6 +56,8 @@ class HistoricalService {
       );
     }
 
+    String serviceCancelCause = data['cancel_cause'] as String;
+
     return HistoricalService(
       serviceUuid: data['service_uuid'],
       status: data['status'],
@@ -57,6 +67,8 @@ class HistoricalService {
       chatPartnerAvatarUrl: data['chat_partner_avatar_url'],
       chatPartnerUsername: data['chat_partner_username'],
       chatPartnerUserUuid: data['chat_partner_user_uuid'],
+      refunded: data['refunded'],
+      cancelCause: serviceCancelCause?.toServiceCancelCauseEnum(),
     );
   }
 }
