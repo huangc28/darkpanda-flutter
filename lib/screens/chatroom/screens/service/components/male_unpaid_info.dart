@@ -27,7 +27,7 @@ class MaleUnpaidInfo extends StatelessWidget {
   }
 
   Widget _totalDpInfo() {
-    final total = serviceDetails.matchingFee + serviceDetails.price;
+    final total = serviceDetails.matchingFee;
 
     return Container(
       padding: EdgeInsets.only(top: 15, left: 25, right: 25),
@@ -49,7 +49,7 @@ class MaleUnpaidInfo extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 3),
                 child: Text(
-                  '总金额：',
+                  '總金額：',
                   style: TextStyle(
                     color: Color.fromRGBO(106, 109, 137, 1),
                     fontSize: 14,
