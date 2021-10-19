@@ -7,7 +7,7 @@ class BuyServiceCancelConfirmationDialog extends StatelessWidget {
     this.matchingFee,
   }) : super(key: key);
 
-  final int matchingFee;
+  final double matchingFee;
 
   @override
   Widget build(BuildContext context) {

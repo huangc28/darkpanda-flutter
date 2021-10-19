@@ -26,7 +26,7 @@ class ServiceDetails extends Equatable {
   final String address;
   final DateTime startTime;
   final DateTime endTime;
-  final int matchingFee;
+  final double matchingFee;
   final DateTime createdAt;
 
   @override
@@ -58,7 +58,7 @@ class ServiceDetails extends Equatable {
     String address,
     DateTime startTime,
     DateTime endTime,
-    int matchingFee,
+    double matchingFee,
     DateTime createdAt,
   }) {
     return ServiceDetails(
@@ -94,7 +94,7 @@ class ServiceDetails extends Equatable {
       address: data['address'] ?? '',
       startTime: st,
       endTime: et,
-      matchingFee: data['matching_fee'],
+      matchingFee: data['matching_fee']?.toDouble(),
       createdAt: ct,
     );
   }
