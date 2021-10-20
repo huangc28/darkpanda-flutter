@@ -9,10 +9,14 @@ abstract class UpdateFemaleInquiryEvent extends Equatable {
 
 class UpdateInquiryStatus extends UpdateFemaleInquiryEvent {
   final String inquiryUuid;
+  final String channelUuid;
+  final String serviceUuid;
   final InquiryStatus inquiryStatus;
 
   const UpdateInquiryStatus({
     this.inquiryUuid,
+    this.channelUuid,
+    this.serviceUuid,
     this.inquiryStatus,
   });
 }

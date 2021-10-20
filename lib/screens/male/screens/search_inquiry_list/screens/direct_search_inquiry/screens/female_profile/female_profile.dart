@@ -258,6 +258,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                         state.femaleUser.inquiryStatus.name);
 
                     _inquiryStatus = state.femaleUser.inquiryStatus;
+                    _femaleUser = state.femaleUser;
                   });
                 }
               },
