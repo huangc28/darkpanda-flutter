@@ -6,7 +6,7 @@ class MyDp {
     this.RechargeAmountLists,
   });
 
-  int balance;
+  double balance;
   final List<RechargeAmount> RechargeAmountLists;
 
   static MyDp fromJson(Map<String, dynamic> data) {
@@ -20,7 +20,7 @@ class MyDp {
     }
 
     return MyDp(
-      balance: data['balance'],
+      balance: data['balance']?.toDouble(),
       RechargeAmountLists: RechargeAmountLists,
     );
   }

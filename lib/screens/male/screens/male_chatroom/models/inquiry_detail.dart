@@ -18,7 +18,7 @@ class InquiryDetail extends Equatable {
   });
 
   UpdateInquiryMessage updateInquiryMessage;
-  int balance;
+  double balance;
   String username;
   String channelUuid;
   String inquiryUuid;
@@ -33,7 +33,7 @@ class InquiryDetail extends Equatable {
     return InquiryDetail(
       updateInquiryMessage:
           UpdateInquiryMessage.fromMap(data['updateInquiryMessage']),
-      balance: data['balance'] ?? 0,
+      balance: data['balance']?.toDouble(),
       username: data['username'] ?? '',
       channelUuid: data['channelUuid'] ?? '',
       inquiryUuid: data['inquiryUuid'] ?? '',

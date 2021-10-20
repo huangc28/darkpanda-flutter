@@ -46,7 +46,7 @@ class LoadPaymentDetailBloc
       }
 
       yield LoadPaymentDetailState.loadSuccess(state,
-          paymentDetail: PaymentDetail.fromJson(
+          paymentDetail: PaymentDetail.fromMap(
             json.decode(res.body),
           ));
     } on APIException catch (err) {
