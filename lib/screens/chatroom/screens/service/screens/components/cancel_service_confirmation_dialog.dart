@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class CancelServiceConfirmationDialog extends StatelessWidget {
   const CancelServiceConfirmationDialog({
     Key key,
-    this.matchingFee,
+    this.content,
   }) : super(key: key);
 
-  final int matchingFee;
+  final String content;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class CancelServiceConfirmationDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               Text(
-                '若取消交易，本平台另收取的 ${matchingFee}DP 服務費不能退還',
+                content,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,

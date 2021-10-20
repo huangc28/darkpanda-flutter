@@ -18,11 +18,13 @@ class Body extends StatefulWidget {
     this.args,
     this.onBuyService,
     this.onCancelService,
+    this.cancelServiceStatus,
   });
 
   final InquiryDetail args;
   final VoidCallback onBuyService; // Implement later
   final VoidCallback onCancelService;
+  final AsyncLoadingStatus cancelServiceStatus;
 
   @override
   _BodyState createState() => _BodyState();
@@ -170,9 +172,6 @@ class _BodyState extends State<Body> {
   }
 
   Widget _buildDpCardInfo() {
-    // final total = widget.args.updateInquiryMessage.price +
-    //     widget.args.updateInquiryMessage.matchingFee;
-
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -196,16 +195,6 @@ class _BodyState extends State<Body> {
           SizedBox(height: 15),
           _buildEachText('heart.png', '媒合費',
               widget.args.updateInquiryMessage.matchingFee.toString() + 'DP'),
-          // SizedBox(height: 15),
-          // _buildEachText(
-          //   'coin.png',
-          //   '合計',
-          //   convertZeroDecimalToInt(total) + 'DP',
-          //   titleSize: 14,
-          //   valueSize: 16,
-          //   titleColor: Colors.white,
-          //   fontWeight: FontWeight.bold,
-          // ),
         ],
       ),
     );
@@ -285,6 +274,8 @@ class _BodyState extends State<Body> {
           ),
           SizedBox(height: 15),
           DPTextButton(
+            disabled: widget.cancelServiceStatus == AsyncLoadingStatus.loading,
+            loading: widget.cancelServiceStatus == AsyncLoadingStatus.loading,
             onPressed: widget.onCancelService,
             text: '取消交易',
             theme: DPTextButtonThemes.pink,

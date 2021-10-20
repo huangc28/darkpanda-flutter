@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -185,6 +186,11 @@ class _TopupPaymentState extends State<TopupPayment> {
                               ),
                               BlocProvider(
                                 create: (context) => CancelServiceBloc(
+                                  serviceAPIs: ServiceAPIs(),
+                                ),
+                              ),
+                              BlocProvider(
+                                create: (context) => LoadCancelServiceBloc(
                                   serviceAPIs: ServiceAPIs(),
                                 ),
                               ),

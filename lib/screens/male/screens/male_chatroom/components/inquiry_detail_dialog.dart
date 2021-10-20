@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -139,6 +140,11 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                                   ),
                                   BlocProvider(
                                     create: (context) => CancelServiceBloc(
+                                      serviceAPIs: ServiceAPIs(),
+                                    ),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => LoadCancelServiceBloc(
                                       serviceAPIs: ServiceAPIs(),
                                     ),
                                   ),

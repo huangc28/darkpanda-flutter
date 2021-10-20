@@ -47,4 +47,19 @@ class ServiceAPIs extends BaseClient {
       rethrow;
     }
   }
+
+  Future<http.Response> loadCancelService(String uuid) async {
+    try {
+      final request = http.Request(
+        'GET',
+        buildUri('/v1/services/${uuid}/cause-when-cancel'),
+      );
+
+      await withTokenFromSecureStore(request);
+
+      return sendWithResponse(request);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

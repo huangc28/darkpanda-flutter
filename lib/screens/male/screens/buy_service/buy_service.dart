@@ -1,13 +1,18 @@
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/enums/service_cancel_cause.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer' as developer;
 
 import '../../bottom_navigation.dart';
 import 'components/body.dart';
@@ -28,11 +33,20 @@ class _BuyServiceState extends State<BuyService> {
   LoadIncomingServiceBloc _loadIncomingServiceBloc;
   int isFirstCall;
 
+  String _gender;
+  String _cancelCause;
+
+  AsyncLoadingStatus _cancelServiceStatus = AsyncLoadingStatus.initial;
+
   @override
   void initState() {
     super.initState();
 
     isFirstCall = 0;
+
+    _getGender().then((value) {
+      _gender = value;
+    });
 
     _loadIncomingServiceBloc =
         BlocProvider.of<LoadIncomingServiceBloc>(context);
@@ -43,6 +57,24 @@ class _BuyServiceState extends State<BuyService> {
     _loadIncomingServiceBloc.add(ClearIncomingServiceState());
 
     super.dispose();
+  }
+
+  Future<String> _getGender() async {
+    return await SecureStore().readGender();
+  }
+
+  void _serviceCancelCause(ServiceCancelCause cancelCause) {
+    if (_gender == Gender.male.name) {
+      _cancelCause =
+          '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費將全額退還';
+
+      if (cancelCause == ServiceCancelCause.guy_cancel_after_appointment_time) {
+        _cancelCause =
+            '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費不能退還';
+      }
+    } else {
+      _cancelCause = '';
+    }
   }
 
   @override
@@ -140,25 +172,54 @@ class _BuyServiceState extends State<BuyService> {
                 }
               },
             ),
+            BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
+                listener: (context, state) {
+              if (state.status == AsyncLoadingStatus.done) {
+                _serviceCancelCause(
+                    state.loadCancelServiceResponse.cancelCause);
+
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BuyServiceCancelConfirmationDialog(
+                      matchingFee: widget.args.updateInquiryMessage.matchingFee,
+                    );
+                  },
+                ).then((value) {
+                  if (value) {
+                    BlocProvider.of<CancelServiceBloc>(context).add(
+                        CancelService(serviceUuid: widget.args.serviceUuid));
+                  }
+                });
+              }
+
+              if (state.status == AsyncLoadingStatus.error) {
+                developer.log(
+                  'failed to fetch payment detail',
+                  error: state.error,
+                );
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error.message),
+                  ),
+                );
+              }
+
+              setState(() {
+                _cancelServiceStatus = state.status;
+              });
+            }),
           ],
           child: Body(
             args: widget.args,
+            cancelServiceStatus: _cancelServiceStatus,
             onBuyService: () {},
             onCancelService: () {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return BuyServiceCancelConfirmationDialog(
-                    matchingFee: widget.args.updateInquiryMessage.matchingFee,
-                  );
-                },
-              ).then((value) {
-                if (value) {
-                  BlocProvider.of<CancelServiceBloc>(context)
-                      .add(CancelService(serviceUuid: widget.args.serviceUuid));
-                }
-              });
+              BlocProvider.of<LoadCancelServiceBloc>(context).add(
+                LoadCancelService(serviceUuid: widget.args.serviceUuid),
+              );
             },
           ),
         ),
