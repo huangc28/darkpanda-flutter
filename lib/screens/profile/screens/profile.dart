@@ -4,6 +4,7 @@ import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/user_traits.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/user_service..dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,6 +21,7 @@ import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart'
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
+import 'package:provider/provider.dart';
 
 import 'components/review.dart';
 import 'edit_profile/edit_profile.dart';
@@ -29,22 +31,6 @@ class DemoImage {
 
   DemoImage({this.image});
 }
-
-// class DemoReview {
-//   final String image;
-//   final String name;
-//   final String description;
-//   final String date;
-//   final int rate;
-
-//   DemoReview({
-//     this.image,
-//     this.name,
-//     this.description,
-//     this.date,
-//     this.rate,
-//   });
-// }
 
 class LabelList {
   final String description;
@@ -101,6 +87,25 @@ class _ProfileState extends State<Profile> {
     super.deactivate();
   }
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => UserService(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,6 +118,8 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   children: <Widget>[
                     _buildProfileDetail(),
+                    SizedBox(height: SizeConfig.screenHeight * 0.02),
+                    _userService(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {
@@ -441,6 +448,59 @@ class _ProfileState extends State<Profile> {
               height: 150,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _userService() {
+    return InkWell(
+      onTap: () {
+        // Navigator.of(context, rootNavigator: true).push(
+        //   MaterialPageRoute(
+        //     builder: (_) {
+        //       return UserService();
+        //     },
+        //   ),
+        // );
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(_createRoute());
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(255, 255, 255, 0.1),
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            SizeConfig.screenWidth * 0.05,
+            SizeConfig.screenHeight * 0.03,
+            SizeConfig.screenWidth * 0.05,
+            SizeConfig.screenHeight * 0.03,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  '我的服務',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              Container(
+                child: Icon(
+                  Icons.arrow_forward_ios_sharp,
+                  color: Colors.white,
+                  // size: 30,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

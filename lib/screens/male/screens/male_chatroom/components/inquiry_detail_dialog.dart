@@ -242,13 +242,6 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             SizedBox(height: 8),
             _buildEachText('heart.png', '媒合費',
                 '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
-            // SizedBox(height: 8),
-            // _buildEachText(
-            //   'coin.png',
-            //   '合計',
-            //   '${total}DP',
-            //   fontWeight: FontWeight.bold,
-            // ),
           ],
         ),
       ),

@@ -8,13 +8,13 @@ typedef ChatroomBuilder = Widget Function(
     BuildContext context, Chatroom chatroom, int index);
 
 class ChatroomList extends StatelessWidget {
-  const ChatroomList(
-      {Key key,
-      this.chatroomBuilder,
-      this.chatrooms,
-      this.onRefresh,
-      this.onLoadMore})
-      : super(key: key);
+  const ChatroomList({
+    Key key,
+    this.chatroomBuilder,
+    this.chatrooms,
+    this.onRefresh,
+    this.onLoadMore,
+  }) : super(key: key);
 
   final ChatroomBuilder chatroomBuilder;
   final List<Chatroom> chatrooms;
