@@ -34,6 +34,10 @@ class _SearchInquiryListState extends State<SearchInquiryList>
     SearchInquiryListTabs.specific,
   ];
 
+// We should not load girl list every time when user tap on direct match tap.
+// Only load girl list the first time user tap on "direct match".
+  bool hasTappedOnDirectMatching = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,25 +50,24 @@ class _SearchInquiryListState extends State<SearchInquiryList>
 
   @override
   void dispose() {
+    _tabController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color.fromRGBO(17, 16, 41, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
         title: TabBar(
           onTap: (index) {
-            if (_tabs[index] == SearchInquiryListTabs.random) {
-              // BlocProvider.of<LoadIncomingServiceBloc>(context)
-              // .add(LoadIncomingService());
-            }
-
-            if (_tabs[index] == SearchInquiryListTabs.specific) {
+            if (_tabs[index] == SearchInquiryListTabs.specific &&
+                !hasTappedOnDirectMatching) {
               BlocProvider.of<LoadFemaleListBloc>(context)
                   .add(LoadFemaleList());
+
+              hasTappedOnDirectMatching = true;
             }
           },
           controller: _tabController,
