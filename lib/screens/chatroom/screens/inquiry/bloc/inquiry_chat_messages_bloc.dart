@@ -55,8 +55,6 @@ class InquiryChatMessagesBloc
 
       state.chatroomMessages.remove(event.chatroomUUID);
     }
-
-    // yield null;
   }
 
   @override
