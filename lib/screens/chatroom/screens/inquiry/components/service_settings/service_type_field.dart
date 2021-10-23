@@ -1,40 +1,49 @@
-part of './service_settings_sheet.dart';
+import 'package:flutter/material.dart';
 
-class AddressField extends StatelessWidget {
-  const AddressField({
+import 'package:darkpanda_flutter/components/bullet.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+
+class ServiceTypeField extends StatelessWidget {
+  const ServiceTypeField({
     Key key,
     this.controller,
     this.validator,
     this.focusNode,
-    this.fontColor = Colors.black,
+    this.onSaved,
   }) : super(key: key);
 
+  // Passed from outside to manipuate service type input.
   final TextEditingController controller;
+
+  // Check validity of service type value.
   final ValueChanged<String> validator;
+
   final FocusNode focusNode;
-  final Color fontColor;
+
+  // Callback to invoke when save is pressed.
+  final ValueChanged<String> onSaved;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Bullet(
-          '地址',
+          '期望服務 (10 字以內，非必填)',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: fontColor,
+            color: Colors.white,
           ),
         ),
         SizedBox(height: 10),
         DPTextFormField(
-          readOnly: true,
           focusNode: focusNode,
           controller: controller,
           validator: validator,
           textAlignVertical: TextAlignVertical.center,
           theme: DPTextFieldThemes.inquiryForm,
-          hintText: '請輸入地址',
+          hintText: '請輸入期望服務',
+          onSaved: onSaved,
         ),
       ],
     );

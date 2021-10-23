@@ -140,8 +140,12 @@ class CurrentChatroomBloc
 
   Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
       DispatchNewMessage event) async* {
+    print('DEBUG 4 _mapDispatchNewMessageToState ${event.message}');
+
     final messages = List<Message>.from(state.currentMessages)
       ..insert(0, event.message);
+
+    print('DEBUG 5 _mapDispatchNewMessageToState ${event.message}');
 
     yield CurrentChatroomState.updateCurrentMessage(
       state,
@@ -236,6 +240,8 @@ class CurrentChatroomBloc
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data() as Map;
 
+    print('DEBUG  _handleCurrentMessage ${rawMsg}');
+
     developer
         .log('Current chatroom incoming message ${rawMsg['type'].toString()}');
 
@@ -272,9 +278,12 @@ class CurrentChatroomBloc
 
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
+      print('DEBUG 2 isUpdateInquiryDetailMsg');
       msg = UpdateInquiryMessage.fromMap(rawMsg);
 
       updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
+
+      add(DispatchNewMessage(message: msg));
     } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
       msg = DisagreeInquiryMessage.fromMap(rawMsg);
     } else if (isQuitChatroomMsg(rawMsg['type'])) {
@@ -295,6 +304,7 @@ class CurrentChatroomBloc
       msg = Message.fromMap(rawMsg);
     }
 
+    print('DEBUG 3 before dispatch ');
     add(DispatchNewMessage(message: msg));
   }
 

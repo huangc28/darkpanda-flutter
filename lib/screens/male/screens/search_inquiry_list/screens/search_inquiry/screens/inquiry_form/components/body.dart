@@ -4,6 +4,9 @@ import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
+
+// TODO service settings should be extracted to global component directory since both chatroom and inquiry uses it.
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
@@ -18,6 +21,7 @@ import 'package:intl/intl.dart';
 
 part 'inquiry_appointment_time_field.dart';
 
+// TODO change service type to input box.
 class Body extends StatefulWidget {
   const Body({
     Key key,
@@ -160,9 +164,24 @@ class _BodyState extends State<Body> {
                   SizedBox(height: viewPortHeight * 0.02),
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
-                  _textLabel('服務類型'),
-                  SizedBox(height: viewPortHeight * 0.02),
-                  _serviceTypeRadio(),
+                  ServiceTypeField(
+                    controller: _serviceTypeController,
+                    validator: (v) {
+                      // Service type length has to be less than 10 chars.
+                      if (v.length > 10) {
+                        return '字數過長';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (_) {
+                      setState(() {
+                        _inquiryForms.serviceType = _serviceTypeController.text;
+                      });
+                    },
+                  ),
+                  // SizedBox(height: viewPortHeight * 0.02),
+                  // _serviceTypeRadio(),
                   SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
