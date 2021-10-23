@@ -11,6 +11,8 @@ import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_provider.dart';
 
+import 'service_duration_field.dart';
+
 part 'price_field.dart';
 part 'service_name_field.dart';
 
@@ -35,6 +37,7 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
 
   TextEditingController _priceController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _durationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,7 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
           return provider.isShow
               ? SingleChildScrollView(
                   child: Container(
-                    height: SizeConfig.screenHeight * 0.5,
+                    height: SizeConfig.screenHeight * 0.65,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -81,7 +84,7 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        '新增服務',
+                        '編輯服務',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -99,58 +102,104 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
                       ),
                     ],
                   ),
-                  Column(
-                    children: <Widget>[
-                      ServiceNameField(
-                        controller: _nameController,
-                        validator: (String v) {
-                          return v.isEmpty ? 'Service can not be empty' : null;
-                        },
-                        onSaved: (String v) {
-                          //   _serviceSetting = _serviceSetting.copyWith(
-                          //     price: double.tryParse(v),
-                          //   );
-                        },
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      PriceField(
-                        controller: _priceController,
-                        validator: (String v) {
-                          return v.isEmpty || v == '0'
-                              ? 'Price can not be empty'
-                              : null;
-                        },
-                        onSaved: (String v) {
-                          //   _serviceSetting = _serviceSetting.copyWith(
-                          //     price: double.tryParse(v),
-                          //   );
-                        },
-                      ),
-                    ],
-                  ),
+                  SizedBox(height: 6),
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DPTextButton(
-                          onPressed: () {
-                            if (!_formKey.currentState.validate()) {
-                              return;
-                            }
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              ServiceNameField(
+                                controller: _nameController,
+                                validator: (String v) {
+                                  return v.isEmpty
+                                      ? 'Service can not be empty'
+                                      : null;
+                                },
+                                onSaved: (String v) {
+                                  //   _serviceSetting = _serviceSetting.copyWith(
+                                  //     price: double.tryParse(v),
+                                  //   );
+                                },
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              PriceField(
+                                controller: _priceController,
+                                validator: (String v) {
+                                  return v.isEmpty || v == '0'
+                                      ? 'Price can not be empty'
+                                      : null;
+                                },
+                                onSaved: (String v) {
+                                  //   _serviceSetting = _serviceSetting.copyWith(
+                                  //     price: double.tryParse(v),
+                                  //   );
+                                },
+                              ),
+                            ],
+                          ),
+                          ServiceDurationField(
+                            controller: _durationController,
+                            validator: (String v) {
+                              if (v == null || v.isEmpty) {
+                                return '請輸入服務時長';
+                              }
 
-                            _formKey.currentState.save();
+                              final doubleDuration = double.tryParse(v);
 
-                            // widget.onUpdateInquiry(_serviceSetting);
-                          },
-                          text: '新增服務',
-                          theme: DPTextButtonThemes.purple,
-                          disabled: widget.isLoading,
-                          loading: widget.isLoading,
-                        ),
-                      ],
+                              if (doubleDuration < 30.0) {
+                                return '服務時長最少 30 分鐘';
+                              }
+
+                              // Check if user input contains decimal fraction.
+                              final fraction =
+                                  doubleDuration - doubleDuration.truncate();
+
+                              if (fraction > 0) {
+                                return '服務時長必須為整數';
+                              }
+
+                              return null;
+                            },
+                            onSaved: (String v) {
+                              // Convert duration value to Duration instance.
+                              setState(
+                                () {
+                                  // _serviceSetting = _serviceSetting.copyWith(
+                                  //   duration: Duration(
+                                  //     minutes: int.tryParse(v),
+                                  //   ),
+                                  // );
+                                },
+                              );
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              DPTextButton(
+                                onPressed: () {
+                                  if (!_formKey.currentState.validate()) {
+                                    return;
+                                  }
+
+                                  _formKey.currentState.save();
+
+                                  // widget.onUpdateInquiry(_serviceSetting);
+                                },
+                                text: '新增服務',
+                                theme: DPTextButtonThemes.purple,
+                                disabled: widget.isLoading,
+                                loading: widget.isLoading,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
