@@ -456,13 +456,6 @@ class _ProfileState extends State<Profile> {
   Widget _userService() {
     return InkWell(
       onTap: () {
-        // Navigator.of(context, rootNavigator: true).push(
-        //   MaterialPageRoute(
-        //     builder: (_) {
-        //       return UserService();
-        //     },
-        //   ),
-        // );
         Navigator.of(
           context,
           rootNavigator: true,
@@ -496,7 +489,6 @@ class _ProfileState extends State<Profile> {
                 child: Icon(
                   Icons.arrow_forward_ios_sharp,
                   color: Colors.white,
-                  // size: 30,
                 ),
               ),
             ],

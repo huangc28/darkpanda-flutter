@@ -10,6 +10,7 @@ class ServiceTypeField extends StatelessWidget {
     this.validator,
     this.focusNode,
     this.onSaved,
+    this.readOnly,
   }) : super(key: key);
 
   // Passed from outside to manipuate service type input.
@@ -22,6 +23,8 @@ class ServiceTypeField extends StatelessWidget {
 
   // Callback to invoke when save is pressed.
   final ValueChanged<String> onSaved;
+
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class ServiceTypeField extends StatelessWidget {
         ),
         SizedBox(height: 10),
         DPTextFormField(
+          readOnly: readOnly,
           focusNode: focusNode,
           controller: controller,
           validator: validator,

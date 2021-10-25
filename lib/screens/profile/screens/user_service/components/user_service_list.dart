@@ -20,15 +20,19 @@ class UserServiceList extends StatelessWidget {
     Key key,
     this.userServiceBuilder,
     this.userServices,
+    this.scrollPhysics,
   }) : super(key: key);
 
   final UserServiceBuilder userServiceBuilder;
   final List<UserServiceObj> userServices;
+  final ScrollPhysics scrollPhysics;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListView.separated(
+        shrinkWrap: true,
+        physics: scrollPhysics,
         itemCount: userServices.length,
         itemBuilder: (BuildContext context, int idx) =>
             userServiceBuilder(context, userServices[idx], idx),

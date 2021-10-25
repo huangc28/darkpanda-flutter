@@ -7,12 +7,14 @@ class ServiceDurationField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.fontColor = Colors.black,
+    this.readOnly,
   }) : super(key: key);
 
   final TextEditingController controller;
   final ValueChanged<String> validator;
   final ValueChanged<String> onSaved;
   final Color fontColor;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class ServiceDurationField extends StatelessWidget {
           ),
           SizedBox(height: 12),
           DPTextFormField(
+            readOnly: readOnly,
             hintText: '服務時長',
             onSaved: onSaved,
             controller: controller,

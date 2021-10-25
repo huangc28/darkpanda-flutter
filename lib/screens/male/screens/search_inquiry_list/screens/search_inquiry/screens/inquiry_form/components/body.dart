@@ -28,11 +28,17 @@ class Body extends StatefulWidget {
     this.onSubmit,
     this.submitButtonText = '提交需求',
     this.inquiryFormStatus,
+    this.serviceName,
+    this.price,
+    this.servicePeriod,
   }) : super(key: key);
 
   final ValueChanged<InquiryForms> onSubmit;
   final String submitButtonText;
   final AsyncLoadingStatus inquiryFormStatus;
+  final String serviceName;
+  final int price;
+  final int servicePeriod;
 
   @override
   _BodyState createState() => _BodyState();
@@ -82,9 +88,16 @@ class _BodyState extends State<Body> {
       _inquiryForms.inquiryTime,
     );
 
-    _durationController.text = '30';
+    _durationController.text =
+        widget.servicePeriod == null ? '30' : widget.servicePeriod.toString();
     _addressController.text = '';
     serviceList.serviceNames = [];
+
+    // if (widget.price != null) {
+    _budgetController.text = widget.price?.toString();
+    // }
+
+    _serviceTypeController.text = widget.serviceName;
   }
 
   @override
@@ -165,6 +178,7 @@ class _BodyState extends State<Body> {
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   ServiceTypeField(
+                    readOnly: widget.serviceName != null,
                     controller: _serviceTypeController,
                     validator: (v) {
                       // Service type length has to be less than 10 chars.
@@ -319,6 +333,7 @@ class _BodyState extends State<Body> {
 
   Widget _servicePeriod() {
     return ServiceDurationField(
+      readOnly: widget.servicePeriod != null,
       controller: _durationController,
       fontColor: Colors.white,
       validator: (String v) {
@@ -425,6 +440,7 @@ class _BodyState extends State<Body> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
       child: TextFormField(
+        readOnly: widget.price != null,
         controller: _budgetController,
         validator: (String v) {
           return v.isEmpty || v == '0' ? '請輸入預算' : null;
