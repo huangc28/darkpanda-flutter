@@ -7,7 +7,7 @@ class ServiceDurationField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.fontColor = Colors.black,
-    this.readOnly,
+    this.readOnly = false,
   }) : super(key: key);
 
   final TextEditingController controller;
