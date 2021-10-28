@@ -5,9 +5,11 @@ class UserServiceGrid extends StatelessWidget {
   const UserServiceGrid({
     Key key,
     this.userService,
+    this.onConfirmDelete,
   }) : super(key: key);
 
   final UserServiceObj userService;
+  final VoidCallback onConfirmDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class UserServiceGrid extends StatelessWidget {
                 IconButton(
                   icon: new Icon(Icons.delete),
                   color: Colors.white,
-                  onPressed: () {},
+                  onPressed: onConfirmDelete,
                 ),
               ],
             ),

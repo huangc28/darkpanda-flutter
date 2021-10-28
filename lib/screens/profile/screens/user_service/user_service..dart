@@ -2,6 +2,7 @@ import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:flutter/material.dart';
 
+import 'components/delete_user_service_confirmation_dialog.dart';
 import 'components/user_service_grid.dart';
 import 'components/user_service_list.dart';
 import 'components/user_service_sheet.dart';
@@ -118,6 +119,22 @@ class _UserServiceState extends State<UserService>
                         userServiceBuilder: (context, service, index) {
                           return UserServiceGrid(
                             userService: service,
+                            onConfirmDelete: () {
+                              showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return DeleteUserServiceConfirmationDialog();
+                                },
+                              ).then((value) {
+                                if (value) {
+                                  print('Delete user service: ' +
+                                      index.toString());
+                                  // BlocProvider.of<CancelServiceBloc>(context).add(CancelService(
+                                  //     serviceUuid: widget.historicalService.serviceUuid));
+                                }
+                              });
+                            },
                           );
                         },
                       ),
