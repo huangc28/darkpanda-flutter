@@ -137,6 +137,10 @@ class _ServiceDetailState extends State<ServiceDetail>
                 ),
               );
             }
+
+            setState(() {
+              _cancelServiceStatus = state.status;
+            });
           }),
           BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
               listener: (context, state) {
