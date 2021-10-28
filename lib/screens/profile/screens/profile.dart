@@ -1,13 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/user_traits.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/user_service..dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
@@ -21,7 +21,6 @@ import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart'
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:provider/provider.dart';
 
 import 'components/review.dart';
 import 'edit_profile/edit_profile.dart';
@@ -55,6 +54,8 @@ class _ProfileState extends State<Profile> {
   List<UserImage> userImageList = [];
 
   UserRatings userRatings = UserRatings();
+
+  AsyncLoadingStatus _userProfileStatus = AsyncLoadingStatus.initial;
 
   @override
   void initState() {
@@ -119,7 +120,10 @@ class _ProfileState extends State<Profile> {
                   children: <Widget>[
                     _buildProfileDetail(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
-                    _userService(),
+                    _userProfileStatus == AsyncLoadingStatus.initial ||
+                            _userProfileStatus == AsyncLoadingStatus.loading
+                        ? Container()
+                        : _userService(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {
@@ -208,7 +212,11 @@ class _ProfileState extends State<Profile> {
           SizeConfig.screenHeight * 0.03,
         ),
         child: BlocConsumer<LoadUserBloc, LoadUserState>(
-          listener: (BuildContext context, LoadUserState state) {},
+          listener: (BuildContext context, LoadUserState state) {
+            setState(() {
+              _userProfileStatus = state.status;
+            });
+          },
           builder: (BuildContext context, LoadUserState state) {
             if (state.status == AsyncLoadingStatus.initial ||
                 state.status == AsyncLoadingStatus.loading) {
@@ -218,6 +226,7 @@ class _ProfileState extends State<Profile> {
                 ],
               );
             }
+
             return Column(
               children: <Widget>[
                 Row(
