@@ -318,6 +318,8 @@ class _BodyState extends State<Body> {
             _dateController = TextEditingController()
               ..text = _formatDate(_inquiryForms.inquiryDate);
           });
+
+          FocusScope.of(context).requestFocus(FocusNode());
         },
         onSelectTime: (TimeOfDay time) {
           setState(() {
@@ -326,6 +328,8 @@ class _BodyState extends State<Body> {
 
             timeOfDay = TimeOfDay(hour: time.hour, minute: time.minute);
           });
+
+          FocusScope.of(context).requestFocus(FocusNode());
         },
       ),
     );

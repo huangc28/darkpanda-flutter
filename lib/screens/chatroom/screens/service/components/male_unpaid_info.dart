@@ -62,7 +62,7 @@ class MaleUnpaidInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    total?.toStringAsFixed(0),
+                    total?.toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 38,
