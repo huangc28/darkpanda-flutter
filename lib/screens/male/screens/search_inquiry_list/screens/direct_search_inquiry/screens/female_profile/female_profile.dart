@@ -76,6 +76,11 @@ class _FemaleProfileState extends State<FemaleProfile> {
         name: '私人秘書',
         price: 2000,
         minute: 60,
+      ),
+      UserServiceObj(
+        name: '想要什麼服務？',
+        price: null,
+        minute: null,
       )
     ];
 
@@ -334,6 +339,21 @@ class _FemaleProfileState extends State<FemaleProfile> {
   _handleFemaleService(UserServiceObj userServiceObj) {
     print('Handle Female Service: ' + userServiceObj.name);
 
+    Widget _directInquiryForm() {
+      // If price is null, which mean user selected last service
+      // with user manual input service
+      return userServiceObj.price == null
+          ? DirectInquiryForm(
+              uuid: userProfile.uuid,
+            )
+          : DirectInquiryForm(
+              uuid: userProfile.uuid,
+              serviceName: userServiceObj.name,
+              price: userServiceObj.price,
+              servicePeriod: userServiceObj.minute,
+            );
+    }
+
     if (_chatNowButton == '馬上聊聊') {
       Navigator.of(
         context,
@@ -359,12 +379,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                   ),
                 ),
               ],
-              child: DirectInquiryForm(
-                uuid: userProfile.uuid,
-                serviceName: userServiceObj.name,
-                price: userServiceObj.price,
-                servicePeriod: userServiceObj.minute,
-              ),
+              child: _directInquiryForm(),
             );
           },
         ),

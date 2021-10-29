@@ -5,21 +5,21 @@ class FemaleServiceGrid extends StatelessWidget {
   const FemaleServiceGrid({
     Key key,
     this.userService,
+    this.serviceLength,
+    this.index,
   }) : super(key: key);
 
   final UserServiceObj userService;
+  final int serviceLength;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return
-        // ListTile(
-        //   title:
-        Container(
+    return Container(
       padding:
           const EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
       decoration: userService.name == '教書法'
           ? BoxDecoration(
-              // borderRadius: BorderRadius.circular(20.0),
               color: Color.fromRGBO(190, 172, 255, 0.3),
             )
           : BoxDecoration(),
@@ -38,14 +38,20 @@ class FemaleServiceGrid extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              Text(
-                userService.price.toString() + 'TWD',
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                userService.minute.toString() + ' 分鐘',
-                style: TextStyle(color: Colors.white),
-              ),
+              // Hide price if service is last
+              serviceLength - 1 == index
+                  ? Container()
+                  : Text(
+                      userService.price.toString() + 'TWD',
+                      style: TextStyle(color: Colors.white),
+                    ),
+              // Hide duration if service is last
+              serviceLength - 1 == index
+                  ? Container()
+                  : Text(
+                      userService.minute.toString() + ' 分鐘',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ],
           ),
           Row(
@@ -67,7 +73,6 @@ class FemaleServiceGrid extends StatelessWidget {
           ),
         ],
       ),
-      // ),
     );
   }
 }
