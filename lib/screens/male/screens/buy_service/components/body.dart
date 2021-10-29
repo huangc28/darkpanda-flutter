@@ -153,7 +153,7 @@ class _BodyState extends State<Body> {
           _buildEachText(
             'clock.png',
             '時間',
-            '${DateFormat("MM/dd/yy").format(widget.args.updateInquiryMessage?.serviceTime)}, ${DateFormat("jm").format(widget.args.updateInquiryMessage?.serviceTime)}',
+            '${DateFormat("MM/dd/yy").format(widget.args.updateInquiryMessage.serviceTime.toLocal())}, ${DateFormat("jm").format(widget.args.updateInquiryMessage.serviceTime.toLocal())}',
           ),
           SizedBox(height: 15),
           _buildEachText(

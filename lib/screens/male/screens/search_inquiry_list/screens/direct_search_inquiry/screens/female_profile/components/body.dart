@@ -161,22 +161,7 @@ class _BodyState extends State<Body> {
                 ),
                 _userServiceLabel(),
                 SizedBox(height: 20),
-                UserServiceList(
-                  userServices: widget.userServices,
-                  scrollPhysics: NeverScrollableScrollPhysics(),
-                  userServiceBuilder: (context, service, index) {
-                    return InkWell(
-                      onTap: () {
-                        widget.onTapService(service);
-                      },
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      child: FemaleServiceGrid(
-                        userService: service,
-                      ),
-                    );
-                  },
-                ),
+                _userServiceList(),
                 if (widget.userRatingsStatus == AsyncLoadingStatus.done)
                   // Comments list.
                   _ratingLabel(),
@@ -191,6 +176,27 @@ class _BodyState extends State<Body> {
               LoadingScreen(),
             ],
           );
+  }
+
+  Widget _userServiceList() {
+    return UserServiceList(
+      userServices: widget.userServices,
+      scrollPhysics: NeverScrollableScrollPhysics(),
+      userServiceBuilder: (context, service, index) {
+        return InkWell(
+          onTap: () {
+            widget.onTapService(service);
+          },
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          child: FemaleServiceGrid(
+            userService: service,
+            serviceLength: widget.userServices.length,
+            index: index,
+          ),
+        );
+      },
+    );
   }
 
   Widget _userServiceLabel() {

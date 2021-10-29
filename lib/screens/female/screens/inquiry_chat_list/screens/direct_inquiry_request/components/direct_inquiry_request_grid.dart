@@ -13,6 +13,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
     this.onTapViewProfile,
     this.onTapStartToChat,
     this.agreeToChatIsLoading = false,
+    this.inquiryUuid = "",
   }) : super(key: key);
 
   final DirectInquiryRequests inquiry;
@@ -21,6 +22,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
   final ValueChanged<String> onTapViewProfile;
   final ValueChanged<String> onTapStartToChat;
   final bool agreeToChatIsLoading;
+  final String inquiryUuid;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class DirectInquiryRequestGrid extends StatelessWidget {
                 onTapViewProfile: onTapViewProfile,
                 onTapStartToChat: onTapStartToChat,
                 agreeToChatIsLoading: agreeToChatIsLoading,
+                inquiryUuid: inquiryUuid,
               ),
             ],
           ),

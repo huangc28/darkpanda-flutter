@@ -45,6 +45,10 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
   AgreeInquiryResponse agreeInquiryResponse = new AgreeInquiryResponse();
   bool _agreeToChatIsLoading = false;
 
+  // To use for button loading equal to specific inquiry uuid,
+  // so only one button will showing loading instead of all button
+  String _inquiryUuid = "";
+
   @override
   initState() {
     super.initState();
@@ -123,6 +127,7 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                               onTapViewProfile: _handleViewProfile,
                               onTapStartToChat: _handleStartToChat,
                               agreeToChatIsLoading: _agreeToChatIsLoading,
+                              inquiryUuid: _inquiryUuid,
                             )
                           : Container();
                     },
@@ -166,6 +171,10 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
   }
 
   _handleAgreeToChat(String inquiryUuid) {
+    setState(() {
+      _inquiryUuid = inquiryUuid;
+    });
+
     BlocProvider.of<AgreeInquiryBloc>(context).add(AgreeInquiry(inquiryUuid));
   }
 
