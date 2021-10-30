@@ -54,7 +54,7 @@ class SendUpdateInquiryMessageBloc
     );
 
     developer.log(
-      'Service  detail message emitted ${resp.body}',
+      'Service detail message emitted ${resp.body}',
       time: DateTime.now(),
       name: 'service detail',
     );
