@@ -7,8 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
-import 'package:darkpanda_flutter/enums/service_types.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
 
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
@@ -47,9 +48,6 @@ class _EditBodyState extends State<EditBody> {
 
   List serviceTypeRadioWidget = <Widget>[];
 
-  LoadServiceListBloc loadServiceListBloc = new LoadServiceListBloc();
-  ServiceList serviceList = new ServiceList();
-
   InquiryForms _inquiryForms = InquiryForms(
     inquiryDate: DateTime.now(),
     inquiryTime: TimeOfDay(hour: 00, minute: 00),
@@ -64,8 +62,6 @@ class _EditBodyState extends State<EditBody> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<LoadServiceListBloc>(context).add(LoadServiceList());
-
     _inquiryForms.uuid = widget.activeInquiry.uuid;
     _budgetController.text = widget.activeInquiry.budget == null
         ? '0'
@@ -89,13 +85,11 @@ class _EditBodyState extends State<EditBody> {
 
     _durationController.text = widget.activeInquiry.duration.toString();
     _addressController.text = widget.activeInquiry.address;
-
-    serviceList.serviceNames = [];
+    _serviceTypeController.text = widget.activeInquiry.serviceType;
   }
 
   @override
   void dispose() {
-    loadServiceListBloc.add(ClearServiceListState());
     _budgetController.clear();
     _dateController.clear();
     _timeController.clear();
@@ -104,20 +98,6 @@ class _EditBodyState extends State<EditBody> {
     _addressController.clear();
 
     super.dispose();
-  }
-
-  void initServiceTypeRadio(list) {
-    serviceTypeRadioWidget.clear();
-    for (int i = 0; i < list.length; i++) {
-      serviceTypeRadioWidget.add(
-        SizedBox(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
-            child: _customServiceTypeRadio(list[i].name, i),
-          ),
-        ),
-      );
-    }
   }
 
   void changeIndexServiceType(int index) {
@@ -171,7 +151,6 @@ class _EditBodyState extends State<EditBody> {
   Widget build(BuildContext context) {
     final viewPortWidth = MediaQuery.of(context).size.width;
     final viewPortHeight = MediaQuery.of(context).size.height;
-    initServiceTypeRadio(serviceList.serviceNames);
 
     return UnfocusPrimary(
       child: SingleChildScrollView(
@@ -187,9 +166,21 @@ class _EditBodyState extends State<EditBody> {
                   SizedBox(height: viewPortHeight * 0.05),
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
-                  _textLabel('服務類型'),
-                  SizedBox(height: viewPortHeight * 0.02),
-                  _serviceTypeRadio(),
+                  ServiceTypeField(
+                    controller: _serviceTypeController,
+                    validator: (v) {
+                      if (v.length > 10) {
+                        return '字數過長';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (_) {
+                      setState(() {
+                        _inquiryForms.serviceType = _serviceTypeController.text;
+                      });
+                    },
+                  ),
                   SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
@@ -320,91 +311,6 @@ class _EditBodyState extends State<EditBody> {
           },
         );
       },
-    );
-  }
-
-  Widget _serviceTypeRadio() {
-    return BlocConsumer<LoadServiceListBloc, LoadServiceListState>(
-      listener: (context, state) {
-        if (state.status == AsyncLoadingStatus.done) {
-          setState(() {
-            serviceList = state.serviceList;
-            // _serviceTypeController.text = serviceList.serviceNames[0].name;
-            // _inquiryForms.serviceType = _serviceTypeController.text;
-
-            // To get index of selected value from widget.activeInquiry.serviceType
-            // If widget.activeInquiry.serviceType is null, get the first index
-            final index = serviceList.serviceNames.indexWhere((element) =>
-                element.name ==
-                (widget.activeInquiry.serviceType == null
-                    ? serviceList.serviceNames[0].name
-                    : widget.activeInquiry.serviceType));
-
-            _serviceTypeController.text =
-                widget.activeInquiry.serviceType == null
-                    ? serviceList.serviceNames[0].name
-                    : widget.activeInquiry.serviceType;
-
-            _inquiryForms.serviceType = _serviceTypeController.text;
-
-            changeIndexServiceType(index);
-          });
-        }
-      },
-      builder: (context, state) {
-        if (state.status == AsyncLoadingStatus.done) {
-          return Container(
-            width: double.infinity,
-            child: Column(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    direction: Axis.horizontal,
-                    children: serviceTypeRadioWidget,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
-      },
-    );
-  }
-
-  Widget _customServiceTypeRadio(String txt, int index) {
-    return OutlinedButton(
-      onPressed: () {
-        changeIndexServiceType(index);
-        _serviceTypeController.text = serviceList.serviceNames[index].name;
-        _inquiryForms.serviceType = _serviceTypeController.text;
-      },
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        backgroundColor:
-            selectedIndexServiceType == index ? Colors.white : Colors.black,
-        side: BorderSide(
-          color: Color.fromRGBO(106, 109, 137, 1),
-        ),
-      ),
-      child: txt == ServiceTypes.sex.name
-          ? Icon(
-              Icons.favorite,
-              color: Colors.pink,
-            )
-          : Text(
-              txt,
-              style: TextStyle(
-                color: selectedIndexServiceType == index
-                    ? Colors.black
-                    : Colors.white,
-              ),
-            ),
     );
   }
 

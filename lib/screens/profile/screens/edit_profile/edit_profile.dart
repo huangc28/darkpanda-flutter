@@ -56,7 +56,7 @@ class _EditProfileState extends State<EditProfile> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Update successfully!",
+                  "更新成功!",
                 ),
               ),
             );

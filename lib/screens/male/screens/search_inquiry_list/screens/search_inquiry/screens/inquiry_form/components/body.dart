@@ -4,6 +4,9 @@ import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
+
+// TODO service settings should be extracted to global component directory since both chatroom and inquiry uses it.
+import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
@@ -18,17 +21,24 @@ import 'package:intl/intl.dart';
 
 part 'inquiry_appointment_time_field.dart';
 
+// TODO change service type to input box.
 class Body extends StatefulWidget {
   const Body({
     Key key,
     this.onSubmit,
     this.submitButtonText = '提交需求',
     this.inquiryFormStatus,
+    this.serviceName,
+    this.price,
+    this.servicePeriod,
   }) : super(key: key);
 
   final ValueChanged<InquiryForms> onSubmit;
   final String submitButtonText;
   final AsyncLoadingStatus inquiryFormStatus;
+  final String serviceName;
+  final int price;
+  final int servicePeriod;
 
   @override
   _BodyState createState() => _BodyState();
@@ -78,9 +88,16 @@ class _BodyState extends State<Body> {
       _inquiryForms.inquiryTime,
     );
 
-    _durationController.text = '30';
+    _durationController.text =
+        widget.servicePeriod == null ? '30' : widget.servicePeriod.toString();
     _addressController.text = '';
     serviceList.serviceNames = [];
+
+    // if (widget.price != null) {
+    _budgetController.text = widget.price?.toString();
+    // }
+
+    _serviceTypeController.text = widget.serviceName;
   }
 
   @override
@@ -160,9 +177,25 @@ class _BodyState extends State<Body> {
                   SizedBox(height: viewPortHeight * 0.02),
                   _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
-                  _textLabel('服務類型'),
-                  SizedBox(height: viewPortHeight * 0.02),
-                  _serviceTypeRadio(),
+                  ServiceTypeField(
+                    readOnly: widget.serviceName != null,
+                    controller: _serviceTypeController,
+                    validator: (v) {
+                      // Service type length has to be less than 10 chars.
+                      if (v.length > 10) {
+                        return '字數過長';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (_) {
+                      setState(() {
+                        _inquiryForms.serviceType = _serviceTypeController.text;
+                      });
+                    },
+                  ),
+                  // SizedBox(height: viewPortHeight * 0.02),
+                  // _serviceTypeRadio(),
                   SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
@@ -285,6 +318,8 @@ class _BodyState extends State<Body> {
             _dateController = TextEditingController()
               ..text = _formatDate(_inquiryForms.inquiryDate);
           });
+
+          FocusScope.of(context).requestFocus(FocusNode());
         },
         onSelectTime: (TimeOfDay time) {
           setState(() {
@@ -293,6 +328,8 @@ class _BodyState extends State<Body> {
 
             timeOfDay = TimeOfDay(hour: time.hour, minute: time.minute);
           });
+
+          FocusScope.of(context).requestFocus(FocusNode());
         },
       ),
     );
@@ -300,6 +337,7 @@ class _BodyState extends State<Body> {
 
   Widget _servicePeriod() {
     return ServiceDurationField(
+      readOnly: widget.servicePeriod != null,
       controller: _durationController,
       fontColor: Colors.white,
       validator: (String v) {
@@ -406,6 +444,7 @@ class _BodyState extends State<Body> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
       child: TextFormField(
+        readOnly: widget.price != null,
         controller: _budgetController,
         validator: (String v) {
           return v.isEmpty || v == '0' ? '請輸入預算' : null;

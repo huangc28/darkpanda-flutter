@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,9 +55,34 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
   InquiryStatus _inquiryStatus;
 
+  List<UserServiceObj> _userServices;
+
   @override
   void initState() {
     super.initState();
+
+    _userServices = [
+      UserServiceObj(
+        name: '家教',
+        price: 1000,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '教書法',
+        price: 1500,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '私人秘書',
+        price: 2000,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '想要什麼服務？',
+        price: null,
+        minute: null,
+      )
+    ];
 
     _femaleUser = widget.femaleUser;
     _inquiryStatus = _femaleUser.inquiryStatus;
@@ -110,7 +136,10 @@ class _FemaleProfileState extends State<FemaleProfile> {
               onTap: () {
                 if (_chatNowButton == '馬上聊聊') {
                   print('[Debug] 馬上聊聊');
-                  Navigator.of(context, rootNavigator: true).push(
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).push(
                     MaterialPageRoute(
                       builder: (context) {
                         return MultiBlocProvider(
@@ -258,6 +287,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                         state.femaleUser.inquiryStatus.name);
 
                     _inquiryStatus = state.femaleUser.inquiryStatus;
+                    _femaleUser = state.femaleUser;
                   });
                 }
               },
@@ -295,12 +325,87 @@ class _FemaleProfileState extends State<FemaleProfile> {
             userProfile: userProfile,
             userRatings: userRatings,
             userImages: userImages,
+            userServices: _userServices,
             userProfileStatus: _userProfileStatus,
             userRatingsStatus: _userRatingsStatus,
             userImagesStatus: _userImagesStatus,
+            onTapService: _handleFemaleService,
           ),
         ),
       ),
     );
+  }
+
+  _handleFemaleService(UserServiceObj userServiceObj) {
+    print('Handle Female Service: ' + userServiceObj.name);
+
+    Widget _directInquiryForm() {
+      // If price is null, which mean user selected last service
+      // with user manual input service
+      return userServiceObj.price == null
+          ? DirectInquiryForm(
+              uuid: userProfile.uuid,
+            )
+          : DirectInquiryForm(
+              uuid: userProfile.uuid,
+              serviceName: userServiceObj.name,
+              price: userServiceObj.price,
+              servicePeriod: userServiceObj.minute,
+            );
+    }
+
+    if (_chatNowButton == '馬上聊聊') {
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => LoadInquiryBloc(
+                    searchInquiryAPIs: SearchInquiryAPIs(),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => DirectInquiryFormBloc(
+                    searchInquiryAPIs: SearchInquiryAPIs(),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => LoadServiceListBloc(
+                    searchInquiryAPIs: SearchInquiryAPIs(),
+                  ),
+                ),
+              ],
+              child: _directInquiryForm(),
+            );
+          },
+        ),
+      ).then(
+        (value) {
+          // Return new created inquiry data
+          if (value != null) {
+            setState(() {
+              _inquiryStatus = value.inquiryStatus;
+
+              final updatedinquiry = _femaleUser.copyWith(
+                inquiryUuid: value.inquiryUuid,
+                inquiryStatus: value.inquiryStatus,
+              );
+
+              _femaleUser = updatedinquiry;
+
+              // Return updated value to female list
+              widget.onInquiryStatusChanged(_femaleUser);
+
+              BlocProvider.of<UpdateFemaleInquiryBloc>(context)
+                  .add(UpdateFemaleInquiry(femaleUser: _femaleUser));
+            });
+          }
+        },
+      );
+    }
   }
 }

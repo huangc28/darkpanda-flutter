@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/scrollable_full_screen_image.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/user_traits.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/user_service..dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
@@ -29,22 +30,6 @@ class DemoImage {
 
   DemoImage({this.image});
 }
-
-// class DemoReview {
-//   final String image;
-//   final String name;
-//   final String description;
-//   final String date;
-//   final int rate;
-
-//   DemoReview({
-//     this.image,
-//     this.name,
-//     this.description,
-//     this.date,
-//     this.rate,
-//   });
-// }
 
 class LabelList {
   final String description;
@@ -69,6 +54,8 @@ class _ProfileState extends State<Profile> {
   List<UserImage> userImageList = [];
 
   UserRatings userRatings = UserRatings();
+
+  AsyncLoadingStatus _userProfileStatus = AsyncLoadingStatus.initial;
 
   @override
   void initState() {
@@ -101,6 +88,25 @@ class _ProfileState extends State<Profile> {
     super.deactivate();
   }
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => UserService(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,6 +119,11 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   children: <Widget>[
                     _buildProfileDetail(),
+                    SizedBox(height: SizeConfig.screenHeight * 0.02),
+                    _userProfileStatus == AsyncLoadingStatus.initial ||
+                            _userProfileStatus == AsyncLoadingStatus.loading
+                        ? Container()
+                        : _userService(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {
@@ -201,7 +212,11 @@ class _ProfileState extends State<Profile> {
           SizeConfig.screenHeight * 0.03,
         ),
         child: BlocConsumer<LoadUserBloc, LoadUserState>(
-          listener: (BuildContext context, LoadUserState state) {},
+          listener: (BuildContext context, LoadUserState state) {
+            setState(() {
+              _userProfileStatus = state.status;
+            });
+          },
           builder: (BuildContext context, LoadUserState state) {
             if (state.status == AsyncLoadingStatus.initial ||
                 state.status == AsyncLoadingStatus.loading) {
@@ -211,6 +226,7 @@ class _ProfileState extends State<Profile> {
                 ],
               );
             }
+
             return Column(
               children: <Widget>[
                 Row(
@@ -441,6 +457,51 @@ class _ProfileState extends State<Profile> {
               height: 150,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _userService() {
+    return InkWell(
+      onTap: () {
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(_createRoute());
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Color.fromRGBO(255, 255, 255, 0.1),
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            SizeConfig.screenWidth * 0.05,
+            SizeConfig.screenHeight * 0.03,
+            SizeConfig.screenWidth * 0.05,
+            SizeConfig.screenHeight * 0.03,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                child: Text(
+                  '我的服務',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              Container(
+                child: Icon(
+                  Icons.arrow_forward_ios_sharp,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

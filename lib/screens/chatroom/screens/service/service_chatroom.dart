@@ -74,6 +74,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
+import 'bloc/load_cancel_service_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
 import 'bloc/payment_complete_notifier_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
@@ -129,7 +130,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   /// If male user service is paid, the unpaid banner will be hide
   bool _servicePaid = true;
 
-  int _balance = 0;
+  double _balance = 0;
   InquiryDetail _inquiryDetail = InquiryDetail();
   ServiceDetails _serviceDetails = ServiceDetails();
   UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
@@ -496,6 +497,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                     serviceAPIs: ServiceAPIs(),
                                                   ),
                                                 ),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      LoadCancelServiceBloc(
+                                                    serviceAPIs: ServiceAPIs(),
+                                                  ),
+                                                ),
                                               ],
                                               child: BuyService(
                                                 args: _inquiryDetail,
@@ -700,6 +707,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                   ),
                   BlocProvider(
                     create: (context) => CancelServiceBloc(
+                      serviceAPIs: ServiceAPIs(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => LoadCancelServiceBloc(
                       serviceAPIs: ServiceAPIs(),
                     ),
                   ),

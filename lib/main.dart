@@ -122,21 +122,6 @@ void main() async {
       stackTrace: stackTrace,
     );
   }
-// await SentryFlutter.init(
-//   (option) {
-//     options.dsn = 'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
-//   }
-
-// )
-//   runApp(
-//     DarkPandaApp(
-//       gender: _gender,
-//       jwt: _jwt,
-//     ),
-//   );
-  // },
-  //   FirebaseCrashlytics.instance.recordError,
-  // );
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {

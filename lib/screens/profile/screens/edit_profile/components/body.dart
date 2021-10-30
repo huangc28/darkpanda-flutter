@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/util/validator.dart';
+import 'package:darkpanda_flutter/components/bullet.dart';
 
 import 'package:image/image.dart' as img;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -164,6 +165,15 @@ class _BodyState extends State<Body> {
     );
   }
 
+  Widget _buildBullet(String text) => Bullet(
+        text,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return UnfocusPrimary(
@@ -178,7 +188,7 @@ class _BodyState extends State<Body> {
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
                 _avatarImage(),
-                InputTextLabel(label: "暱稱*"),
+                _buildBullet('暱稱'),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
@@ -186,7 +196,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.028, //24
                 ),
-                InputTextLabel(label: "年齡"),
+                _buildBullet('年齡'),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
@@ -194,7 +204,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.028, //24
                 ),
-                InputTextLabel(label: "身高"),
+                _buildBullet('身高'),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
@@ -202,7 +212,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.028, //24
                 ),
-                InputTextLabel(label: "體重"),
+                _buildBullet('體重'),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
@@ -210,7 +220,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.028, //24
                 ),
-                InputTextLabel(label: "簡介"),
+                _buildBullet('簡介'),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
                 ),
@@ -218,7 +228,7 @@ class _BodyState extends State<Body> {
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.028, //24
                 ),
-                InputTextLabel(label: "照片*（至少上傳兩張）"),
+                _buildBullet('照片*（至少上傳兩張）'),
                 buildAddImage(),
                 SizedBox(
                   height: SizeConfig.screenHeight * 0.022, //20
@@ -689,41 +699,6 @@ class _BodyState extends State<Body> {
               ),
             ),
           );
-  }
-}
-
-class InputTextLabel extends StatelessWidget {
-  final String label;
-
-  const InputTextLabel({
-    Key key,
-    this.label,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          height: 7.0,
-          width: 7.0,
-          transform: new Matrix4.identity()..rotateZ(45 * 3.1415927 / 180),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-          ),
-        ),
-        SizedBox(width: 5),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
-        ),
-      ],
-    );
   }
 }
 

@@ -100,7 +100,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                       return _refreshCompleter.future;
                     },
                     onLoadMore: () {
-                      print('DEBUG trigger onLoadMore');
                       BlocProvider.of<InquiryChatroomsBloc>(context)
                           .add(LoadMoreChatrooms());
                     },

@@ -1,12 +1,9 @@
-import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/enums/service_cancel_cause.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
-import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
@@ -67,7 +64,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     if (_gender == Gender.male.name) {
       if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_after_appointment_time) {
-        _cancelCause = '* 對方在約定时间後取消';
+        _cancelCause = '* 對方在約定時間後取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -76,7 +73,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         }
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_before_appointment_time) {
-        _cancelCause = '* 對方在約定时间前取消';
+        _cancelCause = '* 對方在約定時間前取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -85,7 +82,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         }
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_before_appointment_time) {
-        _cancelCause = '* 您在約定时间前取消';
+        _cancelCause = '* 您在約定時間前取消';
 
         if (widget.historicalService.refunded == true) {
           _refundStatus = ' - 已退款';
@@ -95,23 +92,23 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_after_appointment_time) {
         // No refund needed
-        _cancelCause = '* 您在約定时间後取消';
+        _cancelCause = '* 您在約定時間後取消';
       } else {
         _cancelCause = '';
       }
     } else {
       if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_after_appointment_time) {
-        _cancelCause = '* 您在約定时间後取消';
+        _cancelCause = '* 您在約定時間後取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.girl_cancel_before_appointment_time) {
-        _cancelCause = '* 您在約定时间前取消';
+        _cancelCause = '* 您在約定時間前取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_before_appointment_time) {
-        _cancelCause = '* 對方在約定时间前取消';
+        _cancelCause = '* 對方在約定時間前取消';
       } else if (widget.historicalService.cancelCause ==
           ServiceCancelCause.guy_cancel_after_appointment_time) {
-        _cancelCause = '* 對方在約定时间後取消';
+        _cancelCause = '* 對方在約定時間後取消';
       } else {
         _cancelCause = '';
       }
@@ -437,16 +434,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           SizedBox(height: 15),
           _buildEachText(
               'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
-          // SizedBox(height: 15),
-          // _buildEachText(
-          //   'coin.png',
-          //   '合計',
-          //   '${total}DP',
-          //   titleSize: 14,
-          //   valueSize: 16,
-          //   titleColor: Colors.white,
-          //   fontWeight: FontWeight.bold,
-          // ),
         ],
       ),
     );

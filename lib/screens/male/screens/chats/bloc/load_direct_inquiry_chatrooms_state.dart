@@ -50,6 +50,7 @@ class LoadDirectInquiryChatroomsState<E extends AppBaseException>
           status: AsyncLoadingStatus.error,
           chatroomLastMessage: state.chatroomLastMessage,
           currentPage: state.currentPage,
+          error: err,
         );
 
   LoadDirectInquiryChatroomsState.updateChatrooms(

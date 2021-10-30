@@ -92,6 +92,8 @@ class UpdateFemaleInquiryBloc
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
     String iqStatus = snapshot['status'] as String;
+    String iqChannelUuid = snapshot['channel_uuid'] as String;
+    String iqServiceUuid = snapshot['service_uuid'] as String;
 
     developer.log(
         'firestore inquiry changes recieved: ${snapshot.data().toString()}');
@@ -99,6 +101,8 @@ class UpdateFemaleInquiryBloc
     add(
       UpdateInquiryStatus(
         inquiryUuid: inquiryUuid,
+        channelUuid: iqChannelUuid,
+        serviceUuid: iqServiceUuid,
         inquiryStatus: iqStatus.toInquiryStatusEnum(),
       ),
     );
@@ -108,6 +112,8 @@ class UpdateFemaleInquiryBloc
       UpdateInquiryStatus event) async* {
     final updatedInquiry = state.femaleUser.copyWith(
       inquiryUuid: event.inquiryUuid,
+      channelUuid: event.channelUuid,
+      serviceUuid: event.serviceUuid,
       inquiryStatus: event.inquiryStatus,
     );
 

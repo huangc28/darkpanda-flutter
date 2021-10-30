@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -142,6 +143,11 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                                       serviceAPIs: ServiceAPIs(),
                                     ),
                                   ),
+                                  BlocProvider(
+                                    create: (context) => LoadCancelServiceBloc(
+                                      serviceAPIs: ServiceAPIs(),
+                                    ),
+                                  ),
                                 ],
                                 child: BuyService(
                                   args: inquiryDetail,
@@ -236,13 +242,6 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             SizedBox(height: 8),
             _buildEachText('heart.png', '媒合費',
                 '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
-            // SizedBox(height: 8),
-            // _buildEachText(
-            //   'coin.png',
-            //   '合計',
-            //   '${total}DP',
-            //   fontWeight: FontWeight.bold,
-            // ),
           ],
         ),
       ),

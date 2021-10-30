@@ -15,7 +15,7 @@ class PaymentDetail {
     this.hasBlocked,
   });
 
-  int price;
+  double price;
   String recTradeId;
   String address;
   DateTime startTime;
@@ -24,7 +24,7 @@ class PaymentDetail {
   String pickerUsername;
   String pickerAvatarUrl;
   bool hasCommented;
-  int matchingFee;
+  double matchingFee;
   bool hasBlocked;
 
   Map<String, dynamic> toMap() => {
@@ -41,23 +41,23 @@ class PaymentDetail {
         'has_blocked': hasBlocked,
       };
 
-  factory PaymentDetail.fromMap(Map<String, dynamic> data) {
-    return PaymentDetail(
-      price: data['price'],
-      recTradeId: data['rec_trade_id'],
-      address: data['address'],
-      startTime: data['start_time'],
-      duration: data['duration'],
-      pickerUuid: data['picker_uuid'],
-      pickerUsername: data['picker_username'],
-      pickerAvatarUrl: data['picker_avatar_url'],
-      hasCommented: data['has_commented'],
-      matchingFee: data['matching_fee'],
-      hasBlocked: data['has_blocked'],
-    );
-  }
+  // factory PaymentDetail.fromMap(Map<String, dynamic> data) {
+  //   return PaymentDetail(
+  //     price: data['price'],
+  //     recTradeId: data['rec_trade_id'],
+  //     address: data['address'],
+  //     startTime: data['start_time'],
+  //     duration: data['duration'],
+  //     pickerUuid: data['picker_uuid'],
+  //     pickerUsername: data['picker_username'],
+  //     pickerAvatarUrl: data['picker_avatar_url'],
+  //     hasCommented: data['has_commented'],
+  //     matchingFee: data['matching_fee']?.toDouble(),
+  //     hasBlocked: data['has_blocked'],
+  //   );
+  // }
 
-  factory PaymentDetail.fromJson(Map<String, dynamic> data) {
+  factory PaymentDetail.fromMap(Map<String, dynamic> data) {
     var parsedStartTime = DateTime.now();
 
     // The appointment time may be `null`. If the parsed result is `null`, we use
@@ -83,7 +83,7 @@ class PaymentDetail {
     }
 
     return PaymentDetail(
-      price: data['price'],
+      price: data['price']?.toDouble(),
       recTradeId: data['rec_trade_id'],
       address: data['address'],
       startTime: parsedStartTime.toLocal(),
@@ -92,7 +92,7 @@ class PaymentDetail {
       pickerUsername: data['picker_username'],
       pickerAvatarUrl: data['picker_avatar_url'],
       hasCommented: data['has_commented'],
-      matchingFee: data['matching_fee'],
+      matchingFee: data['matching_fee']?.toDouble(),
       hasBlocked: data['has_blocked'],
     );
   }

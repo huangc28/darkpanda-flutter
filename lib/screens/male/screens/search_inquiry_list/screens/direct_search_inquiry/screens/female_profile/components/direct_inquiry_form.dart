@@ -10,10 +10,16 @@ class DirectInquiryForm extends StatefulWidget {
   const DirectInquiryForm({
     this.onPush,
     this.uuid,
+    this.serviceName,
+    this.price,
+    this.servicePeriod,
   });
 
   final Function(String) onPush;
   final String uuid;
+  final String serviceName;
+  final int price;
+  final int servicePeriod;
 
   @override
   State<DirectInquiryForm> createState() => _DirectInquiryForm();
@@ -61,6 +67,9 @@ class _DirectInquiryForm extends State<DirectInquiryForm> {
             onSubmit: _handleSubmit,
             inquiryFormStatus: _inquiryFormStatus,
             submitButtonText: '馬上聊聊',
+            serviceName: widget.serviceName,
+            price: widget.price,
+            servicePeriod: widget.servicePeriod,
           );
         },
       ),

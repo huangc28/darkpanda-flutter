@@ -26,6 +26,20 @@ flutter build \
     apk --release
 ```
 
+## Dashbook
+
+Dashbook is like storybookjs in react community. It provides isolated dev environment for flutter widget. it works as a development enviroment for the project widgets and also a showcase for common widgets on the app. 
+
+### Android
+
+First open android emulator from android studio AVD manager. Then prompt the following command:
+
+```
+ flutter run -d "[YOUR_EMULATOR_ID]" lib/main_dashbook.dart
+```
+
+You should see dashboard installed on you emulator.
+
 ## TODOs 
 
 - Catch system exception like `json.decode(...)` --- [ok]

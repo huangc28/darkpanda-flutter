@@ -46,10 +46,15 @@ class LoadDpPackageBloc extends Bloc<LoadDpPackageEvent, LoadDpPackageState> {
         );
       }
 
+      DpPackageList packages = DpPackageList.fromJson(
+        json.decode(res.body),
+      );
+
+      // Sort cost from low to high
+      packages.packages.sort((a, b) => a.cost.compareTo(b.cost));
+
       yield LoadDpPackageState.loaded(
-        dpPackageList: DpPackageList.fromJson(
-          json.decode(res.body),
-        ),
+        dpPackageList: packages,
       );
     } on APIException catch (err) {
       yield LoadDpPackageState.loadFailed(

@@ -18,6 +18,7 @@ class Body extends StatefulWidget {
     this.serviceDetails,
     @required this.paymentDetailStatus,
     this.onCancelService,
+    this.cancelServiceStatus,
   }) : super(key: key);
 
   final HistoricalService historicalService;
@@ -25,6 +26,7 @@ class Body extends StatefulWidget {
   final ServiceDetails serviceDetails;
   final AsyncLoadingStatus paymentDetailStatus;
   final VoidCallback onCancelService;
+  final AsyncLoadingStatus cancelServiceStatus;
 
   @override
   _BodyState createState() => _BodyState();
@@ -210,9 +212,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildDpCardInfo() {
-    // final total =
-    //     widget.serviceDetails.price + widget.serviceDetails.matchingFee;
-
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -233,30 +232,38 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           SizedBox(height: 15),
           _buildEachText(
               'heart.png', '媒合費', '${widget.serviceDetails.matchingFee}DP'),
-          // SizedBox(height: 15),
-          // _buildEachText(
-          //   'coin.png',
-          //   '合計',
-          //   '${convertZeroDecimalToInt(total)}DP',
-          //   titleSize: 14,
-          //   valueSize: 16,
-          //   titleColor: Colors.white,
-          //   fontWeight: FontWeight.bold,
-          // ),
         ],
       ),
     );
   }
 
   Widget _buildButton() {
+    bool buttonIsDisabled = false;
+
+    if (widget.historicalService.status == ServiceStatus.fulfilling.name) {
+      buttonIsDisabled = true;
+    }
+
+    if (widget.cancelServiceStatus == AsyncLoadingStatus.loading) {
+      buttonIsDisabled = true;
+    } else {
+      buttonIsDisabled = false;
+    }
+
     return Column(
-      children: [
+      children: <Widget>[
         if (widget.paymentDetail.hasCommented == false)
           DPTextButton(
-            disabled:
-                widget.historicalService.status == ServiceStatus.fulfilling.name
-                    ? true
-                    : false,
+            // When disabled is true:
+            // 1. History service status is fulfilling
+            // 2. Loading cancel service cause
+            // When loading is true:
+            // 1. Loading cancel service cause
+            disabled: buttonIsDisabled,
+            // widget.historicalService.status == ServiceStatus.fulfilling.name
+            //     ? true
+            //     : false,
+            loading: widget.cancelServiceStatus == AsyncLoadingStatus.loading,
             onPressed: widget.onCancelService,
             text:
                 widget.historicalService.status == ServiceStatus.fulfilling.name

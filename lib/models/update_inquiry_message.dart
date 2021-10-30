@@ -1,4 +1,5 @@
 import './message.dart';
+import 'dart:developer' as developer;
 
 class UpdateInquiryMessage extends Message {
   UpdateInquiryMessage({
@@ -23,10 +24,22 @@ class UpdateInquiryMessage extends Message {
   DateTime serviceTime;
   String serviceType;
   String address;
-  int matchingFee;
+  double matchingFee;
   String username;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
+    DateTime parsedStartTime = DateTime.now();
+
+    if (data['appointment_time'] != null) {
+      parsedStartTime =
+          DateTime.fromMicrosecondsSinceEpoch(data['appointment_time']);
+    } else {
+      developer.log(
+        '${data['appointment_time']} can not be parse to DateTime object',
+        name: 'Failed to parse datetime string to DateTime object',
+      );
+    }
+
     return UpdateInquiryMessage(
       serviceType: data['service_type'],
       content: data['content'],
@@ -36,10 +49,9 @@ class UpdateInquiryMessage extends Message {
       duration: Duration(
         minutes: data['duration'] ?? 0,
       ),
-      serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['appointment_time'])
-          .toLocal(),
+      serviceTime: parsedStartTime,
       address: data['address'],
-      matchingFee: data['matching_fee'],
+      matchingFee: data['matching_fee']?.toDouble(),
       username: data['username'],
     );
   }
