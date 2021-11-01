@@ -144,7 +144,7 @@ class LoadInquiryBloc extends Bloc<LoadInquiryEvent, LoadInquiryState> {
     }
 
     developer.log(
-        'firestore inquiry changes recieved: ${snapshot.data().toString()}');
+        'load_inquiry_bloc firestore inquiry changes recieved: ${snapshot.data().toString()}');
 
     add(
       UpdateLoadInquiryStatus(

@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +13,11 @@ import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
+import 'female_service_type_field.dart';
+import 'service_type_field.dart';
 import 'slideup_controller.dart';
 import 'slideup_provider.dart';
+import 'user_service_selector/user_service_selector_list.dart';
 
 part 'price_field.dart';
 part 'address_field.dart';
@@ -61,10 +66,38 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   TextEditingController _durationController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
+  TextEditingController _serviceTypeController = TextEditingController();
+
+  List<UserServiceObj> _userServices;
 
   @override
   void initState() {
     super.initState();
+
+    _userServices = [
+      UserServiceObj(
+        name: '家教',
+        price: 1000,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '教書法',
+        price: 1500,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '私人秘書',
+        price: 2000,
+        minute: 60,
+      ),
+      UserServiceObj(
+        name: '其他',
+        price: null,
+        minute: null,
+      )
+    ];
+
+    _serviceTypeController.text = '123';
 
     _initDefaultServiceSettings(widget.serviceSettings);
   }
@@ -98,6 +131,27 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       _addressController.text = addr;
 
       _serviceSetting = _serviceSetting.copyWith(address: addr);
+    });
+  }
+
+  _navigateToServiceSelector() async {
+    // Push to address selector screen.
+    final serviceType = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return UserServiceSelectorList(
+            initialUserService: _serviceTypeController.text,
+            userServices: _userServices,
+          );
+        },
+      ),
+    );
+
+    setState(() {
+      _serviceTypeController.text = serviceType;
+
+      _serviceSetting = _serviceSetting.copyWith(serviceType: serviceType);
     });
   }
 
@@ -213,6 +267,29 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           );
                         },
                       ),
+
+                      GestureDetector(
+                        onTap: _navigateToServiceSelector,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: IgnorePointer(
+                            child: FemaleServiceTypeField(
+                              controller: _serviceTypeController,
+                              validator: (String value) {
+                                if (value == null || value.isEmpty) {
+                                  return '請選擇服務';
+                                }
+                              },
+                              onSaved: (String v) {
+                                _serviceSetting = _serviceSetting.copyWith(
+                                  price: double.tryParse(v),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
                       // Focus address field would open a map route letting the user to select an address from google map.
                       GestureDetector(
                         onTap: _navigateToAddressSelector,
@@ -230,7 +307,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 20),
                       Container(
                         child: AppointmentTimeField(
                           dateController: _dateController,
@@ -261,7 +338,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                         ),
                       ),
 
-                      SizedBox(height: 25),
+                      SizedBox(height: 20),
 
                       ServiceDurationField(
                         controller: _durationController,
@@ -364,7 +441,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
           return provider.isShow
               ? SingleChildScrollView(
                   child: Container(
-                    height: 571,
+                    height: SizeConfig.screenHeight * 0.9, //571,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
