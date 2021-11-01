@@ -242,8 +242,8 @@ class CurrentChatroomBloc
 
     print('DEBUG  _handleCurrentMessage ${rawMsg}');
 
-    developer
-        .log('Current chatroom incoming message ${rawMsg['type'].toString()}');
+    developer.log(
+        'current_chatroom_bloc incoming message ${rawMsg['type'].toString()}');
 
     final isServiceDetailMsg =
         (String type) => type == MessageType.service_detail.name;
@@ -283,7 +283,7 @@ class CurrentChatroomBloc
 
       updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
 
-      add(DispatchNewMessage(message: msg));
+      // add(DispatchNewMessage(message: msg));
     } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
       msg = DisagreeInquiryMessage.fromMap(rawMsg);
     } else if (isQuitChatroomMsg(rawMsg['type'])) {
