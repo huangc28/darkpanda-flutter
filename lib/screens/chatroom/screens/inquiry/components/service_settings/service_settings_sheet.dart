@@ -97,8 +97,6 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
       )
     ];
 
-    _serviceTypeController.text = '123';
-
     _initDefaultServiceSettings(widget.serviceSettings);
   }
 
