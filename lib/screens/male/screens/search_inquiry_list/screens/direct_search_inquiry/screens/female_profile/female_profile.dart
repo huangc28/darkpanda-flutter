@@ -106,7 +106,8 @@ class _FemaleProfileState extends State<FemaleProfile> {
   Widget build(BuildContext context) {
     if (_inquiryStatus == InquiryStatus.asking) {
       _chatNowButton = '等待回應';
-    } else if (_inquiryStatus == InquiryStatus.chatting) {
+    } else if (_inquiryStatus == InquiryStatus.chatting ||
+        _inquiryStatus == InquiryStatus.wait_for_inquirer_approve) {
       _chatNowButton = '正在聊天';
     } else {
       _chatNowButton = '馬上聊聊';

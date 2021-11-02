@@ -114,6 +114,8 @@ class _BuyServiceState extends State<BuyService> {
 
                   // status done will be called twice, so implement isFirstCall to solve this issue
                   if (isFirstCall == 1) {
+                    print(
+                        '[Debug] 2 LoadIncomingServiceBloc ------------------------------------------');
                     Navigator.of(
                       context,
                       rootNavigator: true,
@@ -164,6 +166,8 @@ class _BuyServiceState extends State<BuyService> {
                   }
                   // 1. Route is from inquiry_chatroom
                   else {
+                    print(
+                        '[Debug] 1 CancelServiceBloc ------------------------------------------');
                     Navigator.of(
                       context,
                       rootNavigator: true,

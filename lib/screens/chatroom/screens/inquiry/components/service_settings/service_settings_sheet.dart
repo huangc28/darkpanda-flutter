@@ -178,6 +178,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
     _serviceSetting = _serviceSetting.copyWith(
       serviceType: _serviceSetting.serviceType,
     );
+    _serviceTypeController.text = _serviceSetting.serviceType;
 
     // Initialize service address
     _addressController.text = _serviceSetting.address;
