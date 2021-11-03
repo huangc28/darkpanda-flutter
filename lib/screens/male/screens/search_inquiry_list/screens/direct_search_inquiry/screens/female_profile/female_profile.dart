@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,34 +56,34 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
   InquiryStatus _inquiryStatus;
 
-  List<UserServiceObj> _userServices;
+  List<UserServiceResponse> _userServices;
 
   @override
   void initState() {
     super.initState();
 
-    _userServices = [
-      UserServiceObj(
-        name: '家教',
-        price: 1000,
-        minute: 60,
-      ),
-      UserServiceObj(
-        name: '教書法',
-        price: 1500,
-        minute: 60,
-      ),
-      UserServiceObj(
-        name: '私人秘書',
-        price: 2000,
-        minute: 60,
-      ),
-      UserServiceObj(
-        name: '想要什麼服務？',
-        price: null,
-        minute: null,
-      )
-    ];
+    // _userServices = [
+    //   UserServiceObj(
+    //     name: '家教',
+    //     price: 1000,
+    //     minute: 60,
+    //   ),
+    //   UserServiceObj(
+    //     name: '教書法',
+    //     price: 1500,
+    //     minute: 60,
+    //   ),
+    //   UserServiceObj(
+    //     name: '私人秘書',
+    //     price: 2000,
+    //     minute: 60,
+    //   ),
+    //   UserServiceObj(
+    //     name: '想要什麼服務？',
+    //     price: null,
+    //     minute: null,
+    //   )
+    // ];
 
     _femaleUser = widget.femaleUser;
     _inquiryStatus = _femaleUser.inquiryStatus;
@@ -337,8 +338,8 @@ class _FemaleProfileState extends State<FemaleProfile> {
     );
   }
 
-  _handleFemaleService(UserServiceObj userServiceObj) {
-    print('Handle Female Service: ' + userServiceObj.name);
+  _handleFemaleService(UserServiceResponse userServiceObj) {
+    print('Handle Female Service: ' + userServiceObj.serviceName);
 
     Widget _directInquiryForm() {
       // If price is null, which mean user selected last service
@@ -349,9 +350,9 @@ class _FemaleProfileState extends State<FemaleProfile> {
             )
           : DirectInquiryForm(
               uuid: userProfile.uuid,
-              serviceName: userServiceObj.name,
+              serviceName: userServiceObj.serviceName,
               price: userServiceObj.price,
-              servicePeriod: userServiceObj.minute,
+              servicePeriod: userServiceObj.duration,
             );
     }
 

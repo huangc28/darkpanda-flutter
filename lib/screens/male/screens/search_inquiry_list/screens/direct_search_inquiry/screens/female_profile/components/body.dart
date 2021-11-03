@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
@@ -30,11 +31,11 @@ class Body extends StatefulWidget {
   final UserProfile userProfile;
   final UserRatings userRatings;
   final List<UserImage> userImages;
-  final List<UserServiceObj> userServices;
+  final List<UserServiceResponse> userServices;
   final AsyncLoadingStatus userProfileStatus;
   final AsyncLoadingStatus userRatingsStatus;
   final AsyncLoadingStatus userImagesStatus;
-  final ValueChanged<UserServiceObj> onTapService;
+  final ValueChanged<UserServiceResponse> onTapService;
 
   @override
   _BodyState createState() => _BodyState();

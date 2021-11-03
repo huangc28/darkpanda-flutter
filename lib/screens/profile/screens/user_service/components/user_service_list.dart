@@ -1,7 +1,8 @@
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:flutter/material.dart';
 
 typedef UserServiceBuilder = Widget Function(
-    BuildContext context, UserServiceObj chatroom, int index);
+    BuildContext context, UserServiceResponse chatroom, int index);
 
 class UserServiceObj {
   final String name;
@@ -24,7 +25,7 @@ class UserServiceList extends StatelessWidget {
   }) : super(key: key);
 
   final UserServiceBuilder userServiceBuilder;
-  final List<UserServiceObj> userServices;
+  final List<UserServiceResponse> userServices;
   final ScrollPhysics scrollPhysics;
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 
 class UserServiceGrid extends StatelessWidget {
   const UserServiceGrid({
@@ -8,7 +8,7 @@ class UserServiceGrid extends StatelessWidget {
     this.onConfirmDelete,
   }) : super(key: key);
 
-  final UserServiceObj userService;
+  final UserServiceResponse userService;
   final VoidCallback onConfirmDelete;
 
   @override
@@ -22,7 +22,7 @@ class UserServiceGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  userService.name,
+                  userService.serviceName,
                   maxLines: 1,
                   style: TextStyle(
                     color: Colors.white,
@@ -42,7 +42,7 @@ class UserServiceGrid extends StatelessWidget {
             ),
             SizedBox(height: 2),
             Text(
-              userService.minute.toString() + ' 分鐘',
+              userService.duration.toString() + ' 分鐘',
               style: TextStyle(color: Colors.white),
             ),
           ],

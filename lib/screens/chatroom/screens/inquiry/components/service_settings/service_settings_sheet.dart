@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
@@ -68,32 +69,32 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _serviceTypeController = TextEditingController();
 
-  List<UserServiceObj> _userServices;
+  List<UserServiceResponse> _userServices;
 
   @override
   void initState() {
     super.initState();
 
     _userServices = [
-      UserServiceObj(
-        name: '家教',
+      UserServiceResponse(
+        serviceName: '家教',
         price: 1000,
-        minute: 60,
+        duration: 60,
       ),
-      UserServiceObj(
-        name: '教書法',
+      UserServiceResponse(
+        serviceName: '教書法',
         price: 1500,
-        minute: 60,
+        duration: 60,
       ),
-      UserServiceObj(
-        name: '私人秘書',
+      UserServiceResponse(
+        serviceName: '私人秘書',
         price: 2000,
-        minute: 60,
+        duration: 60,
       ),
-      UserServiceObj(
-        name: '其他',
+      UserServiceResponse(
+        serviceName: '其他',
         price: null,
-        minute: null,
+        duration: null,
       )
     ];
 

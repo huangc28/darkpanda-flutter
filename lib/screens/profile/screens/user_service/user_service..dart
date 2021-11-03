@@ -1,7 +1,17 @@
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/remove_user_service_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/add_user_service_bloc.dart';
+import 'bloc/load_user_service_bloc.dart';
 import 'components/delete_user_service_confirmation_dialog.dart';
 import 'components/user_service_grid.dart';
 import 'components/user_service_list.dart';
@@ -26,27 +36,17 @@ class _UserServiceState extends State<UserService>
 
   List<UserServiceObj> _userServices;
 
+  AuthUser _sender;
+  AsyncLoadingStatus addUserServiceStatus = AsyncLoadingStatus.initial;
+
   @override
   void initState() {
     super.initState();
 
-    _userServices = [
-      UserServiceObj(
-        name: '家教',
-        price: 1000,
-        minute: 60,
-      ),
-      UserServiceObj(
-        name: '教書法',
-        price: 1500,
-        minute: 60,
-      ),
-      UserServiceObj(
-        name: '私人秘書',
-        price: 2000,
-        minute: 60,
-      )
-    ];
+    _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
+
+    BlocProvider.of<LoadUserServiceBloc>(context)
+        .add(LoadUserService(uuid: _sender.uuid));
 
     // Initialize slideup panel animation.
     _initSlideUpAnimation();
@@ -100,6 +100,11 @@ class _UserServiceState extends State<UserService>
     }
   }
 
+  void _removeUserService(int serviceOptionId) {
+    BlocProvider.of<RemoveUserServiceBloc>(context)
+        .add(RemoveUserService(serviceOptionId: serviceOptionId));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,42 +117,69 @@ class _UserServiceState extends State<UserService>
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Expanded(
-                      child: UserServiceList(
-                        userServices: _userServices,
-                        userServiceBuilder: (context, service, index) {
-                          return UserServiceGrid(
-                            userService: service,
-                            onConfirmDelete: () {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return DeleteUserServiceConfirmationDialog();
-                                },
-                              ).then((value) {
-                                if (value) {
-                                  print('Delete user service: ' +
-                                      index.toString());
-                                  // BlocProvider.of<CancelServiceBloc>(context).add(CancelService(
-                                  //     serviceUuid: widget.historicalService.serviceUuid));
-                                }
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
+                    _serviceList(),
                   ],
                 ),
               ),
+              BlocListener<RemoveUserServiceBloc, RemoveUserServiceState>(
+                listener: (_, state) {
+                  if (state.status == AsyncLoadingStatus.error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error.message),
+                      ),
+                    );
+                  }
+
+                  if (state.status == AsyncLoadingStatus.done) {
+                    BlocProvider.of<LoadUserServiceBloc>(context)
+                        .add(LoadUserService(uuid: _sender.uuid));
+                  }
+                },
+                child: Container(),
+              ),
+              BlocListener<AddUserServiceBloc, AddUserServiceState>(
+                listener: (_, state) {
+                  if (state.status == AsyncLoadingStatus.error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error.message),
+                      ),
+                    );
+                  }
+
+                  if (state.status == AsyncLoadingStatus.done) {
+                    BlocProvider.of<LoadUserServiceBloc>(context)
+                        .add(LoadUserService(uuid: _sender.uuid));
+
+                    _handleTapAddUserService();
+                  }
+
+                  setState(() {
+                    addUserServiceStatus = state.status;
+                  });
+                },
+                child: Container(),
+              ),
               SlideTransition(
                 position: _offsetAnimation,
-                child: UserSericeSheet(
+                child: UserServiceSheet(
                   controller: _slideUpController,
+                  isLoading: addUserServiceStatus,
                   onTapClose: () {
                     _animationController.reverse();
+                  },
+                  onCreateUserService: (UserServiceModel data) {
+                    BlocProvider.of<AddUserServiceBloc>(context).add(
+                      AddUserService(
+                        name: data.serviceName,
+                        description: data.description,
+                        price: data.price,
+                      ),
+                    );
                   },
                 ),
               ),
@@ -155,6 +187,59 @@ class _UserServiceState extends State<UserService>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _serviceList() {
+    return BlocConsumer<LoadUserServiceBloc, LoadUserServiceState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+
+          return null;
+        }
+      },
+      builder: (context, state) {
+        if (state.status == AsyncLoadingStatus.loading ||
+            state.status == AsyncLoadingStatus.initial) {
+          return Row(
+            children: [
+              LoadingScreen(),
+            ],
+          );
+        }
+
+        return Expanded(
+          child: UserServiceList(
+            userServices: state.userServiceListResponse.userServiceList,
+            userServiceBuilder: (context, service, index) {
+              return UserServiceGrid(
+                userService: service,
+                onConfirmDelete: () {
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DeleteUserServiceConfirmationDialog();
+                    },
+                  ).then((value) {
+                    if (value) {
+                      print('Delete user service: ' +
+                          service.userOptionId.toString());
+
+                      _removeUserService(service.userOptionId);
+                    }
+                  });
+                },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

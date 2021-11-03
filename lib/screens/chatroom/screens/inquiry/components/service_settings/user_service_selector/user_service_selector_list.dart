@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class UserServiceSelectorList extends StatelessWidget {
 
   final String initialUserService;
   final ValueChanged<String> onSelected;
-  final List<UserServiceObj> userServices;
+  final List<UserServiceResponse> userServices;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class UserServiceSelectorList extends StatelessWidget {
             userServiceBuilder: (context, service, index) {
               return InkWell(
                 onTap: () {
-                  Navigator.pop<String>(context, service.name);
+                  Navigator.pop<String>(context, service.serviceName);
                 },
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,

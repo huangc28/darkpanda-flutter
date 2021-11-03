@@ -37,7 +37,7 @@ class Body extends StatefulWidget {
   final String submitButtonText;
   final AsyncLoadingStatus inquiryFormStatus;
   final String serviceName;
-  final int price;
+  final double price;
   final int servicePeriod;
 
   @override
