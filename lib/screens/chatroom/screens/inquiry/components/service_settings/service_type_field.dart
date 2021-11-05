@@ -10,7 +10,7 @@ class ServiceTypeField extends StatelessWidget {
     this.validator,
     this.focusNode,
     this.onSaved,
-    this.readOnly,
+    this.readOnly = false,
   }) : super(key: key);
 
   // Passed from outside to manipuate service type input.
