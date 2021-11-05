@@ -1,3 +1,5 @@
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +63,11 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
           ),
           BlocProvider(
             create: (context) => UpdateFemaleInquiryBloc(),
+          ),
+          BlocProvider(
+            create: (context) => LoadUserServiceBloc(
+              userServiceApiClient: UserServiceApiClient(),
+            ),
           ),
         ],
         child: FemaleProfile(
@@ -182,21 +189,22 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: SizeConfig.screenHeight * 0.02, //18,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          SizedBox(width: 5),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.007, //5,
+                      ),
                       Row(
                         children: <Widget>[
                           IconTheme(
                             data: IconThemeData(
                               color: Colors.amber,
-                              size: 15,
+                              size: SizeConfig.screenHeight * 0.021, //15,
                             ),
                             child: ReviewStar(
                               value: user.userRating.score != null
@@ -206,10 +214,14 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.007, //5,
+                      ),
                       Row(
                         children: <Widget>[
-                          SizedBox(width: 2),
+                          SizedBox(
+                            width: 2,
+                          ),
                           Flexible(
                             child: Align(
                               alignment: Alignment.centerLeft,
@@ -221,7 +233,8 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize:
+                                      SizeConfig.screenHeight * 0.018, //14,
                                   color: Colors.white,
                                 ),
                               ),
