@@ -189,7 +189,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: SizeConfig.screenHeight * 0.02, //18,
+                                fontSize: SizeConfig.screenHeight * 0.024, //18,
                                 color: Colors.white,
                               ),
                             ),
@@ -234,7 +234,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize:
-                                      SizeConfig.screenHeight * 0.018, //14,
+                                      SizeConfig.screenHeight * 0.019, //14,
                                   color: Colors.white,
                                 ),
                               ),
