@@ -7,7 +7,7 @@ class UserServiceResponse {
     this.optionType,
     this.description,
     this.duration,
-    this.userOptionId,
+    this.serviceOptionId,
   });
 
   final String serviceName;
@@ -15,7 +15,7 @@ class UserServiceResponse {
   final String optionType;
   final String description;
   final int duration;
-  final int userOptionId;
+  final int serviceOptionId;
 
   static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
 
@@ -26,7 +26,7 @@ class UserServiceResponse {
       optionType: data['option_type'],
       description: data['description'],
       duration: data['duration'],
-      userOptionId: data['user_option_id'],
+      serviceOptionId: data['service_option_id'],
     );
   }
 
@@ -36,7 +36,7 @@ class UserServiceResponse {
         'option_type': optionType,
         'description': description,
         'duration': duration,
-        'user_option_id': userOptionId,
+        'service_option_id': serviceOptionId,
       };
 }
 

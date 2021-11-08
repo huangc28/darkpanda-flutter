@@ -16,6 +16,7 @@ class FemaleUser {
     this.inquiryStatus,
     this.channelUuid,
     this.serviceUuid,
+    this.expectServiceType,
   });
 
   final String uuid;
@@ -32,6 +33,7 @@ class FemaleUser {
   final InquiryStatus inquiryStatus;
   final String channelUuid;
   final String serviceUuid;
+  final String expectServiceType;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -48,6 +50,7 @@ class FemaleUser {
         'inquiry_status': inquiryStatus,
         'channel_uuid': channelUuid,
         'service_uuid': serviceUuid,
+        'expect_service_type': expectServiceType,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
@@ -72,6 +75,7 @@ class FemaleUser {
       inquiryStatus: iqStatus?.toInquiryStatusEnum(),
       channelUuid: data['channel_uuid'],
       serviceUuid: data['service_uuid'],
+      expectServiceType: data['expect_service_type'],
     );
   }
 
@@ -90,6 +94,7 @@ class FemaleUser {
     InquiryStatus inquiryStatus,
     String channelUuid,
     String serviceUuid,
+    String expectServiceType,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -106,6 +111,7 @@ class FemaleUser {
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
       channelUuid: channelUuid ?? this.channelUuid,
       serviceUuid: serviceUuid ?? this.serviceUuid,
+      expectServiceType: expectServiceType ?? this.expectServiceType,
     );
   }
 
@@ -125,6 +131,7 @@ class FemaleUser {
         inquiryStatus,
         channelUuid,
         serviceUuid,
+        expectServiceType,
       ];
 }
 

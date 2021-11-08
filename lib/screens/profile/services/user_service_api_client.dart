@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:darkpanda_flutter/services/base_client.dart';
@@ -27,12 +26,6 @@ class UserServiceApiClient extends BaseClient {
     double price,
   ) async {
     try {
-      // final body = UserServiceModelTest(
-      //   name: name,
-      //   description: description,
-      //   price: price,
-      // );
-
       final jsonBody = jsonEncode({
         'name': name,
         'description': 'description',

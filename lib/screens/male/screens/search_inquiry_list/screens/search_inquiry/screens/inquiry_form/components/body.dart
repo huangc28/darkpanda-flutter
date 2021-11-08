@@ -90,12 +90,9 @@ class _BodyState extends State<Body> {
 
     _durationController.text =
         widget.servicePeriod == null ? '30' : widget.servicePeriod.toString();
-    _addressController.text = '';
     serviceList.serviceNames = [];
 
-    // if (widget.price != null) {
     _budgetController.text = widget.price?.toString();
-    // }
 
     _serviceTypeController.text = widget.serviceName;
   }
@@ -194,8 +191,6 @@ class _BodyState extends State<Body> {
                       });
                     },
                   ),
-                  // SizedBox(height: viewPortHeight * 0.02),
-                  // _serviceTypeRadio(),
                   SizedBox(height: viewPortHeight * 0.02),
                   _textLabel('見面時間'),
                   SizedBox(height: viewPortHeight * 0.02),
@@ -258,32 +253,7 @@ class _BodyState extends State<Body> {
     } else {
       isLoading = false;
     }
-    return
-        //  BlocListener<SearchInquiryFormBloc, SearchInquiryFormState>(
-        //   listener: (context, state) {
-        //     if (state.status == AsyncLoadingStatus.loading ||
-        //         state.status == AsyncLoadingStatus.initial) {
-        //       setState(() {
-        //         isLoading = true;
-        //       });
-        //     } else if (state.status == AsyncLoadingStatus.error) {
-        //       setState(() {
-        //         isLoading = false;
-        //       });
-
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(state.error.message),
-        //         ),
-        //       );
-        //     } else if (state.status == AsyncLoadingStatus.done) {
-        //       setState(() {
-        //         isLoading = false;
-        //       });
-        //     }
-        //   },
-        //   child:
-        DPTextButton(
+    return DPTextButton(
       loading: isLoading,
       disabled: isLoading,
       theme: DPTextButtonThemes.purple,
@@ -295,13 +265,8 @@ class _BodyState extends State<Body> {
         _formKey.currentState.save();
 
         widget.onSubmit(_inquiryForms);
-
-        // BlocProvider.of<SearchInquiryFormBloc>(context).add(
-        //   SubmitSearchInquiryForm(_inquiryForms),
-        // );
       },
       text: widget.submitButtonText,
-      // ),
     );
   }
 

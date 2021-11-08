@@ -91,6 +91,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
     );
   }
 
+  // Update inquiry status, expect service type to girl list
   _handleInquiryStatusChanged(FemaleUser femaleUser) {
     for (int i = 0; i < femaleUsers.length; i++) {
       if (femaleUsers[i].hasInquiry) {
@@ -98,6 +99,7 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
           final updatedInquiry = femaleUsers[i].copyWith(
             inquiryUuid: femaleUser.inquiryUuid,
             inquiryStatus: femaleUser.inquiryStatus,
+            expectServiceType: femaleUser.expectServiceType,
           );
 
           femaleUsers[i] = updatedInquiry;

@@ -5,7 +5,6 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
-import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/remove_user_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,8 +32,6 @@ class _UserServiceState extends State<UserService>
   AnimationController _animationController;
   Animation<Offset> _offsetAnimation;
   Animation<double> _fadeAnimation;
-
-  List<UserServiceObj> _userServices;
 
   AuthUser _sender;
   AsyncLoadingStatus addUserServiceStatus = AsyncLoadingStatus.initial;
@@ -229,9 +226,9 @@ class _UserServiceState extends State<UserService>
                   ).then((value) {
                     if (value) {
                       print('Delete user service: ' +
-                          service.userOptionId.toString());
+                          service.serviceOptionId.toString());
 
-                      _removeUserService(service.userOptionId);
+                      _removeUserService(service.serviceOptionId);
                     }
                   });
                 },

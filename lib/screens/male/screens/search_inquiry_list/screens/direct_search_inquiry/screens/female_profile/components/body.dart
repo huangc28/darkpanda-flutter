@@ -25,6 +25,8 @@ class Body extends StatefulWidget {
     this.userProfileStatus,
     this.userRatingsStatus,
     this.userImagesStatus,
+    this.userServiceStatus,
+    this.expectServiceType,
     this.onTapService,
   }) : super(key: key);
 
@@ -35,6 +37,8 @@ class Body extends StatefulWidget {
   final AsyncLoadingStatus userProfileStatus;
   final AsyncLoadingStatus userRatingsStatus;
   final AsyncLoadingStatus userImagesStatus;
+  final AsyncLoadingStatus userServiceStatus;
+  final String expectServiceType;
   final ValueChanged<UserServiceResponse> onTapService;
 
   @override
@@ -160,9 +164,11 @@ class _BodyState extends State<Body> {
                     ],
                   ),
                 ),
-                _userServiceLabel(),
+                if (widget.userServiceStatus == AsyncLoadingStatus.done)
+                  _userServiceLabel(),
                 SizedBox(height: 20),
-                _userServiceList(),
+                if (widget.userServiceStatus == AsyncLoadingStatus.done)
+                  _userServiceList(),
                 if (widget.userRatingsStatus == AsyncLoadingStatus.done)
                   // Comments list.
                   _ratingLabel(),
@@ -194,6 +200,7 @@ class _BodyState extends State<Body> {
             userService: service,
             serviceLength: widget.userServices.length,
             index: index,
+            expectServiceType: widget.expectServiceType,
           ),
         );
       },

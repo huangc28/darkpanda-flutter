@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
@@ -49,6 +49,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
   AsyncLoadingStatus _userProfileStatus = AsyncLoadingStatus.initial;
   AsyncLoadingStatus _userRatingsStatus = AsyncLoadingStatus.initial;
   AsyncLoadingStatus _userImagesStatus = AsyncLoadingStatus.initial;
+  AsyncLoadingStatus _userServiceStatus = AsyncLoadingStatus.initial;
 
   String _chatNowButton = '馬上聊聊';
 
@@ -62,29 +63,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
   void initState() {
     super.initState();
 
-    // _userServices = [
-    //   UserServiceObj(
-    //     name: '家教',
-    //     price: 1000,
-    //     minute: 60,
-    //   ),
-    //   UserServiceObj(
-    //     name: '教書法',
-    //     price: 1500,
-    //     minute: 60,
-    //   ),
-    //   UserServiceObj(
-    //     name: '私人秘書',
-    //     price: 2000,
-    //     minute: 60,
-    //   ),
-    //   UserServiceObj(
-    //     name: '想要什麼服務？',
-    //     price: null,
-    //     minute: null,
-    //   )
-    // ];
-
     _femaleUser = widget.femaleUser;
     _inquiryStatus = _femaleUser.inquiryStatus;
 
@@ -96,6 +74,9 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
     BlocProvider.of<LoadRateBloc>(context)
         .add(LoadRate(uuid: widget.femaleUser.uuid));
+
+    BlocProvider.of<LoadUserServiceBloc>(context)
+        .add(LoadUserService(uuid: _femaleUser.uuid));
 
     if (widget.femaleUser.hasInquiry) {
       BlocProvider.of<UpdateFemaleInquiryBloc>(context)
@@ -112,6 +93,13 @@ class _FemaleProfileState extends State<FemaleProfile> {
       _chatNowButton = '正在聊天';
     } else {
       _chatNowButton = '馬上聊聊';
+    }
+
+    if (_inquiryStatus == InquiryStatus.canceled) {
+      // Update to "" after female cancel inquiry
+      var female = _femaleUser.copyWith(expectServiceType: "");
+
+      _femaleUser = female;
     }
 
     return Scaffold(
@@ -178,6 +166,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                           final updatedinquiry = _femaleUser.copyWith(
                             inquiryUuid: value.inquiryUuid,
                             inquiryStatus: value.inquiryStatus,
+                            expectServiceType: value.serviceType,
                           );
 
                           _femaleUser = updatedinquiry;
@@ -273,6 +262,31 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 });
               },
             ),
+            BlocListener<LoadUserServiceBloc, LoadUserServiceState>(
+              listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
+
+                if (state.status == AsyncLoadingStatus.done) {
+                  _userServices = state.userServiceListResponse.userServiceList;
+
+                  // Insert into last index in the Array
+                  _userServices.insert(
+                    _userServices.length,
+                    UserServiceResponse(serviceName: '其他'),
+                  );
+                }
+
+                setState(() {
+                  _userServiceStatus = state.status;
+                });
+              },
+            ),
             BlocListener<UpdateFemaleInquiryBloc, UpdateFemaleInquiryState>(
               listener: (context, state) {
                 if (state.status == AsyncLoadingStatus.error) {
@@ -331,6 +345,8 @@ class _FemaleProfileState extends State<FemaleProfile> {
             userProfileStatus: _userProfileStatus,
             userRatingsStatus: _userRatingsStatus,
             userImagesStatus: _userImagesStatus,
+            userServiceStatus: _userServiceStatus,
+            expectServiceType: _femaleUser.expectServiceType,
             onTapService: _handleFemaleService,
           ),
         ),
@@ -395,6 +411,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
               final updatedinquiry = _femaleUser.copyWith(
                 inquiryUuid: value.inquiryUuid,
                 inquiryStatus: value.inquiryStatus,
+                expectServiceType: value.serviceType,
               );
 
               _femaleUser = updatedinquiry;
