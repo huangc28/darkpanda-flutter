@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
