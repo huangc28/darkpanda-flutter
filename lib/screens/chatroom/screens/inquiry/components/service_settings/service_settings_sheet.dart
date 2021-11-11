@@ -1,9 +1,12 @@
+import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +18,6 @@ import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
 import 'female_service_type_field.dart';
-import 'service_type_field.dart';
 import 'slideup_controller.dart';
 import 'slideup_provider.dart';
 import 'user_service_selector/user_service_selector_list.dart';
@@ -69,34 +71,9 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _serviceTypeController = TextEditingController();
 
-  List<UserServiceResponse> _userServices;
-
   @override
   void initState() {
     super.initState();
-
-    _userServices = [
-      UserServiceResponse(
-        serviceName: '家教',
-        price: 1000,
-        duration: 60,
-      ),
-      UserServiceResponse(
-        serviceName: '教書法',
-        price: 1500,
-        duration: 60,
-      ),
-      UserServiceResponse(
-        serviceName: '私人秘書',
-        price: 2000,
-        duration: 60,
-      ),
-      UserServiceResponse(
-        serviceName: '其他',
-        price: null,
-        duration: null,
-      )
-    ];
 
     _initDefaultServiceSettings(widget.serviceSettings);
   }
@@ -114,6 +91,8 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   }
 
   _navigateToAddressSelector() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
     // Push to address selector screen.
     final addr = await Navigator.push(
       context,
@@ -134,14 +113,24 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
   }
 
   _navigateToServiceSelector() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
     // Push to address selector screen.
     final serviceType = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {
-          return UserServiceSelectorList(
-            initialUserService: _serviceTypeController.text,
-            userServices: _userServices,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => LoadUserServiceBloc(
+                  userServiceApiClient: UserServiceApiClient(),
+                ),
+              ),
+            ],
+            child: UserServiceSelectorList(
+              initialUserService: _serviceTypeController.text,
+            ),
           );
         },
       ),
@@ -390,24 +379,10 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                           SizedBox(height: 20),
 
                           // Emit inquiry.
-                          // Expanded(
-                          //   child:
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              // BlocConsumer<UpdateInquiryBloc, UpdateInquiryState>(
-                              //     listener: (context, state) {
-                              //   if (state.status == AsyncLoadingStatus.done) {
-                              //     setState(() {
-                              //       _serviceSetting = state.serviceSettings;
-                              //     });
-
-                              //     widget.onUpdateInquiry(state.serviceSettings);
-                              //   }
-                              // }, builder: (context, state) {
-                              // return
                               DPTextButton(
-                                // loading: state.status == AsyncLoadingStatus.loading,
                                 onPressed: () {
                                   if (!_formKey.currentState.validate()) {
                                     return;
@@ -416,19 +391,11 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                                   _formKey.currentState.save();
 
                                   widget.onUpdateInquiry(_serviceSetting);
-
-                                  // BlocProvider.of<UpdateInquiryBloc>(context).add(
-                                  //   UpdateInquiry(
-                                  //     serviceSettings: _serviceSetting,
-                                  //   ),
-                                  // );
                                 },
                                 text: '發送邀請',
                                 theme: DPTextButtonThemes.purple,
                                 disabled: _disableUpdate || widget.isLoading,
                                 loading: widget.isLoading,
-                                // );
-                                // }
                               ),
                             ],
                           ),
@@ -455,17 +422,19 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
         builder: (context, provider, child) {
           widget.controller?.providerContext = context;
           return provider.isShow
-              ? SingleChildScrollView(
-                  child: Container(
-                    height: SizeConfig.screenHeight * 0.9, //571,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+              ? UnfocusPrimary(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      height: SizeConfig.screenHeight * 0.9, //571,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
                       ),
+                      child: _buildServiceSettingsForm(),
                     ),
-                    child: _buildServiceSettingsForm(),
                   ),
                 )
               : Container();

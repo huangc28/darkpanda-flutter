@@ -1,5 +1,5 @@
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
-import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
 import 'package:flutter/material.dart';
 
 class UserServiceSelectorGrid extends StatelessWidget {
@@ -7,10 +7,12 @@ class UserServiceSelectorGrid extends StatelessWidget {
     Key key,
     this.userService,
     this.selectedUserService,
+    this.userServiceStatus,
   }) : super(key: key);
 
   final UserServiceResponse userService;
   final String selectedUserService;
+  final AsyncLoadingStatus userServiceStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +50,6 @@ class UserServiceSelectorGrid extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     )
                   : Container(),
-              SizedBox(width: 2),
-              Container(
-                child: Icon(
-                  Icons.arrow_forward_ios_sharp,
-                  color: Colors.white,
-                ),
-              ),
             ],
           ),
         ],
