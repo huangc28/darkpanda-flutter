@@ -63,20 +63,6 @@ class _BuyServiceState extends State<BuyService> {
     return await SecureStore().readGender();
   }
 
-  // void _serviceCancelCause(ServiceCancelCause cancelCause) {
-  //   if (_gender == Gender.male.name) {
-  //     _cancelCause =
-  //         '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費將全額退還';
-
-  //     if (cancelCause == ServiceCancelCause.guy_cancel_after_appointment_time) {
-  //       _cancelCause =
-  //           '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費不能退還';
-  //     }
-  //   } else {
-  //     _cancelCause = '';
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

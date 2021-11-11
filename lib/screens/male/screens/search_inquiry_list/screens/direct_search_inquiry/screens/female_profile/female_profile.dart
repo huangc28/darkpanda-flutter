@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,6 +57,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
   FemaleUser _femaleUser;
 
   InquiryStatus _inquiryStatus;
+  ServiceStatus _serviceStatus;
 
   List<UserServiceResponse> _userServices;
 
@@ -67,6 +69,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
     _femaleUser = widget.femaleUser;
     _inquiryStatus = _femaleUser.inquiryStatus;
+    _serviceStatus = _femaleUser.serviceStatus;
 
     BlocProvider.of<LoadUserBloc>(context)
         .add(LoadUser(uuid: widget.femaleUser.uuid));
@@ -88,21 +91,41 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
   @override
   Widget build(BuildContext context) {
+    // Chat button text
+    // 1. inquiry_status = asking - 等待回應
+    // 2. inquiry_status = chatting or inquiry_status = wait_for_inquirer_approve - 正在聊天
+    // 3. inquiry_status = booked and service_status = unpaid - 已接受邀请
+    // 4. inquiry_status = booked and service_status = to_be_fulfilled - 已接受邀请
+    // 5. inquiry_status = booked and service_status = fulfilling - 已接受邀请
     if (_inquiryStatus == InquiryStatus.asking) {
       _chatNowButton = '等待回應';
     } else if (_inquiryStatus == InquiryStatus.chatting ||
         _inquiryStatus == InquiryStatus.wait_for_inquirer_approve) {
       _chatNowButton = '正在聊天';
-    } else {
-      _chatNowButton = '馬上聊聊';
+    } else if (_inquiryStatus == InquiryStatus.booked &&
+        _serviceStatus == ServiceStatus.unpaid) {
+      _chatNowButton = '已接受邀请';
+    } else if (_inquiryStatus == InquiryStatus.booked &&
+        _serviceStatus == ServiceStatus.to_be_fulfilled) {
+      _chatNowButton = '已接受邀请';
+    } else if (_inquiryStatus == InquiryStatus.booked &&
+        _serviceStatus == ServiceStatus.fulfilling) {
+      _chatNowButton = '已接受邀请';
     }
+    // 1. inquiry_status = canceled
+    // 2. inquiry_status = booked and service_status = canceled
+    // 3. service_status = completed
+    // 4. service_status = payment_failed
+    // 5. service_status = expired
+    else {
+      _chatNowButton = '馬上聊聊';
 
-    if (_inquiryStatus == InquiryStatus.canceled) {
-      // Update to "" after female cancel inquiry
       var female = _femaleUser.copyWith(expectServiceType: "");
-
       _femaleUser = female;
     }
+
+    print('[Debug] female profile inquiry status ' + _inquiryStatus.name);
+    print('[Debug] female profile service status ' + _serviceStatus.name);
 
     return Scaffold(
       appBar: AppBar(

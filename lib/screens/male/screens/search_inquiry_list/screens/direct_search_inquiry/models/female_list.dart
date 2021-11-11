@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 
 class FemaleUser {
   FemaleUser({
@@ -17,6 +18,7 @@ class FemaleUser {
     this.channelUuid,
     this.serviceUuid,
     this.expectServiceType,
+    this.serviceStatus,
   });
 
   final String uuid;
@@ -34,6 +36,7 @@ class FemaleUser {
   final String channelUuid;
   final String serviceUuid;
   final String expectServiceType;
+  final ServiceStatus serviceStatus;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -51,13 +54,19 @@ class FemaleUser {
         'channel_uuid': channelUuid,
         'service_uuid': serviceUuid,
         'expect_service_type': expectServiceType,
+        'service_status': serviceStatus,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
     String iqStatus = '';
+    String serviceStatus = '';
 
     if (data['inquiry_status'] != null) {
       iqStatus = data['inquiry_status'] as String;
+    }
+
+    if (data['service_status'] != null) {
+      serviceStatus = data['service_status'] as String;
     }
 
     return FemaleUser(
@@ -76,6 +85,7 @@ class FemaleUser {
       channelUuid: data['channel_uuid'],
       serviceUuid: data['service_uuid'],
       expectServiceType: data['expect_service_type'],
+      serviceStatus: serviceStatus?.toServiceStatusEnum(),
     );
   }
 
@@ -95,6 +105,7 @@ class FemaleUser {
     String channelUuid,
     String serviceUuid,
     String expectServiceType,
+    ServiceStatus serviceStatus,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -112,6 +123,7 @@ class FemaleUser {
       channelUuid: channelUuid ?? this.channelUuid,
       serviceUuid: serviceUuid ?? this.serviceUuid,
       expectServiceType: expectServiceType ?? this.expectServiceType,
+      serviceStatus: serviceStatus ?? this.serviceStatus,
     );
   }
 
@@ -132,6 +144,7 @@ class FemaleUser {
         channelUuid,
         serviceUuid,
         expectServiceType,
+        serviceStatus,
       ];
 }
 
