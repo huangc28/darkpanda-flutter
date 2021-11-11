@@ -37,8 +37,7 @@ class FirebaseMessagingService {
 
       RemoteNotification notification = event.notification;
 
-      final message = json.decode(notification.body);
-      var msg;
+      final message = event.data;
 
       final isPcikupInquiryFcm =
           (String type) => type == FirebaseMessageType.pickup_inquiry.name;
@@ -57,36 +56,24 @@ class FirebaseMessagingService {
 
       if (isPcikupInquiryFcm(message['fcm_type'])) {
         FcmPickupInquiry msg = FcmPickupInquiry.fromMap(message);
-
-        body = msg.fcmContent.pickerName + ' 已回覆您的詢問，開始聊聊';
       } else if (isServicePaidFcm(message['fcm_type'])) {
         FcmServicePaid msg = FcmServicePaid.fromMap(message);
-
-        body = msg.fcmContent.payerName + ' 已完成付款';
       } else if (isUnpaidServiceExpiredFcm(message['fcm_type'])) {
         FcmUnpaidServiceExpired msg = FcmUnpaidServiceExpired.fromMap(message);
-
-        body = msg.fcmContent.customerName + ' 在30分鐘內沒完成付款，服務過期';
       } else if (isAgreeToChatFcm(message['fcm_type'])) {
         FcmAgreeToChat msg = FcmAgreeToChat.fromMap(message);
-
-        body = msg.fcmContent.maleUsername + ' 已接受聊天，開始聊聊';
       } else if (isServiceCancelledFcm(message['fcm_type'])) {
         FcmServiceCancelled msg = FcmServiceCancelled.fromMap(message);
-
-        body = msg.fcmContent.cancellerUsername + ' 已取消服務';
       } else if (isRefundedFcm(message['fcm_type'])) {
         FcmServiceRefunded msg = FcmServiceRefunded.fromMap(message);
-
-        body = '服務已退款';
       } else if (isMaleSendDirectInquiryFcm(message['fcm_type'])) {
         FcmMaleSendDirectInquiry msg =
             FcmMaleSendDirectInquiry.fromMap(message);
-
-        body = msg.fcmContent.maleUsername + ' 已發詢問，馬上聊聊';
       }
 
       if (notification != null) {
+        body = notification.body;
+
         NotificationService().showNotification(notification, body: body);
       }
     });

@@ -67,7 +67,8 @@ dependencies:
   cupertino_icons: ^1.0.3
   flutter_tappay: ^0.3.0+2
   firebase_messaging: ^10.0.4
-  flutter_local_notifications: ^8.1.1+1
+  # flutter_local_notifications: ^8.1.1+1
+  flutter_local_notifications: ^9.0.2
   dashbook: ^0.1.4
   
 
