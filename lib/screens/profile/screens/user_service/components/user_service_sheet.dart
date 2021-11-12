@@ -1,6 +1,7 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -25,11 +26,13 @@ class UserServiceSheet extends StatefulWidget {
     this.onTapClose,
     this.isLoading = AsyncLoadingStatus.initial,
     this.onCreateUserService,
+    this.userServiceList,
   }) : super(key: key);
 
   final SlideUpController controller;
   final VoidCallback onTapClose;
   final AsyncLoadingStatus isLoading;
+  final List<UserServiceResponse> userServiceList;
 
   /// Triggered when user service is created.
   final Function(UserServiceModel) onCreateUserService;
@@ -135,10 +138,26 @@ class _UserServiceSheetState extends State<UserServiceSheet> {
                             children: <Widget>[
                               ServiceNameField(
                                 controller: _nameController,
-                                validator: (String v) {
-                                  return v.isEmpty
-                                      ? 'Service can not be empty'
-                                      : null;
+                                validator: (String value) {
+                                  if (value.isEmpty) {
+                                    return '請輸入服務名稱';
+                                  }
+
+                                  bool isDuplicateService = false;
+
+                                  // Check is duplicate service exist
+                                  widget.userServiceList.forEach((u) {
+                                    if (value.trim() == u.serviceName) {
+                                      print("duplicate ${u.serviceName}");
+                                      isDuplicateService = true;
+                                    }
+                                  });
+
+                                  if (isDuplicateService) {
+                                    return '服務名稱已存在';
+                                  }
+
+                                  return null;
                                 },
                                 onSaved: (String value) {
                                   _userServiceModel =
@@ -154,9 +173,7 @@ class _UserServiceSheetState extends State<UserServiceSheet> {
                               PriceField(
                                 controller: _priceController,
                                 validator: (String v) {
-                                  return v.isEmpty || v == '0'
-                                      ? 'Price can not be empty'
-                                      : null;
+                                  return v.isEmpty || v == '0' ? '請輸入價格' : null;
                                 },
                                 onSaved: (String value) {
                                   _userServiceModel =

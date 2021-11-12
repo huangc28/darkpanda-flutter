@@ -33,7 +33,7 @@ class ServiceDurationField extends StatelessWidget {
           ),
           SizedBox(height: 12),
           DPTextFormField(
-            hintText: '服務時長',
+            hintText: '請輸入服務時長',
             onSaved: onSaved,
             controller: controller,
             theme: DPTextFieldThemes.inquiryForm,

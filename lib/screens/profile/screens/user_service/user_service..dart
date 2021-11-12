@@ -5,6 +5,7 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/slideup_controller.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/remove_user_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,8 @@ class _UserServiceState extends State<UserService>
 
   AuthUser _sender;
   AsyncLoadingStatus addUserServiceStatus = AsyncLoadingStatus.initial;
+
+  List<UserServiceResponse> _userServiceList;
 
   @override
   void initState() {
@@ -166,6 +169,7 @@ class _UserServiceState extends State<UserService>
                 child: UserServiceSheet(
                   controller: _slideUpController,
                   isLoading: addUserServiceStatus,
+                  userServiceList: _userServiceList,
                   onTapClose: () {
                     _animationController.reverse();
                   },
@@ -198,6 +202,12 @@ class _UserServiceState extends State<UserService>
           );
 
           return null;
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          setState(() {
+            _userServiceList = state.userServiceListResponse.userServiceList;
+          });
         }
       },
       builder: (context, state) {
