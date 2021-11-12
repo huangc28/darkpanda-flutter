@@ -24,12 +24,14 @@ class UserServiceApiClient extends BaseClient {
     String name,
     String description,
     double price,
+    int duration,
   ) async {
     try {
       final jsonBody = jsonEncode({
         'name': name,
-        'description': 'description',
+        'description': name,
         'price': price,
+        'duration': duration,
         'service_option_type': 'default',
       });
 

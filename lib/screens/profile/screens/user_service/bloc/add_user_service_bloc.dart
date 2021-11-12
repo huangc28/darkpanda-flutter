@@ -38,6 +38,7 @@ class AddUserServiceBloc
         event.name,
         event.description,
         event.price,
+        event.duration,
       );
 
       if (resp.statusCode != HttpStatus.ok) {

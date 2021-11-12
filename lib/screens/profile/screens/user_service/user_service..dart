@@ -179,6 +179,7 @@ class _UserServiceState extends State<UserService>
                         name: data.serviceName,
                         description: data.description,
                         price: data.price,
+                        duration: data.duration,
                       ),
                     );
                   },

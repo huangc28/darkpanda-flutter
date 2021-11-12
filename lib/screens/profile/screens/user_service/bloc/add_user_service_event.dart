@@ -12,16 +12,19 @@ class AddUserService extends AddUserServiceEvent {
     this.name,
     this.description,
     this.price,
+    this.duration,
   });
 
   final String name;
   final String description;
   final double price;
+  final int duration;
 
   @override
   List<Object> get props => [
         this.name,
         this.description,
         this.price,
+        this.duration,
       ];
 }
