@@ -31,7 +31,7 @@ class BuyService extends StatefulWidget {
 
 class _BuyServiceState extends State<BuyService> {
   LoadIncomingServiceBloc _loadIncomingServiceBloc;
-  int isFirstCall;
+  int isFirstCall = 0;
 
   String _gender;
   String _cancelCause;
@@ -41,8 +41,6 @@ class _BuyServiceState extends State<BuyService> {
   @override
   void initState() {
     super.initState();
-
-    isFirstCall = 0;
 
     _getGender().then((value) {
       _gender = value;
