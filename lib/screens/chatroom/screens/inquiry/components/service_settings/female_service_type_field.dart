@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 
-class ServiceTypeField extends StatelessWidget {
-  const ServiceTypeField({
+class FemaleServiceTypeField extends StatelessWidget {
+  const FemaleServiceTypeField({
     Key key,
     this.controller,
     this.validator,
     this.focusNode,
     this.onSaved,
-    this.readOnly = false,
+    this.fontColor = Colors.black,
   }) : super(key: key);
 
   // Passed from outside to manipuate service type input.
@@ -24,29 +24,29 @@ class ServiceTypeField extends StatelessWidget {
   // Callback to invoke when save is pressed.
   final ValueChanged<String> onSaved;
 
-  final bool readOnly;
+  final Color fontColor;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Bullet(
-          '期望服務 (10 字以內，非必填)',
+          '服務',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: fontColor,
           ),
         ),
         SizedBox(height: 10),
         DPTextFormField(
-          readOnly: readOnly,
+          readOnly: true,
           focusNode: focusNode,
           controller: controller,
           validator: validator,
           textAlignVertical: TextAlignVertical.center,
           theme: DPTextFieldThemes.inquiryForm,
-          hintText: '請輸入期望服務',
+          hintText: '請輸入服務',
           onSaved: onSaved,
         ),
       ],

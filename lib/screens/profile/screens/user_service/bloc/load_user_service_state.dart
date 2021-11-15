@@ -3,13 +3,13 @@ part of 'load_user_service_bloc.dart';
 class LoadUserServiceState<E extends AppBaseException> extends Equatable {
   const LoadUserServiceState._({
     this.status,
-    this.userRatings,
+    this.userServiceListResponse,
     this.error,
   });
 
   final AsyncLoadingStatus status;
 
-  final UserRatings userRatings;
+  final UserServiceListResponse userServiceListResponse;
 
   final E error;
 
@@ -30,15 +30,15 @@ class LoadUserServiceState<E extends AppBaseException> extends Equatable {
         );
 
   const LoadUserServiceState.loaded({
-    UserRatings userRatings,
+    UserServiceListResponse userServiceListResponse,
   }) : this._(
           status: AsyncLoadingStatus.done,
-          userRatings: userRatings,
+          userServiceListResponse: userServiceListResponse,
         );
 
   const LoadUserServiceState.clearState()
       : this._(
-          userRatings: null,
+          userServiceListResponse: null,
           status: AsyncLoadingStatus.initial,
         );
 

@@ -77,7 +77,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
         Expanded(
           child: Container(
             padding: EdgeInsets.only(
-              left: SizeConfig.screenWidth * 0.07,
+              left: SizeConfig.screenWidth * 0.02,
               right: SizeConfig.screenWidth * 0.04,
               bottom: SizeConfig.screenHeight * 0.025,
             ),

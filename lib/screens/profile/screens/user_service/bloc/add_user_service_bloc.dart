@@ -5,11 +5,9 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 
 part 'add_user_service_event.dart';
 part 'add_user_service_state.dart';
@@ -17,12 +15,10 @@ part 'add_user_service_state.dart';
 class AddUserServiceBloc
     extends Bloc<AddUserServiceEvent, AddUserServiceState> {
   AddUserServiceBloc({
-    this.searchInquiryAPIs,
-    this.loadInquiryBloc,
+    this.userServiceApiClient,
   }) : super(AddUserServiceState.initial());
 
-  final SearchInquiryAPIs searchInquiryAPIs;
-  final LoadInquiryBloc loadInquiryBloc;
+  final UserServiceApiClient userServiceApiClient;
 
   @override
   Stream<AddUserServiceState> mapEventToState(
@@ -38,7 +34,12 @@ class AddUserServiceBloc
     try {
       yield AddUserServiceState.loading();
 
-      final resp = await searchInquiryAPIs.cancelInquiry(event.inquiryUuid);
+      final resp = await userServiceApiClient.createUserService(
+        event.name,
+        event.description,
+        event.price,
+        event.duration,
+      );
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -47,10 +48,6 @@ class AddUserServiceBloc
           ),
         );
       }
-
-      loadInquiryBloc.add(
-        RemoveLoadInquiry(inquiryUuid: event.inquiryUuid),
-      );
 
       yield AddUserServiceState.done();
     } on APIException catch (e) {

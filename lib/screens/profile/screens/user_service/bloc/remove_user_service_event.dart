@@ -9,13 +9,11 @@ abstract class RemoveUserServiceEvent extends Equatable {
 
 class RemoveUserService extends RemoveUserServiceEvent {
   const RemoveUserService({
-    this.inquiryUuid,
-    this.fcmTopic,
+    this.serviceOptionId,
   });
 
-  final String inquiryUuid;
-  final String fcmTopic;
+  final int serviceOptionId;
 
   @override
-  List<Object> get props => [this.inquiryUuid, this.fcmTopic];
+  List<Object> get props => [this.serviceOptionId];
 }

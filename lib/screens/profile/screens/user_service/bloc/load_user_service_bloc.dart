@@ -3,21 +3,21 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
-import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 
 part 'load_user_service_event.dart';
 part 'load_user_service_state.dart';
 
 class LoadUserServiceBloc
     extends Bloc<LoadUserServiceEvent, LoadUserServiceState> {
-  LoadUserServiceBloc({this.rateApiClient})
-      : assert(rateApiClient != null),
+  LoadUserServiceBloc({this.userServiceApiClient})
+      : assert(userServiceApiClient != null),
         super(LoadUserServiceState.initial());
 
-  final RateApiClient rateApiClient;
+  final UserServiceApiClient userServiceApiClient;
 
   @override
   Stream<LoadUserServiceState<AppBaseException>> mapEventToState(
@@ -34,7 +34,7 @@ class LoadUserServiceBloc
     try {
       yield LoadUserServiceState.loading();
 
-      final resp = await rateApiClient.fetchUserRate(event.uuid);
+      final resp = await userServiceApiClient.fetchUserService(event.uuid);
 
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
@@ -42,12 +42,12 @@ class LoadUserServiceBloc
         );
       }
 
-      final userRatings = UserRatings.fromMap(
+      final userServices = UserServiceListResponse.fromMap(
         json.decode(resp.body),
       );
 
       yield LoadUserServiceState.loaded(
-        userRatings: userRatings,
+        userServiceListResponse: userServices,
       );
     } on APIException catch (e) {
       yield LoadUserServiceState.loadFailed(e);

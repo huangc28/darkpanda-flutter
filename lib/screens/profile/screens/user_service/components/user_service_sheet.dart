@@ -1,4 +1,7 @@
 import 'package:darkpanda_flutter/components/dp_button.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_model.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -16,31 +19,55 @@ import 'service_duration_field.dart';
 part 'price_field.dart';
 part 'service_name_field.dart';
 
-class UserSericeSheet extends StatefulWidget {
-  const UserSericeSheet({
+class UserServiceSheet extends StatefulWidget {
+  const UserServiceSheet({
     Key key,
     this.controller,
     this.onTapClose,
-    this.isLoading = false,
+    this.isLoading = AsyncLoadingStatus.initial,
+    this.onCreateUserService,
+    this.userServiceList,
   }) : super(key: key);
 
   final SlideUpController controller;
   final VoidCallback onTapClose;
-  final bool isLoading;
+  final AsyncLoadingStatus isLoading;
+  final List<UserServiceResponse> userServiceList;
+
+  /// Triggered when user service is created.
+  final Function(UserServiceModel) onCreateUserService;
 
   @override
-  _UserSericeSheetState createState() => _UserSericeSheetState();
+  _UserServiceSheetState createState() => _UserServiceSheetState();
 }
 
-class _UserSericeSheetState extends State<UserSericeSheet> {
+class _UserServiceSheetState extends State<UserServiceSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController _priceController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _durationController = TextEditingController();
 
+  UserServiceModel _userServiceModel = UserServiceModel();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the Widget is removed from the Widget tree
+    _priceController.dispose();
+    _nameController.dispose();
+    _durationController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.isLoading == AsyncLoadingStatus.done) {
+      _priceController.clear();
+      _nameController.clear();
+      _durationController.clear();
+    }
+
     return ChangeNotifierProvider(
       create: (_) => SlideUpProvider(),
       child: Consumer<SlideUpProvider>(
@@ -111,15 +138,32 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
                             children: <Widget>[
                               ServiceNameField(
                                 controller: _nameController,
-                                validator: (String v) {
-                                  return v.isEmpty
-                                      ? 'Service can not be empty'
-                                      : null;
+                                validator: (String value) {
+                                  if (value.isEmpty) {
+                                    return '請輸入服務名稱';
+                                  }
+
+                                  bool isDuplicateService = false;
+
+                                  // Check is duplicate service exist
+                                  widget.userServiceList.forEach((u) {
+                                    if (value.trim() == u.serviceName) {
+                                      print("duplicate ${u.serviceName}");
+                                      isDuplicateService = true;
+                                    }
+                                  });
+
+                                  if (isDuplicateService) {
+                                    return '服務名稱已存在';
+                                  }
+
+                                  return null;
                                 },
-                                onSaved: (String v) {
-                                  //   _serviceSetting = _serviceSetting.copyWith(
-                                  //     price: double.tryParse(v),
-                                  //   );
+                                onSaved: (String value) {
+                                  _userServiceModel =
+                                      _userServiceModel.copyWith(
+                                    serviceName: value,
+                                  );
                                 },
                               ),
                             ],
@@ -129,14 +173,13 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
                               PriceField(
                                 controller: _priceController,
                                 validator: (String v) {
-                                  return v.isEmpty || v == '0'
-                                      ? 'Price can not be empty'
-                                      : null;
+                                  return v.isEmpty || v == '0' ? '請輸入價格' : null;
                                 },
-                                onSaved: (String v) {
-                                  //   _serviceSetting = _serviceSetting.copyWith(
-                                  //     price: double.tryParse(v),
-                                  //   );
+                                onSaved: (String value) {
+                                  _userServiceModel =
+                                      _userServiceModel.copyWith(
+                                    price: double.tryParse(value),
+                                  );
                                 },
                               ),
                             ],
@@ -164,15 +207,14 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
 
                               return null;
                             },
-                            onSaved: (String v) {
+                            onSaved: (String value) {
                               // Convert duration value to Duration instance.
                               setState(
                                 () {
-                                  // _serviceSetting = _serviceSetting.copyWith(
-                                  //   duration: Duration(
-                                  //     minutes: int.tryParse(v),
-                                  //   ),
-                                  // );
+                                  _userServiceModel =
+                                      _userServiceModel.copyWith(
+                                    duration: int.tryParse(value),
+                                  );
                                 },
                               );
                             },
@@ -189,12 +231,14 @@ class _UserSericeSheetState extends State<UserSericeSheet> {
 
                                   _formKey.currentState.save();
 
-                                  // widget.onUpdateInquiry(_serviceSetting);
+                                  widget.onCreateUserService(_userServiceModel);
                                 },
                                 text: '新增服務',
                                 theme: DPTextButtonThemes.purple,
-                                disabled: widget.isLoading,
-                                loading: widget.isLoading,
+                                disabled: widget.isLoading ==
+                                    AsyncLoadingStatus.loading,
+                                loading: widget.isLoading ==
+                                    AsyncLoadingStatus.loading,
                               ),
                             ],
                           ),

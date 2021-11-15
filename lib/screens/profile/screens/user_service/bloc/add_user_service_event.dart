@@ -9,13 +9,22 @@ abstract class AddUserServiceEvent extends Equatable {
 
 class AddUserService extends AddUserServiceEvent {
   const AddUserService({
-    this.inquiryUuid,
-    this.fcmTopic,
+    this.name,
+    this.description,
+    this.price,
+    this.duration,
   });
 
-  final String inquiryUuid;
-  final String fcmTopic;
+  final String name;
+  final String description;
+  final double price;
+  final int duration;
 
   @override
-  List<Object> get props => [this.inquiryUuid, this.fcmTopic];
+  List<Object> get props => [
+        this.name,
+        this.description,
+        this.price,
+        this.duration,
+      ];
 }

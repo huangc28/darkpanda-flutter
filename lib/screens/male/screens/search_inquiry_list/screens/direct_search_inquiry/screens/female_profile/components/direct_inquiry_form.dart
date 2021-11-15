@@ -18,7 +18,7 @@ class DirectInquiryForm extends StatefulWidget {
   final Function(String) onPush;
   final String uuid;
   final String serviceName;
-  final int price;
+  final double price;
   final int servicePeriod;
 
   @override

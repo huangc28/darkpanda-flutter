@@ -33,10 +33,6 @@ class ServiceNameField extends StatelessWidget {
             textAlignVertical: TextAlignVertical.center,
             theme: DPTextFieldThemes.inquiryForm,
             hintText: '請輸入服務名稱',
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
           ),
         ),
       ],

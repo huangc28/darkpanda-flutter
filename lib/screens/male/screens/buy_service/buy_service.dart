@@ -31,7 +31,7 @@ class BuyService extends StatefulWidget {
 
 class _BuyServiceState extends State<BuyService> {
   LoadIncomingServiceBloc _loadIncomingServiceBloc;
-  int isFirstCall;
+  int isFirstCall = 0;
 
   String _gender;
   String _cancelCause;
@@ -41,8 +41,6 @@ class _BuyServiceState extends State<BuyService> {
   @override
   void initState() {
     super.initState();
-
-    isFirstCall = 0;
 
     _getGender().then((value) {
       _gender = value;
@@ -61,20 +59,6 @@ class _BuyServiceState extends State<BuyService> {
 
   Future<String> _getGender() async {
     return await SecureStore().readGender();
-  }
-
-  void _serviceCancelCause(ServiceCancelCause cancelCause) {
-    if (_gender == Gender.male.name) {
-      _cancelCause =
-          '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費將全額退還';
-
-      if (cancelCause == ServiceCancelCause.guy_cancel_after_appointment_time) {
-        _cancelCause =
-            '若取消交易，本平台另收取的 ${widget.args.updateInquiryMessage.matchingFee}DP 媒合費不能退還';
-      }
-    } else {
-      _cancelCause = '';
-    }
   }
 
   @override
@@ -114,6 +98,8 @@ class _BuyServiceState extends State<BuyService> {
 
                   // status done will be called twice, so implement isFirstCall to solve this issue
                   if (isFirstCall == 1) {
+                    print(
+                        '[Debug] 2 LoadIncomingServiceBloc ------------------------------------------');
                     Navigator.of(
                       context,
                       rootNavigator: true,
@@ -133,6 +119,10 @@ class _BuyServiceState extends State<BuyService> {
             ),
             BlocListener<CancelServiceBloc, CancelServiceState>(
               listener: (context, state) {
+                setState(() {
+                  _cancelServiceStatus = state.status;
+                });
+
                 if (state.status == AsyncLoadingStatus.loading ||
                     state.status == AsyncLoadingStatus.initial) {
                   return Row(
@@ -160,6 +150,8 @@ class _BuyServiceState extends State<BuyService> {
                   }
                   // 1. Route is from inquiry_chatroom
                   else {
+                    print(
+                        '[Debug] 1 CancelServiceBloc ------------------------------------------');
                     Navigator.of(
                       context,
                       rootNavigator: true,
@@ -175,8 +167,8 @@ class _BuyServiceState extends State<BuyService> {
             BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
                 listener: (context, state) {
               if (state.status == AsyncLoadingStatus.done) {
-                _serviceCancelCause(
-                    state.loadCancelServiceResponse.cancelCause);
+                // _serviceCancelCause(
+                //     state.loadCancelServiceResponse.cancelCause);
 
                 showDialog(
                   barrierDismissible: false,

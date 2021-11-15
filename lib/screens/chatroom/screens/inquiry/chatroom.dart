@@ -117,7 +117,6 @@ class _ChatroomState extends State<Chatroom>
   bool _isSendingImage = false;
 
   InquirerProfileArguments _inquirerProfileArguments;
-  // InquiryChatroomsBloc _inquiryChatroomsBloc;
 
   bool sendUpdateInquiryIsLoading = false;
 

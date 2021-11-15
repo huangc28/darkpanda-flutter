@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:darkpanda_flutter/enums/gender.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +23,13 @@ import 'package:darkpanda_flutter/screens/profile/bloc/update_profile_bloc.dart'
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 import 'package:darkpanda_flutter/screens/profile/services/profile_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
+import 'package:provider/provider.dart';
 
 import 'components/review.dart';
 import 'edit_profile/edit_profile.dart';
+import 'user_service/bloc/add_user_service_bloc.dart';
+import 'user_service/bloc/load_user_service_bloc.dart';
+import 'user_service/bloc/remove_user_service_bloc.dart';
 
 class DemoImage {
   final String image;
@@ -90,7 +96,26 @@ class _ProfileState extends State<Profile> {
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => UserService(),
+      pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => LoadUserServiceBloc(
+              userServiceApiClient: UserServiceApiClient(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => AddUserServiceBloc(
+              userServiceApiClient: UserServiceApiClient(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => RemoveUserServiceBloc(
+              userServiceApiClient: UserServiceApiClient(),
+            ),
+          ),
+        ],
+        child: UserService(),
+      ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
@@ -123,7 +148,9 @@ class _ProfileState extends State<Profile> {
                     _userProfileStatus == AsyncLoadingStatus.initial ||
                             _userProfileStatus == AsyncLoadingStatus.loading
                         ? Container()
-                        : _userService(),
+                        : _sender.gender == Gender.female
+                            ? _userService()
+                            : Container(),
                     SizedBox(height: SizeConfig.screenHeight * 0.02),
                     BlocBuilder<LoadRateBloc, LoadRateState>(
                       builder: (context, state) {

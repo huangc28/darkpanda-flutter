@@ -36,7 +36,7 @@ class NotificationService {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       'darkpanda_channel', // id
       'Darkpanda Notifications', // title
-      'This channel is used for Darkpanda notifications.',
+      channelDescription: 'This channel is used for Darkpanda notifications.',
       importance: Importance.max,
       priority: Priority.high,
     );

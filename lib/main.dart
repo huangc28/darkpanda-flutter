@@ -70,7 +70,9 @@ void main() async {
   //   () async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseApp app = await Firebase.initializeApp();
-  // FirebaseMessaging.onBackgroundMessage(_messageHandler);
+
+  // Receive FCM background messages
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
   // Isolate.current.addErrorListener(RawReceivePort((pair) async {
   //   final List<dynamic> errorAndStacktrace = pair;

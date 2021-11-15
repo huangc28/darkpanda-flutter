@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/profile.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/components/user_service_list.dart';
@@ -24,17 +25,21 @@ class Body extends StatefulWidget {
     this.userProfileStatus,
     this.userRatingsStatus,
     this.userImagesStatus,
+    this.userServiceStatus,
+    this.expectServiceType,
     this.onTapService,
   }) : super(key: key);
 
   final UserProfile userProfile;
   final UserRatings userRatings;
   final List<UserImage> userImages;
-  final List<UserServiceObj> userServices;
+  final List<UserServiceResponse> userServices;
   final AsyncLoadingStatus userProfileStatus;
   final AsyncLoadingStatus userRatingsStatus;
   final AsyncLoadingStatus userImagesStatus;
-  final ValueChanged<UserServiceObj> onTapService;
+  final AsyncLoadingStatus userServiceStatus;
+  final String expectServiceType;
+  final ValueChanged<UserServiceResponse> onTapService;
 
   @override
   _BodyState createState() => _BodyState();
@@ -159,9 +164,11 @@ class _BodyState extends State<Body> {
                     ],
                   ),
                 ),
-                _userServiceLabel(),
+                if (widget.userServiceStatus == AsyncLoadingStatus.done)
+                  _userServiceLabel(),
                 SizedBox(height: 20),
-                _userServiceList(),
+                if (widget.userServiceStatus == AsyncLoadingStatus.done)
+                  _userServiceList(),
                 if (widget.userRatingsStatus == AsyncLoadingStatus.done)
                   // Comments list.
                   _ratingLabel(),
@@ -193,6 +200,7 @@ class _BodyState extends State<Body> {
             userService: service,
             serviceLength: widget.userServices.length,
             index: index,
+            expectServiceType: widget.expectServiceType,
           ),
         );
       },

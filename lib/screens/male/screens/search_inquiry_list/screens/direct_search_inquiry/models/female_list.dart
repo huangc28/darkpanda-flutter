@@ -1,4 +1,5 @@
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 
 class FemaleUser {
   FemaleUser({
@@ -16,6 +17,8 @@ class FemaleUser {
     this.inquiryStatus,
     this.channelUuid,
     this.serviceUuid,
+    this.expectServiceType,
+    this.serviceStatus,
   });
 
   final String uuid;
@@ -32,6 +35,8 @@ class FemaleUser {
   final InquiryStatus inquiryStatus;
   final String channelUuid;
   final String serviceUuid;
+  final String expectServiceType;
+  final ServiceStatus serviceStatus;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -48,13 +53,20 @@ class FemaleUser {
         'inquiry_status': inquiryStatus,
         'channel_uuid': channelUuid,
         'service_uuid': serviceUuid,
+        'expect_service_type': expectServiceType,
+        'service_status': serviceStatus,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
     String iqStatus = '';
+    String serviceStatus = '';
 
     if (data['inquiry_status'] != null) {
       iqStatus = data['inquiry_status'] as String;
+    }
+
+    if (data['service_status'] != null) {
+      serviceStatus = data['service_status'] as String;
     }
 
     return FemaleUser(
@@ -72,6 +84,8 @@ class FemaleUser {
       inquiryStatus: iqStatus?.toInquiryStatusEnum(),
       channelUuid: data['channel_uuid'],
       serviceUuid: data['service_uuid'],
+      expectServiceType: data['expect_service_type'],
+      serviceStatus: serviceStatus?.toServiceStatusEnum(),
     );
   }
 
@@ -90,6 +104,8 @@ class FemaleUser {
     InquiryStatus inquiryStatus,
     String channelUuid,
     String serviceUuid,
+    String expectServiceType,
+    ServiceStatus serviceStatus,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -106,6 +122,8 @@ class FemaleUser {
       inquiryStatus: inquiryStatus ?? this.inquiryStatus,
       channelUuid: channelUuid ?? this.channelUuid,
       serviceUuid: serviceUuid ?? this.serviceUuid,
+      expectServiceType: expectServiceType ?? this.expectServiceType,
+      serviceStatus: serviceStatus ?? this.serviceStatus,
     );
   }
 
@@ -125,6 +143,8 @@ class FemaleUser {
         inquiryStatus,
         channelUuid,
         serviceUuid,
+        expectServiceType,
+        serviceStatus,
       ];
 }
 
