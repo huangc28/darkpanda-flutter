@@ -124,9 +124,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
       _femaleUser = female;
     }
 
-    print('[Debug] female profile inquiry status ' + _inquiryStatus.name);
-    print('[Debug] female profile service status ' + _serviceStatus.name);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(17, 16, 41, 1),
