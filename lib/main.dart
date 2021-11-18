@@ -64,6 +64,9 @@ import './theme.dart';
 import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
+import 'package:flutter_appcenter/flutter_appcenter.dart';
+import 'dart:io' show Platform;
+import 'dart:developer' as developer;
 
 void main() async {
   // runZonedGuarded<Future<void>>(
@@ -102,6 +105,25 @@ void main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    if (Platform.isAndroid) {
+      developer.log('Is Android');
+      // Initialize flutter app center
+      FlutterAppCenter.init(
+        appSecretAndroid: Config.config.appCenterAndroidAppSecret,
+        appSecretIOS: '',
+        usePrivateTrack: false,
+        automaticCheckForUpdate: true,
+        updateDialog: {
+          'title': 'Update',
+          'subTitle:': 'The newest version',
+          'confirm': 'Now Update',
+          'cancel': 'Cancel'
+        },
+      ).then((res) async {
+        developer.log(res);
+      });
+    }
 
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
