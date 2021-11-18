@@ -122,6 +122,8 @@ void main() async {
         },
       ).then((res) async {
         developer.log(res);
+        await FlutterAppCenter.isEnabledForDistribute();
+        await FlutterAppCenter.checkForUpdate();
       });
     }
 
