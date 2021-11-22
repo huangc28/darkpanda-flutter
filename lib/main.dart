@@ -64,9 +64,10 @@ import './theme.dart';
 import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
-import 'package:flutter_appcenter/flutter_appcenter.dart';
 import 'dart:io' show Platform;
-import 'dart:developer' as developer;
+import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
+import 'package:flutter_restart/flutter_restart.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
   // runZonedGuarded<Future<void>>(
@@ -105,27 +106,6 @@ void main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-
-    if (Platform.isAndroid) {
-      developer.log('Is Android');
-      // Initialize flutter app center
-      FlutterAppCenter.init(
-        appSecretAndroid: Config.config.appCenterAndroidAppSecret,
-        appSecretIOS: '',
-        usePrivateTrack: false,
-        automaticCheckForUpdate: true,
-        updateDialog: {
-          'title': 'Update',
-          'subTitle:': 'The newest version',
-          'confirm': 'Now Update',
-          'cancel': 'Cancel'
-        },
-      ).then((res) async {
-        developer.log(res);
-        await FlutterAppCenter.isEnabledForDistribute();
-        await FlutterAppCenter.checkForUpdate();
-      });
-    }
 
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
@@ -171,6 +151,50 @@ class DarkPandaApp extends StatefulWidget {
 
 class _DarkPandaAppState extends State<DarkPandaApp> {
   final mainRoutes = MainRoutes();
+
+  @override
+  void initState() {
+    if (Platform.isAndroid) {
+      initFirstTimes();
+    }
+    super.initState();
+  }
+
+  initFirstTimes() async {
+    await initAppCenter();
+    final storage = new FlutterSecureStorage();
+    String value = await storage.read(key: 'initAppCenter');
+    if (value != null) {
+      await storage.delete(key: 'initAppCenter');
+    } else {
+      await storage.write(key: 'initAppCenter', value: 'false');
+      // restart app
+      await FlutterRestart.restartApp();
+    }
+  }
+
+  Future<void> initAppCenter() async {
+    await AppCenter.startAsync(
+      appSecretAndroid:
+          Config.config.appCenterAndroidAppSecret, //YOUR android APPSECRET CODE
+      appSecretIOS: null, //YOUR iOS APPSECRET CODE
+      enableAnalytics: true,
+      // Defaults to true
+      enableCrashes: true,
+      // Defaults to true
+      enableDistribute: true,
+      // Defaults to false
+      usePrivateDistributeTrack: false,
+      // Defaults to false
+      disableAutomaticCheckForUpdate: false, // Defaults to false
+    );
+
+    await AppCenter.configureDistributeDebugAsync(enabled: false);
+    await AppCenter.configureAnalyticsAsync(enabled: true);
+    await AppCenter.configureCrashesAsync(enabled: true);
+    await AppCenter.configureDistributeAsync(enabled: true);
+    await AppCenter.configureDistributeDebugAsync(enabled: true);
+  }
 
   @override
   Widget build(BuildContext context) {

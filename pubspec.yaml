@@ -70,8 +70,8 @@ dependencies:
   # flutter_local_notifications: ^8.1.1+1
   flutter_local_notifications: ^9.0.2
   dashbook: ^0.1.4
-  url_launcher: ^6.0.12
-  flutter_appcenter: ^1.0.3
+  flutter_appcenter_bundle: 3.2.0+2
+  flutter_restart: ^0.0.3
 
 dev_dependencies:
   flutter_test:
