@@ -151,7 +151,7 @@ class _VerifyLoginCodeState extends State<VerifyLoginCode> {
 
               // Display error message of verifying login code.
               SizedBox(
-                height: 28,
+                height: 48,
                 child: BlocBuilder<VerifyLoginCodeBloc, VerifyLoginCodeState>(
                   builder: (context, state) {
                     if (state.status == AsyncLoadingStatus.error) {
