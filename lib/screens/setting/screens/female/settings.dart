@@ -72,7 +72,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
                           onTap: () {
-                            widget.onPush('/bank-account', null);
+                            // widget.onPush('/bank-account', null);
                           },
                         ),
                         InkWell(

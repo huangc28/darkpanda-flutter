@@ -405,121 +405,121 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     ),
 
                     // Payment completed banner
-                    BlocListener<PaymentCompleteNotifierBloc,
-                        PaymentCompleteNotifierState>(
-                      listener: (context, state) {
-                        print('[Debug] Payment complete notifier');
+                    // BlocListener<PaymentCompleteNotifierBloc,
+                    //     PaymentCompleteNotifierState>(
+                    //   listener: (context, state) {
+                    //     print('[Debug] Payment complete notifier');
 
-                        setState(() {
-                          _serviceDetails.copyWith(
-                            serviceStatus: ServiceStatus.to_be_fulfilled.name,
-                          );
-                        });
-                      },
-                      child: _serviceDetails.serviceStatus ==
-                              ServiceStatus.to_be_fulfilled.name
-                          ? PaymentCompleteBanner(
-                              inquirerProfile: _inquirerProfile,
-                              serviceDetails: _serviceDetails,
-                            )
-                          : SizedBox.shrink(),
-                    ),
+                    //     setState(() {
+                    //       _serviceDetails.copyWith(
+                    //         serviceStatus: ServiceStatus.to_be_fulfilled.name,
+                    //       );
+                    //     });
+                    //   },
+                    //   child: _serviceDetails.serviceStatus ==
+                    //           ServiceStatus.to_be_fulfilled.name
+                    //       ? PaymentCompleteBanner(
+                    //           inquirerProfile: _inquirerProfile,
+                    //           serviceDetails: _serviceDetails,
+                    //         )
+                    //       : SizedBox.shrink(),
+                    // ),
 
-                    BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                      listener: (context, state) {
-                        if (state.status == AsyncLoadingStatus.error) {
-                          developer.log(
-                            'failed to fetch dp balance',
-                            error: state.error,
-                          );
+                    // BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                    //   listener: (context, state) {
+                    //     if (state.status == AsyncLoadingStatus.error) {
+                    //       developer.log(
+                    //         'failed to fetch dp balance',
+                    //         error: state.error,
+                    //       );
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(state.error.message),
-                            ),
-                          );
-                        }
+                    //       ScaffoldMessenger.of(context).showSnackBar(
+                    //         SnackBar(
+                    //           content: Text(state.error.message),
+                    //         ),
+                    //       );
+                    //     }
 
-                        if (state.status == AsyncLoadingStatus.done) {
-                          setState(() {
-                            _balance = state.myDp.balance;
-                            _inquiryDetail.balance = _balance;
-                          });
-                        }
-                      },
-                      child: _servicePaid
-                          ? SizedBox.shrink()
-                          : _sender.gender == Gender.male
-                              ? MaleUnpaidInfo(
-                                  inquirerProfile: _inquirerProfile,
-                                  serviceDetails: _serviceDetails,
-                                  onGoToPayment: () {
-                                    final total = _serviceDetails.matchingFee;
+                    //     if (state.status == AsyncLoadingStatus.done) {
+                    //       setState(() {
+                    //         _balance = state.myDp.balance;
+                    //         _inquiryDetail.balance = _balance;
+                    //       });
+                    //     }
+                    //   },
+                    //   child: _servicePaid
+                    //       ? SizedBox.shrink()
+                    //       : _sender.gender == Gender.male
+                    //           ? MaleUnpaidInfo(
+                    //               inquirerProfile: _inquirerProfile,
+                    //               serviceDetails: _serviceDetails,
+                    //               onGoToPayment: () {
+                    //                 final total = _serviceDetails.matchingFee;
 
-                                    if (total > _balance) {
-                                      print("Go to Top up dp");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      LoadDpPackageBloc(
-                                                    apiClient: TopUpClient(),
-                                                  ),
-                                                ),
-                                              ],
-                                              child: TopupDp(
-                                                args: _inquiryDetail,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    } else {
-                                      print("Go to Payment");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      BuyServiceBloc(
-                                                    searchInquiryAPIs:
-                                                        SearchInquiryAPIs(),
-                                                  ),
-                                                ),
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      CancelServiceBloc(
-                                                    serviceAPIs: ServiceAPIs(),
-                                                  ),
-                                                ),
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      LoadCancelServiceBloc(
-                                                    serviceAPIs: ServiceAPIs(),
-                                                  ),
-                                                ),
-                                              ],
-                                              child: BuyService(
-                                                args: _inquiryDetail,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                )
-                              : FemaleUnpaidInfo(
-                                  inquirerProfile: _inquirerProfile,
-                                  serviceDetails: _serviceDetails,
-                                  servicePaid: _servicePaid,
-                                ),
-                    ),
+                    //                 if (total > _balance) {
+                    //                   print("Go to Top up dp");
+                    //                   Navigator.of(context).push(
+                    //                     MaterialPageRoute(
+                    //                       builder: (context) {
+                    //                         return MultiBlocProvider(
+                    //                           providers: [
+                    //                             BlocProvider(
+                    //                               create: (context) =>
+                    //                                   LoadDpPackageBloc(
+                    //                                 apiClient: TopUpClient(),
+                    //                               ),
+                    //                             ),
+                    //                           ],
+                    //                           child: TopupDp(
+                    //                             args: _inquiryDetail,
+                    //                           ),
+                    //                         );
+                    //                       },
+                    //                     ),
+                    //                   );
+                    //                 } else {
+                    //                   print("Go to Payment");
+                    //                   Navigator.of(context).push(
+                    //                     MaterialPageRoute(
+                    //                       builder: (context) {
+                    //                         return MultiBlocProvider(
+                    //                           providers: [
+                    //                             BlocProvider(
+                    //                               create: (context) =>
+                    //                                   BuyServiceBloc(
+                    //                                 searchInquiryAPIs:
+                    //                                     SearchInquiryAPIs(),
+                    //                               ),
+                    //                             ),
+                    //                             BlocProvider(
+                    //                               create: (context) =>
+                    //                                   CancelServiceBloc(
+                    //                                 serviceAPIs: ServiceAPIs(),
+                    //                               ),
+                    //                             ),
+                    //                             BlocProvider(
+                    //                               create: (context) =>
+                    //                                   LoadCancelServiceBloc(
+                    //                                 serviceAPIs: ServiceAPIs(),
+                    //                               ),
+                    //                             ),
+                    //                           ],
+                    //                           child: BuyService(
+                    //                             args: _inquiryDetail,
+                    //                           ),
+                    //                         );
+                    //                       },
+                    //                     ),
+                    //                   );
+                    //                 }
+                    //               },
+                    //             )
+                    //           : FemaleUnpaidInfo(
+                    //               inquirerProfile: _inquirerProfile,
+                    //               serviceDetails: _serviceDetails,
+                    //               servicePaid: _servicePaid,
+                    //             ),
+                    // ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
