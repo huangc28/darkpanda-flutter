@@ -119,6 +119,7 @@ class _ChatroomState extends State<Chatroom>
   InquirerProfileArguments _inquirerProfileArguments;
 
   bool sendUpdateInquiryIsLoading = false;
+  int isFirstCall = 0;
 
   @override
   void initState() {
@@ -504,21 +505,29 @@ class _ChatroomState extends State<Chatroom>
                                     // Enable message bar once done initializing.
                                     if (state.status ==
                                         AsyncLoadingStatus.done) {
-                                      Navigator.of(
-                                        context,
-                                        rootNavigator: true,
-                                      ).pushNamed(
-                                        MainRoutes.serviceChatroom,
-                                        arguments:
-                                            ServiceChatroomScreenArguments(
-                                          channelUUID: widget.args.channelUUID,
-                                          inquiryUUID: widget.args.inquiryUUID,
-                                          counterPartUUID:
-                                              widget.args.counterPartUUID,
-                                          serviceUUID: widget.args.serviceUUID,
-                                          routeTypes: RouteTypes.fromInquiry,
-                                        ),
-                                      );
+                                      isFirstCall++;
+
+                                      // status done will be called twice, so implement isFirstCall to solve this issue
+                                      if (isFirstCall == 1) {
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pushNamed(
+                                          MainRoutes.serviceChatroom,
+                                          arguments:
+                                              ServiceChatroomScreenArguments(
+                                            channelUUID:
+                                                widget.args.channelUUID,
+                                            inquiryUUID:
+                                                widget.args.inquiryUUID,
+                                            counterPartUUID:
+                                                widget.args.counterPartUUID,
+                                            serviceUUID:
+                                                widget.args.serviceUUID,
+                                            routeTypes: RouteTypes.fromInquiry,
+                                          ),
+                                        );
+                                      }
                                     }
                                   },
                                   child: _serviceConfirmed
