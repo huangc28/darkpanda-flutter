@@ -222,7 +222,7 @@ class _BodyState extends State<Body> {
       {Color titleColor, double titleSize, double valueSize}) {
     return Container(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
@@ -251,8 +251,6 @@ class _BodyState extends State<Body> {
                   )
                 : Text(
                     value,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: valueSize != null ? valueSize : 15,

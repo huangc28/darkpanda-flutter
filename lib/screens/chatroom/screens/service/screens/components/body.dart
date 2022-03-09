@@ -286,7 +286,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   }) {
     return Container(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
@@ -311,8 +311,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           Flexible(
             child: Text(
               value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,

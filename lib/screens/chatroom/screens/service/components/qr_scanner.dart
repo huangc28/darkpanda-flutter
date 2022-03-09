@@ -180,7 +180,7 @@ class _QrScannerState extends State<QrScanner>
                     _snackBar(state.error.message);
                     Navigator.pop(context);
                   } else if (state.status == AsyncLoadingStatus.done) {
-                    _snackBar("掃描成功!");
+                    _snackBar("掃描成功，服務開始");
                     widget.onScanDoneBack();
                   }
                 },
