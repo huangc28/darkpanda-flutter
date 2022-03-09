@@ -431,9 +431,9 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildEachText('pie.png', '服務費', '${price}DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-              'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //     'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
         ],
       ),
     );

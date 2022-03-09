@@ -1,4 +1,9 @@
+import 'package:darkpanda_flutter/components/loading_screen.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -36,6 +41,7 @@ class InquiryDetailDialog extends StatefulWidget {
 
 class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   InquiryDetail inquiryDetail;
+  int isFirstCall = 0;
 
   @override
   void initState() {
@@ -71,97 +77,133 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                 _rejectButton(context),
                 SizedBox(width: 16),
 
-                // Load my darkpanda coin balance
-                // If enough balance will go to service payment screen
-                // else go to topup dp screen
-                BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                // Load Incoming Service
+                BlocListener<LoadIncomingServiceBloc, LoadIncomingServiceState>(
                   listener: (context, state) {
-                    if (state.status == AsyncLoadingStatus.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.error.message),
-                        ),
+                    if (state.status == AsyncLoadingStatus.loading ||
+                        state.status == AsyncLoadingStatus.initial) {
+                      return Row(
+                        children: [
+                          LoadingScreen(),
+                        ],
                       );
                     }
 
                     if (state.status == AsyncLoadingStatus.done) {
-                      // Dismiss inquiry_detail_dialog
-                      Navigator.pop(context, true);
+                      isFirstCall++;
 
-                      final total =
-                          widget.inquiryDetail.updateInquiryMessage.matchingFee;
-
-                      inquiryDetail.balance = state.myDp.balance;
-
-                      // Go to Top Up screen
-                      if (total > state.myDp.balance) {
+                      // status done will be called twice, so implement isFirstCall to solve this issue
+                      if (isFirstCall == 1) {
                         Navigator.of(
                           context,
                           rootNavigator: true,
-                        ).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MultiBlocProvider(
-                                providers: [
-                                  BlocProvider(
-                                    create: (context) => LoadMyDpBloc(
-                                      apiClient: TopUpClient(),
-                                    ),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => LoadDpPackageBloc(
-                                      apiClient: TopUpClient(),
-                                    ),
-                                  ),
-                                ],
-                                child: TopupDp(
-                                  args: inquiryDetail,
-                                ),
-                              );
-                            },
+                        ).pushNamed(
+                          MainRoutes.serviceChatroom,
+                          arguments: ServiceChatroomScreenArguments(
+                            channelUUID: inquiryDetail.channelUuid,
+                            inquiryUUID: inquiryDetail.inquiryUuid,
+                            counterPartUUID: inquiryDetail.counterPartUuid,
+                            serviceUUID: inquiryDetail.serviceUuid,
+                            routeTypes: RouteTypes.fromBuyService,
                           ),
-                          ModalRoute.withName('/'),
-                        );
-                      }
-                      // Go to Payment screen
-                      else {
-                        Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        ).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MultiBlocProvider(
-                                providers: [
-                                  BlocProvider(
-                                    create: (context) => BuyServiceBloc(
-                                      searchInquiryAPIs: SearchInquiryAPIs(),
-                                    ),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => CancelServiceBloc(
-                                      serviceAPIs: ServiceAPIs(),
-                                    ),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => LoadCancelServiceBloc(
-                                      serviceAPIs: ServiceAPIs(),
-                                    ),
-                                  ),
-                                ],
-                                child: BuyService(
-                                  args: inquiryDetail,
-                                ),
-                              );
-                            },
-                          ),
-                          ModalRoute.withName('/'),
                         );
                       }
                     }
                   },
                   child: _payButton(context),
                 ),
+
+                // Load my darkpanda coin balance
+                // If enough balance will go to service payment screen
+                // else go to topup dp screen
+                // BlocListener<LoadMyDpBloc, LoadMyDpState>(
+                //   listener: (context, state) {
+                //     if (state.status == AsyncLoadingStatus.error) {
+                //       ScaffoldMessenger.of(context).showSnackBar(
+                //         SnackBar(
+                //           content: Text(state.error.message),
+                //         ),
+                //       );
+                //     }
+
+                //     if (state.status == AsyncLoadingStatus.done) {
+                //       // Dismiss inquiry_detail_dialog
+                //       Navigator.pop(context, true);
+
+                //       final total =
+                //           widget.inquiryDetail.updateInquiryMessage.matchingFee;
+
+                //       inquiryDetail.balance = state.myDp.balance;
+
+                //       // Go to Top Up screen
+                //       if (total > state.myDp.balance) {
+                //         Navigator.of(
+                //           context,
+                //           rootNavigator: true,
+                //         ).pushAndRemoveUntil(
+                //           MaterialPageRoute(
+                //             builder: (context) {
+                //               return MultiBlocProvider(
+                //                 providers: [
+                //                   BlocProvider(
+                //                     create: (context) => LoadMyDpBloc(
+                //                       apiClient: TopUpClient(),
+                //                     ),
+                //                   ),
+                //                   BlocProvider(
+                //                     create: (context) => LoadDpPackageBloc(
+                //                       apiClient: TopUpClient(),
+                //                     ),
+                //                   ),
+                //                 ],
+                //                 child: TopupDp(
+                //                   args: inquiryDetail,
+                //                 ),
+                //               );
+                //             },
+                //           ),
+                //           ModalRoute.withName('/'),
+                //         );
+                //       }
+                //       // Go to Payment screen
+                //       else {
+                //         Navigator.of(
+                //           context,
+                //           rootNavigator: true,
+                //         ).pushAndRemoveUntil(
+                //           MaterialPageRoute(
+                //             builder: (context) {
+                //               return MultiBlocProvider(
+                //                 providers: [
+                //                   BlocProvider(
+                //                     create: (context) => BuyServiceBloc(
+                //                       searchInquiryAPIs: SearchInquiryAPIs(),
+                //                     ),
+                //                   ),
+                //                   BlocProvider(
+                //                     create: (context) => CancelServiceBloc(
+                //                       serviceAPIs: ServiceAPIs(),
+                //                     ),
+                //                   ),
+                //                   BlocProvider(
+                //                     create: (context) => LoadCancelServiceBloc(
+                //                       serviceAPIs: ServiceAPIs(),
+                //                     ),
+                //                   ),
+                //                 ],
+                //                 child: BuyService(
+                //                   args: inquiryDetail,
+                //                 ),
+                //               );
+                //             },
+                //           ),
+                //           ModalRoute.withName('/'),
+                //         );
+                //       }
+                //     }
+                //   },
+                //   child: _payButton(context),
+                // ),
               ],
             ),
           ),
@@ -186,9 +228,15 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
           inquiryDetail.serviceUuid =
               state.emitServiceConfirmMessageResponse.serviceChannelUuid;
 
-          BlocProvider.of<LoadMyDpBloc>(context).add(
-            LoadMyDp(),
-          );
+          // Dismiss inquiry_detail_dialog
+          // Navigator.pop(context, true);
+
+          BlocProvider.of<LoadIncomingServiceBloc>(context)
+              .add(LoadIncomingService());
+
+          // BlocProvider.of<LoadMyDpBloc>(context).add(
+          //   LoadMyDp(),
+          // );
         }
       },
       builder: (context, state) {
@@ -204,7 +252,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                 EmitServiceConfirmMessage(widget.serviceUuid),
               );
             },
-            text: '去支付',
+            text: '接受', //'去支付',
           ),
         );
       },
@@ -225,9 +273,6 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   }
 
   Widget _inquiryAmountDetail() {
-    // final total = widget.inquiryDetail.updateInquiryMessage.price +
-    //     widget.inquiryDetail.updateInquiryMessage.matchingFee;
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -237,11 +282,15 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         padding: const EdgeInsets.fromLTRB(10.0, 16.0, 10.0, 16.0),
         child: Column(
           children: <Widget>[
-            _buildEachText('pie.png', '服務費',
-                '${widget.inquiryDetail.updateInquiryMessage.price}DP'),
-            SizedBox(height: 8),
-            _buildEachText('heart.png', '媒合費',
-                '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
+            _buildEachText(
+              'pie.png',
+              '服務費',
+              '${widget.inquiryDetail.updateInquiryMessage.price}DP',
+              fontWeight: FontWeight.bold,
+            ),
+            // SizedBox(height: 8),
+            // _buildEachText('heart.png', '媒合費',
+            //     '${widget.inquiryDetail.updateInquiryMessage.matchingFee}DP'),
           ],
         ),
       ),

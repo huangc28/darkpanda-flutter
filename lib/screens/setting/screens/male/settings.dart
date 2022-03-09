@@ -51,29 +51,29 @@ class _MaleSettingsState extends State<MaleSettings> {
                             widget.onPush(SettingRoutes.verify_phone, null);
                           },
                         ),
-                        InkWell(
-                          child: Image(
-                            image: AssetImage(
-                                "lib/screens/setting/assets/recommend_management.png"),
-                          ),
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                            widget.onPush(
-                                SettingRoutes.recommend_management, null);
-                          },
-                        ),
-                        InkWell(
-                          child: Image(
-                            image: AssetImage(
-                                "lib/screens/setting/assets/buy_dp.png"),
-                          ),
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                            widget.onPush(SettingRoutes.topup_dp, null);
-                          },
-                        ),
+                        // InkWell(
+                        //   child: Image(
+                        //     image: AssetImage(
+                        //         "lib/screens/setting/assets/recommend_management.png"),
+                        //   ),
+                        //   highlightColor: Colors.transparent,
+                        //   splashColor: Colors.transparent,
+                        //   onTap: () {
+                        //     widget.onPush(
+                        //         SettingRoutes.recommend_management, null);
+                        //   },
+                        // ),
+                        // InkWell(
+                        //   child: Image(
+                        //     image: AssetImage(
+                        //         "lib/screens/setting/assets/buy_dp.png"),
+                        //   ),
+                        //   highlightColor: Colors.transparent,
+                        //   splashColor: Colors.transparent,
+                        //   onTap: () {
+                        //     // widget.onPush(SettingRoutes.topup_dp, null);
+                        //   },
+                        // ),
                         InkWell(
                           child: Image(
                             image: AssetImage(

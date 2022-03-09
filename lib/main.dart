@@ -103,6 +103,7 @@ void main() async {
       DeviceOrientation.portraitDown,
     ]);
 
+    // await SecureStore().delJwtToken();
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
 
