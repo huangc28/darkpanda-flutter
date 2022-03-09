@@ -243,14 +243,14 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
   Widget _buildButton() {
     bool buttonIsDisabled = false;
 
-    if (widget.historicalService.status == ServiceStatus.fulfilling.name) {
-      buttonIsDisabled = true;
-    }
-
     if (widget.cancelServiceStatus == AsyncLoadingStatus.loading) {
       buttonIsDisabled = true;
     } else {
       buttonIsDisabled = false;
+    }
+
+    if (widget.historicalService.status == ServiceStatus.fulfilling.name) {
+      buttonIsDisabled = true;
     }
 
     return Column(
@@ -263,9 +263,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             // When loading is true:
             // 1. Loading cancel service cause
             disabled: buttonIsDisabled,
-            // widget.historicalService.status == ServiceStatus.fulfilling.name
-            //     ? true
-            //     : false,
             loading: widget.cancelServiceStatus == AsyncLoadingStatus.loading,
             onPressed: widget.onCancelService,
             text:
