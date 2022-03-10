@@ -114,11 +114,11 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                         },
                                         validator: (String v) {
                                           if (v.trim().isEmpty) {
-                                            return 'verify code can not be empty';
+                                            return '請輸入推薦碼';
                                           }
 
                                           if (v.trim().length < 6) {
-                                            return 'please complete verify code';
+                                            return '請輸入推薦碼';
                                           }
 
                                           if (_verifyRefCodeErrStr != null &&
@@ -157,12 +157,12 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                         },
                                         validator: (String v) {
                                           if (v.trim().isEmpty) {
-                                            return 'username can not be empty';
+                                            return '請輸入用戶名';
                                           }
 
                                           // Username has to be at least 6 chars.
                                           if (v.length < 6) {
-                                            return 'username has to be at least 6 characters';
+                                            return '用戶名必須至少為 6 個字符';
                                           }
 
                                           // If username does not pass async validation,
