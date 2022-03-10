@@ -38,7 +38,7 @@ class _ServiceDetailState extends State<ServiceDetail>
   AsyncLoadingStatus _cancelServiceStatus = AsyncLoadingStatus.initial;
 
   String _gender;
-  String _cancelCause;
+  String _cancelCause = '';
 
   @override
   void initState() {
@@ -145,7 +145,7 @@ class _ServiceDetailState extends State<ServiceDetail>
           BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
               listener: (context, state) {
             if (state.status == AsyncLoadingStatus.done) {
-              _serviceCancelCause(state.loadCancelServiceResponse.cancelCause);
+              // _serviceCancelCause(state.loadCancelServiceResponse.cancelCause);
 
               showDialog(
                 barrierDismissible: false,

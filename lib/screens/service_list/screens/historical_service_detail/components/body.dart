@@ -251,7 +251,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  _cancelCause + _refundStatus,
+                  _cancelCause,
                   style: TextStyle(
                     color: Color.fromRGBO(106, 109, 137, 1),
                     fontSize: 15,
