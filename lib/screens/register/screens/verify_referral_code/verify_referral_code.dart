@@ -30,18 +30,11 @@ class VerifyReferralCode extends StatefulWidget {
 
 class _VerifyReferralCodeState extends State<VerifyReferralCode> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _pinCodeController = TextEditingController();
   final TextEditingController _usernameControler = TextEditingController();
 
-  String _referralCode;
   String _username;
 
-  String _verifyRefCodeErrStr = '';
   String _verifyUsernameErrStr = '';
-
-  handleSubmit(BuildContext build, String pin) {
-    print('trigger verify referral code');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,46 +89,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(
-                                        '輸入你的推薦碼',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: SizeConfig.screenHeight * 0.05,
-                                      ),
-                                      DPPinPut(
-                                        onSubmit: (String pin) =>
-                                            handleSubmit(context, pin),
-                                        onSaved: (String v) {
-                                          _referralCode = v;
-                                        },
-                                        validator: (String v) {
-                                          if (v.trim().isEmpty) {
-                                            return '請輸入推薦碼';
-                                          }
-
-                                          if (v.trim().length < 6) {
-                                            return '請輸入推薦碼';
-                                          }
-
-                                          if (_verifyRefCodeErrStr != null &&
-                                              !_verifyRefCodeErrStr.isEmpty) {
-                                            return _verifyRefCodeErrStr;
-                                          }
-
-                                          return null;
-                                        },
-                                        controller: _pinCodeController,
-                                        fieldsCount: 6,
-                                      ),
-
-                                      SizedBox(
-                                        height: SizeConfig.screenHeight * 0.05,
-                                      ),
-
                                       Text(
                                         '建立你的用戶名',
                                         style: TextStyle(
@@ -208,9 +161,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                     if (state.status ==
                                         AsyncLoadingStatus.error) {
                                       setState(() {
-                                        _verifyRefCodeErrStr =
-                                            state.verifyRefCodeError?.message;
-
                                         _verifyUsernameErrStr =
                                             state.verifyUsernameError?.message;
                                       });
@@ -221,7 +171,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                     if (state.status ==
                                         AsyncLoadingStatus.done) {
                                       setState(() {
-                                        _verifyRefCodeErrStr = '';
                                         _verifyUsernameErrStr = '';
                                       });
 
@@ -234,7 +183,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                         Register(
                                           username: _username,
                                           gender: widget.args.gender,
-                                          referalcode: _referralCode,
+                                          // referalcode: _referralCode,
                                         ),
                                       );
                                     }
@@ -255,7 +204,6 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                             onPressed: () {
                                               // Reset async error before performing validation
                                               setState(() {
-                                                _verifyRefCodeErrStr = '';
                                                 _verifyUsernameErrStr = '';
                                               });
 
@@ -273,7 +221,7 @@ class _VerifyReferralCodeState extends State<VerifyReferralCode> {
                                                       context)
                                                   .add(
                                                 VerifyReferralCodeEvent(
-                                                  referralCode: _referralCode,
+                                                  // referralCode: _referralCode,
                                                   username: _username,
                                                 ),
                                               );
