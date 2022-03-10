@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
@@ -143,6 +144,8 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   /// Show loading when user sending image
   bool _isSendingImage = false;
 
+  bool _showServiceConfirmedNotifier = false;
+
   @override
   void initState() {
     super.initState();
@@ -177,6 +180,16 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     );
 
     _editMessageController.addListener(_handleEditMessage);
+
+    if (widget.args.routeTypes == RouteTypes.fromInquiry) {
+      _showServiceConfirmedNotifier = true;
+
+      Timer(Duration(seconds: 8), () {
+        setState(() {
+          _showServiceConfirmedNotifier = false;
+        });
+      });
+    }
   }
 
   @override
@@ -380,7 +393,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                           },
                         ),
                       ],
-                      child: SizedBox.shrink(),
+                      // child: SizedBox.shrink(),
+                      child: _showServiceConfirmedNotifier
+                          ? NotificationBanner(
+                              avatarUrl: _inquirerProfile.avatarUrl,
+                            )
+                          : Container(),
                     ),
 
                     // Service started banner

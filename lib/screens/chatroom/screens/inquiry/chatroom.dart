@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:image/image.dart' as img;
@@ -345,6 +346,10 @@ class _ChatroomState extends State<Chatroom>
                                       // so that the female user can not edit the service anymore.
                                       _serviceConfirmed = true;
                                     });
+
+                                    BlocProvider.of<LoadIncomingServiceBloc>(
+                                            context)
+                                        .add(LoadIncomingService());
                                   },
                                   child: BlocConsumer<CurrentChatroomBloc,
                                       CurrentChatroomState>(
@@ -530,16 +535,18 @@ class _ChatroomState extends State<Chatroom>
                                       }
                                     }
                                   },
-                                  child: _serviceConfirmed
-                                      ? NotificationBanner(
-                                          avatarUrl: _inquirerProfile.avatarUrl,
-                                          goToServiceChatroom: () {
-                                            BlocProvider.of<
-                                                        LoadIncomingServiceBloc>(
-                                                    context)
-                                                .add(LoadIncomingService());
-                                          })
-                                      : Container(),
+                                  child:
+                                      // _serviceConfirmed
+                                      //     ? NotificationBanner(
+                                      //         avatarUrl: _inquirerProfile.avatarUrl,
+                                      //         goToServiceChatroom: () {
+                                      //           BlocProvider.of<
+                                      //                       LoadIncomingServiceBloc>(
+                                      //                   context)
+                                      //               .add(LoadIncomingService());
+                                      //         })
+                                      // :
+                                      Container(),
                                 )
                               ],
                             );
