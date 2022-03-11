@@ -354,6 +354,8 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+
           /// Set the app language to be chinese TW.
           locale: Locale.fromSubtags(
             languageCode: 'zh',

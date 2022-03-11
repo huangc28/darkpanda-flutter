@@ -167,11 +167,13 @@ class _BodyState extends State<Body> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildEachText(
-              'place.png',
-              '類型',
-              widget.serviceSettings.serviceType != null
-                  ? widget.serviceSettings.serviceType
-                  : ''),
+            '',
+            '類型',
+            widget.serviceSettings.serviceType != null
+                ? widget.serviceSettings.serviceType
+                : '',
+            icon: Icons.article,
+          ),
           SizedBox(height: 15),
           _buildEachText(
               'clock.png',
@@ -218,8 +220,15 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget _buildEachText(String iconName, String title, String value,
-      {Color titleColor, double titleSize, double valueSize}) {
+  Widget _buildEachText(
+    String iconName,
+    String title,
+    String value, {
+    Color titleColor,
+    double titleSize,
+    double valueSize,
+    IconData icon,
+  }) {
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,9 +237,18 @@ class _BodyState extends State<Body> {
           Container(
             width: 22,
             height: 22,
-            child: Image.asset(
-              'lib/screens/service_list/assets/$iconName',
-            ),
+            child: iconName != ''
+                ? Image.asset(
+                    'lib/screens/service_list/assets/$iconName',
+                  )
+                : CircleAvatar(
+                    backgroundColor: Color.fromRGBO(77, 70, 106, 1),
+                    child: Icon(
+                      icon,
+                      color: Color.fromRGBO(155, 127, 255, 1),
+                      size: 15.0,
+                    ),
+                  ),
           ),
           SizedBox(width: 10),
           Text(

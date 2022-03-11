@@ -181,7 +181,16 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
+          _buildEachText(
+            '',
+            '服務',
+            widget.paymentDetail.serviceType != null
+                ? widget.paymentDetail.serviceType
+                : '',
+            icon: Icons.article,
+          ),
+          SizedBox(height: 15),
           _buildEachText(
               'place.png',
               '地址',
@@ -283,6 +292,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     double titleSize,
     double valueSize,
     FontWeight fontWeight = FontWeight.normal,
+    IconData icon,
   }) {
     return Container(
       child: Row(
@@ -292,9 +302,18 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           Container(
             width: 22,
             height: 22,
-            child: Image.asset(
-              'lib/screens/service_list/assets/$iconName',
-            ),
+            child: iconName != ''
+                ? Image.asset(
+                    'lib/screens/service_list/assets/$iconName',
+                  )
+                : CircleAvatar(
+                    backgroundColor: Color.fromRGBO(77, 70, 106, 1),
+                    child: Icon(
+                      icon,
+                      color: Color.fromRGBO(155, 127, 255, 1),
+                      size: 15.0,
+                    ),
+                  ),
           ),
           SizedBox(width: 10),
           Text(

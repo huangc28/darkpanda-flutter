@@ -112,98 +112,6 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                   },
                   child: _payButton(context),
                 ),
-
-                // Load my darkpanda coin balance
-                // If enough balance will go to service payment screen
-                // else go to topup dp screen
-                // BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                //   listener: (context, state) {
-                //     if (state.status == AsyncLoadingStatus.error) {
-                //       ScaffoldMessenger.of(context).showSnackBar(
-                //         SnackBar(
-                //           content: Text(state.error.message),
-                //         ),
-                //       );
-                //     }
-
-                //     if (state.status == AsyncLoadingStatus.done) {
-                //       // Dismiss inquiry_detail_dialog
-                //       Navigator.pop(context, true);
-
-                //       final total =
-                //           widget.inquiryDetail.updateInquiryMessage.matchingFee;
-
-                //       inquiryDetail.balance = state.myDp.balance;
-
-                //       // Go to Top Up screen
-                //       if (total > state.myDp.balance) {
-                //         Navigator.of(
-                //           context,
-                //           rootNavigator: true,
-                //         ).pushAndRemoveUntil(
-                //           MaterialPageRoute(
-                //             builder: (context) {
-                //               return MultiBlocProvider(
-                //                 providers: [
-                //                   BlocProvider(
-                //                     create: (context) => LoadMyDpBloc(
-                //                       apiClient: TopUpClient(),
-                //                     ),
-                //                   ),
-                //                   BlocProvider(
-                //                     create: (context) => LoadDpPackageBloc(
-                //                       apiClient: TopUpClient(),
-                //                     ),
-                //                   ),
-                //                 ],
-                //                 child: TopupDp(
-                //                   args: inquiryDetail,
-                //                 ),
-                //               );
-                //             },
-                //           ),
-                //           ModalRoute.withName('/'),
-                //         );
-                //       }
-                //       // Go to Payment screen
-                //       else {
-                //         Navigator.of(
-                //           context,
-                //           rootNavigator: true,
-                //         ).pushAndRemoveUntil(
-                //           MaterialPageRoute(
-                //             builder: (context) {
-                //               return MultiBlocProvider(
-                //                 providers: [
-                //                   BlocProvider(
-                //                     create: (context) => BuyServiceBloc(
-                //                       searchInquiryAPIs: SearchInquiryAPIs(),
-                //                     ),
-                //                   ),
-                //                   BlocProvider(
-                //                     create: (context) => CancelServiceBloc(
-                //                       serviceAPIs: ServiceAPIs(),
-                //                     ),
-                //                   ),
-                //                   BlocProvider(
-                //                     create: (context) => LoadCancelServiceBloc(
-                //                       serviceAPIs: ServiceAPIs(),
-                //                     ),
-                //                   ),
-                //                 ],
-                //                 child: BuyService(
-                //                   args: inquiryDetail,
-                //                 ),
-                //               );
-                //             },
-                //           ),
-                //           ModalRoute.withName('/'),
-                //         );
-                //       }
-                //     }
-                //   },
-                //   child: _payButton(context),
-                // ),
               ],
             ),
           ),
@@ -233,10 +141,6 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
 
           BlocProvider.of<LoadIncomingServiceBloc>(context)
               .add(LoadIncomingService());
-
-          // BlocProvider.of<LoadMyDpBloc>(context).add(
-          //   LoadMyDp(),
-          // );
         }
       },
       builder: (context, state) {
@@ -311,6 +215,15 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         child: Column(
           children: <Widget>[
             _buildEachText(
+              '',
+              '服務',
+              widget.messages.serviceType != null
+                  ? widget.messages.serviceType
+                  : '',
+              icon: Icons.article,
+            ),
+            SizedBox(height: 8),
+            _buildEachText(
                 'place.png',
                 '地址',
                 widget.inquiryDetail.updateInquiryMessage.address != null
@@ -361,6 +274,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
     double titleSize,
     double valueSize,
     FontWeight fontWeight = FontWeight.normal,
+    IconData icon,
   }) {
     return Container(
       child: Row(
@@ -370,9 +284,18 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
           Container(
             width: 20,
             height: 20,
-            child: Image.asset(
-              'lib/screens/service_list/assets/$iconName',
-            ),
+            child: iconName != ''
+                ? Image.asset(
+                    'lib/screens/service_list/assets/$iconName',
+                  )
+                : CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 223, 214, 255),
+                    child: Icon(
+                      icon,
+                      color: Color.fromRGBO(155, 127, 255, 1),
+                      size: 15.0,
+                    ),
+                  ),
           ),
           SizedBox(width: 4),
           Text(

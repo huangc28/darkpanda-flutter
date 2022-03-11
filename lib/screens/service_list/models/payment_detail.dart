@@ -13,6 +13,7 @@ class PaymentDetail {
     this.hasCommented,
     this.matchingFee,
     this.hasBlocked,
+    this.serviceType,
   });
 
   double price;
@@ -26,6 +27,7 @@ class PaymentDetail {
   bool hasCommented;
   double matchingFee;
   bool hasBlocked;
+  String serviceType;
 
   Map<String, dynamic> toMap() => {
         'price': price,
@@ -39,23 +41,8 @@ class PaymentDetail {
         'has_commented': hasCommented,
         'matching_fee': matchingFee,
         'has_blocked': hasBlocked,
+        'service_type': serviceType,
       };
-
-  // factory PaymentDetail.fromMap(Map<String, dynamic> data) {
-  //   return PaymentDetail(
-  //     price: data['price'],
-  //     recTradeId: data['rec_trade_id'],
-  //     address: data['address'],
-  //     startTime: data['start_time'],
-  //     duration: data['duration'],
-  //     pickerUuid: data['picker_uuid'],
-  //     pickerUsername: data['picker_username'],
-  //     pickerAvatarUrl: data['picker_avatar_url'],
-  //     hasCommented: data['has_commented'],
-  //     matchingFee: data['matching_fee']?.toDouble(),
-  //     hasBlocked: data['has_blocked'],
-  //   );
-  // }
 
   factory PaymentDetail.fromMap(Map<String, dynamic> data) {
     var parsedStartTime = DateTime.now();
@@ -94,6 +81,7 @@ class PaymentDetail {
       hasCommented: data['has_commented'],
       matchingFee: data['matching_fee']?.toDouble(),
       hasBlocked: data['has_blocked'],
+      serviceType: data['service_type'],
     );
   }
 }
