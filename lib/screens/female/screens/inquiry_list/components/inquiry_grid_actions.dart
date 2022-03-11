@@ -24,7 +24,7 @@ class InquiryGridActions extends StatelessWidget {
     String btnText = ' ';
     Icon icon = null;
     Function btnHandler = () => {};
-    DPTextButtonThemes theme = DPTextButtonThemes.lightGrey;
+    DPTextButtonThemes theme = DPTextButtonThemes.purple;
 
     if (inquiry.inquiryStatus == InquiryStatus.inquiring) {
       btnText = '立即洽談';

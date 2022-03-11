@@ -54,7 +54,7 @@ class InquiryDetail extends StatelessWidget {
 
         Expanded(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Column(
@@ -89,23 +89,6 @@ class InquiryDetail extends StatelessWidget {
                   ),
                   _buildDurationText(),
                 ],
-              ),
-              Expanded(
-                child: Container(
-                  child: GestureDetector(
-                    child: Text(
-                      '隱藏',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize:
-                            13, //SizeConfig.blockSizeVertical * 1.5, //14,
-                      ),
-                    ),
-                    onTap: () {
-                      print('DEBUG trigger hide');
-                    },
-                  ),
-                ),
               ),
             ],
           ),
