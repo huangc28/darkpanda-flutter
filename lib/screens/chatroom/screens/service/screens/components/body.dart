@@ -239,7 +239,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           _buildEachText(
             'pie.png',
             '服務費',
-            '${convertZeroDecimalToInt(widget.serviceDetails.price)}DP',
+            '${convertZeroDecimalToInt(widget.serviceDetails.price)}',
           ),
           // SizedBox(height: 15),
           // _buildEachText(

@@ -189,7 +189,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             _buildEachText(
               'pie.png',
               '服務費',
-              '${widget.inquiryDetail.updateInquiryMessage.price}DP',
+              '${widget.inquiryDetail.updateInquiryMessage.price}',
               fontWeight: FontWeight.bold,
             ),
             // SizedBox(height: 8),

@@ -62,7 +62,7 @@ class InquiryDetail extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Bullet(
-                    '預算: ${inquiry.budget} DP',
+                    '預算: ${inquiry.budget}',
                     style: TextStyle(
                       height: 1.3,
                       color: Colors.white,
