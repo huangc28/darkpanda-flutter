@@ -13,6 +13,7 @@ class UpdateInquiryMessage extends Message {
     this.address,
     this.matchingFee,
     this.username,
+    this.currency,
   }) : super(
           content: content,
           from: from,
@@ -26,6 +27,7 @@ class UpdateInquiryMessage extends Message {
   String address;
   double matchingFee;
   String username;
+  String currency;
 
   factory UpdateInquiryMessage.fromMap(Map<String, dynamic> data) {
     DateTime parsedStartTime = DateTime.now();
@@ -53,6 +55,7 @@ class UpdateInquiryMessage extends Message {
       address: data['address'],
       matchingFee: data['matching_fee']?.toDouble(),
       username: data['username'],
+      currency: data['currency'],
     );
   }
 }

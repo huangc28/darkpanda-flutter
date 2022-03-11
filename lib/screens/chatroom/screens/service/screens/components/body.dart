@@ -262,6 +262,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       buttonIsDisabled = true;
     }
 
+    if (widget.historicalService.status == ServiceStatus.completed.name) {
+      buttonIsDisabled = true;
+    }
+
     return Column(
       children: <Widget>[
         if (widget.paymentDetail.hasCommented == false)
@@ -277,7 +281,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             text:
                 widget.historicalService.status == ServiceStatus.fulfilling.name
                     ? '服務進行中，無法取消交易'
-                    : '取消交易',
+                    : widget.historicalService.status ==
+                            ServiceStatus.completed.name
+                        ? '服務已結束'
+                        : '取消交易',
             theme: DPTextButtonThemes.purple,
           ),
       ],

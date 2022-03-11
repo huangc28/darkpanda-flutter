@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
+import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
@@ -259,6 +261,40 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     });
   }
 
+  _navigateToRating() {
+    HistoricalService historicalService = HistoricalService(
+      serviceUuid: _inquiryDetail.serviceUuid,
+      chatPartnerUsername: _inquiryDetail.username,
+      chatPartnerAvatarUrl: _inquirerProfile.avatarUrl,
+    );
+
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(MaterialPageRoute(
+      builder: (context) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => SendRateBloc(
+                apiClient: ServiceChatroomClient(),
+              ),
+            ),
+          ],
+          child: Rate(
+            historicalService: historicalService,
+          ),
+        );
+      },
+    )).then((refresh) {
+      if (refresh != null) {
+        if (refresh == true) {
+          // _onRefreshRateDetail();
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -443,101 +479,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     //       : SizedBox.shrink(),
                     // ),
 
-                    // BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                    //   listener: (context, state) {
-                    //     if (state.status == AsyncLoadingStatus.error) {
-                    //       developer.log(
-                    //         'failed to fetch dp balance',
-                    //         error: state.error,
-                    //       );
-
-                    //       ScaffoldMessenger.of(context).showSnackBar(
-                    //         SnackBar(
-                    //           content: Text(state.error.message),
-                    //         ),
-                    //       );
-                    //     }
-
-                    //     if (state.status == AsyncLoadingStatus.done) {
-                    //       setState(() {
-                    //         _balance = state.myDp.balance;
-                    //         _inquiryDetail.balance = _balance;
-                    //       });
-                    //     }
-                    //   },
-                    //   child: _servicePaid
-                    //       ? SizedBox.shrink()
-                    //       : _sender.gender == Gender.male
-                    //           ? MaleUnpaidInfo(
-                    //               inquirerProfile: _inquirerProfile,
-                    //               serviceDetails: _serviceDetails,
-                    //               onGoToPayment: () {
-                    //                 final total = _serviceDetails.matchingFee;
-
-                    //                 if (total > _balance) {
-                    //                   print("Go to Top up dp");
-                    //                   Navigator.of(context).push(
-                    //                     MaterialPageRoute(
-                    //                       builder: (context) {
-                    //                         return MultiBlocProvider(
-                    //                           providers: [
-                    //                             BlocProvider(
-                    //                               create: (context) =>
-                    //                                   LoadDpPackageBloc(
-                    //                                 apiClient: TopUpClient(),
-                    //                               ),
-                    //                             ),
-                    //                           ],
-                    //                           child: TopupDp(
-                    //                             args: _inquiryDetail,
-                    //                           ),
-                    //                         );
-                    //                       },
-                    //                     ),
-                    //                   );
-                    //                 } else {
-                    //                   print("Go to Payment");
-                    //                   Navigator.of(context).push(
-                    //                     MaterialPageRoute(
-                    //                       builder: (context) {
-                    //                         return MultiBlocProvider(
-                    //                           providers: [
-                    //                             BlocProvider(
-                    //                               create: (context) =>
-                    //                                   BuyServiceBloc(
-                    //                                 searchInquiryAPIs:
-                    //                                     SearchInquiryAPIs(),
-                    //                               ),
-                    //                             ),
-                    //                             BlocProvider(
-                    //                               create: (context) =>
-                    //                                   CancelServiceBloc(
-                    //                                 serviceAPIs: ServiceAPIs(),
-                    //                               ),
-                    //                             ),
-                    //                             BlocProvider(
-                    //                               create: (context) =>
-                    //                                   LoadCancelServiceBloc(
-                    //                                 serviceAPIs: ServiceAPIs(),
-                    //                               ),
-                    //                             ),
-                    //                           ],
-                    //                           child: BuyService(
-                    //                             args: _inquiryDetail,
-                    //                           ),
-                    //                         );
-                    //                       },
-                    //                     ),
-                    //                   );
-                    //                 }
-                    //               },
-                    //             )
-                    //           : FemaleUnpaidInfo(
-                    //               inquirerProfile: _inquirerProfile,
-                    //               serviceDetails: _serviceDetails,
-                    //               servicePaid: _servicePaid,
-                    //             ),
-                    // ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
@@ -571,12 +512,20 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
                                       _inquirerProfile = state.userProfile;
 
+                                      _serviceDetails =
+                                          _serviceDetails.copyWith(
+                                        serviceStatus: state.service.status,
+                                      );
+
                                       if (state.service.status ==
                                           ServiceStatus.unpaid.name) {
                                         _servicePaid = false;
                                       } else if (state.service.status ==
                                           ServiceStatus.to_be_fulfilled.name) {
                                         _servicePaid = true;
+                                      } else if (state.service.status ==
+                                          ServiceStatus.completed.name) {
+                                        _navigateToRating();
                                       }
                                     });
                                   }
@@ -709,6 +658,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             appointmentTime: _inquiryDetail.updateInquiryMessage.serviceTime,
             status: _serviceDetails.serviceStatus,
           );
+
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) {
               return MultiBlocProvider(

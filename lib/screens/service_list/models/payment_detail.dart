@@ -14,6 +14,7 @@ class PaymentDetail {
     this.matchingFee,
     this.hasBlocked,
     this.serviceType,
+    this.currency,
   });
 
   double price;
@@ -28,6 +29,7 @@ class PaymentDetail {
   double matchingFee;
   bool hasBlocked;
   String serviceType;
+  String currency;
 
   Map<String, dynamic> toMap() => {
         'price': price,
@@ -42,6 +44,7 @@ class PaymentDetail {
         'matching_fee': matchingFee,
         'has_blocked': hasBlocked,
         'service_type': serviceType,
+        'currency': currency,
       };
 
   factory PaymentDetail.fromMap(Map<String, dynamic> data) {
@@ -82,6 +85,7 @@ class PaymentDetail {
       matchingFee: data['matching_fee']?.toDouble(),
       hasBlocked: data['has_blocked'],
       serviceType: data['service_type'],
+      currency: data['currency'],
     );
   }
 }
