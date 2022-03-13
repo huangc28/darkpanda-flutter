@@ -12,7 +12,7 @@ class DisagreeInquiryMessage extends Message {
           createdAt: createdAt,
         );
 
-  String username;
+  final String username;
 
   factory DisagreeInquiryMessage.fromMap(Map<String, dynamic> data) {
     return DisagreeInquiryMessage(

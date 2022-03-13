@@ -3,5 +3,16 @@
     
     "register": "註冊",
     "insertUsername": "請輸入用戶名",
-    "login": "登入"
+    "login": "登入",
+
+    "botInvitationToChatContent": "開始跟 {name} 聊聊吧!",
+    "@botInvitationToChatContent": {
+        "description": "Invite text when user joins the chatroom",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "辣台妹"
+            }
+        }
+    }
 }

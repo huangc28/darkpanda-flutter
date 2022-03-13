@@ -2,6 +2,16 @@
     "helloWorld": "hello world!",
 
     "register": "Register",
-    "insertUsername": "請輸入用戶名",
-    "login": "login"
+    "insertUsername": "Please insert username",
+    "login": "login",
+    "botInvitationToChatContent": "Welcome! Start chatting with {name}",
+    "@botInvitationToChatContent": {
+        "description": "Invite text when user joins the chatroom",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "hotfallingangle"
+            }
+        }
+    }
 }

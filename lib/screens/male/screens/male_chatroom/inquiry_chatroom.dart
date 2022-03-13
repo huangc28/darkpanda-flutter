@@ -30,19 +30,22 @@ import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
@@ -321,6 +324,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                               );
                                             },
                                           );
+                                        } else if (message is BotInvitationChatMessage) {
+                                          return BotInvitationChatBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message:message,
+                                          );
+
                                         } else {
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
