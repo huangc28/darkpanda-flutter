@@ -56,6 +56,12 @@ You should see dashboard installed on you emulator.
  }
  ```
 
+- []Female cancel service now display `對方已取消交易` should be `你已取消交易` 
+- []After female cancels service chatroom, lock all chatroom functions.
+- [x]When male left the inquiry chatroom and post another inquiry, the same girl can not see the inquiry.
+- [x]When either party left the chatoom, we should change  the inquiry status to cancel 
+- []When female sends service update message, chatroom should have a `ServiceUpdateMessageBubble`.  `ServiceUpdateMessageBubble` is clickable 
+    When user clicks on it, service detail popup will show. 
 - []Create a singleton class contains a hash map of error code and corresponding error message. The error message is resolved via i18n function. 
 - []Emit service inquiry not showing on female app.
 - []Girls emit service confirm, male is not able to recieve it via historical message.
