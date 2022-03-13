@@ -55,7 +55,11 @@ You should see dashboard installed on you emulator.
      }
  }
  ```
- 
+
+- []Create a singleton class contains a hash map of error code and corresponding error message. The error message is resolved via i18n function. 
+- []Emit service inquiry not showing on female app.
+- []Girls emit service confirm, male is not able to recieve it via historical message.
+- []Click on edit address, there should be an default address showing on address input box.
 ### FCM integration on picking up inquiry 
 
 When female user picks up inquiry, sends FCM message to male user. We will use google pub/sub service to integrate FCM message.
@@ -64,6 +68,7 @@ When male starts an inquiry, backend creates a pub/sub topic that the device can
 1. Retrieve topic name from active inquiry if there is any.
 2. `FirebaseMessaging` subscribes to the topic. 
 
+### 
 ## Reference
 
 - [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)

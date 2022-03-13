@@ -11,6 +11,7 @@ enum MessageType {
   complete_payment,
   start_service,
   cancel_service,
+  bot_invitation_chat_text,
 }
 
 extension MessageTypeExtension on MessageType {

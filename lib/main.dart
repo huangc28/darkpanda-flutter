@@ -74,22 +74,6 @@ void main() async {
   // Receive FCM background messages
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-  // Isolate.current.addErrorListener(RawReceivePort((pair) async {
-  //   final List<dynamic> errorAndStacktrace = pair;
-  //   await FirebaseCrashlytics.instance.recordError(
-  //     errorAndStacktrace.first,
-  //     errorAndStacktrace.last,
-  //   );
-  // }).sendPort);
-
-  // Pass all uncaught errors from the framework to Crashlytics.
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  // Force disable Crashlytics collection while doing every day development.
-  // Temporarily toggle this to true if you want to test crash reporting in your app.
-  // await FirebaseCrashlytics.instance
-  //     .setCrashlyticsCollectionEnabled(!kDebugMode);
-
   try {
     assert(app != null);
 
