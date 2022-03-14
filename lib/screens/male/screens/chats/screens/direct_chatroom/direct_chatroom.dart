@@ -74,7 +74,7 @@ class _DirectChatroomState extends State<DirectChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  UpdateInquiryMessage messages = UpdateInquiryMessage();
+  UpdateInquiryMessage updateInquiryMessage = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
   InquirerProfileArguments _inquirerProfileArguments;
 
@@ -331,8 +331,9 @@ class _DirectChatroomState extends State<DirectChatroom>
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                messages = state.message;
-                                inquiryDetail.updateInquiryMessage = messages;
+                                updateInquiryMessage = state.message;
+                                inquiryDetail.updateInquiryMessage =
+                                    updateInquiryMessage;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
@@ -340,7 +341,7 @@ class _DirectChatroomState extends State<DirectChatroom>
                                     return InquiryDetailDialog(
                                       inquiryDetail: inquiryDetail,
                                       serviceUuid: widget.args.serviceUUID,
-                                      messages: messages,
+                                      message: updateInquiryMessage,
                                     );
                                   },
                                 ).then((value) {

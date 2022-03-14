@@ -11,16 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
 
 class InquiryDetailDialog extends StatefulWidget {
@@ -28,12 +19,12 @@ class InquiryDetailDialog extends StatefulWidget {
     Key key,
     this.inquiryDetail,
     this.serviceUuid,
-    this.messages,
+    this.message,
   }) : super(key: key);
 
   final InquiryDetail inquiryDetail;
   final String serviceUuid;
-  final UpdateInquiryMessage messages;
+  final UpdateInquiryMessage message;
 
   @override
   _InquiryDetailDialogState createState() => _InquiryDetailDialogState();
@@ -217,8 +208,8 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             _buildEachText(
               '',
               '服務',
-              widget.messages.serviceType != null
-                  ? widget.messages.serviceType
+              widget.message.serviceType != null
+                  ? widget.message.serviceType
                   : '',
               icon: Icons.article,
             ),

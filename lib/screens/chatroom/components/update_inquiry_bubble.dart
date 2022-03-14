@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/service_detail_message.dart';
-import './chat_bubble.dart';
 
 class UpdateInquiryBubble extends StatelessWidget {
   const UpdateInquiryBubble({
@@ -13,7 +11,7 @@ class UpdateInquiryBubble extends StatelessWidget {
 
   final UpdateInquiryMessage message;
   final bool isMe;
-  final ValueChanged<ServiceDetailMessage> onTapMessage;
+  final ValueChanged<UpdateInquiryMessage> onTapMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -38,32 +36,37 @@ class UpdateInquiryBubble extends StatelessWidget {
               // Display clickable message bubble
             ],
           ),
-          Container(
-            alignment: Alignment.center,
+          InkWell(
+            onTap: () {
+              onTapMessage(message);
+            },
             child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.50,
-              ),
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(119, 81, 255, 1),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.fact_check,
-                    color: Colors.white,
-                    size: 19.0,
-                  ),
-                  SizedBox(width: 3),
-                  Text("點擊開啟服務細節", style: TextStyle(color: Colors.white)),
-                ],
+              alignment: Alignment.center,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.50,
+                ),
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(119, 81, 255, 1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.fact_check,
+                      color: Colors.white,
+                      size: 19.0,
+                    ),
+                    SizedBox(width: 3),
+                    Text("點擊開啟服務細節", style: TextStyle(color: Colors.white)),
+                  ],
+                ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );

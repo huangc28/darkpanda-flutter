@@ -86,7 +86,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  UpdateInquiryMessage messages = UpdateInquiryMessage();
+  UpdateInquiryMessage updatedInquiryMessage = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
   InquirerProfileArguments _inquirerProfileArguments;
 
@@ -297,7 +297,22 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                           return UpdateInquiryBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
-                                            onTapMessage: (message) {},
+                                            onTapMessage:
+                                                (UpdateInquiryMessage message) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  return InquiryDetailDialog(
+                                                    inquiryDetail:
+                                                        inquiryDetail,
+                                                    serviceUuid:
+                                                        widget.args.serviceUUID,
+                                                    message: message,
+                                                  );
+                                                },
+                                              );
+                                              print('onTapMessage ${message}');
+                                            },
                                           );
                                         } else if (message
                                             is DisagreeInquiryMessage) {
@@ -324,12 +339,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                               );
                                             },
                                           );
-                                        } else if (message is BotInvitationChatMessage) {
+                                        } else if (message
+                                            is BotInvitationChatMessage) {
                                           return BotInvitationChatBubble(
                                             isMe: _sender.uuid == message.from,
-                                            message:message,
+                                            message: message,
                                           );
-
                                         } else {
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
@@ -351,14 +366,14 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                             ),
                           ),
 
-                          // 1. When male receive inquiry from female, a
-                          // inquiry detail dialog will pop up
+                          // When male receive inquiry updated message from female, an inquiry detail dialog will pop up.
                           BlocListener<UpdateInquiryNotifierBloc,
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                messages = state.message;
-                                inquiryDetail.updateInquiryMessage = messages;
+                                updatedInquiryMessage = state.message;
+                                inquiryDetail.updateInquiryMessage =
+                                    updatedInquiryMessage;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
@@ -366,7 +381,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                     return InquiryDetailDialog(
                                       inquiryDetail: inquiryDetail,
                                       serviceUuid: widget.args.serviceUUID,
-                                      messages: messages,
+                                      message: updatedInquiryMessage,
                                     );
                                   },
                                 ).then((value) {
@@ -477,7 +492,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
           inquiryDetail.username = state.userProfile.username ?? '';
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
