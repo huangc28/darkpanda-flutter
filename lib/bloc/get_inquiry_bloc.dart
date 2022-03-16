@@ -43,6 +43,7 @@ class GetInquiryBloc extends Bloc<GetInquiryEvent, GetInquiryState> {
       }
 
       developer.log('Get inquiry result ${resp.body}');
+      print('Get inquiry result ${resp.body}');
 
       final serviceSettings = ServiceSettings.fromMap(
         json.decode(resp.body),

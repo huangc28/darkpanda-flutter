@@ -7,6 +7,7 @@ import './base_client.dart';
 
 class InquiryAPIClient extends BaseClient {
   Future<http.Response> getInquiry(String inquiryUuid) async {
+    print('InquiryAPIClient inquiryUuid ${inquiryUuid}');
     try {
       final request = http.Request(
         'GET',

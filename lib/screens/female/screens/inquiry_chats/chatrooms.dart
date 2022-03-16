@@ -93,7 +93,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                   child: ChatroomList(
                     chatrooms: state.chatrooms,
                     onRefresh: () {
-                      print('DEBUG trigger onRefresh');
                       BlocProvider.of<InquiryChatroomsBloc>(context)
                           .add(FetchChatrooms());
 

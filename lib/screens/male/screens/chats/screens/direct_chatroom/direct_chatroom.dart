@@ -21,7 +21,6 @@ import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
@@ -46,6 +45,7 @@ import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
+import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
 class DirectChatroom extends StatefulWidget {
   const DirectChatroom({
@@ -71,11 +71,12 @@ class _DirectChatroomState extends State<DirectChatroom>
   /// until chatroom is done initializing.
   bool _doneInitChatroom = false;
 
-  /// Information of the inquirer that the current user is talking with.
-  UserProfile _inquirerProfile = UserProfile();
-
   UpdateInquiryMessage updateInquiryMessage = UpdateInquiryMessage();
   InquiryDetail inquiryDetail = InquiryDetail();
+
+  NegotiatingServiceDetail _negotiatingServiceDetail =
+      NegotiatingServiceDetail();
+
   InquirerProfileArguments _inquirerProfileArguments;
 
   File _image;
@@ -93,6 +94,11 @@ class _DirectChatroomState extends State<DirectChatroom>
     inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
     inquiryDetail.routeTypes = RouteTypes.fromInquiry;
+
+    _negotiatingServiceDetail.serviceUUID = widget.args.serviceUUID;
+    _negotiatingServiceDetail.channelUUID = widget.args.channelUUID;
+    _negotiatingServiceDetail.counterPartUUID = widget.args.counterPartUUID;
+    _negotiatingServiceDetail.inquiryUUID = widget.args.inquiryUUID;
 
     _inquirerProfileArguments =
         InquirerProfileArguments(uuid: widget.args.counterPartUUID);
@@ -242,8 +248,6 @@ class _DirectChatroomState extends State<DirectChatroom>
                                 if (state.status == AsyncLoadingStatus.done) {
                                   setState(() {
                                     _doneInitChatroom = true;
-
-                                    // _inquirerProfile = state.userProfile;
                                   });
                                 }
                               },
@@ -277,7 +281,37 @@ class _DirectChatroomState extends State<DirectChatroom>
                                           return UpdateInquiryBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
-                                            onTapMessage: (message) {},
+                                            onTapMessage: (message) {
+                                              _negotiatingServiceDetail
+                                                      .serviceType =
+                                                  message.serviceType;
+
+                                              _negotiatingServiceDetail.price =
+                                                  message.price;
+
+                                              _negotiatingServiceDetail
+                                                  .address = message.address;
+
+                                              _negotiatingServiceDetail
+                                                      .serviceTime =
+                                                  message.serviceTime;
+
+                                              _negotiatingServiceDetail
+                                                  .duration = message.duration;
+
+                                              _negotiatingServiceDetail
+                                                  .username = message.username;
+                                              showDialog(
+                                                barrierDismissible: false,
+                                                context: context,
+                                                builder: (_) {
+                                                  return InquiryDetailDialog(
+                                                    negotiatingInquiryDetail:
+                                                        _negotiatingServiceDetail,
+                                                  );
+                                                },
+                                              );
+                                            },
                                           );
                                         } else if (message
                                             is DisagreeInquiryMessage) {
@@ -331,17 +365,24 @@ class _DirectChatroomState extends State<DirectChatroom>
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                updateInquiryMessage = state.message;
-                                inquiryDetail.updateInquiryMessage =
-                                    updateInquiryMessage;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) {
+                                    _negotiatingServiceDetail.serviceType =
+                                        state.message.serviceType;
+                                    _negotiatingServiceDetail.price =
+                                        state.message.price;
+                                    _negotiatingServiceDetail.address =
+                                        state.message.address;
+                                    _negotiatingServiceDetail.serviceTime =
+                                        state.message.serviceTime;
+                                    _negotiatingServiceDetail.duration =
+                                        state.message.duration;
+
                                     return InquiryDetailDialog(
-                                      inquiryDetail: inquiryDetail,
-                                      serviceUuid: widget.args.serviceUUID,
-                                      message: updateInquiryMessage,
+                                      negotiatingInquiryDetail:
+                                          _negotiatingServiceDetail,
                                     );
                                   },
                                 ).then((value) {
@@ -451,7 +492,6 @@ class _DirectChatroomState extends State<DirectChatroom>
           inquiryDetail.username = state.userProfile.username ?? '';
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {

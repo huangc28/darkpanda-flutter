@@ -48,6 +48,7 @@ import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bub
 import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
+import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -97,6 +98,9 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   /// Show loading when user sending image
   bool _isSendingImage = false;
 
+  NegotiatingServiceDetail _negotiatingServiceDetail =
+      NegotiatingServiceDetail();
+
   @override
   void initState() {
     super.initState();
@@ -106,8 +110,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
     inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
     inquiryDetail.routeTypes = RouteTypes.fromInquiry;
 
-    _inquirerProfileArguments =
-        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
+    _negotiatingServiceDetail.channelUUID = widget.args.channelUUID;
+    _negotiatingServiceDetail.counterPartUUID = widget.args.counterPartUUID;
+    _negotiatingServiceDetail.inquiryUUID = widget.args.inquiryUUID;
+    _negotiatingServiceDetail.serviceUUID = widget.args.serviceUUID;
+
+    InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -303,12 +311,13 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                                 context: context,
                                                 builder: (_) {
                                                   return InquiryDetailDialog(
-                                                    inquiryDetail:
-                                                        inquiryDetail,
-                                                    serviceUuid:
-                                                        widget.args.serviceUUID,
-                                                    message: message,
-                                                  );
+                                                      // inquiryDetail:
+                                                      //     inquiryDetail,
+                                                      // serviceUuid:
+                                                      //     widget.args.serviceUUID,
+                                                      // serviceType:
+                                                      //     message.serviceType,
+                                                      );
                                                 },
                                               );
                                               print('onTapMessage ${message}');
@@ -379,10 +388,11 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                   context: context,
                                   builder: (_) {
                                     return InquiryDetailDialog(
-                                      inquiryDetail: inquiryDetail,
-                                      serviceUuid: widget.args.serviceUUID,
-                                      message: updatedInquiryMessage,
-                                    );
+                                        // inquiryDetail: inquiryDetail,
+                                        // serviceUuid: widget.args.serviceUUID,
+                                        // serviceType:
+                                        //     updatedInquiryMessage.serviceType);
+                                        );
                                   },
                                 ).then((value) {
                                   // Reject inquiry

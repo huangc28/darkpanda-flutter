@@ -1,7 +1,6 @@
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
@@ -10,36 +9,24 @@ import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
 class InquiryDetailDialog extends StatefulWidget {
   const InquiryDetailDialog({
     Key key,
-    this.inquiryDetail,
-    this.serviceUuid,
-    this.message,
+    this.negotiatingInquiryDetail,
+    this.onPay,
   }) : super(key: key);
-
-  final InquiryDetail inquiryDetail;
-  final String serviceUuid;
-  final UpdateInquiryMessage message;
+  final NegotiatingServiceDetail negotiatingInquiryDetail;
+  final Function(NegotiatingServiceDetail) onPay;
 
   @override
   _InquiryDetailDialogState createState() => _InquiryDetailDialogState();
 }
 
 class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
-  InquiryDetail inquiryDetail;
   int isFirstCall = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    inquiryDetail = widget.inquiryDetail;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +78,14 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                         ).pushNamed(
                           MainRoutes.serviceChatroom,
                           arguments: ServiceChatroomScreenArguments(
-                            channelUUID: inquiryDetail.channelUuid,
-                            inquiryUUID: inquiryDetail.inquiryUuid,
-                            counterPartUUID: inquiryDetail.counterPartUuid,
-                            serviceUUID: inquiryDetail.serviceUuid,
+                            channelUUID:
+                                widget.negotiatingInquiryDetail.channelUUID,
+                            inquiryUUID:
+                                widget.negotiatingInquiryDetail.inquiryUUID,
+                            counterPartUUID:
+                                widget.negotiatingInquiryDetail.counterPartUUID,
+                            serviceUUID:
+                                widget.negotiatingInquiryDetail.serviceUUID,
                             routeTypes: RouteTypes.fromBuyService,
                           ),
                         );
@@ -124,11 +115,8 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
         }
 
         if (state.status == AsyncLoadingStatus.done) {
-          inquiryDetail.serviceUuid =
+          widget.negotiatingInquiryDetail.serviceUUID =
               state.emitServiceConfirmMessageResponse.serviceChannelUuid;
-
-          // Dismiss inquiry_detail_dialog
-          // Navigator.pop(context, true);
 
           BlocProvider.of<LoadIncomingServiceBloc>(context)
               .add(LoadIncomingService());
@@ -142,9 +130,10 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             loading: state.status == AsyncLoadingStatus.loading,
             disabled: state.status == AsyncLoadingStatus.loading,
             onPressed: () async {
-              // Navigator.pop(context, true);
               BlocProvider.of<SendEmitServiceConfirmMessageBloc>(context).add(
-                EmitServiceConfirmMessage(widget.serviceUuid),
+                EmitServiceConfirmMessage(
+                  widget.negotiatingInquiryDetail.serviceUUID,
+                ),
               );
             },
             text: '接受', //'去支付',
@@ -180,7 +169,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             _buildEachText(
               'pie.png',
               '服務費',
-              '${widget.inquiryDetail.updateInquiryMessage.price}',
+              '${widget.negotiatingInquiryDetail.price}',
               fontWeight: FontWeight.bold,
             ),
             // SizedBox(height: 8),
@@ -193,9 +182,8 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
   }
 
   Widget _inquiryDetail() {
-    final durationSplit = widget.inquiryDetail.updateInquiryMessage.duration
-        .toString()
-        .split(':');
+    final durationSplit =
+        widget.negotiatingInquiryDetail.duration.toString().split(':');
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -208,33 +196,30 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
             _buildEachText(
               '',
               '服務',
-              widget.message.serviceType != null
-                  ? widget.message.serviceType
-                  : '',
+              widget.negotiatingInquiryDetail.serviceType ?? '',
               icon: Icons.article,
             ),
             SizedBox(height: 8),
             _buildEachText(
-                'place.png',
-                '地址',
-                widget.inquiryDetail.updateInquiryMessage.address != null
-                    ? widget.inquiryDetail.updateInquiryMessage.address
-                    : ''),
+              'place.png',
+              '地址',
+              widget.negotiatingInquiryDetail.address ?? '',
+            ),
             SizedBox(height: 8),
             _buildEachText(
                 'clock.png',
                 '時間',
-                widget.inquiryDetail.updateInquiryMessage.serviceTime != null
-                    ? '${DateFormat("MM/dd/yy, hh: mm a").format(widget.inquiryDetail.updateInquiryMessage.serviceTime)}'
+                widget.negotiatingInquiryDetail.serviceTime != null
+                    ? '${DateFormat("MM/dd/yy, hh: mm a").format(widget.negotiatingInquiryDetail.serviceTime)}'
                     : ''),
             SizedBox(height: 8),
             if (durationSplit.length > 0)
               _buildEachText(
                 'countDown.png',
                 '時長',
-                widget.inquiryDetail.updateInquiryMessage.duration >
+                widget.negotiatingInquiryDetail.duration >
                             Duration(hours: 0, minutes: 1) &&
-                        widget.inquiryDetail.updateInquiryMessage.duration <=
+                        widget.negotiatingInquiryDetail.duration <=
                             Duration(hours: 0, minutes: 59)
                     ? '${durationSplit[1]} 分'
                     : '${durationSplit.first} 小時 ${durationSplit[1]} 分',
@@ -247,7 +232,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
 
   Widget _titleText() {
     return Text(
-      widget.inquiryDetail.username + '已向你發送請求',
+      widget.negotiatingInquiryDetail.username + '已向你發送請求',
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
