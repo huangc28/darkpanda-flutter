@@ -1,6 +1,7 @@
 import 'package:darkpanda_flutter/enums/route_types.dart';
 
 class DirectChatroomScreenArguments {
+  // Chatroom relative data
   final String channelUUID;
   final String inquiryUUID;
   final String counterPartUUID;

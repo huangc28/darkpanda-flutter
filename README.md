@@ -66,6 +66,9 @@ You should see dashboard installed on you emulator.
 - []Emit service inquiry not showing on female app.
 - []Girls emit service confirm, male is not able to recieve it via historical message.
 - []Click on edit address, there should be an default address showing on address input box.
+- []`inquiry_chatroom` need to fix `InquiryDetailDialog` 
+- []Cancel service in chatroom, all functions in the chatroom should be locked.
+
 ### FCM integration on picking up inquiry 
 
 When female user picks up inquiry, sends FCM message to male user. We will use google pub/sub service to integrate FCM message.

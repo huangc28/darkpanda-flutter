@@ -196,9 +196,6 @@ class CurrentChatroomBloc
         } else if (data['type'] == MessageType.cancel_service.name) {
           return CancelServiceMessage.fromMap(data);
         } else if (data['type'] == MessageType.bot_invitation_chat_text.name) {
-          print('historicalMessages bot_invitation_chat_text 2');
-          print('bot_invitation_chat_text !!');
-
           return BotInvitationChatMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
