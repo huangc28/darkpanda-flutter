@@ -60,7 +60,7 @@ You should see dashboard installed on you emulator.
 - []After female cancels service chatroom, lock all chatroom functions.
 - [x]When male left the inquiry chatroom and post another inquiry, the same girl can not see the inquiry.
 - [x]When either party left the chatoom, we should change  the inquiry status to cancel 
-- []When female sends service update message, chatroom should have a `ServiceUpdateMessageBubble`.  `ServiceUpdateMessageBubble` is clickable 
+- [x]In inquiry chatroom When female sends service update message, chatroom should have a `ServiceUpdateMessageBubble`.  `ServiceUpdateMessageBubble` is clickable 
     When user clicks on it, service detail popup will show. 
 - []Create a singleton class contains a hash map of error code and corresponding error message. The error message is resolved via i18n function. 
 - []Emit service inquiry not showing on female app.
@@ -68,6 +68,10 @@ You should see dashboard installed on you emulator.
 - []Click on edit address, there should be an default address showing on address input box.
 - []`inquiry_chatroom` need to fix `InquiryDetailDialog` 
 - []Cancel service in chatroom, all functions in the chatroom should be locked.
+- []In service chatroom, click on `UpdatedInqiuryBubble` should display service detail popup.
+- [x]Service 過期 chatroom 不會有通知.
+- [x]Direct match still has duplicated girl.
+- [] In historical records, Expired service should display `已過期` instead of `已完成`
 
 ### FCM integration on picking up inquiry 
 
@@ -79,7 +83,7 @@ When male starts an inquiry, backend creates a pub/sub topic that the device can
 
 ### 
 ## Reference
-
+- [Postgres how to shuffle records with pagination so it looks random](https://nathanmlong.com/2017/11/a-shuffled-order-that-works-with-pagination/)
 - [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)
 - [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)
 - [Great navigator article ](https://medium.com/flutter-community/flutter-push-pop-push-1bb718b13c31)

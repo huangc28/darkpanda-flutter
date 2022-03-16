@@ -278,10 +278,11 @@ class _DirectChatroomState extends State<DirectChatroom>
                                             message: message,
                                             onTapMessage:
                                                 (UpdateInquiryMessage message) {
-                                              _negotiatingServiceDetail =
-                                                  _negotiatingServiceDetail
-                                                      .copyWithUpdateInquiryMessage(
-                                                          message);
+                                              _negotiatingServiceDetail
+                                                  .copyWithUpdateInquiryMessage(
+                                                      message);
+                                              print(
+                                                  '_negotiatingServiceDetail ${_negotiatingServiceDetail.duration}');
                                               showDialog(
                                                 barrierDismissible: false,
                                                 context: context,
