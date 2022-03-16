@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.5+1
+version: 1.0.5+2
 
 # TODO: enable null safty on Dart 2.12. Too much fixes, we should have a dedicated branch to have them fixed.
 # https://stackoverflow.com/questions/64621051/how-to-enable-null-safety-in-flutter
@@ -70,6 +70,7 @@ dependencies:
   # flutter_local_notifications: ^8.1.1+1
   flutter_local_notifications: ^9.0.2
   dashbook: ^0.1.4
+  url_launcher: ^6.0.20
   
 
 dev_dependencies:
