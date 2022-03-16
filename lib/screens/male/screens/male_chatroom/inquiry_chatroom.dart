@@ -88,7 +88,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   UserProfile _inquirerProfile = UserProfile();
 
   UpdateInquiryMessage updatedInquiryMessage = UpdateInquiryMessage();
-  InquiryDetail inquiryDetail = InquiryDetail();
   InquirerProfileArguments _inquirerProfileArguments;
 
   File _image;
@@ -105,15 +104,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   void initState() {
     super.initState();
 
-    inquiryDetail.channelUuid = widget.args.channelUUID;
-    inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
-    inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
-    inquiryDetail.routeTypes = RouteTypes.fromInquiry;
-
-    _negotiatingServiceDetail.channelUUID = widget.args.channelUUID;
-    _negotiatingServiceDetail.counterPartUUID = widget.args.counterPartUUID;
-    _negotiatingServiceDetail.inquiryUUID = widget.args.inquiryUUID;
-    _negotiatingServiceDetail.serviceUUID = widget.args.serviceUUID;
+    _negotiatingServiceDetail.copy(
+      serviceUUID: widget.args.serviceUUID,
+      channelUUID: widget.args.channelUUID,
+      counterPartUUID: widget.args.counterPartUUID,
+      inquiryUUID: widget.args.inquiryUUID,
+    );
 
     InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
@@ -310,14 +306,14 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                               showDialog(
                                                 context: context,
                                                 builder: (_) {
+                                                  _negotiatingServiceDetail
+                                                      .copyWithUpdateInquiryMessage(
+                                                          message);
+
                                                   return InquiryDetailDialog(
-                                                      // inquiryDetail:
-                                                      //     inquiryDetail,
-                                                      // serviceUuid:
-                                                      //     widget.args.serviceUUID,
-                                                      // serviceType:
-                                                      //     message.serviceType,
-                                                      );
+                                                    negotiatingInquiryDetail:
+                                                        _negotiatingServiceDetail,
+                                                  );
                                                 },
                                               );
                                               print('onTapMessage ${message}');
@@ -380,19 +376,17 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                updatedInquiryMessage = state.message;
-                                inquiryDetail.updateInquiryMessage =
-                                    updatedInquiryMessage;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) {
+                                    _negotiatingServiceDetail
+                                        .copyWithUpdateInquiryMessage(
+                                            state.message);
                                     return InquiryDetailDialog(
-                                        // inquiryDetail: inquiryDetail,
-                                        // serviceUuid: widget.args.serviceUUID,
-                                        // serviceType:
-                                        //     updatedInquiryMessage.serviceType);
-                                        );
+                                      negotiatingInquiryDetail:
+                                          _negotiatingServiceDetail,
+                                    );
                                   },
                                 ).then((value) {
                                   // Reject inquiry
@@ -499,7 +493,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
-          inquiryDetail.username = state.userProfile.username ?? '';
+          _negotiatingServiceDetail.username = state.userProfile.username ?? '';
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(

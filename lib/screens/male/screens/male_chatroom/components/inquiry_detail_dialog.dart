@@ -16,10 +16,8 @@ class InquiryDetailDialog extends StatefulWidget {
   const InquiryDetailDialog({
     Key key,
     this.negotiatingInquiryDetail,
-    this.onPay,
   }) : super(key: key);
   final NegotiatingServiceDetail negotiatingInquiryDetail;
-  final Function(NegotiatingServiceDetail) onPay;
 
   @override
   _InquiryDetailDialogState createState() => _InquiryDetailDialogState();

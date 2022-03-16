@@ -39,7 +39,6 @@ import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/direct_current
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/inquiry_detail_dialog.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screens/male_inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
@@ -72,7 +71,6 @@ class _DirectChatroomState extends State<DirectChatroom>
   bool _doneInitChatroom = false;
 
   UpdateInquiryMessage updateInquiryMessage = UpdateInquiryMessage();
-  InquiryDetail inquiryDetail = InquiryDetail();
 
   NegotiatingServiceDetail _negotiatingServiceDetail =
       NegotiatingServiceDetail();
@@ -90,15 +88,12 @@ class _DirectChatroomState extends State<DirectChatroom>
   void initState() {
     super.initState();
 
-    inquiryDetail.channelUuid = widget.args.channelUUID;
-    inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
-    inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
-    inquiryDetail.routeTypes = RouteTypes.fromInquiry;
-
-    _negotiatingServiceDetail.serviceUUID = widget.args.serviceUUID;
-    _negotiatingServiceDetail.channelUUID = widget.args.channelUUID;
-    _negotiatingServiceDetail.counterPartUUID = widget.args.counterPartUUID;
-    _negotiatingServiceDetail.inquiryUUID = widget.args.inquiryUUID;
+    _negotiatingServiceDetail.copy(
+      serviceUUID: widget.args.serviceUUID,
+      channelUUID: widget.args.channelUUID,
+      counterPartUUID: widget.args.counterPartUUID,
+      inquiryUUID: widget.args.inquiryUUID,
+    );
 
     _inquirerProfileArguments =
         InquirerProfileArguments(uuid: widget.args.counterPartUUID);
@@ -281,26 +276,12 @@ class _DirectChatroomState extends State<DirectChatroom>
                                           return UpdateInquiryBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
-                                            onTapMessage: (message) {
-                                              _negotiatingServiceDetail
-                                                      .serviceType =
-                                                  message.serviceType;
-
-                                              _negotiatingServiceDetail.price =
-                                                  message.price;
-
-                                              _negotiatingServiceDetail
-                                                  .address = message.address;
-
-                                              _negotiatingServiceDetail
-                                                      .serviceTime =
-                                                  message.serviceTime;
-
-                                              _negotiatingServiceDetail
-                                                  .duration = message.duration;
-
-                                              _negotiatingServiceDetail
-                                                  .username = message.username;
+                                            onTapMessage:
+                                                (UpdateInquiryMessage message) {
+                                              _negotiatingServiceDetail =
+                                                  _negotiatingServiceDetail
+                                                      .copyWithUpdateInquiryMessage(
+                                                          message);
                                               showDialog(
                                                 barrierDismissible: false,
                                                 context: context,
@@ -369,16 +350,10 @@ class _DirectChatroomState extends State<DirectChatroom>
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) {
-                                    _negotiatingServiceDetail.serviceType =
-                                        state.message.serviceType;
-                                    _negotiatingServiceDetail.price =
-                                        state.message.price;
-                                    _negotiatingServiceDetail.address =
-                                        state.message.address;
-                                    _negotiatingServiceDetail.serviceTime =
-                                        state.message.serviceTime;
-                                    _negotiatingServiceDetail.duration =
-                                        state.message.duration;
+                                    _negotiatingServiceDetail
+                                        .copyWithUpdateInquiryMessage(
+                                      state.message,
+                                    );
 
                                     return InquiryDetailDialog(
                                       negotiatingInquiryDetail:
@@ -489,7 +464,7 @@ class _DirectChatroomState extends State<DirectChatroom>
       ),
       title: BlocBuilder<DirectCurrentChatroomBloc, DirectCurrentChatroomState>(
         builder: (context, state) {
-          inquiryDetail.username = state.userProfile.username ?? '';
+          _negotiatingServiceDetail.username = state.userProfile.username ?? '';
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(
