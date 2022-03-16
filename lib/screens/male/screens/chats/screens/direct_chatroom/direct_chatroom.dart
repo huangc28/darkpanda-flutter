@@ -281,8 +281,6 @@ class _DirectChatroomState extends State<DirectChatroom>
                                               _negotiatingServiceDetail
                                                   .copyWithUpdateInquiryMessage(
                                                       message);
-                                              print(
-                                                  '_negotiatingServiceDetail ${_negotiatingServiceDetail.duration}');
                                               showDialog(
                                                 barrierDismissible: false,
                                                 context: context,
