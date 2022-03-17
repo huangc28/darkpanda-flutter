@@ -42,6 +42,15 @@ class LoadFemaleListState<E extends AppBaseException> extends Equatable {
           currentPage: currentPage ?? state.currentPage,
         );
 
+  LoadFemaleListState.updateFemaleList(
+    LoadFemaleListState state, {
+    List<FemaleUser> femaleUsers,
+  }) : this._(
+          status: state.status,
+          femaleUsers: femaleUsers ?? state.femaleUsers,
+          currentPage: state.currentPage,
+        );
+
   LoadFemaleListState.clearState(LoadFemaleListState state)
       : this._(
           femaleUsers: [],

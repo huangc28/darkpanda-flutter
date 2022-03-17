@@ -25,6 +25,15 @@ class LoadMoreFemaleList extends LoadFemaleListEvent {
   });
 }
 
+// Update female profile in list after a service is made for the user.
+class UpdateFemaleProfileInList extends LoadFemaleListEvent {
+  final FemaleUser femaleUser;
+
+  const UpdateFemaleProfileInList({
+    this.femaleUser,
+  });
+}
+
 class ClearFemaleListState extends LoadFemaleListEvent {
   const ClearFemaleListState();
 }
