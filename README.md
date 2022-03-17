@@ -73,6 +73,7 @@ You should see dashboard installed on you emulator.
 - [x]Service 過期 chatroom 不會有通知.
 - [x]Direct match still has duplicated girl.
 - [] In historical records, Expired service should display `已過期` instead of `已完成`
+- [] Histoical records should state whether the service can be commented.
 
 ### FCM integration on picking up inquiry 
 
