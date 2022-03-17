@@ -14,5 +14,10 @@
                 "example": "辣台妹"
             }
         }
-    }
+    },
+
+    "serviceCanceled": "已取消",
+    "serviceCompleted": "已完成",
+    "serviceExpired": "已過期",
+    "serviceFailed": "已失敗"
 }

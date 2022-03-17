@@ -3,6 +3,7 @@ import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../mixin/serviceStatusTextProvider.dart';
 import '../models/historical_service.dart';
 
 class HistoryCard extends StatefulWidget {
@@ -19,42 +20,41 @@ class HistoryCard extends StatefulWidget {
   _HistoryCardState createState() => _HistoryCardState();
 }
 
-class _HistoryCardState extends State<HistoryCard> {
+class _HistoryCardState extends State<HistoryCard>
+    with ServiceStatusTextProvider {
   final DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm a');
 
   // TODO Text should be displayed via i10n.
-  final Map<String, String> serviceStatusContentMap = {
-    ServiceStatus.canceled.name: "已取消",
-    ServiceStatus.completed.name: "已完成",
-    ServiceStatus.expired.name: "已過期",
-    ServiceStatus.payment_failed.name: "付款失敗",
-  };
+  // final Map<String, String> serviceStatusContentMap = {
+  //   ServiceStatus.canceled.name: "已取消",
+  //   ServiceStatus.completed.name: "已完成",
+  //   ServiceStatus.expired.name: "已過期",
+  //   ServiceStatus.payment_failed.name: "付款失敗",
+  // };
 
-  Text _buildServiceStatusText(
-    String serviceStatus,
-  ) {
-    String text = serviceStatusContentMap[serviceStatus];
-    Color color = Colors.white;
-    if (serviceStatus == ServiceStatus.canceled.name ||
-        serviceStatus == ServiceStatus.expired.name ||
-        serviceStatus == ServiceStatus.payment_failed.name) {
-      color = Colors.red;
-    }
+  // Text _buildServiceStatusText(
+  //   String serviceStatus,
+  // ) {
+  //   String text = serviceStatusContentMap[serviceStatus];
+  //   Color color = Colors.white;
+  //   if (serviceStatus == ServiceStatus.canceled.name ||
+  //       serviceStatus == ServiceStatus.expired.name ||
+  //       serviceStatus == ServiceStatus.payment_failed.name) {
+  //     color = Colors.red;
+  //   }
 
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        color: color,
-      ),
-    );
-  }
+  //   return Text(
+  //     text,
+  //     style: TextStyle(
+  //       fontSize: 15,
+  //       fontWeight: FontWeight.w500,
+  //       color: color,
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'DEBUG widget.historicalService.status ${widget.historicalService.status}');
     return InkWell(
       onTap: widget.press,
       highlightColor: Colors.transparent,
@@ -100,8 +100,10 @@ class _HistoryCardState extends State<HistoryCard> {
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 16.0, right: 16.0),
-                            child: _buildServiceStatusText(
-                                widget.historicalService.status),
+                            child: geTextByServiceStatus(
+                              context,
+                              widget.historicalService.status,
+                            ),
                           ),
                         ],
                       ),

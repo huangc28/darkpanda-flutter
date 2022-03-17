@@ -13,6 +13,7 @@ import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import '../../../models/historical_service.dart';
+import '../../../mixin/serviceStatusTextProvider.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -40,7 +41,8 @@ class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
 }
 
-class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
+class _BodyState extends State<Body>
+    with SingleTickerProviderStateMixin, ServiceStatusTextProvider {
   String _cancelCause;
   String _gender;
   String _refundStatus = '';
@@ -56,9 +58,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<String> _getGender() async {
-    return await SecureStore().readGender();
-  }
+  Future<String> _getGender() => SecureStore().readGender();
 
   void _serviceCancelCause() {
     if (_gender == Gender.male.name) {
@@ -200,34 +200,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: widget.historicalService.status ==
-                                ServiceStatus.canceled.name
-                            ? Text(
-                                '已取消',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.red,
-                                ),
-                              )
-                            : widget.historicalService.status ==
-                                    ServiceStatus.payment_failed.name
-                                ? Text(
-                                    '付款失敗',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : Text(
-                                    '已完成',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.green,
-                                    ),
-                                  ),
+                        child: geTextByServiceStatus(
+                          context,
+                          widget.historicalService.status,
+                        ),
                       ),
                     ],
                   ),
