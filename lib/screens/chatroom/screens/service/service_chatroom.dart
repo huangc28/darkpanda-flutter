@@ -512,14 +512,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                 print('trigger cancel service');
                                               },
                                               onDismiss: () async {
-                                                Navigator.of(
-                                                  context,
-                                                  rootNavigator: true,
-                                                ).pushNamed(
-                                                  MainRoutes.male,
-                                                  arguments:
-                                                      MaleAppTabItem.manage,
-                                                );
+                                                // Back until is the first page of service list.
+                                                Navigator.of(context).popUntil(
+                                                    (route) => route.isFirst);
                                               });
                                         });
                                   }
