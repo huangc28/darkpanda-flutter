@@ -1,13 +1,21 @@
-import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:flutter/material.dart';
+import 'package:darkpanda_flutter/components/dp_button.dart';
 
-class CancelServiceConfirmationDialog extends StatelessWidget {
-  const CancelServiceConfirmationDialog({
+class ServiceAlertDialog extends StatelessWidget {
+  const ServiceAlertDialog({
     Key key,
     this.content,
+    this.onConfirm,
+    this.onDismiss,
+    this.confirmText,
+    this.cancelText,
   }) : super(key: key);
 
   final String content;
+  final String confirmText;
+  final String cancelText;
+  final VoidCallback onConfirm;
+  final VoidCallback onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +27,6 @@ class CancelServiceConfirmationDialog extends StatelessWidget {
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text(
-                '對方將可以給你評價，確定取消？',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
               Text(
                 content,
                 style: TextStyle(
@@ -47,8 +47,8 @@ class CancelServiceConfirmationDialog extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.3,
                 child: DPTextButton(
                   theme: DPTextButtonThemes.grey,
-                  onPressed: () async {
-                    Navigator.pop(context, false);
+                  onPressed: () {
+                    onDismiss();
                   },
                   text: '不取消',
                 ),
@@ -57,8 +57,8 @@ class CancelServiceConfirmationDialog extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.3,
                 child: DPTextButton(
                   theme: DPTextButtonThemes.purple,
-                  onPressed: () async {
-                    Navigator.pop(context, true);
+                  onPressed: () {
+                    onConfirm();
                   },
                   text: '確定取消',
                 ),

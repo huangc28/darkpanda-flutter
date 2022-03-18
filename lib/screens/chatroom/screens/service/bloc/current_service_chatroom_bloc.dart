@@ -309,7 +309,6 @@ class CurrentServiceChatroomBloc
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
     } else if (isCancelServiceMsg(rawMsg['type'])) {
-      print('cancel service trigger!');
       msg = CancelServiceMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);

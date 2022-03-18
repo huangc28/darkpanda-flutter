@@ -17,5 +17,15 @@
     "serviceCanceled": "canceled",
     "serviceCompleted": "completed",
     "serviceExpired": "expired",
-    "serviceFailed": "failed"
+    "serviceFailed": "failed",
+    "serviceCanceledByOtherDialogText": "Service has been canceled by {name}. Go comment on {name}?",
+    "@serviceCanceledByOtherDialogText": {
+        "description": "Service has been canceled by other participant",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "hotfallingangle"
+            }
+        }
+    }
 }

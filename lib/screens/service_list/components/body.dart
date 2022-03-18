@@ -111,7 +111,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                     ),
                     child: ServiceChatroomGrid(
                       onEnterChat: (chatroom) {
-                        // print('hello world!!');
                         Navigator.of(
                           context,
                           rootNavigator: true,
