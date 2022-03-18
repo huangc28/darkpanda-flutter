@@ -111,20 +111,19 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                     ),
                     child: ServiceChatroomGrid(
                       onEnterChat: (chatroom) {
-                        print('hello world!!');
-                        // Navigator.of(
-                        //   context,
-                        //   rootNavigator: true,
-                        // ).pushNamed(
-                        //   MainRoutes.serviceChatroom,
-                        //   arguments: ServiceChatroomScreenArguments(
-                        //     channelUUID: chatroom.channelUuid,
-                        //     inquiryUUID: chatroom.inquiryUuid,
-                        //     counterPartUUID: chatroom.chatPartnerUserUuid,
-                        //     serviceUUID: chatroom.serviceUuid,
-                        //     routeTypes: RouteTypes.fromIncomingService,
-                        //   ),
-                        // );
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushNamed(
+                          MainRoutes.serviceChatroom,
+                          arguments: ServiceChatroomScreenArguments(
+                            channelUUID: chatroom.channelUuid,
+                            inquiryUUID: chatroom.inquiryUuid,
+                            counterPartUUID: chatroom.chatPartnerUserUuid,
+                            serviceUUID: chatroom.serviceUuid,
+                            routeTypes: RouteTypes.fromIncomingService,
+                          ),
+                        );
                       },
                       chatroom: chatroom,
                       lastMessage: lastMsg == null ? "" : lastMsg.content,
