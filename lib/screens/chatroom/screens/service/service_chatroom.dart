@@ -512,9 +512,14 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                 print('trigger cancel service');
                                               },
                                               onDismiss: () async {
-                                                // Redirect to incoming service page.
-                                                print(
-                                                    'trigger dismiss service');
+                                                Navigator.of(
+                                                  context,
+                                                  rootNavigator: true,
+                                                ).pushNamed(
+                                                  MainRoutes.male,
+                                                  arguments:
+                                                      MaleAppTabItem.manage,
+                                                );
                                               });
                                         });
                                   }

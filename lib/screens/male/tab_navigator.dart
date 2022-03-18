@@ -47,6 +47,7 @@ class TabNavigator extends StatelessWidget {
     }
 
     if (tabItem == MaleAppTabItem.manage) {
+      print('MaleAppTabItem.manage triggered');
       return _servicesRoutes.routeBuilder(context);
     }
 
@@ -60,7 +61,7 @@ class TabNavigator extends StatelessWidget {
 
     return {
       '/': (context) => Center(
-            child: Text('route builder doesn\'t  exists'),
+            child: Text('route builder doesn\'t exists'),
           ),
     };
   }
