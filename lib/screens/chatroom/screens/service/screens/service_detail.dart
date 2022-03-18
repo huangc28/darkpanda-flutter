@@ -145,8 +145,6 @@ class _ServiceDetailState extends State<ServiceDetail>
           BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
               listener: (context, state) {
             if (state.status == AsyncLoadingStatus.done) {
-              // _serviceCancelCause(state.loadCancelServiceResponse.cancelCause);
-
               showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -157,8 +155,10 @@ class _ServiceDetailState extends State<ServiceDetail>
                 },
               ).then((value) {
                 if (value) {
-                  BlocProvider.of<CancelServiceBloc>(context).add(CancelService(
-                      serviceUuid: widget.historicalService.serviceUuid));
+                  BlocProvider.of<CancelServiceBloc>(context).add(
+                    CancelService(
+                        serviceUuid: widget.historicalService.serviceUuid),
+                  );
                 }
               });
             }

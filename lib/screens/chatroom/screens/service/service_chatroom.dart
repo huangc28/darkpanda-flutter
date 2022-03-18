@@ -109,12 +109,9 @@ class ServiceChatroom extends StatefulWidget {
   _ServiceChatroomState createState() => _ServiceChatroomState();
 }
 
-// @TODO:
-//   - Init current chatroom - load history messages.
-//   - Go to service qrcode scanner.
-//   - If is male,
-//      - Load dp balance.
-//      - If service status is unpaid, show unpaid banner.
+// TODO:
+//   - Cancel service should lock all functionalities in the chatroom
+//   - Hit cancel service should show proper dialog to warning user before canceling.
 class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
@@ -429,7 +426,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                           },
                         ),
                       ],
-                      // child: SizedBox.shrink(),
                       child: _showServiceConfirmedNotifier
                           ? NotificationBanner(
                               avatarUrl: _inquirerProfile.avatarUrl,
@@ -457,27 +453,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                             )
                           : SizedBox.shrink(),
                     ),
-
-                    // Payment completed banner
-                    // BlocListener<PaymentCompleteNotifierBloc,
-                    //     PaymentCompleteNotifierState>(
-                    //   listener: (context, state) {
-                    //     print('[Debug] Payment complete notifier');
-
-                    //     setState(() {
-                    //       _serviceDetails.copyWith(
-                    //         serviceStatus: ServiceStatus.to_be_fulfilled.name,
-                    //       );
-                    //     });
-                    //   },
-                    //   child: _serviceDetails.serviceStatus ==
-                    //           ServiceStatus.to_be_fulfilled.name
-                    //       ? PaymentCompleteBanner(
-                    //           inquirerProfile: _inquirerProfile,
-                    //           serviceDetails: _serviceDetails,
-                    //         )
-                    //       : SizedBox.shrink(),
-                    // ),
 
                     Expanded(
                       child: LoadMoreScrollable(
@@ -587,6 +562,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                             );
                                           } else if (message
                                               is CancelServiceMessage) {
+                                            // 1. Display popup saying the counter part has
+
+                                            print('Display ');
                                             return CancelServiceBubble(
                                               isMe:
                                                   _sender.uuid == message.from,
