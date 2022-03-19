@@ -47,7 +47,6 @@ class TabNavigator extends StatelessWidget {
     }
 
     if (tabItem == MaleAppTabItem.manage) {
-      print('MaleAppTabItem.manage triggered');
       return _servicesRoutes.routeBuilder(context);
     }
 

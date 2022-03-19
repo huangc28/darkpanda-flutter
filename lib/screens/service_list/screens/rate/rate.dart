@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/components/complete_rate.dart';
-
 import 'components/body.dart';
 import '../../models/historical_service.dart';
 
@@ -48,11 +46,6 @@ class _RateState extends State<Rate> with SingleTickerProviderStateMixin {
         body: Body(
           formKey: _formKey,
           historicalService: widget.historicalService,
-          // onPressComplete: () {
-          //   setState(() {
-          //     complete = true;
-          //   });
-          // },
         ));
   }
 }

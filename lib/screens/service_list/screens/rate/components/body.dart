@@ -154,7 +154,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
         //user done send rating.
         if (state.status == AsyncLoadingStatus.done) {
-          // widget.onPressComplete();
           Navigator.of(
             context,
             rootNavigator: true,

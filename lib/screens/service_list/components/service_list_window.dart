@@ -17,18 +17,19 @@ import 'service_chatroom_list.dart';
 import 'service_chatroom_grid.dart';
 import 'service_historical_list.dart';
 
-class Body extends StatefulWidget {
-  const Body({
+class ServiceListWindow extends StatefulWidget {
+  const ServiceListWindow({
     this.tabController,
   });
 
   final TabController tabController;
 
   @override
-  _BodyState createState() => _BodyState();
+  _ServiceListWindowState createState() => _ServiceListWindowState();
 }
 
-class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
+class _ServiceListWindowState extends State<ServiceListWindow>
+    with SingleTickerProviderStateMixin {
   Completer<void> _refreshCompleter;
 
   @override
