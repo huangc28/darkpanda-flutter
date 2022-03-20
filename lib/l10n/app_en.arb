@@ -27,5 +27,9 @@
                 "example": "hotfallingangle"
             }
         }
-    }
+    },
+    "proceedRating": "go rating",
+    "cancelRating": "cancel rating",
+    "confirmCancel": "cancel",
+    "dontCancel": "don't cancel"
 }

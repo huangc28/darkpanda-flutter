@@ -5,8 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/rate/rate.dart';
-// import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-// import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
@@ -269,13 +267,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           serviceUUID: historicalService.serviceUuid,
         );
       },
-    )).then((refresh) {
-      if (refresh != null) {
-        if (refresh == true) {
-          // _onRefreshRateDetail();
-        }
-      }
-    });
+    ));
   }
 
   @override
@@ -497,13 +489,19 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                         context: context,
                                         builder: (context) {
                                           return ServiceAlertDialog(
+                                              confirmText:
+                                                  AppLocalizations.of(context)
+                                                      .proceedRating,
+                                              cancelText:
+                                                  AppLocalizations.of(context)
+                                                      .cancelRating,
                                               content: AppLocalizations.of(
                                                       context)
                                                   .serviceCanceledByOtherDialogText(
                                                       _inquiryDetail.username),
                                               onConfirm: () async {
                                                 // Redirect to commenting page.
-                                                print('trigger cancel service');
+                                                _navigateToRating();
                                               },
                                               onDismiss: () async {
                                                 // Back until is the first page of MaleAppTabItem.manage NavigatorState.

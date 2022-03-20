@@ -12,7 +12,11 @@ class ServiceAlertDialog extends StatelessWidget {
   }) : super(key: key);
 
   final String content;
+
+  ///  Text of confirm button
   final String confirmText;
+
+  /// Text of cancel button
   final String cancelText;
   final VoidCallback onConfirm;
   final VoidCallback onDismiss;
@@ -50,7 +54,7 @@ class ServiceAlertDialog extends StatelessWidget {
                   onPressed: () {
                     onDismiss();
                   },
-                  text: '不取消',
+                  text: cancelText,
                 ),
               ),
               Container(
@@ -60,7 +64,7 @@ class ServiceAlertDialog extends StatelessWidget {
                   onPressed: () {
                     onConfirm();
                   },
-                  text: '確定取消',
+                  text: confirmText,
                 ),
               ),
             ],

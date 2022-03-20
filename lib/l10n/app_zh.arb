@@ -29,5 +29,9 @@
                 "example": "hotfallingangle"
             }
         }
-    }
+    },
+    "proceedRating": "去評價",
+    "cancelRating": "不評價",
+    "confirmCancel": "確定取消",
+    "dontCancel": "不取消"
 }
