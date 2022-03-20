@@ -7,6 +7,9 @@ Prompt the following command: `flutter build apk --release`
 
 We will be using `appCenter` to release darkpanda app. The approach used is referencing [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
 
+## Folder structure
+
+Please follow this [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
 ### Environment variables
 
 The app will retrieve it's environment variables from `.env` on local file system. For production build, the app retrieve environment variables from appcenter. Appcenter provides customed env configurations that are retrievable when building. Please refer to this [official reference](https://docs.microsoft.com/en-us/appcenter/build/custom/variables/).

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
-import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +12,10 @@ import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 class CompleteRate extends StatefulWidget {
   const CompleteRate({
     Key key,
-    this.historicalService,
+    this.chatPartnerAvatarURL,
   }) : super(key: key);
 
-  final HistoricalService historicalService;
+  final String chatPartnerAvatarURL;
 
   @override
   _CompleteRateState createState() => _CompleteRateState();
@@ -80,8 +79,7 @@ class _CompleteRateState extends State<CompleteRate>
               children: <Widget>[
                 SizedBox(height: 100),
                 Center(
-                  child:
-                      UserAvatar(widget.historicalService.chatPartnerAvatarUrl),
+                  child: UserAvatar(widget.chatPartnerAvatarURL),
                 ),
                 SizedBox(height: 30),
                 Text(

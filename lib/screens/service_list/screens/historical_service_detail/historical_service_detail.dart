@@ -8,9 +8,7 @@ import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dar
 import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_rate_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
-import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
+import 'package:darkpanda_flutter/screens/rate/rate.dart';
 
 import '../../models/historical_service.dart';
 import 'bloc/block_user_bloc.dart';
@@ -156,24 +154,17 @@ class _HistoricalServiceDetailState extends State<HistoricalServiceDetail>
               rootNavigator: true,
             ).push(MaterialPageRoute(
               builder: (context) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => SendRateBloc(
-                        apiClient: ServiceChatroomClient(),
-                      ),
-                    ),
-                  ],
-                  child: Rate(
-                    historicalService: widget.historicalService,
-                  ),
+                return Rate(
+                  chatPartnerAvatarURL:
+                      widget.historicalService.chatPartnerAvatarUrl,
+                  chatPartnerUsername:
+                      widget.historicalService.chatPartnerUsername,
+                  serviceUUID: widget.historicalService.serviceUuid,
                 );
               },
             )).then((refresh) {
-              if (refresh != null) {
-                if (refresh == true) {
-                  _onRefreshRateDetail();
-                }
+              if (refresh) {
+                _onRefreshRateDetail();
               }
             });
           },

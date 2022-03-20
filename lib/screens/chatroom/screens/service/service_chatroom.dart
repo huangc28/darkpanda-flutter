@@ -4,8 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
+import 'package:darkpanda_flutter/screens/rate/rate.dart';
+// import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
+// import 'package:darkpanda_flutter/screens/service_list/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
@@ -262,17 +263,10 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       rootNavigator: true,
     ).push(MaterialPageRoute(
       builder: (context) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => SendRateBloc(
-                apiClient: ServiceChatroomClient(),
-              ),
-            ),
-          ],
-          child: Rate(
-            historicalService: historicalService,
-          ),
+        return Rate(
+          chatPartnerAvatarURL: historicalService.chatPartnerAvatarUrl,
+          chatPartnerUsername: historicalService.chatPartnerUsername,
+          serviceUUID: historicalService.serviceUuid,
         );
       },
     )).then((refresh) {
