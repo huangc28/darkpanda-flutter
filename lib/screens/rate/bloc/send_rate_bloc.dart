@@ -6,8 +6,9 @@ import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import '../../../services/service_chatroom_api.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
+// import '../../../services/service_chatroom_api.dart';
+import '../services/rating_api_client.dart';
+import '../models/rating.dart';
 
 part 'send_rate_event.dart';
 part 'send_rate_state.dart';
@@ -18,7 +19,7 @@ class SendRateBloc extends Bloc<SendRateEvent, SendRateState> {
   })  : assert(apiClient != null),
         super(SendRateState.initial());
 
-  final ServiceChatroomClient apiClient;
+  final RatingAPIClient apiClient;
 
   @override
   Stream<SendRateState> mapEventToState(

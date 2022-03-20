@@ -19,5 +19,19 @@
     "serviceCanceled": "已取消",
     "serviceCompleted": "已完成",
     "serviceExpired": "已過期",
-    "serviceFailed": "已失敗"
+    "serviceFailed": "已失敗",
+    "serviceCanceledByOtherDialogText": "{name} 已取消此次服務，是否前往評價？",
+    "@serviceCanceledByOtherDialogText": {
+        "description": "Service has been canceled by other participant",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "hotfallingangle"
+            }
+        }
+    },
+    "proceedRating": "去評價",
+    "cancelRating": "不評價",
+    "confirmCancel": "確定取消",
+    "dontCancel": "不取消"
 }

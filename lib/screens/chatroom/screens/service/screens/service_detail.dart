@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:darkpanda_flutter/enums/gender.dart';
-import 'package:darkpanda_flutter/enums/service_cancel_cause.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 
@@ -15,7 +14,7 @@ import 'package:darkpanda_flutter/screens/service_list/models/historical_service
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 
 import 'components/body.dart';
-import 'components/cancel_service_confirmation_dialog.dart';
+import '../components/service_alert_dialog.dart';
 
 class ServiceDetail extends StatefulWidget {
   const ServiceDetail({
@@ -54,18 +53,6 @@ class _ServiceDetailState extends State<ServiceDetail>
 
   Future<String> _getGender() async {
     return await SecureStore().readGender();
-  }
-
-  void _serviceCancelCause(ServiceCancelCause cancelCause) {
-    if (_gender == Gender.male.name) {
-      _cancelCause = '若取消交易，本平台另收取的 ${_paymentDetail.matchingFee}DP 媒合費將全額退還';
-
-      if (cancelCause == ServiceCancelCause.guy_cancel_after_appointment_time) {
-        _cancelCause = '若取消交易，本平台另收取的 ${_paymentDetail.matchingFee}DP 媒合費不能退還';
-      }
-    } else {
-      _cancelCause = '';
-    }
   }
 
   @override
@@ -145,20 +132,27 @@ class _ServiceDetailState extends State<ServiceDetail>
           BlocListener<LoadCancelServiceBloc, LoadCancelServiceState>(
               listener: (context, state) {
             if (state.status == AsyncLoadingStatus.done) {
-              // _serviceCancelCause(state.loadCancelServiceResponse.cancelCause);
-
               showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
-                  return CancelServiceConfirmationDialog(
-                    content: _cancelCause,
-                  );
+                  return ServiceAlertDialog(
+                      confirmText: AppLocalizations.of(context).confirmCancel,
+                      cancelText: AppLocalizations.of(context).dontCancel,
+                      content: '對方將可以給你評價，確定取消?',
+                      onConfirm: () async {
+                        Navigator.pop(context, true);
+                      },
+                      onDismiss: () async {
+                        Navigator.pop(context, false);
+                      });
                 },
               ).then((value) {
                 if (value) {
-                  BlocProvider.of<CancelServiceBloc>(context).add(CancelService(
-                      serviceUuid: widget.historicalService.serviceUuid));
+                  BlocProvider.of<CancelServiceBloc>(context).add(
+                    CancelService(
+                        serviceUuid: widget.historicalService.serviceUuid),
+                  );
                 }
               });
             }
