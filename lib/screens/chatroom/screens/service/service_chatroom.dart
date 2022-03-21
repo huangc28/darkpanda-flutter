@@ -273,12 +273,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     ));
   }
 
-  _setStateDisabledChat() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isDisabledChat = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -578,7 +572,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                           } else if (message
                                               is CancelServiceMessage) {
                                             // - Disable all functionalities of the chatroom.
-                                            _setStateDisabledChat();
+                                            _isDisabledChat = true;
 
                                             return CancelServiceBubble(
                                               isMe:
@@ -683,7 +677,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                 ),
               );
             },
-          ));
+          )).then((value) {
+            // Update state for cancel service status
+            // _isDisabledChat
+            setState(() {});
+          });
         },
         child: Text(
           '服務內容',
@@ -893,9 +891,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         ] else ...[
           SizedBox.shrink(),
         ]
-        // _serviceDetails.serviceStatus == ServiceStatus.to_be_fulfilled.name
-        //     ? _qrcodeScannerButton()
-        //     : SizedBox.shrink(),
       ],
     );
   }
