@@ -136,6 +136,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   bool _showServiceConfirmedNotifier = false;
 
+  /// Is true if service is cancelled
+  bool _isDisabledChat = false;
+
   @override
   void initState() {
     super.initState();
@@ -268,6 +271,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         );
       },
     ));
+  }
+
+  _setStateDisabledChat() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isDisabledChat = true;
+    });
   }
 
   @override
@@ -569,6 +578,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                           } else if (message
                                               is CancelServiceMessage) {
                                             // - Disable all functionalities of the chatroom.
+                                            _setStateDisabledChat();
 
                                             return CancelServiceBubble(
                                               isMe:
@@ -737,6 +747,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       },
       child: SendMessageBar(
         editMessageController: _editMessageController,
+        isDisabledChat: _isDisabledChat,
         onSend: () {
           if (_message.isEmpty) {
             return;
@@ -870,11 +881,21 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         },
       ),
       actions: <Widget>[
-        _serviceDetailButton(),
+        _isDisabledChat ? SizedBox.shrink() : _serviceDetailButton(),
         SizedBox(width: 20),
-        _serviceDetails.serviceStatus == ServiceStatus.to_be_fulfilled.name
-            ? _qrcodeScannerButton()
-            : SizedBox.shrink(),
+        if (_serviceDetails.serviceStatus ==
+            ServiceStatus.to_be_fulfilled.name) ...[
+          if (_isDisabledChat) ...[
+            SizedBox.shrink(),
+          ] else ...[
+            _qrcodeScannerButton(),
+          ]
+        ] else ...[
+          SizedBox.shrink(),
+        ]
+        // _serviceDetails.serviceStatus == ServiceStatus.to_be_fulfilled.name
+        //     ? _qrcodeScannerButton()
+        //     : SizedBox.shrink(),
       ],
     );
   }

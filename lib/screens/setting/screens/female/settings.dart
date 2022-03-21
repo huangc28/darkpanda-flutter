@@ -55,29 +55,6 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                             widget.onPush(SettingRoutes.verify_phone, null);
                           },
                         ),
-                        // InkWell(
-                        //   child: Image(
-                        //     image: AssetImage(
-                        //         "lib/screens/setting/assets/recommend_management.png"),
-                        //   ),
-                        //   highlightColor: Colors.transparent,
-                        //   splashColor: Colors.transparent,
-                        //   onTap: () {
-                        //     widget.onPush(
-                        //         SettingRoutes.recommend_management, null);
-                        //   },
-                        // ),
-                        // InkWell(
-                        //   child: Image(
-                        //     image: AssetImage(
-                        //         "lib/screens/setting/assets/bank_account.png"),
-                        //   ),
-                        //   highlightColor: Colors.transparent,
-                        //   splashColor: Colors.transparent,
-                        //   onTap: () {
-                        //     // widget.onPush('/bank-account', null);
-                        //   },
-                        // ),
                         InkWell(
                           child: Image(
                             image: AssetImage(
@@ -95,7 +72,7 @@ class _FemaleSettingsState extends State<FemaleSettings> {
                       child: Image(
                         width: SizeConfig.screenWidth * 0.81,
                         image: AssetImage(
-                            "lib/screens/setting/assets/feedback.png"),
+                            "lib/screens/setting/assets/2x/feedback.png"),
                       ),
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
