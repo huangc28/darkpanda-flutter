@@ -31,5 +31,7 @@
     "proceedRating": "go rating",
     "cancelRating": "cancel rating",
     "confirmCancel": "cancel",
-    "dontCancel": "don't cancel"
+    "dontCancel": "don't cancel",
+    "ok": "OK",
+    "serviceExpiredDialog": "Service is expired"
 }

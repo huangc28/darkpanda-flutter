@@ -33,5 +33,7 @@
     "proceedRating": "去評價",
     "cancelRating": "不評價",
     "confirmCancel": "確定取消",
-    "dontCancel": "不取消"
+    "dontCancel": "不取消",
+    "ok": "OK",
+    "serviceExpiredDialog": "服務已過期"
 }

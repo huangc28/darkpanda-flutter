@@ -12,6 +12,7 @@ enum MessageType {
   start_service,
   cancel_service,
   bot_invitation_chat_text,
+  expired,
 }
 
 extension MessageTypeExtension on MessageType {

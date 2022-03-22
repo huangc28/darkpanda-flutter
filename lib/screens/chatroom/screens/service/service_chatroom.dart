@@ -478,6 +478,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                       } else if (state.service.status ==
                                           ServiceStatus.completed.name) {
                                         _navigateToRating();
+                                      } else if (state.service.status ==
+                                          ServiceStatus.expired.name) {
+                                        _isDisabledChat = true;
+                                        developer
+                                            .log('ok service expired..bye bye');
                                       }
                                     });
                                   }

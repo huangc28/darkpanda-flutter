@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import '../bloc/load_incoming_service_bloc.dart';
 
 import 'service_chatroom_list.dart';
 import 'service_chatroom_grid.dart';
+import 'service_expired_dialog.dart';
 import 'service_historical_list.dart';
 
 class ServiceListWindow extends StatefulWidget {
@@ -106,25 +109,44 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                   final lastMsg =
                       state.chatroomLastMessage[chatroom.channelUuid];
 
+                  var serviceStatus = state.service != null
+                      ? state.service[chatroom.serviceUuid]
+                      : '';
+
                   return Container(
                     margin: EdgeInsets.only(
                       bottom: 20,
                     ),
                     child: ServiceChatroomGrid(
                       onEnterChat: (chatroom) {
-                        Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        ).pushNamed(
-                          MainRoutes.serviceChatroom,
-                          arguments: ServiceChatroomScreenArguments(
-                            channelUUID: chatroom.channelUuid,
-                            inquiryUUID: chatroom.inquiryUuid,
-                            counterPartUUID: chatroom.chatPartnerUserUuid,
-                            serviceUUID: chatroom.serviceUuid,
-                            routeTypes: RouteTypes.fromIncomingService,
-                          ),
-                        );
+                        if (serviceStatus == ServiceStatus.expired) {
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return ServiceExpiredDialog(
+                                    okText: AppLocalizations.of(context).ok,
+                                    content: AppLocalizations.of(context)
+                                        .serviceExpiredDialog,
+                                    onDismiss: () async {
+                                      Navigator.pop(context, true);
+                                    });
+                              });
+                        } else {
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).pushNamed(
+                            MainRoutes.serviceChatroom,
+                            arguments: ServiceChatroomScreenArguments(
+                              channelUUID: chatroom.channelUuid,
+                              inquiryUUID: chatroom.inquiryUuid,
+                              counterPartUUID: chatroom.chatPartnerUserUuid,
+                              serviceUUID: chatroom.serviceUuid,
+                              routeTypes: RouteTypes.fromIncomingService,
+                            ),
+                          );
+                        }
                       },
                       chatroom: chatroom,
                       lastMessage: lastMsg == null ? "" : lastMsg.content,
