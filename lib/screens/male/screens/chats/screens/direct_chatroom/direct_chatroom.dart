@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -317,6 +319,12 @@ class _DirectChatroomState extends State<DirectChatroom>
                                                 ),
                                               );
                                             },
+                                          );
+                                        } else if (message
+                                            is BotInvitationChatMessage) {
+                                          return BotInvitationChatBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
                                           );
                                         } else {
                                           return ChatBubble(

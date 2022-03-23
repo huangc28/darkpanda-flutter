@@ -108,9 +108,7 @@ class _ServiceDetailState extends State<ServiceDetail>
           }),
           BlocListener<CancelServiceBloc, CancelServiceState>(
               listener: (context, state) {
-            if (state.status == AsyncLoadingStatus.done) {
-              Navigator.of(context).pop();
-            }
+            if (state.status == AsyncLoadingStatus.done) {}
 
             if (state.status == AsyncLoadingStatus.error) {
               developer.log(

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
@@ -496,26 +498,32 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                         barrierDismissible: false,
                                         context: context,
                                         builder: (context) {
-                                          return ServiceAlertDialog(
-                                              confirmText:
-                                                  AppLocalizations.of(context)
-                                                      .proceedRating,
-                                              cancelText:
-                                                  AppLocalizations.of(context)
-                                                      .cancelRating,
-                                              content: AppLocalizations.of(
-                                                      context)
-                                                  .serviceCanceledByOtherDialogText(
-                                                      _inquiryDetail.username),
-                                              onConfirm: () async {
-                                                // Redirect to commenting page.
-                                                _navigateToRating();
-                                              },
-                                              onDismiss: () async {
-                                                // Back until is the first page of MaleAppTabItem.manage NavigatorState.
-                                                Navigator.of(context).popUntil(
-                                                    (route) => route.isFirst);
-                                              });
+                                          return WillPopScope(
+                                            onWillPop: () async => false,
+                                            child: ServiceAlertDialog(
+                                                confirmText:
+                                                    AppLocalizations.of(context)
+                                                        .proceedRating,
+                                                cancelText:
+                                                    AppLocalizations.of(context)
+                                                        .cancelRating,
+                                                content: AppLocalizations.of(
+                                                        context)
+                                                    .serviceCanceledByOtherDialogText(
+                                                        _inquiryDetail
+                                                            .username),
+                                                onConfirm: () async {
+                                                  // Redirect to commenting page.
+                                                  Navigator.of(context).pop();
+                                                  _navigateToRating();
+                                                },
+                                                onDismiss: () async {
+                                                  // Back until is the first page of MaleAppTabItem.manage NavigatorState.
+                                                  Navigator.of(context)
+                                                      .popUntil((route) =>
+                                                          route.isFirst);
+                                                }),
+                                          );
                                         });
                                   }
                                 },
@@ -603,6 +611,13 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                   ),
                                                 );
                                               },
+                                            );
+                                          } else if (message
+                                              is BotInvitationChatMessage) {
+                                            return BotInvitationChatBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
                                             );
                                           } else {
                                             return ChatBubble(
