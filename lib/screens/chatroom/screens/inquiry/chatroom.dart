@@ -130,6 +130,11 @@ class _ChatroomState extends State<Chatroom>
   void initState() {
     super.initState();
 
+    // Clear message before entering the chatroom
+    BlocProvider.of<CurrentChatroomBloc>(context).add(
+      LeaveCurrentChatroom(),
+    );
+
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
     _inquirerProfileArguments =
