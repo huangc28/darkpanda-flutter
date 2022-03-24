@@ -56,3 +56,6 @@ ios/build/
 
 # Monarch related
 .monarch/
+
+# IOS success build template 
+ios_bk/
