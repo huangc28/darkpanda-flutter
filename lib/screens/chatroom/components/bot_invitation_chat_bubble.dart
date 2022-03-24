@@ -18,8 +18,8 @@ class BotInvitationChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChatBubble(
       message: Message(
-        content: AppLocalizations.of(context)
-            .botInvitationToChatContent(message.counterPartUsername),
+        content: AppLocalizations.of(context).botInvitationToChatContent(
+            isMe ? message.inquirerUsername : message.pickerUsername),
         from: message.from,
         to: message.to,
         createdAt: message.createdAt,

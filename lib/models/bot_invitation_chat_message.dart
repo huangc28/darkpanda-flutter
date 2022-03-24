@@ -6,6 +6,8 @@ class BotInvitationChatMessage extends Message {
     String from,
     DateTime createdAt,
     this.counterPartUsername,
+    this.inquirerUsername,
+    this.pickerUsername,
   }) : super(
           content: content,
           from: from,
@@ -13,6 +15,8 @@ class BotInvitationChatMessage extends Message {
         );
 
   final String counterPartUsername;
+  final String inquirerUsername;
+  final String pickerUsername;
 
   factory BotInvitationChatMessage.fromMap(Map<String, dynamic> data) {
     return BotInvitationChatMessage(
@@ -20,6 +24,8 @@ class BotInvitationChatMessage extends Message {
       from: data["from"],
       createdAt: data["create_at"],
       counterPartUsername: data["counter_part_username"],
+      inquirerUsername: data["inquirer_username"],
+      pickerUsername: data["picker_username"],
     );
   }
 
@@ -28,5 +34,7 @@ class BotInvitationChatMessage extends Message {
         content,
         from,
         counterPartUsername,
+        inquirerUsername,
+        pickerUsername,
       ];
 }
