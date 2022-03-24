@@ -24,10 +24,12 @@
 
     <application
           tools:replace="android:label"
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="${applicationName}"
         android:label="Darkpanda"
         android:icon="@mipmap/launcher_icon">
-        
+
+        <meta-data android:name="flutterEmbedding" android:value="2" />
+
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyB6xaDYyEw9Su80aQHISRlBzSucUGYCCuE"/>
 
         <activity

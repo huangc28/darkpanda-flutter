@@ -80,6 +80,9 @@ abstract class BaseClient extends http.BaseClient {
         if (error['err_code'] == '1000024') {
           DarkPandaApp.valueNotifier.value = true;
         }
+
+        // Emit an event to notify a bloc to remove current jwt
+        // if (error[''])
       }
 
       return res;

@@ -12,7 +12,7 @@ class AddressSelectorAPIClient extends BaseClient {
         '/maps/api/geocode/json',
         {
           'address': address,
-          'key': env['GEOCODING_APIS'],
+          'key': dotenv.env['GEOCODING_APIS'],
         },
       ),
     );
@@ -30,7 +30,7 @@ class AddressSelectorAPIClient extends BaseClient {
         {
           'language': 'zh-TW',
           'latlng': '${latitude},${longtitude}',
-          'key': env['GEOCODING_APIS'],
+          'key': dotenv.env['GEOCODING_APIS'],
         },
       ),
     );

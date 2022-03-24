@@ -19,7 +19,8 @@ class AuthUserBloc extends Bloc<AuthUserEvent, AuthUserState> {
     this.dataProvider,
   }) : super(
           AuthUserState.initial(
-            authUser: authUser,
+            // Notice that this authUser should be the single source of truth for user info.
+            authUser: AuthUser(),
           ),
         );
 
