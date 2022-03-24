@@ -1,4 +1,4 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 class NotInitializedError extends Error {}
 
@@ -82,16 +82,16 @@ class AppConfig {
     }
 
     if (curEnv == devEnv) {
-      await dotenv.load(fileName: '.env');
+      await DotEnv.load(fileName: '.env');
 
       _appConfig = AppConfig(
-        appCenterAndroidAppSecret: dotenv.env['APPCENTER_ANDROID_APP_SECRET'],
-        geocodingApis: dotenv.env['GEOCODING_APIS'],
-        serverHost: dotenv.env['SERVER_HOST'],
+        appCenterAndroidAppSecret: DotEnv.env['APPCENTER_ANDROID_APP_SECRET'],
+        geocodingApis: DotEnv.env['GEOCODING_APIS'],
+        serverHost: DotEnv.env['SERVER_HOST'],
         pubnubConfig: PubNubConfig(
-          publishKey: dotenv.env['PUBNUB_PUBLISH_KEY'],
-          subscribeKey: dotenv.env['PUBNUB_PUBLISH_KEY'],
-          secretKey: dotenv.env['PUBNUB_SECRET_KEY'],
+          publishKey: DotEnv.env['PUBNUB_PUBLISH_KEY'],
+          subscribeKey: DotEnv.env['PUBNUB_PUBLISH_KEY'],
+          secretKey: DotEnv.env['PUBNUB_SECRET_KEY'],
         ),
       );
 

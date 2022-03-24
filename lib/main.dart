@@ -20,7 +20,6 @@ import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import 'package:darkpanda_flutter/bloc/redirector_bloc.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
 import 'package:darkpanda_flutter/services/user_apis.dart';
@@ -138,9 +137,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => RedirectorBloc(),
-        ),
         BlocProvider(
           create: (context) => RegisterBloc(
             registerAPI: RegisterAPIClient(),
@@ -378,10 +374,6 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 SizeConfig().init(context);
 
                 if (settings.name == MainRoutes.landing) {
-                  //
-                  print(
-                      'landing page gender jwt ${widget.gender}, ${widget.jwt}');
-
                   final LandingScreenArguments landingScreenArguments =
                       LandingScreenArguments(
                     gender: widget.gender,
