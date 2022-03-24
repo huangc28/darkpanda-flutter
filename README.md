@@ -7,6 +7,9 @@ Prompt the following command: `flutter build apk --release`
 
 We will be using `appCenter` to release darkpanda app. The approach used is referencing [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
 
+## Folder structure
+
+Please follow this [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
 ### Environment variables
 
 The app will retrieve it's environment variables from `.env` on local file system. For production build, the app retrieve environment variables from appcenter. Appcenter provides customed env configurations that are retrievable when building. Please refer to this [official reference](https://docs.microsoft.com/en-us/appcenter/build/custom/variables/).
@@ -44,7 +47,7 @@ You should see dashboard installed on you emulator.
 
 - Catch system exception like `json.decode(...)` --- [ok]
  
- ```
+ ```dart
  class SomeModel {
 
      static fromJson(Map<String, dynamic>, data) {
@@ -55,7 +58,27 @@ You should see dashboard installed on you emulator.
      }
  }
  ```
- 
+
+- []Female cancel service now display `對方已取消交易` should be `你已取消交易` 
+- []When participant cancels service chatroom, popup a notification telling the other particiant to rate the service.
+- []When make user emit a direct inqiury, he can still emit another direct inquiry to the same girl in the girl list.
+- [x]When male left the inquiry chatroom and post another inquiry, the same girl can not see the inquiry.
+- [x]When either party left the chatoom, we should change  the inquiry status to cancel 
+- [x]In inquiry chatroom When female sends service update message, chatroom should have a `ServiceUpdateMessageBubble`.  `ServiceUpdateMessageBubble` is clickable 
+    When user clicks on it, service detail popup will show. 
+- []Create a singleton class contains a hash map of error code and corresponding error message. The error message is resolved via i18n function. 
+- [x]Emit service inquiry not showing on female app.
+- []Girls emit service confirm, male is not able to recieve it via historical message.
+- []Click on edit address, there should be an default address showing on address input box.
+- []`inquiry_chatroom` need to fix `InquiryDetailDialog` 
+- []Cancel service in chatroom, all functions in the chatroom should be locked on both party.
+- []In service chatroom, click on `UpdatedInqiuryBubble` should display service detail popup.
+- [x]Service 過期 chatroom 不會有通知.
+- [x]Direct match still has duplicated girl.
+- [x] In historical records, Expired service should display `已過期` instead of `已完成`
+- [] Histoical records should state whether the service can be commented.
+- [] If user has uncommented service, notify user user to comment on the service when the app is launched.
+
 ### FCM integration on picking up inquiry 
 
 When female user picks up inquiry, sends FCM message to male user. We will use google pub/sub service to integrate FCM message.
@@ -64,8 +87,14 @@ When male starts an inquiry, backend creates a pub/sub topic that the device can
 1. Retrieve topic name from active inquiry if there is any.
 2. `FirebaseMessaging` subscribes to the topic. 
 
-## Reference
+### Commenting Timing
 
+girl_cancel_before_appointment_time ---> man can comment or bypass 
+girl_cancel_after_appointment_time ---> man can comment or bypass
+guy_cancel_before_appointment_time ---> girl can comment or bypass
+guy_cancel_after_appointment_time --->  girl can comment or bypass
+## Reference
+- [Postgres how to shuffle records with pagination so it looks random](https://nathanmlong.com/2017/11/a-shuffled-order-that-works-with-pagination/)
 - [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)
 - [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)
 - [Great navigator article ](https://medium.com/flutter-community/flutter-push-pop-push-1bb718b13c31)

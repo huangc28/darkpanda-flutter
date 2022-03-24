@@ -29,7 +29,6 @@ class VerifyReferralCodeBloc
   Stream<VerifyReferralCodeState> _mapVerifyReferralCodeToState(
       VerifyReferralCodeEvent evt) async* {
     Map<String, Exception> _errorMap = {
-      'refcode_exception': null,
       'username_exception': null,
     };
 
@@ -37,13 +36,6 @@ class VerifyReferralCodeBloc
       yield VerifyReferralCodeState.loading();
 
       final apis = VerifyRegisterInfoAPIs();
-      final verRefResp = await apis.verifyReferralCode(evt.referralCode);
-
-      if (verRefResp.statusCode != HttpStatus.ok) {
-        _errorMap['refcode_exception'] = APIException.fromJson(
-          json.decode(verRefResp.body),
-        );
-      }
 
       final verUsernameResp = await apis.verifyUsername(evt.username);
 
@@ -54,10 +46,8 @@ class VerifyReferralCodeBloc
       }
 
       // If exception exists in either one of the key, throw an exception
-      if (_errorMap['refcode_exception'] != null ||
-          _errorMap['username_exception'] != null) {
+      if (_errorMap['username_exception'] != null) {
         yield VerifyReferralCodeState.error(
-          verifyRefCodeError: _errorMap['refcode_exception'],
           verifyUsernameError: _errorMap['username_exception'],
         );
 
@@ -67,7 +57,6 @@ class VerifyReferralCodeBloc
       yield VerifyReferralCodeState.done();
     } on Exception catch (e) {
       yield VerifyReferralCodeState.error(
-        verifyRefCodeError: _errorMap['refcode_exception'],
         verifyUsernameError: _errorMap['username_exception'],
       );
     }

@@ -228,20 +228,22 @@ class _UserServiceState extends State<UserService>
               return UserServiceGrid(
                 userService: service,
                 onConfirmDelete: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return DeleteUserServiceConfirmationDialog();
-                    },
-                  ).then((value) {
-                    if (value) {
-                      print('Delete user service: ' +
-                          service.serviceOptionId.toString());
+                  if (_animationController.isDismissed) {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return DeleteUserServiceConfirmationDialog();
+                      },
+                    ).then((value) {
+                      if (value) {
+                        print('Delete user service: ' +
+                            service.serviceOptionId.toString());
 
-                      _removeUserService(service.serviceOptionId);
-                    }
-                  });
+                        _removeUserService(service.serviceOptionId);
+                      }
+                    });
+                  }
                 },
               );
             },

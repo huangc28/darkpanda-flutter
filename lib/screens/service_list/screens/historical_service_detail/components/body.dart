@@ -13,6 +13,7 @@ import 'package:darkpanda_flutter/screens/service_list/models/rate_detail.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import '../../../models/historical_service.dart';
+import '../../../mixin/serviceStatusTextProvider.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -40,7 +41,8 @@ class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
 }
 
-class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
+class _BodyState extends State<Body>
+    with SingleTickerProviderStateMixin, ServiceStatusTextProvider {
   String _cancelCause;
   String _gender;
   String _refundStatus = '';
@@ -56,9 +58,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<String> _getGender() async {
-    return await SecureStore().readGender();
-  }
+  Future<String> _getGender() => SecureStore().readGender();
 
   void _serviceCancelCause() {
     if (_gender == Gender.male.name) {
@@ -200,34 +200,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: widget.historicalService.status ==
-                                ServiceStatus.canceled.name
-                            ? Text(
-                                '已取消',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.red,
-                                ),
-                              )
-                            : widget.historicalService.status ==
-                                    ServiceStatus.payment_failed.name
-                                ? Text(
-                                    '付款失敗',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : Text(
-                                    '已完成',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.green,
-                                    ),
-                                  ),
+                        child: geTextByServiceStatus(
+                          context,
+                          widget.historicalService.status,
+                        ),
                       ),
                     ],
                   ),
@@ -251,7 +227,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  _cancelCause + _refundStatus,
+                  _cancelCause,
                   style: TextStyle(
                     color: Color.fromRGBO(106, 109, 137, 1),
                     fontSize: 15,
@@ -379,7 +355,16 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
+          _buildEachText(
+            '',
+            '服務',
+            widget.paymentDetail.serviceType != null
+                ? widget.paymentDetail.serviceType
+                : '',
+            icon: Icons.article,
+          ),
+          SizedBox(height: 15),
           _buildEachText(
               'place.png',
               '地址',
@@ -430,10 +415,10 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildEachText('pie.png', '服務費', '${price}DP'),
-          SizedBox(height: 15),
-          _buildEachText(
-              'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
+          _buildEachText('pie.png', '服務費', '${price}'),
+          // SizedBox(height: 15),
+          // _buildEachText(
+          //     'heart.png', '媒合費', '${widget.paymentDetail.matchingFee}DP'),
         ],
       ),
     );
@@ -473,18 +458,28 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
     double titleSize,
     double valueSize,
     FontWeight fontWeight = FontWeight.normal,
+    IconData icon,
   }) {
     return Container(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Container(
             width: 22,
             height: 22,
-            child: Image.asset(
-              'lib/screens/service_list/assets/$iconName',
-            ),
+            child: iconName != ''
+                ? Image.asset(
+                    'lib/screens/service_list/assets/$iconName',
+                  )
+                : CircleAvatar(
+                    backgroundColor: Color.fromRGBO(77, 70, 106, 1),
+                    child: Icon(
+                      icon,
+                      color: Color.fromRGBO(155, 127, 255, 1),
+                      size: 15.0,
+                    ),
+                  ),
           ),
           SizedBox(width: 10),
           Text(
@@ -501,8 +496,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           Flexible(
             child: Text(
               value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: valueSize != null ? valueSize : 15,

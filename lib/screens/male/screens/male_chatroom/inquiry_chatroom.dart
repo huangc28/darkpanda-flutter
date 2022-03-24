@@ -21,7 +21,6 @@ import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 
-import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/models/chat_image.dart';
@@ -30,21 +29,25 @@ import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
+import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+
+import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/send_message_bar.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
+import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
 import 'bloc/disagree_inquiry_bloc.dart';
 import 'bloc/exit_chatroom_bloc.dart';
@@ -83,8 +86,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
 
-  UpdateInquiryMessage messages = UpdateInquiryMessage();
-  InquiryDetail inquiryDetail = InquiryDetail();
+  UpdateInquiryMessage updatedInquiryMessage = UpdateInquiryMessage();
   InquirerProfileArguments _inquirerProfileArguments;
 
   File _image;
@@ -94,17 +96,21 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   /// Show loading when user sending image
   bool _isSendingImage = false;
 
+  NegotiatingServiceDetail _negotiatingServiceDetail =
+      NegotiatingServiceDetail();
+
   @override
   void initState() {
     super.initState();
 
-    inquiryDetail.channelUuid = widget.args.channelUUID;
-    inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
-    inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
-    inquiryDetail.routeTypes = RouteTypes.fromInquiry;
+    _negotiatingServiceDetail.copy(
+      serviceUUID: widget.args.serviceUUID,
+      channelUUID: widget.args.channelUUID,
+      counterPartUUID: widget.args.counterPartUUID,
+      inquiryUUID: widget.args.inquiryUUID,
+    );
 
-    _inquirerProfileArguments =
-        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
+    InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -294,7 +300,23 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                           return UpdateInquiryBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
-                                            onTapMessage: (message) {},
+                                            onTapMessage:
+                                                (UpdateInquiryMessage message) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  _negotiatingServiceDetail
+                                                      .copyWithUpdateInquiryMessage(
+                                                          message);
+
+                                                  return InquiryDetailDialog(
+                                                    negotiatingInquiryDetail:
+                                                        _negotiatingServiceDetail,
+                                                  );
+                                                },
+                                              );
+                                              print('onTapMessage ${message}');
+                                            },
                                           );
                                         } else if (message
                                             is DisagreeInquiryMessage) {
@@ -321,6 +343,12 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                               );
                                             },
                                           );
+                                        } else if (message
+                                            is BotInvitationChatMessage) {
+                                          return BotInvitationChatBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
                                         } else {
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
@@ -342,22 +370,21 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                             ),
                           ),
 
-                          // 1. When male receive inquiry from female, a
-                          // inquiry detail dialog will pop up
+                          // When male receive inquiry updated message from female, an inquiry detail dialog will pop up.
                           BlocListener<UpdateInquiryNotifierBloc,
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
                               setState(() {
-                                messages = state.message;
-                                inquiryDetail.updateInquiryMessage = messages;
                                 showDialog(
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (_) {
+                                    _negotiatingServiceDetail
+                                        .copyWithUpdateInquiryMessage(
+                                            state.message);
                                     return InquiryDetailDialog(
-                                      inquiryDetail: inquiryDetail,
-                                      serviceUuid: widget.args.serviceUUID,
-                                      messages: messages,
+                                      negotiatingInquiryDetail:
+                                          _negotiatingServiceDetail,
                                     );
                                   },
                                 ).then((value) {
@@ -465,10 +492,9 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
-          inquiryDetail.username = state.userProfile.username ?? '';
+          _negotiatingServiceDetail.username = state.userProfile.username ?? '';
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {

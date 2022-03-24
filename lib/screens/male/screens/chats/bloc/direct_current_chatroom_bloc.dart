@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
@@ -114,6 +115,8 @@ class DirectCurrentChatroomBloc
           return PaymentCompletedMessage.fromMap(data);
         } else if (data['type'] == MessageType.cancel_service.name) {
           return CancelServiceMessage.fromMap(data);
+        } else if (data['type'] == MessageType.bot_invitation_chat_text.name) {
+          return BotInvitationChatMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -192,6 +195,8 @@ class DirectCurrentChatroomBloc
           return PaymentCompletedMessage.fromMap(data);
         } else if (data['type'] == MessageType.cancel_service.name) {
           return CancelServiceMessage.fromMap(data);
+        } else if (data['type'] == MessageType.bot_invitation_chat_text.name) {
+          return BotInvitationChatMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -255,6 +260,8 @@ class DirectCurrentChatroomBloc
     final isImagesMsg = (String type) => type == MessageType.images.name;
     final isCancelServiceMsg =
         (String type) => type == MessageType.cancel_service.name;
+    final isBotInvitationChatText =
+        (type) => type == MessageType.bot_invitation_chat_text.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -292,6 +299,8 @@ class DirectCurrentChatroomBloc
       msg = ImageMessage.fromMap(rawMsg);
     } else if (isCancelServiceMsg(rawMsg['type'])) {
       msg = CancelServiceMessage.fromMap(rawMsg);
+    } else if (isBotInvitationChatText(rawMsg['type'])) {
+      msg = BotInvitationChatMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }

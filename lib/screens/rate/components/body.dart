@@ -7,10 +7,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/bloc/send_rate_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/models/rating.dart';
-import '../../../models/historical_service.dart';
-import 'complete_rate.dart';
+
+import '../bloc/send_rate_bloc.dart';
+import '../models/rating.dart';
+import './complete_rate.dart';
 
 class TypeSelection {
   String name;
@@ -25,10 +25,15 @@ class TypeSelection {
 class Body extends StatefulWidget {
   const Body({
     this.formKey,
-    this.historicalService,
+    this.chatPartnerAvatarURL,
+    this.chatPartnerUsername,
+    this.serviceUUID,
   });
 
-  final HistoricalService historicalService;
+  final String chatPartnerAvatarURL;
+  final String chatPartnerUsername;
+  final String serviceUUID;
+
   final GlobalKey<FormState> formKey;
 
   @override
@@ -78,7 +83,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         UserAvatar(
-                          widget.historicalService.chatPartnerAvatarUrl,
+                          widget.chatPartnerAvatarURL,
                           radius: 36,
                         ),
                       ],
@@ -90,7 +95,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                       ),
                       child: Container(
                         child: Text(
-                          widget.historicalService.chatPartnerUsername,
+                          widget.chatPartnerUsername,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -120,7 +125,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '你覺得${widget.historicalService.chatPartnerUsername}的服務怎麼樣？',
+            '你覺得${widget.chatPartnerUsername}的服務怎麼樣？',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -154,7 +159,6 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
 
         //user done send rating.
         if (state.status == AsyncLoadingStatus.done) {
-          // widget.onPressComplete();
           Navigator.of(
             context,
             rootNavigator: true,
@@ -162,7 +166,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
             MaterialPageRoute(
               builder: (context) {
                 return CompleteRate(
-                  historicalService: widget.historicalService,
+                  chatPartnerAvatarURL: widget.chatPartnerAvatarURL,
                 );
               },
             ),
@@ -222,7 +226,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
                 _formKey.currentState.save();
 
                 Rating rating = new Rating(
-                  serviceUuid: widget.historicalService.serviceUuid,
+                  serviceUuid: widget.serviceUUID,
                   rating: _rateInput.toInt(),
                   comment: _commentController.text,
                 );

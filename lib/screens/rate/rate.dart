@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/screens/service_list/screens/rate/components/complete_rate.dart';
-
+import './bloc/send_rate_bloc.dart';
+import './services/rating_api_client.dart';
 import 'components/body.dart';
-import '../../models/historical_service.dart';
 
 class Rate extends StatefulWidget {
   const Rate({
     Key key,
-    this.historicalService,
+    this.chatPartnerAvatarURL,
+    this.chatPartnerUsername,
+    this.serviceUUID,
   }) : super(key: key);
 
-  final HistoricalService historicalService;
+  final String chatPartnerAvatarURL;
+  final String chatPartnerUsername;
+  final String serviceUUID;
 
   @override
   _RateState createState() => _RateState();
@@ -45,14 +49,20 @@ class _RateState extends State<Rate> with SingleTickerProviderStateMixin {
             color: Color.fromRGBO(106, 109, 137, 1), //change your color here
           ),
         ),
-        body: Body(
-          formKey: _formKey,
-          historicalService: widget.historicalService,
-          // onPressComplete: () {
-          //   setState(() {
-          //     complete = true;
-          //   });
-          // },
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (contxt) => SendRateBloc(
+                apiClient: RatingAPIClient(),
+              ),
+            ),
+          ],
+          child: Body(
+            formKey: _formKey,
+            chatPartnerAvatarURL: widget.chatPartnerAvatarURL,
+            chatPartnerUsername: widget.chatPartnerUsername,
+            serviceUUID: widget.serviceUUID,
+          ),
         ));
   }
 }

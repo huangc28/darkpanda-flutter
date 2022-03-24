@@ -4,10 +4,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/models/cancel_service_message.dart';
-import 'package:darkpanda_flutter/models/image_message.dart';
-import 'package:darkpanda_flutter/models/payment_completed_message.dart';
-import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +17,11 @@ import 'package:darkpanda_flutter/models/service_detail_message.dart';
 import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
+import 'package:darkpanda_flutter/models/cancel_service_message.dart';
+import 'package:darkpanda_flutter/models/image_message.dart';
+import 'package:darkpanda_flutter/models/payment_completed_message.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 
 import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -113,6 +114,8 @@ class CurrentChatroomBloc
           return PaymentCompletedMessage.fromMap(data);
         } else if (data['type'] == MessageType.cancel_service.name) {
           return CancelServiceMessage.fromMap(data);
+        } else if (data['type'] == MessageType.bot_invitation_chat_text.name) {
+          return BotInvitationChatMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -140,12 +143,8 @@ class CurrentChatroomBloc
 
   Stream<CurrentChatroomState> _mapDispatchNewMessageToState(
       DispatchNewMessage event) async* {
-    print('DEBUG 4 _mapDispatchNewMessageToState ${event.message}');
-
     final messages = List<Message>.from(state.currentMessages)
       ..insert(0, event.message);
-
-    print('DEBUG 5 _mapDispatchNewMessageToState ${event.message}');
 
     yield CurrentChatroomState.updateCurrentMessage(
       state,
@@ -158,7 +157,6 @@ class CurrentChatroomBloc
     try {
       // Fetch historical messages
       yield CurrentChatroomState.loading(state);
-      yield CurrentChatroomState.init();
 
       final resp = await inquiryChatroomApis.fetchInquiryHistoricalMessages(
         event.channelUUID,
@@ -179,6 +177,8 @@ class CurrentChatroomBloc
 
       // Convert response data to list of messages and store them to historical messages.
       final historicalMessages = respMap['messages'].map<Message>((data) {
+        print('historicalMessages 1 ${data}');
+
         if (data['type'] == MessageType.service_detail.name) {
           return ServiceDetailMessage.fromMap(data);
         } else if (data['type'] == MessageType.confirmed_service.name) {
@@ -195,6 +195,8 @@ class CurrentChatroomBloc
           return PaymentCompletedMessage.fromMap(data);
         } else if (data['type'] == MessageType.cancel_service.name) {
           return CancelServiceMessage.fromMap(data);
+        } else if (data['type'] == MessageType.bot_invitation_chat_text.name) {
+          return BotInvitationChatMessage.fromMap(data);
         } else {
           return Message.fromMap(data);
         }
@@ -240,8 +242,6 @@ class CurrentChatroomBloc
     final QuerySnapshot msgSnapShot = data;
     final rawMsg = msgSnapShot.docChanges.first.doc.data() as Map;
 
-    print('DEBUG  _handleCurrentMessage ${rawMsg}');
-
     developer.log(
         'current_chatroom_bloc incoming message ${rawMsg['type'].toString()}');
 
@@ -260,6 +260,8 @@ class CurrentChatroomBloc
     final isImagesMsg = (String type) => type == MessageType.images.name;
     final isCancelServiceMsg =
         (String type) => type == MessageType.cancel_service.name;
+    final isBotInvitationChatText =
+        (type) => type == MessageType.bot_invitation_chat_text.name;
 
     // Transform to different message object according to type.
     // Dispatch new message to current chat message array.
@@ -278,33 +280,25 @@ class CurrentChatroomBloc
 
       serviceConfirmNotifierBloc.add(NotifyServiceConfirmed(msg));
     } else if (isUpdateInquiryDetailMsg(rawMsg['type'])) {
-      print('DEBUG 2 isUpdateInquiryDetailMsg');
       msg = UpdateInquiryMessage.fromMap(rawMsg);
 
       updateInquiryNotifierBloc.add(UpdateInquiryConfirmed(msg));
-
-      // add(DispatchNewMessage(message: msg));
     } else if (isDisagreeInquiryMsg(rawMsg['type'])) {
       msg = DisagreeInquiryMessage.fromMap(rawMsg);
     } else if (isQuitChatroomMsg(rawMsg['type'])) {
       msg = QuitChatroomMessage.fromMap(rawMsg);
-
-      // **
-      // Have to delete chatroom message as well
-      // inquiryChatroomsBloc.add(
-      //   LeaveMaleChatroom(channelUUID: channelUUID),
-      // );
     } else if (isCompletedPaymentMsg(rawMsg['type'])) {
       msg = PaymentCompletedMessage.fromMap(rawMsg);
     } else if (isImagesMsg(rawMsg['type'])) {
       msg = ImageMessage.fromMap(rawMsg);
     } else if (isCancelServiceMsg(rawMsg['type'])) {
       msg = CancelServiceMessage.fromMap(rawMsg);
+    } else if (isBotInvitationChatText(rawMsg['type'])) {
+      msg = BotInvitationChatMessage.fromMap(rawMsg);
     } else {
       msg = Message.fromMap(rawMsg);
     }
 
-    print('DEBUG 3 before dispatch ');
     add(DispatchNewMessage(message: msg));
   }
 

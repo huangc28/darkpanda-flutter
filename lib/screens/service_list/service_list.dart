@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './bloc/load_incoming_service_bloc.dart';
+import 'bloc/load_incoming_service_bloc.dart';
 import 'bloc/load_historical_service_bloc.dart';
-import 'components/body.dart';
+import 'components/service_list_window.dart';
 
 enum ServiceListTabs {
   incoming,
@@ -11,6 +11,11 @@ enum ServiceListTabs {
 }
 
 class ServiceList extends StatefulWidget {
+  // Provide a route name to onPush to redirects user to other routes of [ServiceChatroomRoutes] screen.
+  final Function(String) onPush;
+
+  const ServiceList({this.onPush});
+
   @override
   _ServiceListState createState() => _ServiceListState();
 }
@@ -80,7 +85,7 @@ class _ServiceListState extends State<ServiceList>
           ],
         ),
       ),
-      body: Body(
+      body: ServiceListWindow(
         tabController: _tabController,
       ),
     );

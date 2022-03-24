@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
 
-class FemaleUser {
+class FemaleUser extends Equatable {
   FemaleUser({
     this.uuid,
     this.username,

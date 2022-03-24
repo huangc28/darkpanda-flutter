@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/screens/male/screens/chats/chatrooms.dart';
+
+import './chatrooms.dart';
 
 class ChatRoutes extends BaseRoutes {
   static const root = '/';

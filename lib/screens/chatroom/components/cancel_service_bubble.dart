@@ -20,9 +20,9 @@ class CancelServiceBubble extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Text(
-            '對方已取消此交易',
+            isMe ? '你已取消此交易' : '對方已取消此交易',
             style: TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(106, 109, 137, 1),

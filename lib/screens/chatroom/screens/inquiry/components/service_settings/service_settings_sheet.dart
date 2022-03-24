@@ -1,5 +1,6 @@
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/add_user_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
@@ -127,6 +128,11 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                   userServiceApiClient: UserServiceApiClient(),
                 ),
               ),
+              BlocProvider(
+                create: (context) => AddUserServiceBloc(
+                  userServiceApiClient: UserServiceApiClient(),
+                ),
+              ),
             ],
             child: UserServiceSelectorList(
               initialUserService: _serviceTypeController.text,
@@ -250,9 +256,7 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                               PriceField(
                                 controller: _priceController,
                                 validator: (String v) {
-                                  return v.isEmpty || v == '0'
-                                      ? 'Price can not be empty'
-                                      : null;
+                                  return v.isEmpty || v == '0' ? '請輸入價格' : null;
                                 },
                                 onSaved: (String v) {
                                   _serviceSetting = _serviceSetting.copyWith(

@@ -227,7 +227,7 @@ class _ChatRequestState extends State<ChatRequest> {
                           image: userProfile.avatarUrl == ""
                               ? AssetImage('assets/default_avatar.png')
                               : NetworkImage(userProfile.avatarUrl),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
@@ -252,7 +252,8 @@ class _ChatRequestState extends State<ChatRequest> {
                               Row(
                                 children: <Widget>[
                                   Text(
-                                    userProfile.username,
+                                    // userProfile.username,
+                                    'Jenny',
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.white,

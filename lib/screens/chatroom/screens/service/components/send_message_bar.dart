@@ -6,11 +6,13 @@ class SendMessageBar extends StatefulWidget {
     this.onImageGallery,
     this.onCamera,
     this.editMessageController,
+    this.isDisabledChat = false,
   });
 
   final VoidCallback onSend;
   final VoidCallback onImageGallery;
   final VoidCallback onCamera;
+  final bool isDisabledChat;
 
   final TextEditingController editMessageController;
 
@@ -30,7 +32,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Colors.white,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onPressed: widget.onImageGallery,
+      onPressed: widget.isDisabledChat ? null : widget.onImageGallery,
     );
   }
 
@@ -41,7 +43,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Colors.white,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onPressed: widget.onSend,
+      onPressed: widget.isDisabledChat ? null : widget.onSend,
+      disabledColor: Colors.grey,
     );
   }
 
@@ -54,7 +57,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
       splashColor: Colors.transparent,
       iconSize: 22,
       color: Colors.white,
-      onPressed: widget.onCamera,
+      onPressed: widget.isDisabledChat ? null : widget.onCamera,
+      disabledColor: Colors.grey,
     );
   }
 
@@ -83,6 +87,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
             _showSendButton = v.isNotEmpty;
           });
         },
+        readOnly: widget.isDisabledChat,
       ),
     );
   }

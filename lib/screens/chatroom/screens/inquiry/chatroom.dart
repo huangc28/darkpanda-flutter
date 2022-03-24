@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:image/image.dart' as img;
@@ -27,6 +28,8 @@ import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
+
 import 'package:darkpanda_flutter/routes.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
@@ -34,6 +37,11 @@ import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_b
 import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
+
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
@@ -59,9 +67,6 @@ import 'package:image_picker/image_picker.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_settings/service_settings.dart';
 
-import '../../components/chat_bubble.dart';
-import '../../components/confirmed_service_bubble.dart';
-import '../../components/update_inquiry_bubble.dart';
 import '../../components/chatroom_window.dart';
 import '../../../../models/service_settings.dart';
 
@@ -119,10 +124,16 @@ class _ChatroomState extends State<Chatroom>
   InquirerProfileArguments _inquirerProfileArguments;
 
   bool sendUpdateInquiryIsLoading = false;
+  int isFirstCall = 0;
 
   @override
   void initState() {
     super.initState();
+
+    // Clear message before entering the chatroom
+    BlocProvider.of<CurrentChatroomBloc>(context).add(
+      LeaveCurrentChatroom(),
+    );
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -344,6 +355,10 @@ class _ChatroomState extends State<Chatroom>
                                       // so that the female user can not edit the service anymore.
                                       _serviceConfirmed = true;
                                     });
+
+                                    BlocProvider.of<LoadIncomingServiceBloc>(
+                                            context)
+                                        .add(LoadIncomingService());
                                   },
                                   child: BlocConsumer<CurrentChatroomBloc,
                                       CurrentChatroomState>(
@@ -395,6 +410,8 @@ class _ChatroomState extends State<Chatroom>
                                             isSendingImage: _isSendingImage,
                                             builder: (BuildContext context,
                                                 message) {
+                                              print(
+                                                  'chatroom messages ${message}');
                                               // Render different chat bubble based on message type.
                                               if (message
                                                   is ServiceConfirmedMessage) {
@@ -464,6 +481,15 @@ class _ChatroomState extends State<Chatroom>
                                                     );
                                                   },
                                                 );
+                                              } else if (message
+                                                  is BotInvitationChatMessage) {
+                                                print(
+                                                    'triggered render BotInvitationChatMessage');
+                                                return BotInvitationChatBubble(
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  message: message,
+                                                );
                                               } else {
                                                 return ChatBubble(
                                                   isMe: _sender.uuid ==
@@ -504,33 +530,43 @@ class _ChatroomState extends State<Chatroom>
                                     // Enable message bar once done initializing.
                                     if (state.status ==
                                         AsyncLoadingStatus.done) {
-                                      Navigator.of(
-                                        context,
-                                        rootNavigator: true,
-                                      ).pushNamed(
-                                        MainRoutes.serviceChatroom,
-                                        arguments:
-                                            ServiceChatroomScreenArguments(
-                                          channelUUID: widget.args.channelUUID,
-                                          inquiryUUID: widget.args.inquiryUUID,
-                                          counterPartUUID:
-                                              widget.args.counterPartUUID,
-                                          serviceUUID: widget.args.serviceUUID,
-                                          routeTypes: RouteTypes.fromInquiry,
-                                        ),
-                                      );
+                                      isFirstCall++;
+
+                                      // status done will be called twice, so implement isFirstCall to solve this issue
+                                      if (isFirstCall == 1) {
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pushNamed(
+                                          MainRoutes.serviceChatroom,
+                                          arguments:
+                                              ServiceChatroomScreenArguments(
+                                            channelUUID:
+                                                widget.args.channelUUID,
+                                            inquiryUUID:
+                                                widget.args.inquiryUUID,
+                                            counterPartUUID:
+                                                widget.args.counterPartUUID,
+                                            serviceUUID:
+                                                widget.args.serviceUUID,
+                                            routeTypes: RouteTypes.fromInquiry,
+                                          ),
+                                        );
+                                      }
                                     }
                                   },
-                                  child: _serviceConfirmed
-                                      ? NotificationBanner(
-                                          avatarUrl: _inquirerProfile.avatarUrl,
-                                          goToServiceChatroom: () {
-                                            BlocProvider.of<
-                                                        LoadIncomingServiceBloc>(
-                                                    context)
-                                                .add(LoadIncomingService());
-                                          })
-                                      : Container(),
+                                  child:
+                                      // _serviceConfirmed
+                                      //     ? NotificationBanner(
+                                      //         avatarUrl: _inquirerProfile.avatarUrl,
+                                      //         goToServiceChatroom: () {
+                                      //           BlocProvider.of<
+                                      //                       LoadIncomingServiceBloc>(
+                                      //                   context)
+                                      //               .add(LoadIncomingService());
+                                      //         })
+                                      // :
+                                      Container(),
                                 )
                               ],
                             );

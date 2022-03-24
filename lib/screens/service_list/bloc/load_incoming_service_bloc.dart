@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 import 'package:equatable/equatable.dart';
 
@@ -43,6 +44,8 @@ class LoadIncomingServiceBloc
       yield* _mapAddChatroomsToState(event);
     } else if (event is PutLatestMessage) {
       yield* _mapPutLatestMessage(event);
+    } else if (event is UpdateChatroomServiceStatus) {
+      yield* _mapUpdateChatroomServiceStatusToState(event);
     } else if (event is ClearIncomingServiceState) {
       yield* _mapClearIncomingServiceStateToState(event);
     }
@@ -160,13 +163,21 @@ class LoadIncomingServiceBloc
 
       // Insert new chatroom at the start of the chatroom array.
       state.services.insert(0, chatroom);
+
+      final streamSubChatroomService =
+          _createServiceSubscriptionStream(chatroom.serviceUuid);
+
+      state.serviceStreamMap[chatroom.serviceUuid] = streamSubChatroomService;
     }
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
+
+    final newServiceStreamMap = Map.of(state.serviceStreamMap);
 
     yield LoadIncomingServiceState.updateChatrooms(
       state,
       services: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
+      serviceStreamMap: newServiceStreamMap,
       currentPage: state.currentPage + 1,
     );
 
@@ -177,6 +188,13 @@ class LoadIncomingServiceBloc
           PutLatestMessage(
             channelUUID: chatroom.channelUuid,
             message: chatroom.messages[0],
+          ),
+        );
+
+        add(
+          UpdateChatroomServiceStatus(
+            serviceUuid: chatroom.serviceUuid,
+            status: chatroom.status.toServiceStatusEnum(),
           ),
         );
       }
@@ -238,6 +256,48 @@ class LoadIncomingServiceBloc
     yield LoadIncomingServiceState.putChatroomLatestMessage(
       state,
       chatroomLastMessage: newMap,
+    );
+  }
+
+  StreamSubscription<DocumentSnapshot> _createServiceSubscriptionStream(
+      String serviceUuid) {
+    return FirebaseFirestore.instance
+        .collection('services')
+        .doc(serviceUuid)
+        .snapshots()
+        .listen(
+      (DocumentSnapshot snapshot) {
+        _handleServiceStatusChange(serviceUuid, snapshot);
+      },
+    );
+  }
+
+  _handleServiceStatusChange(String serviceUuid, DocumentSnapshot snapshot) {
+    String status = snapshot['status'] as String;
+
+    developer.log(
+        'firestore service list changes received: ${snapshot.data().toString()}');
+
+    add(
+      UpdateChatroomServiceStatus(
+        serviceUuid: serviceUuid,
+        status: status.toServiceStatusEnum(),
+      ),
+    );
+  }
+
+  Stream<LoadIncomingServiceState> _mapUpdateChatroomServiceStatusToState(
+      UpdateChatroomServiceStatus event) async* {
+    developer.log(
+        'Service list found: ${event.serviceUuid}, updating status: ${event.status.toString()}');
+
+    final newMap = Map.of(state.service);
+    newMap[event.serviceUuid] = event.status;
+
+    // Replace current service list witht updated list.
+    yield LoadIncomingServiceState.putChatroomService(
+      state,
+      service: newMap,
     );
   }
 

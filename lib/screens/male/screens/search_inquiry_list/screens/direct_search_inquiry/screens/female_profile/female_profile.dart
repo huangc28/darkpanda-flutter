@@ -25,6 +25,7 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
 
+import '../../bloc/load_female_list_bloc.dart';
 import 'components/body.dart';
 import 'components/direct_inquiry_form.dart';
 
@@ -184,11 +185,11 @@ class _FemaleProfileState extends State<FemaleProfile> {
                       if (value != null) {
                         setState(() {
                           _inquiryStatus = value.inquiryStatus;
-
                           final updatedinquiry = _femaleUser.copyWith(
                             inquiryUuid: value.inquiryUuid,
                             inquiryStatus: value.inquiryStatus,
                             expectServiceType: value.serviceType,
+                            hasInquiry: true,
                           );
 
                           _femaleUser = updatedinquiry;
@@ -198,6 +199,10 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                           BlocProvider.of<UpdateFemaleInquiryBloc>(context).add(
                               UpdateFemaleInquiry(femaleUser: _femaleUser));
+
+                          BlocProvider.of<LoadFemaleListBloc>(context).add(
+                              UpdateFemaleProfileInList(
+                                  femaleUser: _femaleUser));
                         });
                       }
                     },

@@ -1,7 +1,12 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
@@ -52,17 +57,11 @@ import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 
-import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_dp_package_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
@@ -76,12 +75,9 @@ import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_cancel_service_bloc.dart';
 import 'bloc/load_service_detail_bloc.dart';
-import 'bloc/payment_complete_notifier_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
 import 'bloc/service_start_notifier_bloc.dart';
-import 'components/female_unpaid_info.dart';
-import 'components/payment_complete_banner.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_start_banner.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
@@ -90,6 +86,7 @@ import '../../components/confirmed_service_bubble.dart';
 import '../../components/update_inquiry_bubble.dart';
 import '../../components/chatroom_window.dart';
 import 'services/service_apis.dart';
+import 'components/service_alert_dialog.dart';
 
 part 'screen_arguments/service_chatroom_screen_arguments.dart';
 part 'components/notification_banner.dart';
@@ -106,12 +103,9 @@ class ServiceChatroom extends StatefulWidget {
   _ServiceChatroomState createState() => _ServiceChatroomState();
 }
 
-// @TODO:
-//   - Init current chatroom - load history messages.
-//   - Go to service qrcode scanner.
-//   - If is male,
-//      - Load dp balance.
-//      - If service status is unpaid, show unpaid banner.
+// TODO:
+//   - Cancel service should lock all functionalities in the chatroom
+//   - Hit cancel service should show proper dialog to warning user before canceling.
 class _ServiceChatroomState extends State<ServiceChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
@@ -130,7 +124,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   /// If male user service is paid, the unpaid banner will be hide
   bool _servicePaid = true;
 
-  double _balance = 0;
   InquiryDetail _inquiryDetail = InquiryDetail();
   ServiceDetails _serviceDetails = ServiceDetails();
   UpdateInquiryMessage _updateInquiryMessage = UpdateInquiryMessage();
@@ -142,6 +135,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
   /// Show loading when user sending image
   bool _isSendingImage = false;
+
+  bool _showServiceConfirmedNotifier = false;
+
+  /// Is true if service is cancelled
+  bool _isDisabledChat = false;
 
   @override
   void initState() {
@@ -177,6 +175,16 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     );
 
     _editMessageController.addListener(_handleEditMessage);
+
+    if (widget.args.routeTypes == RouteTypes.fromInquiry) {
+      _showServiceConfirmedNotifier = true;
+
+      Timer(Duration(seconds: 8), () {
+        setState(() {
+          _showServiceConfirmedNotifier = false;
+        });
+      });
+    }
   }
 
   @override
@@ -246,6 +254,27 @@ class _ServiceChatroomState extends State<ServiceChatroom>
     });
   }
 
+  _navigateToRating() {
+    HistoricalService historicalService = HistoricalService(
+      serviceUuid: _inquiryDetail.serviceUuid,
+      chatPartnerUsername: _inquiryDetail.username,
+      chatPartnerAvatarUrl: _inquirerProfile.avatarUrl,
+    );
+
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(MaterialPageRoute(
+      builder: (context) {
+        return Rate(
+          chatPartnerAvatarURL: historicalService.chatPartnerAvatarUrl,
+          chatPartnerUsername: historicalService.chatPartnerUsername,
+          serviceUUID: historicalService.serviceUuid,
+        );
+      },
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -272,11 +301,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           print("service_chatroom: " + widget.args.routeTypes.toString());
           if (widget.args.routeTypes == RouteTypes.fromIncomingService) {
             Navigator.of(context).pop();
-          }
-          // else if (widget.args.routeTypes == RouteTypes.fromBuyService) {
-          //   Navigator.of(context).pop();
-          // }
-          else {
+          } else {
             Navigator.of(
               context,
               rootNavigator: true,
@@ -380,7 +405,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                           },
                         ),
                       ],
-                      child: SizedBox.shrink(),
+                      child: _showServiceConfirmedNotifier
+                          ? NotificationBanner(
+                              avatarUrl: _inquirerProfile.avatarUrl,
+                            )
+                          : Container(),
                     ),
 
                     // Service started banner
@@ -404,122 +433,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                           : SizedBox.shrink(),
                     ),
 
-                    // Payment completed banner
-                    BlocListener<PaymentCompleteNotifierBloc,
-                        PaymentCompleteNotifierState>(
-                      listener: (context, state) {
-                        print('[Debug] Payment complete notifier');
-
-                        setState(() {
-                          _serviceDetails.copyWith(
-                            serviceStatus: ServiceStatus.to_be_fulfilled.name,
-                          );
-                        });
-                      },
-                      child: _serviceDetails.serviceStatus ==
-                              ServiceStatus.to_be_fulfilled.name
-                          ? PaymentCompleteBanner(
-                              inquirerProfile: _inquirerProfile,
-                              serviceDetails: _serviceDetails,
-                            )
-                          : SizedBox.shrink(),
-                    ),
-
-                    BlocListener<LoadMyDpBloc, LoadMyDpState>(
-                      listener: (context, state) {
-                        if (state.status == AsyncLoadingStatus.error) {
-                          developer.log(
-                            'failed to fetch dp balance',
-                            error: state.error,
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(state.error.message),
-                            ),
-                          );
-                        }
-
-                        if (state.status == AsyncLoadingStatus.done) {
-                          setState(() {
-                            _balance = state.myDp.balance;
-                            _inquiryDetail.balance = _balance;
-                          });
-                        }
-                      },
-                      child: _servicePaid
-                          ? SizedBox.shrink()
-                          : _sender.gender == Gender.male
-                              ? MaleUnpaidInfo(
-                                  inquirerProfile: _inquirerProfile,
-                                  serviceDetails: _serviceDetails,
-                                  onGoToPayment: () {
-                                    final total = _serviceDetails.matchingFee;
-
-                                    if (total > _balance) {
-                                      print("Go to Top up dp");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      LoadDpPackageBloc(
-                                                    apiClient: TopUpClient(),
-                                                  ),
-                                                ),
-                                              ],
-                                              child: TopupDp(
-                                                args: _inquiryDetail,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    } else {
-                                      print("Go to Payment");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      BuyServiceBloc(
-                                                    searchInquiryAPIs:
-                                                        SearchInquiryAPIs(),
-                                                  ),
-                                                ),
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      CancelServiceBloc(
-                                                    serviceAPIs: ServiceAPIs(),
-                                                  ),
-                                                ),
-                                                BlocProvider(
-                                                  create: (context) =>
-                                                      LoadCancelServiceBloc(
-                                                    serviceAPIs: ServiceAPIs(),
-                                                  ),
-                                                ),
-                                              ],
-                                              child: BuyService(
-                                                args: _inquiryDetail,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                )
-                              : FemaleUnpaidInfo(
-                                  inquirerProfile: _inquirerProfile,
-                                  serviceDetails: _serviceDetails,
-                                  servicePaid: _servicePaid,
-                                ),
-                    ),
                     Expanded(
                       child: LoadMoreScrollable(
                         scrollController: _scrollController,
@@ -553,14 +466,65 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
                                       _inquirerProfile = state.userProfile;
 
+                                      _serviceDetails =
+                                          _serviceDetails.copyWith(
+                                        serviceStatus: state.service.status,
+                                      );
+
                                       if (state.service.status ==
                                           ServiceStatus.unpaid.name) {
                                         _servicePaid = false;
                                       } else if (state.service.status ==
                                           ServiceStatus.to_be_fulfilled.name) {
                                         _servicePaid = true;
+                                      } else if (state.service.status ==
+                                          ServiceStatus.completed.name) {
+                                        _navigateToRating();
+                                      } else if (state.service.status ==
+                                          ServiceStatus.expired.name) {
+                                        _isDisabledChat = true;
+                                        developer
+                                            .log('ok service expired..bye bye');
                                       }
                                     });
+                                  }
+
+                                  // Display cancel dialog when received CancelServiceMessage.
+                                  if (state.currentMessages.isNotEmpty &&
+                                      state.currentMessages.first
+                                          is CancelServiceMessage) {
+                                    // - Display popup saying the counter part has cancel the service. Showing buttons to comment or leave the chatroom
+                                    showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return WillPopScope(
+                                            onWillPop: () async => false,
+                                            child: ServiceAlertDialog(
+                                                confirmText:
+                                                    AppLocalizations.of(context)
+                                                        .proceedRating,
+                                                cancelText:
+                                                    AppLocalizations.of(context)
+                                                        .cancelRating,
+                                                content: AppLocalizations.of(
+                                                        context)
+                                                    .serviceCanceledByOtherDialogText(
+                                                        _inquiryDetail
+                                                            .username),
+                                                onConfirm: () async {
+                                                  // Redirect to commenting page.
+                                                  Navigator.of(context).pop();
+                                                  _navigateToRating();
+                                                },
+                                                onDismiss: () async {
+                                                  // Back until is the first page of MaleAppTabItem.manage NavigatorState.
+                                                  Navigator.of(context)
+                                                      .popUntil((route) =>
+                                                          route.isFirst);
+                                                }),
+                                          );
+                                        });
                                   }
                                 },
                                 builder: (context, state) {
@@ -620,6 +584,9 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                             );
                                           } else if (message
                                               is CancelServiceMessage) {
+                                            // - Disable all functionalities of the chatroom.
+                                            _isDisabledChat = true;
+
                                             return CancelServiceBubble(
                                               isMe:
                                                   _sender.uuid == message.from,
@@ -644,6 +611,13 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                                   ),
                                                 );
                                               },
+                                            );
+                                          } else if (message
+                                              is BotInvitationChatMessage) {
+                                            return BotInvitationChatBubble(
+                                              isMe:
+                                                  _sender.uuid == message.from,
+                                              message: message,
                                             );
                                           } else {
                                             return ChatBubble(
@@ -691,6 +665,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             appointmentTime: _inquiryDetail.updateInquiryMessage.serviceTime,
             status: _serviceDetails.serviceStatus,
           );
+
           Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
             builder: (context) {
               return MultiBlocProvider(
@@ -722,7 +697,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                 ),
               );
             },
-          ));
+          )).then((value) {
+            // Update state for cancel service status
+            // _isDisabledChat
+            setState(() {});
+          });
         },
         child: Text(
           '服務內容',
@@ -786,6 +765,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
       },
       child: SendMessageBar(
         editMessageController: _editMessageController,
+        isDisabledChat: _isDisabledChat,
         onSend: () {
           if (_message.isEmpty) {
             return;
@@ -919,11 +899,18 @@ class _ServiceChatroomState extends State<ServiceChatroom>
         },
       ),
       actions: <Widget>[
-        _serviceDetailButton(),
+        _isDisabledChat ? SizedBox.shrink() : _serviceDetailButton(),
         SizedBox(width: 20),
-        _serviceDetails.serviceStatus == ServiceStatus.to_be_fulfilled.name
-            ? _qrcodeScannerButton()
-            : SizedBox.shrink(),
+        if (_serviceDetails.serviceStatus ==
+            ServiceStatus.to_be_fulfilled.name) ...[
+          if (_isDisabledChat) ...[
+            SizedBox.shrink(),
+          ] else ...[
+            _qrcodeScannerButton(),
+          ]
+        ] else ...[
+          SizedBox.shrink(),
+        ]
       ],
     );
   }

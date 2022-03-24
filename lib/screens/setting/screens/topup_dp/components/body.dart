@@ -12,7 +12,7 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/dp_package.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/models/my_dp.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/args.dart';
-// import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
+import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screens/topup_payment/topup_payment.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
@@ -69,14 +69,11 @@ class _BodyState extends State<Body> {
               ),
             ),
           ],
-
-          // TapPay is deprecated
-          child: Container(),
-          //child: TopupPayment(
-          //  amount: amount,
-          //  packageId: id,
-          //  args: args,
-          //),
+          child: TopupPayment(
+            amount: amount,
+            packageId: id,
+            args: args,
+          ),
         );
       },
     );

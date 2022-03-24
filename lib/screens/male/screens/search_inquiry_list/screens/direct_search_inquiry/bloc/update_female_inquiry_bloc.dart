@@ -20,10 +20,6 @@ class UpdateFemaleInquiryBloc
   Stream<UpdateFemaleInquiryState> mapEventToState(
     UpdateFemaleInquiryEvent event,
   ) async* {
-    //  else if (event is ClearFemaleListState) {
-    //   yield* _mapClearUserStateToState(event);
-    // }
-
     if (event is UpdateFemaleInquiry) {
       yield* _mapUpdateFemaleInquiryToState(event);
     } else if (event is UpdateInquiryStatus) {
@@ -122,10 +118,5 @@ class UpdateFemaleInquiryBloc
       state,
       femaleUser: updatedInquiry,
     );
-  }
-
-  Stream<UpdateFemaleInquiryState> _mapClearUserStateToState(
-      ClearFemaleListState event) async* {
-    yield UpdateFemaleInquiryState.clearState(state);
   }
 }
