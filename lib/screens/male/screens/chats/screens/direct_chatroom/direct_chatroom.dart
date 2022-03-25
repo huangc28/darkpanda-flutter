@@ -324,6 +324,7 @@ class _DirectChatroomState extends State<DirectChatroom>
                                             is BotInvitationChatMessage) {
                                           return BotInvitationChatBubble(
                                             isMe: _sender.uuid == message.from,
+                                            myGender: _sender.gender,
                                             message: message,
                                           );
                                         } else {

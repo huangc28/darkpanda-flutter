@@ -488,6 +488,7 @@ class _ChatroomState extends State<Chatroom>
                                                 return BotInvitationChatBubble(
                                                   isMe: _sender.uuid ==
                                                       message.from,
+                                                  myGender: _sender.gender,
                                                   message: message,
                                                 );
                                               } else {

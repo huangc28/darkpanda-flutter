@@ -1,4 +1,6 @@
+import 'package:darkpanda_flutter/enums/message_types.dart';
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 
 class Chatroom {
   final String serviceType;
@@ -34,12 +36,15 @@ class Chatroom {
     // Since we are fetching chatroom list here, each chatroom should
     // only have the latest message in the list or no message
     // at all.
-
+    // TODO: We need to parse message based on message type so that we can compose appropriate content.
     List<Message> messages = [];
 
     if (data.containsKey('messages')) {
-      messages = data['messages'].map<Message>((msg) {
-        return Message.fromMap(msg);
+      messages = data['messages'].map<Message>((data) {
+        if (data['type'] == MessageType.bot_invitation_chat_text.name) {
+          return BotInvitationChatMessage.fromMap(data);
+        }
+        return Message.fromMap(data);
       }).toList();
     }
 

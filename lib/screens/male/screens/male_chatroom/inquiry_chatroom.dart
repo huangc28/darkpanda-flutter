@@ -54,7 +54,6 @@ import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
-import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 import 'screens/male_inquiry_detail.dart';
 
@@ -347,6 +346,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                             is BotInvitationChatMessage) {
                                           return BotInvitationChatBubble(
                                             isMe: _sender.uuid == message.from,
+                                            myGender: _sender.gender,
                                             message: message,
                                           );
                                         } else {
