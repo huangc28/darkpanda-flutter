@@ -13,7 +13,7 @@ class NotificationBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: goToServiceChatroom,
+      // onTap: goToServiceChatroom,
       child: Container(
         padding: EdgeInsets.only(
           left: 12,
@@ -29,14 +29,14 @@ class NotificationBanner extends StatelessWidget {
 
             _buildStatusBar(),
 
-            InkWell(
-              onTap: goToServiceChatroom,
-              child: Icon(
-                Icons.navigate_next,
-                size: 22,
-                color: Colors.grey,
-              ),
-            ),
+            // InkWell(
+            //   onTap: goToServiceChatroom,
+            //   child: Icon(
+            //     Icons.navigate_next,
+            //     size: 22,
+            //     color: Colors.grey,
+            //   ),
+            // ),
           ],
         ),
         decoration: BoxDecoration(
@@ -53,7 +53,7 @@ class NotificationBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            '服務已成立! 請至服務繼續交談',
+            '服務已成立! 請繼續交談',
             style: TextStyle(
               color: Colors.white,
             ),

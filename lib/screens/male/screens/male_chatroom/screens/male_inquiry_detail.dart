@@ -1,5 +1,5 @@
 import 'package:darkpanda_flutter/models/service_settings.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/get_inquiry_bloc.dart';
+import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;

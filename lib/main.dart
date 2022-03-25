@@ -37,10 +37,10 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/update_inquiry_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
@@ -74,22 +74,6 @@ void main() async {
   // Receive FCM background messages
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-  // Isolate.current.addErrorListener(RawReceivePort((pair) async {
-  //   final List<dynamic> errorAndStacktrace = pair;
-  //   await FirebaseCrashlytics.instance.recordError(
-  //     errorAndStacktrace.first,
-  //     errorAndStacktrace.last,
-  //   );
-  // }).sendPort);
-
-  // Pass all uncaught errors from the framework to Crashlytics.
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  // Force disable Crashlytics collection while doing every day development.
-  // Temporarily toggle this to true if you want to test crash reporting in your app.
-  // await FirebaseCrashlytics.instance
-  //     .setCrashlyticsCollectionEnabled(!kDebugMode);
-
   try {
     assert(app != null);
 
@@ -103,6 +87,7 @@ void main() async {
       DeviceOrientation.portraitDown,
     ]);
 
+    // await SecureStore().delJwtToken();
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
 
@@ -353,6 +338,8 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+
           /// Set the app language to be chinese TW.
           locale: Locale.fromSubtags(
             languageCode: 'zh',

@@ -32,6 +32,8 @@ class LoadFemaleListBloc
       yield* _mapLoadMoreFemaleListToState(event);
     } else if (event is ClearFemaleListState) {
       yield* _mapClearUserStateToState(event);
+    } else if (event is UpdateFemaleProfileInList) {
+      yield* _mapUpdateFemaleProfileInList(event);
     }
   }
 
@@ -122,5 +124,28 @@ class LoadFemaleListBloc
   Stream<LoadFemaleListState> _mapClearUserStateToState(
       ClearFemaleListState event) async* {
     yield LoadFemaleListState.clearState(state);
+  }
+
+// NOTE: This bloc only updates female's `hasInquiry` status since this attribute is the only one that we need.
+// We could added more attributes later on.
+  Stream<LoadFemaleListState> _mapUpdateFemaleProfileInList(
+      UpdateFemaleProfileInList event) async* {
+    List<FemaleUser> newFemaleList = [];
+
+    // Iterate current female list, update `hasInquiry` status.
+    for (FemaleUser femaleInList in state.femaleUsers) {
+      if (femaleInList.uuid == event.femaleUser.uuid) {
+        newFemaleList.add(
+          femaleInList.copyWith(
+            hasInquiry: event.femaleUser.hasInquiry,
+          ),
+        );
+      } else {
+        newFemaleList.add(femaleInList);
+      }
+    }
+
+    yield LoadFemaleListState.updateFemaleList(state,
+        femaleUsers: newFemaleList);
   }
 }

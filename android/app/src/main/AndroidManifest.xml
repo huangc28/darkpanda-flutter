@@ -7,7 +7,6 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -15,13 +14,25 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
+     <queries>
+          <!-- If your app sends emails -->
+          <intent>
+               <action android:name="android.intent.action.SEND" />
+               <data android:mimeType="*/*" />
+          </intent>
+     </queries>
+
     <application
           tools:replace="android:label"
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="${applicationName}"
         android:label="Darkpanda"
         android:icon="@mipmap/launcher_icon">
         
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyB6xaDYyEw9Su80aQHISRlBzSucUGYCCuE"/>
+
+        <meta-data
+          android:name="flutterEmbedding"
+          android:value="2" />
 
         <activity
             android:name=".MainActivity"

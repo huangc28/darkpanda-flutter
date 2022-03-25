@@ -3,17 +3,21 @@ part of 'load_incoming_service_bloc.dart';
 class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
   final Map<String, Message> chatroomLastMessage;
   final Map<String, StreamSubscription> privateChatStreamMap;
+  final Map<String, StreamSubscription> serviceStreamMap;
   final AsyncLoadingStatus status;
   final List<IncomingService> services;
+  final Map<String, ServiceStatus> service;
   final E error;
   final int currentPage;
 
   const LoadIncomingServiceState._({
     this.status,
     this.services,
+    this.service,
     this.error,
     this.chatroomLastMessage,
     this.privateChatStreamMap,
+    this.serviceStreamMap,
     this.currentPage,
   });
 
@@ -21,8 +25,10 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
       : this._(
           status: AsyncLoadingStatus.initial,
           services: [],
+          service: {},
           chatroomLastMessage: {},
           privateChatStreamMap: {},
+          serviceStreamMap: {},
           currentPage: 0,
         );
 
@@ -30,8 +36,10 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
       : this._(
           status: AsyncLoadingStatus.loading,
           services: state.services,
+          service: state.service,
           chatroomLastMessage: state.chatroomLastMessage,
           privateChatStreamMap: state.privateChatStreamMap,
+          serviceStreamMap: state.serviceStreamMap,
           currentPage: state.currentPage,
         );
 
@@ -40,8 +48,10 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
     E err,
   }) : this._(
           status: AsyncLoadingStatus.error,
+          service: {},
           chatroomLastMessage: {},
           privateChatStreamMap: state.privateChatStreamMap,
+          serviceStreamMap: state.serviceStreamMap,
           currentPage: state.currentPage,
         );
 
@@ -49,11 +59,15 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
     LoadIncomingServiceState state, {
     List<IncomingService> services,
     Map<String, StreamSubscription> privateChatStreamMap,
+    Map<String, StreamSubscription> serviceStreamMap,
     int currentPage,
+    Map<String, ServiceStatus> service,
   }) : this._(
           privateChatStreamMap:
               privateChatStreamMap ?? state.privateChatStreamMap,
+          serviceStreamMap: serviceStreamMap ?? state.serviceStreamMap,
           services: services ?? state.services,
+          service: service ?? state.service,
           status: AsyncLoadingStatus.done,
           chatroomLastMessage: state.chatroomLastMessage,
           currentPage: currentPage ?? state.currentPage,
@@ -64,9 +78,24 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
     Map<String, Message> chatroomLastMessage,
   }) : this._(
           privateChatStreamMap: state.privateChatStreamMap,
+          serviceStreamMap: state.serviceStreamMap,
           services: state.services,
+          service: state.service,
           status: state.status,
           chatroomLastMessage: chatroomLastMessage ?? state.chatroomLastMessage,
+          currentPage: state.currentPage,
+        );
+
+  LoadIncomingServiceState.putChatroomService(
+    LoadIncomingServiceState state, {
+    Map<String, ServiceStatus> service,
+  }) : this._(
+          privateChatStreamMap: state.privateChatStreamMap,
+          serviceStreamMap: state.serviceStreamMap,
+          services: state.services,
+          service: service ?? state.service,
+          status: state.status,
+          chatroomLastMessage: state.chatroomLastMessage,
           currentPage: state.currentPage,
         );
 
@@ -74,8 +103,10 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
       : this._(
           services: state.services,
           status: AsyncLoadingStatus.initial,
+          service: state.service,
           chatroomLastMessage: {},
           privateChatStreamMap: state.privateChatStreamMap,
+          serviceStreamMap: {},
           currentPage: 0,
         );
 
@@ -83,7 +114,9 @@ class LoadIncomingServiceState<E extends AppBaseException> extends Equatable {
   List<Object> get props => [
         status,
         services,
+        service,
         privateChatStreamMap,
+        serviceStreamMap,
         error,
         chatroomLastMessage,
         currentPage,

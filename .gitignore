@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+.fvm/flutter_sdk
 
 # IntelliJ related
 *.iml
@@ -56,3 +57,6 @@ ios/build/
 
 # Monarch related
 .monarch/
+
+# IOS success build template 
+ios_bk/

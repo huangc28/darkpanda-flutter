@@ -55,7 +55,7 @@ class _LoginFormState extends State<LoginForm> {
                 validator: (String v) {
                   // Username can not be empty
                   if (v.trim().isEmpty) {
-                    return 'username is required';
+                    return '請輸入用戶名';
                   }
 
                   if (_asyncUsernameErrStr != null &&

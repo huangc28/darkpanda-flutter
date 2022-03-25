@@ -104,36 +104,14 @@ class ServiceChatroomGrid extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  chatroom.status == ServiceStatus.unpaid.name
+                  chatroom.status == ServiceStatus.fulfilling.name
                       ? Text(
-                          '未付款',
+                          '已開始',
                           style: TextStyle(
-                            color: Color.fromRGBO(255, 0, 0, 1),
+                            color: Colors.green,
                           ),
                         )
-                      : chatroom.status == ServiceStatus.to_be_fulfilled.name
-                          ? Text(
-                              '已付款',
-                              style: TextStyle(
-                                color: Colors.green,
-                              ),
-                            )
-                          : chatroom.status == ServiceStatus.fulfilling.name
-                              ? Text(
-                                  '已開始',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                  ),
-                                )
-                              : chatroom.status ==
-                                      ServiceStatus.payment_failed.name
-                                  ? Text(
-                                      '付款失敗',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(255, 0, 0, 1),
-                                      ),
-                                    )
-                                  : Container(),
+                      : Container(),
                   Text(
                     chatroom.status == ServiceStatus.fulfilling.name
                         ? ''

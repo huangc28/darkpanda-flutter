@@ -2,7 +2,7 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_can
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tappay/flutter_tappay.dart';
+// import 'package:flutter_tappay/flutter_tappay.dart';
 
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
@@ -40,8 +40,8 @@ class TopupPayment extends StatefulWidget {
 class _TopupPaymentState extends State<TopupPayment> {
   TextEditingController _numberController = TextEditingController();
 
-  FlutterTappay _payer = FlutterTappay();
-  FlutterTappay payer = FlutterTappay();
+  // FlutterTappay _payer = FlutterTappay();
+  // FlutterTappay payer = FlutterTappay();
 
   PaymentCard _paymentCard = PaymentCard();
   final GlobalKey<FormState> _formKeyTopup = GlobalKey<FormState>();
@@ -59,16 +59,16 @@ class _TopupPaymentState extends State<TopupPayment> {
 
     _initTappay();
 
-    payer
-        .init(
-      appKey:
-          'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
-      appId: 17098,
-      serverType: FlutterTappayServerType.Sandbox,
-    )
-        .then((_) {
-      print('tappay instance instantiated.');
-    });
+    // payer
+    //     .init(
+    //   appKey:
+    //       'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+    //   appId: 17098,
+    //   serverType: FlutterTappayServerType.Sandbox,
+    // )
+    //     .then((_) {
+    //   print('tappay instance instantiated.');
+    // });
   }
 
   @override
@@ -79,13 +79,13 @@ class _TopupPaymentState extends State<TopupPayment> {
   }
 
   void _initTappay() async {
-    _payer = await FlutterTappay()
-      ..init(
-        appKey:
-            'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
-        appId: 17098,
-        serverType: FlutterTappayServerType.Sandbox,
-      );
+    // _payer = await FlutterTappay()
+    //   ..init(
+    //     appKey:
+    //         'app_7OYnhykZUdLACsoYJiCSoxu7MbDUo9SNFcekYcgGJlnsDtC6oB9VhRFP8mMy',
+    //     appId: 17098,
+    //     serverType: FlutterTappayServerType.Sandbox,
+    //   );
   }
 
   void _validateInputs() async {
@@ -102,15 +102,15 @@ class _TopupPaymentState extends State<TopupPayment> {
       String input = CardUtils.getCleanedNumber(_numberController.text);
 
       try {
-        var resp = await _payer.sendToken(
-          cardNumber: input,
-          dueMonth: _paymentCard.month,
-          dueYear: _paymentCard.year,
-          ccv: _paymentCard.cvv.toString(),
-        );
+        // var resp = await _payer.sendToken(
+        //   cardNumber: input,
+        //   dueMonth: _paymentCard.month,
+        //   dueYear: _paymentCard.year,
+        //   ccv: _paymentCard.cvv.toString(),
+        // );
 
-        _paymentCard.prime = resp.prime;
-        _paymentCard.packageId = widget.packageId;
+        // _paymentCard.prime = resp.prime;
+        // _paymentCard.packageId = widget.packageId;
 
         showDialog(
           barrierDismissible: false,

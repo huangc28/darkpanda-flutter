@@ -15,6 +15,7 @@ class InquiryDetail extends Equatable {
     this.serviceUuid,
     this.routeTypes,
     this.avatarUrl,
+    this.serviceType,
   });
 
   UpdateInquiryMessage updateInquiryMessage;
@@ -26,6 +27,7 @@ class InquiryDetail extends Equatable {
   String serviceUuid;
   RouteTypes routeTypes;
   String avatarUrl;
+  String serviceType;
 
   static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
 
@@ -41,6 +43,7 @@ class InquiryDetail extends Equatable {
       serviceUuid: data['serviceUuid'] ?? '',
       routeTypes: data['routeTypes'] ?? '',
       avatarUrl: data['avatarUrl'] ?? '',
+      serviceType: data['serviceType'] ?? '',
     );
   }
 
@@ -55,5 +58,6 @@ class InquiryDetail extends Equatable {
         serviceUuid,
         routeTypes,
         avatarUrl,
+        serviceType,
       ];
 }

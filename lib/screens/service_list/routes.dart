@@ -11,6 +11,10 @@ import './services/service_chatroom_api.dart';
 class ServiceChatroomRoutes extends BaseRoutes {
   static const root = '/';
 
+  ///  Redirect user to service chatroom routeBuilder. This route will reuse the routes
+  ///  from service chatroom routeBuilder domain.
+  static const serviceChatroom = '/service_chatroom';
+
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     return {
       ServiceChatroomRoutes.root: (context) => MultiBlocProvider(
@@ -27,8 +31,10 @@ class ServiceChatroomRoutes extends BaseRoutes {
                 ),
               ),
             ],
-            child: ServiceList(),
-          )
+            child: ServiceList(
+              onPush: (String routeName) => this.push(context, routeName),
+            ),
+          ),
     };
   }
 }

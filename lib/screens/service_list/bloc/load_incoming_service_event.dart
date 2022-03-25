@@ -41,6 +41,16 @@ class PutLatestMessage extends LoadIncomingServiceEvent {
   });
 }
 
+class UpdateChatroomServiceStatus extends LoadIncomingServiceEvent {
+  final String serviceUuid;
+  final ServiceStatus status;
+
+  const UpdateChatroomServiceStatus({
+    this.serviceUuid,
+    this.status,
+  });
+}
+
 class ClearIncomingServiceState extends LoadIncomingServiceEvent {
   const ClearIncomingServiceState();
 

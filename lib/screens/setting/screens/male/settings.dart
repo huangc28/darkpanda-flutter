@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/setting/routes.dart';
+
+import 'package:darkpanda_flutter/util/size_config.dart';
 
 import '../../bloc/logout_bloc.dart';
 import '../topup_dp/screen_arguements/args.dart';
@@ -54,29 +57,6 @@ class _MaleSettingsState extends State<MaleSettings> {
                         InkWell(
                           child: Image(
                             image: AssetImage(
-                                "lib/screens/setting/assets/recommend_management.png"),
-                          ),
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                            widget.onPush(
-                                SettingRoutes.recommend_management, null);
-                          },
-                        ),
-                        InkWell(
-                          child: Image(
-                            image: AssetImage(
-                                "lib/screens/setting/assets/buy_dp.png"),
-                          ),
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                            widget.onPush(SettingRoutes.topup_dp, null);
-                          },
-                        ),
-                        InkWell(
-                          child: Image(
-                            image: AssetImage(
                                 "lib/screens/setting/assets/block_list.png"),
                           ),
                           highlightColor: Colors.transparent,
@@ -89,12 +69,20 @@ class _MaleSettingsState extends State<MaleSettings> {
                     ),
                     InkWell(
                       child: Image(
+                        width: SizeConfig.screenWidth * 0.81,
                         image: AssetImage(
-                            "lib/screens/setting/assets/feedback.png"),
+                            "lib/screens/setting/assets/2x/feedback.png"),
                       ),
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
-                      onTap: () {},
+                      onTap: () {
+                        final Uri emailLaunchUri = Uri(
+                          scheme: 'mailto',
+                          path: 'arthuryap@squareboxtech.com',
+                        );
+
+                        launch(emailLaunchUri.toString());
+                      },
                     ),
                     Padding(
                       padding:

@@ -144,11 +144,11 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
                               },
                               validator: (String v) {
                                 if (v.trim().isEmpty) {
-                                  return 'verify code can not be empty';
+                                  return '請輸入驗證碼';
                                 }
 
                                 if (!Util.isNumeric(v)) {
-                                  return 'verify code must be numeric';
+                                  return '驗證碼必須是數字';
                                 }
 
                                 if (!_mobileVerifyErrStr.isEmpty) {

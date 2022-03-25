@@ -14,7 +14,7 @@ class NotificationBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '服務已成立! 請至服務繼續交談',
+            '服務已成立! 請繼續交談',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -32,7 +32,7 @@ class NotificationBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('on tap banner');
+        // print('on tap banner');
       },
       child: Container(
         padding: EdgeInsets.only(
@@ -49,15 +49,15 @@ class NotificationBanner extends StatelessWidget {
 
             _buildStatusBar(),
 
-            InkWell(
-              onTap: () {
-                print('DEBUG tap proceed');
-              },
-              child: Icon(
-                Icons.navigate_next,
-                size: 22,
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //     print('DEBUG tap proceed');
+            //   },
+            //   child: Icon(
+            //     Icons.navigate_next,
+            //     size: 22,
+            //   ),
+            // ),
           ],
         ),
         decoration: BoxDecoration(
