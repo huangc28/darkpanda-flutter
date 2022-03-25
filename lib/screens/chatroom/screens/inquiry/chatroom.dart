@@ -410,8 +410,6 @@ class _ChatroomState extends State<Chatroom>
                                             isSendingImage: _isSendingImage,
                                             builder: (BuildContext context,
                                                 message) {
-                                              print(
-                                                  'chatroom messages ${message}');
                                               // Render different chat bubble based on message type.
                                               if (message
                                                   is ServiceConfirmedMessage) {
@@ -483,8 +481,6 @@ class _ChatroomState extends State<Chatroom>
                                                 );
                                               } else if (message
                                                   is BotInvitationChatMessage) {
-                                                print(
-                                                    'triggered render BotInvitationChatMessage');
                                                 return BotInvitationChatBubble(
                                                   isMe: _sender.uuid ==
                                                       message.from,

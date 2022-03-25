@@ -314,7 +314,6 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                                   );
                                                 },
                                               );
-                                              print('onTapMessage ${message}');
                                             },
                                           );
                                         } else if (message
