@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/exit_chatroom_confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,6 +89,9 @@ class _DirectChatroomState extends State<DirectChatroom>
 
   /// Show loading when user sending image
   bool _isSendingImage = false;
+
+  /// Is true if user quit chatroom
+  bool _isDisabledChat = false;
 
   @override
   void initState() {
@@ -192,14 +199,25 @@ class _DirectChatroomState extends State<DirectChatroom>
             arguments: MaleAppTabItem.chat,
           );
         } else {
-          Navigator.of(context).pop();
+          if (_isDisabledChat) {
+            Navigator.of(context).pop(true);
+          } else {
+            Navigator.of(context).pop();
+          }
         }
 
         return false;
       },
-      child: Scaffold(
-        appBar: _appBar(),
-        body: _body(),
+      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.done) {
+            Navigator.of(context).pop(true);
+          }
+        },
+        child: Scaffold(
+          appBar: _appBar(),
+          body: _body(),
+        ),
       ),
     );
   }
@@ -245,6 +263,14 @@ class _DirectChatroomState extends State<DirectChatroom>
                                 if (state.status == AsyncLoadingStatus.done) {
                                   setState(() {
                                     _doneInitChatroom = true;
+                                  });
+                                }
+
+                                if (state.currentMessages.isNotEmpty &&
+                                    state.currentMessages.first
+                                        is QuitChatroomMessage) {
+                                  setState(() {
+                                    _isDisabledChat = true;
                                   });
                                 }
                               },
@@ -301,6 +327,12 @@ class _DirectChatroomState extends State<DirectChatroom>
                                             isMe: _sender.uuid == message.from,
                                             message: message,
                                           );
+                                        } else if (message
+                                            is QuitChatroomMessage) {
+                                          return QuitChatroomBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
                                         } else if (message is ImageMessage) {
                                           return ImageBubble(
                                             isMe: _sender.uuid == message.from,
@@ -326,11 +358,15 @@ class _DirectChatroomState extends State<DirectChatroom>
                                             isMe: _sender.uuid == message.from,
                                             myGender: _sender.gender,
                                             message: message,
+                                            avatarUrl: _negotiatingServiceDetail
+                                                .avatarUrl,
                                           );
                                         } else {
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
+                                            avatarUrl: _negotiatingServiceDetail
+                                                .avatarUrl,
                                           );
                                         }
                                       },
@@ -466,13 +502,19 @@ class _DirectChatroomState extends State<DirectChatroom>
               arguments: MaleAppTabItem.chat,
             );
           } else {
-            Navigator.of(context).pop();
+            if (_isDisabledChat) {
+              Navigator.of(context).pop(true);
+            } else {
+              Navigator.of(context).pop();
+            }
           }
         },
       ),
       title: BlocBuilder<DirectCurrentChatroomBloc, DirectCurrentChatroomState>(
         builder: (context, state) {
           _negotiatingServiceDetail.username = state.userProfile.username ?? '';
+          _negotiatingServiceDetail.avatarUrl =
+              state.userProfile.avatarUrl ?? '';
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -512,8 +554,9 @@ class _DirectChatroomState extends State<DirectChatroom>
         },
       ),
       actions: <Widget>[
-        _serviceDetailButton(),
+        _isDisabledChat ? SizedBox.shrink() : _serviceDetailButton(),
         SizedBox(width: 20),
+        _isDisabledChat ? SizedBox.shrink() : _exitChatroomButton(),
       ],
     );
   }
@@ -551,6 +594,7 @@ class _DirectChatroomState extends State<DirectChatroom>
       },
       child: SendMessageBar(
         editMessageController: _editMessageController,
+        isDisabledChat: _isDisabledChat,
         onSend: () {
           if (_message.isEmpty) {
             return;
@@ -583,6 +627,32 @@ class _DirectChatroomState extends State<DirectChatroom>
           );
         },
       ),
+    );
+  }
+
+  Widget _exitChatroomButton() {
+    return IconButton(
+      icon: Icon(
+        Icons.logout_outlined,
+        color: Colors.white,
+      ),
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onPressed: () async {
+        await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return ExitChatroomConfirmationDialog();
+          },
+        ).then((value) {
+          if (value) {
+            BlocProvider.of<ExitChatroomBloc>(context).add(
+              QuitChatroom(widget.args.channelUUID),
+            );
+          }
+        });
+      },
     );
   }
 }

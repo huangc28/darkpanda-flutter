@@ -109,7 +109,8 @@ class _ChatroomsState extends State<Chatrooms> {
                               Navigator.of(
                                 context,
                                 rootNavigator: true,
-                              ).pushNamed(
+                              )
+                                  .pushNamed(
                                 MainRoutes.directChatroom,
                                 arguments: DirectChatroomScreenArguments(
                                   channelUUID: chatroom.channelUUID,
@@ -118,7 +119,16 @@ class _ChatroomsState extends State<Chatrooms> {
                                   serviceUUID: chatroom.serviceUUID,
                                   routeTypes: RouteTypes.fromMaleChats,
                                 ),
-                              );
+                              )
+                                  .then((value) {
+                                if (value) {
+                                  // Refresh chatroom list after user back from exit chatroom
+                                  BlocProvider.of<
+                                              LoadDirectInquiryChatroomsBloc>(
+                                          context)
+                                      .add(FetchDirectInquiryChatrooms());
+                                }
+                              });
                             },
                             chatroom: chatroom,
                             lastMessage: lastMsg?.content,

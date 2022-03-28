@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/exit_chatroom_confirmation_dialog.dart';
 import 'package:image/image.dart' as img;
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -126,6 +129,9 @@ class _ChatroomState extends State<Chatroom>
   bool sendUpdateInquiryIsLoading = false;
   int isFirstCall = 0;
 
+  /// Is true if service is cancelled
+  bool _isDisabledChat = false;
+
   @override
   void initState() {
     super.initState();
@@ -222,6 +228,7 @@ class _ChatroomState extends State<Chatroom>
       child: SendMessageBar(
         disable: _serviceConfirmed,
         editMessageController: _editMessageController,
+        isDisabledChat: _isDisabledChat,
         onSend: () {
           if (_message.isEmpty) {
             return;
@@ -239,7 +246,6 @@ class _ChatroomState extends State<Chatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          // _getCameraImage();
           Navigator.of(
             context,
             rootNavigator: true,
@@ -323,45 +329,219 @@ class _ChatroomState extends State<Chatroom>
 
         return false;
       },
-      child: Scaffold(
-        appBar: _appBar(),
-        body: SafeArea(
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Container(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: LoadMoreScrollable(
-                          scrollController: _scrollController,
-                          onLoadMore: () {
-                            BlocProvider.of<CurrentChatroomBloc>(context).add(
-                              FetchMoreHistoricalMessages(
-                                channelUUID: widget.args.channelUUID,
-                              ),
-                            );
-                          },
-                          builder: (context, scrollController) {
-                            return Stack(
-                              children: [
-                                BlocListener<ServiceConfirmNotifierBloc,
-                                    ServiceConfirmNotifierState>(
-                                  listener: (context, state) {
-                                    setState(() {
-                                      // If male user confirmed the service, toggle the _serviceConfirmed to be true.
-                                      // so that the female user can not edit the service anymore.
-                                      _serviceConfirmed = true;
-                                    });
+      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.done) {
+            Navigator.of(context).pop(true);
+            developer.log('exit chatroom');
+          }
+        },
+        child: Scaffold(
+          appBar: _appBar(),
+          body: SafeArea(
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: LoadMoreScrollable(
+                            scrollController: _scrollController,
+                            onLoadMore: () {
+                              BlocProvider.of<CurrentChatroomBloc>(context).add(
+                                FetchMoreHistoricalMessages(
+                                  channelUUID: widget.args.channelUUID,
+                                ),
+                              );
+                            },
+                            builder: (context, scrollController) {
+                              return Stack(
+                                children: [
+                                  BlocListener<ServiceConfirmNotifierBloc,
+                                      ServiceConfirmNotifierState>(
+                                    listener: (context, state) {
+                                      setState(() {
+                                        // If male user confirmed the service, toggle the _serviceConfirmed to be true.
+                                        // so that the female user can not edit the service anymore.
+                                        _serviceConfirmed = true;
+                                      });
 
-                                    BlocProvider.of<LoadIncomingServiceBloc>(
-                                            context)
-                                        .add(LoadIncomingService());
-                                  },
-                                  child: BlocConsumer<CurrentChatroomBloc,
-                                      CurrentChatroomState>(
+                                      BlocProvider.of<LoadIncomingServiceBloc>(
+                                              context)
+                                          .add(LoadIncomingService());
+                                    },
+                                    child: BlocConsumer<CurrentChatroomBloc,
+                                        CurrentChatroomState>(
+                                      listener: (context, state) {
+                                        if (state.status ==
+                                            AsyncLoadingStatus.error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content:
+                                                  Text(state.error.message),
+                                            ),
+                                          );
+                                        }
+
+                                        // Enable message bar once done initializing.
+                                        if (state.status ==
+                                            AsyncLoadingStatus.done) {
+                                          setState(() {
+                                            _doneInitChatroom = true;
+
+                                            _inquirerProfile =
+                                                state.userProfile;
+                                          });
+                                        }
+
+                                        if (state.currentMessages.isNotEmpty &&
+                                            state.currentMessages.first
+                                                is QuitChatroomMessage) {
+                                          setState(() {
+                                            _isDisabledChat = true;
+                                          });
+                                        }
+                                      },
+                                      builder: (context, state) {
+                                        if (_doneInitChatroom) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              // Dismiss inquiry detail pannel.
+                                              if (!_animationController
+                                                  .isDismissed) {
+                                                _animationController.reverse();
+                                              }
+
+                                              FocusScopeNode currentFocus =
+                                                  FocusScope.of(context);
+
+                                              // Dismiss keyboard when user clicks on chat window.
+                                              if (!currentFocus
+                                                  .hasPrimaryFocus) {
+                                                currentFocus.unfocus();
+                                              }
+                                            },
+                                            child: ChatroomWindow(
+                                              scrollController:
+                                                  scrollController,
+                                              historicalMessages:
+                                                  state.historicalMessages,
+                                              currentMessages:
+                                                  state.currentMessages,
+                                              isSendingImage: _isSendingImage,
+                                              builder: (BuildContext context,
+                                                  message) {
+                                                // Render different chat bubble based on message type.
+                                                if (message
+                                                    is ServiceConfirmedMessage) {
+                                                  return ConfirmedServiceBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                  );
+                                                } else if (message
+                                                    is UpdateInquiryMessage) {
+                                                  return UpdateInquiryBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                    onTapMessage: (message) {
+                                                      // Slideup inquiry pannel.
+                                                      _animationController
+                                                          .forward();
+                                                    },
+                                                  );
+                                                } else if (message
+                                                    is DisagreeInquiryMessage) {
+                                                  return DisagreeInquiryBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                  );
+                                                } else if (message
+                                                    is QuitChatroomMessage) {
+                                                  return QuitChatroomBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                  );
+                                                } else if (message
+                                                    is PaymentCompletedMessage) {
+                                                  return PaymentCompletedBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                  );
+                                                } else if (message
+                                                    is CancelServiceMessage) {
+                                                  return CancelServiceBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                  );
+                                                } else if (message
+                                                    is ImageMessage) {
+                                                  return ImageBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                    onEnlarge: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (_) {
+                                                            return FullScreenImage(
+                                                              imageUrl: message
+                                                                  .imageUrls[0],
+                                                              tag: "chat_image",
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                } else if (message
+                                                    is BotInvitationChatMessage) {
+                                                  return BotInvitationChatBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    myGender: _sender.gender,
+                                                    message: message,
+                                                    avatarUrl: _inquirerProfile
+                                                        .avatarUrl,
+                                                  );
+                                                } else {
+                                                  return ChatBubble(
+                                                    isMe: _sender.uuid ==
+                                                        message.from,
+                                                    message: message,
+                                                    avatarUrl: _inquirerProfile
+                                                        .avatarUrl,
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          );
+                                        } else {
+                                          return Center(
+                                            child: Container(
+                                              height: 50,
+                                              child: LoadingIcon(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+
+                                  // When we receive service confirmed message, we will
+                                  // display this top notification banner.
+                                  BlocListener<LoadIncomingServiceBloc,
+                                      LoadIncomingServiceState>(
                                     listener: (context, state) {
                                       if (state.status ==
                                           AsyncLoadingStatus.error) {
@@ -376,343 +556,195 @@ class _ChatroomState extends State<Chatroom>
                                       // Enable message bar once done initializing.
                                       if (state.status ==
                                           AsyncLoadingStatus.done) {
-                                        setState(() {
-                                          _doneInitChatroom = true;
+                                        isFirstCall++;
 
-                                          _inquirerProfile = state.userProfile;
-                                        });
+                                        // status done will be called twice, so implement isFirstCall to solve this issue
+                                        if (isFirstCall == 1) {
+                                          Navigator.of(
+                                            context,
+                                            rootNavigator: true,
+                                          ).pushNamed(
+                                            MainRoutes.serviceChatroom,
+                                            arguments:
+                                                ServiceChatroomScreenArguments(
+                                              channelUUID:
+                                                  widget.args.channelUUID,
+                                              inquiryUUID:
+                                                  widget.args.inquiryUUID,
+                                              counterPartUUID:
+                                                  widget.args.counterPartUUID,
+                                              serviceUUID:
+                                                  widget.args.serviceUUID,
+                                              routeTypes:
+                                                  RouteTypes.fromInquiry,
+                                            ),
+                                          );
+                                        }
                                       }
                                     },
-                                    builder: (context, state) {
-                                      if (_doneInitChatroom) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            // Dismiss inquiry detail pannel.
-                                            if (!_animationController
-                                                .isDismissed) {
-                                              _animationController.reverse();
-                                            }
-
-                                            FocusScopeNode currentFocus =
-                                                FocusScope.of(context);
-
-                                            // Dismiss keyboard when user clicks on chat window.
-                                            if (!currentFocus.hasPrimaryFocus) {
-                                              currentFocus.unfocus();
-                                            }
-                                          },
-                                          child: ChatroomWindow(
-                                            scrollController: scrollController,
-                                            historicalMessages:
-                                                state.historicalMessages,
-                                            currentMessages:
-                                                state.currentMessages,
-                                            isSendingImage: _isSendingImage,
-                                            builder: (BuildContext context,
-                                                message) {
-                                              // Render different chat bubble based on message type.
-                                              if (message
-                                                  is ServiceConfirmedMessage) {
-                                                return ConfirmedServiceBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              } else if (message
-                                                  is UpdateInquiryMessage) {
-                                                return UpdateInquiryBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                  onTapMessage: (message) {
-                                                    // Slideup inquiry pannel.
-                                                    _animationController
-                                                        .forward();
-                                                  },
-                                                );
-                                              } else if (message
-                                                  is DisagreeInquiryMessage) {
-                                                return DisagreeInquiryBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              } else if (message
-                                                  is QuitChatroomMessage) {
-                                                return QuitChatroomBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              } else if (message
-                                                  is PaymentCompletedMessage) {
-                                                return PaymentCompletedBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              } else if (message
-                                                  is CancelServiceMessage) {
-                                                return CancelServiceBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              } else if (message
-                                                  is ImageMessage) {
-                                                return ImageBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                  onEnlarge: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (_) {
-                                                          return FullScreenImage(
-                                                            imageUrl: message
-                                                                .imageUrls[0],
-                                                            tag: "chat_image",
-                                                          );
-                                                        },
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              } else if (message
-                                                  is BotInvitationChatMessage) {
-                                                return BotInvitationChatBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  myGender: _sender.gender,
-                                                  message: message,
-                                                );
-                                              } else {
-                                                return ChatBubble(
-                                                  isMe: _sender.uuid ==
-                                                      message.from,
-                                                  message: message,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        );
-                                      } else {
-                                        return Center(
-                                          child: Container(
-                                            height: 50,
-                                            child: LoadingIcon(),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
-
-                                // When we receive service confirmed message, we will
-                                // display this top notification banner.
-                                BlocListener<LoadIncomingServiceBloc,
-                                    LoadIncomingServiceState>(
-                                  listener: (context, state) {
-                                    if (state.status ==
-                                        AsyncLoadingStatus.error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(state.error.message),
-                                        ),
-                                      );
-                                    }
-
-                                    // Enable message bar once done initializing.
-                                    if (state.status ==
-                                        AsyncLoadingStatus.done) {
-                                      isFirstCall++;
-
-                                      // status done will be called twice, so implement isFirstCall to solve this issue
-                                      if (isFirstCall == 1) {
-                                        Navigator.of(
-                                          context,
-                                          rootNavigator: true,
-                                        ).pushNamed(
-                                          MainRoutes.serviceChatroom,
-                                          arguments:
-                                              ServiceChatroomScreenArguments(
-                                            channelUUID:
-                                                widget.args.channelUUID,
-                                            inquiryUUID:
-                                                widget.args.inquiryUUID,
-                                            counterPartUUID:
-                                                widget.args.counterPartUUID,
-                                            serviceUUID:
-                                                widget.args.serviceUUID,
-                                            routeTypes: RouteTypes.fromInquiry,
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  },
-                                  child:
-                                      // _serviceConfirmed
-                                      //     ? NotificationBanner(
-                                      //         avatarUrl: _inquirerProfile.avatarUrl,
-                                      //         goToServiceChatroom: () {
-                                      //           BlocProvider.of<
-                                      //                       LoadIncomingServiceBloc>(
-                                      //                   context)
-                                      //               .add(LoadIncomingService());
-                                      //         })
-                                      // :
-                                      Container(),
-                                )
-                              ],
-                            );
-                          },
+                                    child:
+                                        // _serviceConfirmed
+                                        //     ? NotificationBanner(
+                                        //         avatarUrl: _inquirerProfile.avatarUrl,
+                                        //         goToServiceChatroom: () {
+                                        //           BlocProvider.of<
+                                        //                       LoadIncomingServiceBloc>(
+                                        //                   context)
+                                        //               .add(LoadIncomingService());
+                                        //         })
+                                        // :
+                                        Container(),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      _doneInitChatroom
-                          ? _buildMessageBar()
-                          : SizedBox.shrink(),
-                    ],
+                        _doneInitChatroom
+                            ? _buildMessageBar()
+                            : SizedBox.shrink(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // Listen the loading status of `GetInquiryBloc`. If status is loading,
-              // display spinner on service settings sheet.
-              SlideTransition(
-                position: _offsetAnimation,
-                child: MultiBlocListener(
-                  listeners: [
-                    // BlocListener<GetInquiryBloc, GetInquiryState>(
-                    //   listener: (_, state) {
-                    //     if (state.status == AsyncLoadingStatus.done) {
-                    //       setState(() {
-                    //         _serviceSettings = state.serviceSettings;
-                    //       });
-                    //     }
-                    //   },
-                    // ),
-                    BlocListener<LoadServiceDetailBloc, LoadServiceDetailState>(
-                      listener: (_, state) {
-                        if (state.status == AsyncLoadingStatus.done) {
+                // Listen the loading status of `GetInquiryBloc`. If status is loading,
+                // display spinner on service settings sheet.
+                SlideTransition(
+                  position: _offsetAnimation,
+                  child: MultiBlocListener(
+                    listeners: [
+                      // BlocListener<GetInquiryBloc, GetInquiryState>(
+                      //   listener: (_, state) {
+                      //     if (state.status == AsyncLoadingStatus.done) {
+                      //       setState(() {
+                      //         _serviceSettings = state.serviceSettings;
+                      //       });
+                      //     }
+                      //   },
+                      // ),
+                      BlocListener<LoadServiceDetailBloc,
+                          LoadServiceDetailState>(
+                        listener: (_, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _serviceDetails = state.serviceDetails;
+                              _serviceSettings = ServiceSettings(
+                                uuid: _serviceDetails.uuid,
+                                serviceDate:
+                                    _serviceDetails.appointmentTime.toLocal(),
+                                serviceTime: TimeOfDay.fromDateTime(
+                                    _serviceDetails.appointmentTime.toLocal()),
+                                price: _serviceDetails.price,
+                                duration: _serviceDetails.duration,
+                                serviceType: _serviceDetails.serviceType,
+                                address: _serviceDetails.address,
+                              );
+                            });
+                          }
+                        },
+                      ),
+                      // BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
+                      //     listener: (_, state) {
+                      //   if (state.status == AsyncLoadingStatus.done) {
+                      //     _animationController.reverse();
+                      //   }
+                      // }),
+                      BlocListener<SendUpdateInquiryMessageBloc,
+                          SendUpdateInquiryMessageState>(listener: (_, state) {
+                        if (state.status == AsyncLoadingStatus.initial ||
+                            state.status == AsyncLoadingStatus.loading) {
                           setState(() {
-                            _serviceDetails = state.serviceDetails;
-                            _serviceSettings = ServiceSettings(
-                              uuid: _serviceDetails.uuid,
-                              serviceDate:
-                                  _serviceDetails.appointmentTime.toLocal(),
-                              serviceTime: TimeOfDay.fromDateTime(
-                                  _serviceDetails.appointmentTime.toLocal()),
-                              price: _serviceDetails.price,
-                              duration: _serviceDetails.duration,
-                              serviceType: _serviceDetails.serviceType,
-                              address: _serviceDetails.address,
-                            );
+                            sendUpdateInquiryIsLoading = true;
                           });
                         }
-                      },
-                    ),
-                    // BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
-                    //     listener: (_, state) {
-                    //   if (state.status == AsyncLoadingStatus.done) {
-                    //     _animationController.reverse();
-                    //   }
-                    // }),
-                    BlocListener<SendUpdateInquiryMessageBloc,
-                        SendUpdateInquiryMessageState>(listener: (_, state) {
-                      if (state.status == AsyncLoadingStatus.initial ||
-                          state.status == AsyncLoadingStatus.loading) {
-                        setState(() {
-                          sendUpdateInquiryIsLoading = true;
-                        });
-                      }
 
-                      if (state.status == AsyncLoadingStatus.error) {
-                        setState(() {
-                          sendUpdateInquiryIsLoading = false;
-                        });
-                      }
+                        if (state.status == AsyncLoadingStatus.error) {
+                          setState(() {
+                            sendUpdateInquiryIsLoading = false;
+                          });
+                        }
 
-                      if (state.status == AsyncLoadingStatus.done) {
-                        setState(() {
-                          sendUpdateInquiryIsLoading = false;
-                        });
+                        if (state.status == AsyncLoadingStatus.done) {
+                          setState(() {
+                            sendUpdateInquiryIsLoading = false;
+                          });
 
+                          _animationController.reverse();
+                        }
+                      }),
+                    ],
+                    child: ServiceSettingsSheet(
+                      serviceSettings: _serviceSettings,
+                      controller: _slideUpController,
+                      onTapClose: () {
                         _animationController.reverse();
-                      }
-                    }),
-                  ],
-                  child: ServiceSettingsSheet(
-                    serviceSettings: _serviceSettings,
-                    controller: _slideUpController,
-                    onTapClose: () {
-                      _animationController.reverse();
-                    },
-                    onUpdateInquiry: (ServiceSettings data) {
-                      setState(() {
-                        _serviceSettings = data;
-                      });
+                      },
+                      onUpdateInquiry: (ServiceSettings data) {
+                        setState(() {
+                          _serviceSettings = data;
+                        });
 
-                      /// Send inquiry settings message when done editing inquiry.
-                      BlocProvider.of<SendUpdateInquiryMessageBloc>(context)
-                          .add(
-                        SendUpdateInquiryMessage(
-                          channelUUID: widget.args.channelUUID,
-                          serviceSettings: data,
-                        ),
-                      );
-                    },
-                    isLoading: sendUpdateInquiryIsLoading,
+                        /// Send inquiry settings message when done editing inquiry.
+                        BlocProvider.of<SendUpdateInquiryMessageBloc>(context)
+                            .add(
+                          SendUpdateInquiryMessage(
+                            channelUUID: widget.args.channelUUID,
+                            serviceSettings: data,
+                          ),
+                        );
+                      },
+                      isLoading: sendUpdateInquiryIsLoading,
+                    ),
                   ),
                 ),
-              ),
 
-              // Upload image bloc
-              BlocListener<UploadImageMessageBloc, UploadImageMessageState>(
-                listener: (context, state) {
-                  if (state.status == AsyncLoadingStatus.error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error.message),
-                      ),
-                    );
-                  }
+                // Upload image bloc
+                BlocListener<UploadImageMessageBloc, UploadImageMessageState>(
+                  listener: (context, state) {
+                    if (state.status == AsyncLoadingStatus.error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.error.message),
+                        ),
+                      );
+                    }
 
-                  if (state.status == AsyncLoadingStatus.done) {
-                    chatImages = state.chatImages;
+                    if (state.status == AsyncLoadingStatus.done) {
+                      chatImages = state.chatImages;
 
-                    BlocProvider.of<SendImageMessageBloc>(context).add(
-                      SendImageMessage(
-                        imageUrl: chatImages.thumbnails[0],
-                        channelUUID: widget.args.channelUUID,
-                      ),
-                    );
-                  }
-                },
-                child: SizedBox.shrink(),
-              ),
+                      BlocProvider.of<SendImageMessageBloc>(context).add(
+                        SendImageMessage(
+                          imageUrl: chatImages.thumbnails[0],
+                          channelUUID: widget.args.channelUUID,
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox.shrink(),
+                ),
 
-              // Send image bloc
-              BlocListener<SendImageMessageBloc, SendImageMessageState>(
-                listener: (context, state) {
-                  if (state.status == AsyncLoadingStatus.error) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error.message),
-                      ),
-                    );
-                  }
+                // Send image bloc
+                BlocListener<SendImageMessageBloc, SendImageMessageState>(
+                  listener: (context, state) {
+                    if (state.status == AsyncLoadingStatus.error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.error.message),
+                        ),
+                      );
+                    }
 
-                  if (state.status == AsyncLoadingStatus.done) {
-                    setState(() {
-                      _isSendingImage = false;
-                    });
-                  }
-                },
-                child: SizedBox.shrink(),
-              ),
-            ],
+                    if (state.status == AsyncLoadingStatus.done) {
+                      setState(() {
+                        _isSendingImage = false;
+                      });
+                    }
+                  },
+                  child: SizedBox.shrink(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -746,11 +778,13 @@ class _ChatroomState extends State<Chatroom>
           }
         },
       ),
+      actions: <Widget>[
+        _isDisabledChat ? SizedBox.shrink() : _exitChatroomButton(),
+      ],
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
@@ -792,6 +826,32 @@ class _ChatroomState extends State<Chatroom>
           );
         },
       ),
+    );
+  }
+
+  Widget _exitChatroomButton() {
+    return IconButton(
+      icon: Icon(
+        Icons.logout_outlined,
+        color: Colors.white,
+      ),
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onPressed: () async {
+        await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return ExitChatroomConfirmationDialog();
+          },
+        ).then((value) {
+          if (value) {
+            BlocProvider.of<ExitChatroomBloc>(context).add(
+              QuitChatroom(widget.args.channelUUID),
+            );
+          }
+        });
+      },
     );
   }
 
