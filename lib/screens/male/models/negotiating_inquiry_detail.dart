@@ -12,6 +12,7 @@ class NegotiatingServiceDetail {
     this.duration,
     this.price,
     this.username,
+    this.avatarUrl,
   });
 
   String serviceUUID;
@@ -25,6 +26,7 @@ class NegotiatingServiceDetail {
   Duration duration;
   double price;
   String username;
+  String avatarUrl;
 
   /// copyWithUpdateInquiryMessage copies necessary attributes from
   /// [UpdateInquiryMessage] to proceed to confirm service.

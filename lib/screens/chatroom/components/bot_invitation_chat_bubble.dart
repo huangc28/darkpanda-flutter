@@ -11,11 +11,13 @@ class BotInvitationChatBubble extends StatelessWidget {
     this.isMe = false,
     this.myGender = Gender.female,
     this.message,
+    this.avatarUrl = '',
   });
 
   final bool isMe;
   final Gender myGender;
   final BotInvitationChatMessage message;
+  final String avatarUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class BotInvitationChatBubble extends StatelessWidget {
         createdAt: message.createdAt,
       ),
       isMe: isMe,
+      avatarUrl: avatarUrl,
     );
   }
 }
