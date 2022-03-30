@@ -140,7 +140,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
             child: InkWell(
               onTap: () {
                 if (_chatNowButton == '馬上聊聊') {
-                  print('[Debug] 馬上聊聊');
                   Navigator.of(
                     context,
                     rootNavigator: true,
