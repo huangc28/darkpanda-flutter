@@ -12,6 +12,7 @@ class SendMessageBar extends StatefulWidget {
     this.onCamera,
     this.editMessageController,
     this.disable = false,
+    this.isDisabledChat = false,
   });
 
   final VoidCallback onSend;
@@ -21,6 +22,7 @@ class SendMessageBar extends StatefulWidget {
 
   final TextEditingController editMessageController;
   final bool disable;
+  final bool isDisabledChat;
 
   @override
   _SendMessageBarState createState() => _SendMessageBarState();
@@ -36,7 +38,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
         var disable =
             widget.disable || state.status == AsyncLoadingStatus.loading;
 
-        var opacity = disable ? 0.4 : 1.0;
+        var opacity = disable || widget.isDisabledChat ? 0.4 : 1.0;
 
         return Opacity(
           opacity: opacity,
@@ -48,7 +50,8 @@ class _SendMessageBarState extends State<SendMessageBar> {
             color: Colors.white,
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onPressed: disable ? null : widget.onEditInquiry,
+            onPressed:
+                disable || widget.isDisabledChat ? null : widget.onEditInquiry,
           ),
         );
       },
@@ -56,15 +59,18 @@ class _SendMessageBarState extends State<SendMessageBar> {
   }
 
   Widget _buildImageGalleryIconButton() {
-    return IconButton(
-      icon: Image.asset(
-        'lib/screens/chatroom/assets/image_gallery.png',
+    return Opacity(
+      opacity: widget.isDisabledChat ? 0.4 : 1.0,
+      child: IconButton(
+        icon: Image.asset(
+          'lib/screens/chatroom/assets/image_gallery.png',
+        ),
+        iconSize: 22,
+        color: Colors.white,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onPressed: widget.isDisabledChat ? null : widget.onImageGallery,
       ),
-      iconSize: 22,
-      color: Colors.white,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onPressed: widget.onImageGallery,
     );
   }
 
@@ -75,20 +81,24 @@ class _SendMessageBarState extends State<SendMessageBar> {
       color: Colors.white,
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,
-      onPressed: widget.onSend,
+      onPressed: widget.isDisabledChat ? null : widget.onSend,
     );
   }
 
   Widget _buildCameraIconButton() {
-    return IconButton(
-      icon: Icon(
-        Icons.camera_alt_rounded,
+    return Opacity(
+      opacity: widget.isDisabledChat ? 0.4 : 1.0,
+      child: IconButton(
+        icon: Icon(
+          Icons.camera_alt_rounded,
+        ),
+        iconSize: 22,
+        color: Colors.white,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onPressed: widget.isDisabledChat ? null : widget.onCamera,
+        disabledColor: Colors.white,
       ),
-      iconSize: 22,
-      color: Colors.white,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onPressed: widget.onCamera,
     );
   }
 
@@ -136,6 +146,7 @@ class _SendMessageBarState extends State<SendMessageBar> {
                   _showSendButton = v.isNotEmpty;
                 });
               },
+              readOnly: widget.isDisabledChat,
             ),
           ),
 

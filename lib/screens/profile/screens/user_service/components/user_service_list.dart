@@ -30,19 +30,35 @@ class UserServiceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: scrollPhysics,
-        itemCount: userServices.length,
-        itemBuilder: (BuildContext context, int idx) =>
-            userServiceBuilder(context, userServices[idx], idx),
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.grey[600],
+    return userServices.length == 0
+        ? Container(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  '尚未建立服務',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container(
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: scrollPhysics,
+              itemCount: userServices.length,
+              itemBuilder: (BuildContext context, int idx) =>
+                  userServiceBuilder(context, userServices[idx], idx),
+              separatorBuilder: (context, index) {
+                return Divider(
+                  color: Colors.grey[600],
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
   }
 }

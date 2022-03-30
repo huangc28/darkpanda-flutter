@@ -95,29 +95,21 @@ class _FemaleProfileState extends State<FemaleProfile> {
     // Chat button text
     // 1. inquiry_status = asking - 等待回應
     // 2. inquiry_status = chatting or inquiry_status = wait_for_inquirer_approve - 正在聊天
-    // 3. inquiry_status = booked and service_status = unpaid - 已接受邀请
-    // 4. inquiry_status = booked and service_status = to_be_fulfilled - 已接受邀请
-    // 5. inquiry_status = booked and service_status = fulfilling - 已接受邀请
+    // 3. inquiry_status = booked and service_status = to_be_fulfilled - 已接受邀请
+    // 4. inquiry_status = booked and service_status = fulfilling - 已接受邀请
     if (_inquiryStatus == InquiryStatus.asking) {
       _chatNowButton = '等待回應';
     } else if (_inquiryStatus == InquiryStatus.chatting ||
         _inquiryStatus == InquiryStatus.wait_for_inquirer_approve) {
       _chatNowButton = '正在聊天';
-    } else if (_inquiryStatus == InquiryStatus.booked &&
-        _serviceStatus == ServiceStatus.unpaid) {
-      _chatNowButton = '已接受邀请';
-    } else if (_inquiryStatus == InquiryStatus.booked &&
-        _serviceStatus == ServiceStatus.to_be_fulfilled) {
-      _chatNowButton = '已接受邀请';
-    } else if (_inquiryStatus == InquiryStatus.booked &&
+    } else if (_serviceStatus == ServiceStatus.to_be_fulfilled ||
         _serviceStatus == ServiceStatus.fulfilling) {
       _chatNowButton = '已接受邀请';
     }
     // 1. inquiry_status = canceled
     // 2. inquiry_status = booked and service_status = canceled
     // 3. service_status = completed
-    // 4. service_status = payment_failed
-    // 5. service_status = expired
+    // 4. service_status = expired
     else {
       _chatNowButton = '馬上聊聊';
 
@@ -148,7 +140,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
             child: InkWell(
               onTap: () {
                 if (_chatNowButton == '馬上聊聊') {
-                  print('[Debug] 馬上聊聊');
                   Navigator.of(
                     context,
                     rootNavigator: true,
@@ -301,12 +292,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   _userServices = state.userServiceListResponse.userServiceList;
-
-                  // Insert into last index in the Array
-                  _userServices.insert(
-                    _userServices.length,
-                    UserServiceResponse(serviceName: '其他'),
-                  );
                 }
 
                 setState(() {
@@ -444,6 +429,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 inquiryUuid: value.inquiryUuid,
                 inquiryStatus: value.inquiryStatus,
                 expectServiceType: value.serviceType,
+                hasInquiry: true,
               );
 
               _femaleUser = updatedinquiry;
