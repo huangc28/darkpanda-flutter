@@ -20,6 +20,7 @@ class FemaleUser extends Equatable {
     this.serviceUuid,
     this.expectServiceType,
     this.serviceStatus,
+    this.hasService,
   });
 
   final String uuid;
@@ -38,6 +39,7 @@ class FemaleUser extends Equatable {
   final String serviceUuid;
   final String expectServiceType;
   final ServiceStatus serviceStatus;
+  final bool hasService;
 
   Map<String, dynamic> toMap() => {
         'uuid': uuid,
@@ -56,6 +58,7 @@ class FemaleUser extends Equatable {
         'service_uuid': serviceUuid,
         'expect_service_type': expectServiceType,
         'service_status': serviceStatus,
+        'has_service': hasService,
       };
 
   factory FemaleUser.fromMap(Map<String, dynamic> data) {
@@ -87,6 +90,7 @@ class FemaleUser extends Equatable {
       serviceUuid: data['service_uuid'],
       expectServiceType: data['expect_service_type'],
       serviceStatus: serviceStatus?.toServiceStatusEnum(),
+      hasService: data['has_service'],
     );
   }
 
@@ -107,6 +111,7 @@ class FemaleUser extends Equatable {
     String serviceUuid,
     String expectServiceType,
     ServiceStatus serviceStatus,
+    bool hasService,
   }) {
     return FemaleUser(
       uuid: uuid ?? this.uuid,
@@ -125,6 +130,7 @@ class FemaleUser extends Equatable {
       serviceUuid: serviceUuid ?? this.serviceUuid,
       expectServiceType: expectServiceType ?? this.expectServiceType,
       serviceStatus: serviceStatus ?? this.serviceStatus,
+      hasService: hasService ?? this.hasService,
     );
   }
 
@@ -146,6 +152,7 @@ class FemaleUser extends Equatable {
         serviceUuid,
         expectServiceType,
         serviceStatus,
+        hasService,
       ];
 }
 

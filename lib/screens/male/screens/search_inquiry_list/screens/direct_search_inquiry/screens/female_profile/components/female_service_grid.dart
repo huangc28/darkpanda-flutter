@@ -40,20 +40,14 @@ class FemaleServiceGrid extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              // Hide price if service is last
-              serviceLength - 1 == index
-                  ? Container()
-                  : Text(
-                      userService.price.toString() + 'TWD',
-                      style: TextStyle(color: Colors.white),
-                    ),
-              // Hide duration if service is last
-              serviceLength - 1 == index
-                  ? Container()
-                  : Text(
-                      userService.duration.toString() + ' 分鐘',
-                      style: TextStyle(color: Colors.white),
-                    ),
+              Text(
+                userService.price.toString() + 'TWD',
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                userService.duration.toString() + ' 分鐘',
+                style: TextStyle(color: Colors.white),
+              ),
             ],
           ),
           Row(
