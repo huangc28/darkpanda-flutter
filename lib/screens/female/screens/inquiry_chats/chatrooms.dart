@@ -103,6 +103,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                           .add(LoadMoreChatrooms());
                     },
                     chatroomBuilder: (context, chatroom, ___) {
+                      //
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 
@@ -134,6 +135,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                             });
                           },
                           chatroom: chatroom,
+
+                          // Chatroom grid displays the latest message of a chatroom.
                           lastMessage: lastMsg?.content,
                         ),
                       );

@@ -483,8 +483,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                       } else if (state.service.status ==
                                           ServiceStatus.expired.name) {
                                         _isDisabledChat = true;
-                                        developer
-                                            .log('ok service expired..bye bye');
                                       }
                                     });
                                   }
@@ -617,6 +615,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                             return BotInvitationChatBubble(
                                               isMe:
                                                   _sender.uuid == message.from,
+                                              myGender: _sender.gender,
                                               message: message,
                                             );
                                           } else {

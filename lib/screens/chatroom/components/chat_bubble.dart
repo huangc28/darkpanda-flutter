@@ -10,11 +10,13 @@ class ChatBubble extends StatelessWidget {
     @required this.message,
     this.isMe = false,
     this.richText,
+    this.avatarUrl = "",
   });
 
   final Message message;
   final bool isMe;
   final RichText richText;
+  final String avatarUrl;
 
   Widget _buildMineBubble(BuildContext context) {
     return Column(
@@ -41,12 +43,14 @@ class ChatBubble extends StatelessWidget {
   Widget _buildOtherBubble(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Container(
           padding: EdgeInsets.fromLTRB(0, 7, 0, 0),
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
-            backgroundImage: AssetImage("assets/default_avatar.png"),
+            backgroundImage: avatarUrl != ""
+                ? NetworkImage(avatarUrl)
+                : AssetImage("assets/default_avatar.png"),
           ),
         ),
         SizedBox(

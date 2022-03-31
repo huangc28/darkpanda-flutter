@@ -301,12 +301,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   _userServices = state.userServiceListResponse.userServiceList;
-
-                  // Insert into last index in the Array
-                  _userServices.insert(
-                    _userServices.length,
-                    UserServiceResponse(serviceName: '其他'),
-                  );
                 }
 
                 setState(() {
@@ -444,6 +438,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 inquiryUuid: value.inquiryUuid,
                 inquiryStatus: value.inquiryStatus,
                 expectServiceType: value.serviceType,
+                hasInquiry: true,
               );
 
               _femaleUser = updatedinquiry;

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as img;
@@ -54,7 +56,6 @@ import 'bloc/exit_chatroom_bloc.dart';
 import 'bloc/update_inquitry_notifier_bloc.dart';
 import 'components/exit_chatroom_confirmation_dialog.dart';
 import 'components/inquiry_detail_dialog.dart';
-import 'models/inquiry_detail.dart';
 import 'screen_arguments/service_chatroom_screen_arguments.dart';
 import 'screens/male_inquiry_detail.dart';
 
@@ -98,6 +99,9 @@ class _InquiryChatroomState extends State<InquiryChatroom>
 
   NegotiatingServiceDetail _negotiatingServiceDetail =
       NegotiatingServiceDetail();
+
+  /// Is true if user quit chatroom
+  bool _isDisabledChat = false;
 
   @override
   void initState() {
@@ -194,26 +198,30 @@ class _InquiryChatroomState extends State<InquiryChatroom>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final result = await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) {
-            return ExitChatroomConfirmationDialog();
-          },
-        ).then((value) {
-          if (value) {
-            BlocProvider.of<ExitChatroomBloc>(context).add(
-              QuitChatroom(widget.args.channelUUID),
-            );
-          }
-          return false;
-        });
-        return result;
+        if (_isDisabledChat) {
+          Navigator.of(context).pop(true);
+        } else {
+          await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) {
+              return ExitChatroomConfirmationDialog();
+            },
+          ).then((value) {
+            if (value) {
+              BlocProvider.of<ExitChatroomBloc>(context).add(
+                QuitChatroom(widget.args.channelUUID),
+              );
+            }
+            return false;
+          });
+        }
+        return false;
       },
       child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
         listener: (context, state) {
           if (state.status == AsyncLoadingStatus.done) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           }
         },
         child: Scaffold(
@@ -269,6 +277,14 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                     _inquirerProfile = state.userProfile;
                                   });
                                 }
+
+                                if (state.currentMessages.isNotEmpty &&
+                                    state.currentMessages.first
+                                        is QuitChatroomMessage) {
+                                  setState(() {
+                                    _isDisabledChat = true;
+                                  });
+                                }
                               },
                               builder: (context, state) {
                                 if (_doneInitChatroom) {
@@ -315,12 +331,17 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                                   );
                                                 },
                                               );
-                                              print('onTapMessage ${message}');
                                             },
                                           );
                                         } else if (message
                                             is DisagreeInquiryMessage) {
                                           return DisagreeInquiryBubble(
+                                            isMe: _sender.uuid == message.from,
+                                            message: message,
+                                          );
+                                        } else if (message
+                                            is QuitChatroomMessage) {
+                                          return QuitChatroomBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
                                           );
@@ -347,12 +368,17 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                             is BotInvitationChatMessage) {
                                           return BotInvitationChatBubble(
                                             isMe: _sender.uuid == message.from,
+                                            myGender: _sender.gender,
                                             message: message,
+                                            avatarUrl: _negotiatingServiceDetail
+                                                .avatarUrl,
                                           );
                                         } else {
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
+                                            avatarUrl: _negotiatingServiceDetail
+                                                .avatarUrl,
                                           );
                                         }
                                       },
@@ -475,24 +501,31 @@ class _InquiryChatroomState extends State<InquiryChatroom>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onPressed: () async {
-          await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (_) {
-              return ExitChatroomConfirmationDialog();
-            },
-          ).then((value) {
-            if (value) {
-              BlocProvider.of<ExitChatroomBloc>(context).add(
-                QuitChatroom(widget.args.channelUUID),
-              );
-            }
-          });
+          // If female quit chatroom, user can back to chatroom list screen
+          if (_isDisabledChat) {
+            Navigator.of(context).pop(true);
+          } else {
+            await showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (_) {
+                return ExitChatroomConfirmationDialog();
+              },
+            ).then((value) {
+              if (value) {
+                BlocProvider.of<ExitChatroomBloc>(context).add(
+                  QuitChatroom(widget.args.channelUUID),
+                );
+              }
+            });
+          }
         },
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
         builder: (context, state) {
           _negotiatingServiceDetail.username = state.userProfile.username ?? '';
+          _negotiatingServiceDetail.avatarUrl =
+              state.userProfile.avatarUrl ?? '';
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -537,7 +570,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
         },
       ),
       actions: <Widget>[
-        _serviceDetailButton(),
+        _isDisabledChat ? SizedBox.shrink() : _serviceDetailButton(),
         SizedBox(width: 20),
       ],
     );
@@ -576,6 +609,7 @@ class _InquiryChatroomState extends State<InquiryChatroom>
       },
       child: SendMessageBar(
         editMessageController: _editMessageController,
+        isDisabledChat: _isDisabledChat,
         onSend: () {
           if (_message.isEmpty) {
             return;

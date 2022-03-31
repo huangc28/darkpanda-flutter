@@ -92,7 +92,7 @@ class InquiryChatroomsBloc
 
   Stream<InquiryChatroomsState> _mapAddChatroomToState(
       AddChatroom event) async* {
-    // if channel uuid exists in the current map.
+    // If channel uuid exists in the current map.
     // Channel uuid does not exists in map, initiate subscription stream.
     // Store the stream in `privateChatStreamMap`.
     final streamSub =
@@ -240,7 +240,6 @@ class InquiryChatroomsBloc
     try {
       yield InquiryChatroomsState.loading(state);
       yield InquiryChatroomsState.clearInqiuryChatList(state);
-      // yield InquiryChatroomsState.init();
 
       final offset = calcNextPageOffset(
         nextPage: event.nextPage,

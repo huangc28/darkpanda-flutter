@@ -42,6 +42,7 @@ android {
     }
 
     lintOptions {
+        checkReleaseBuilds false
         disable 'InvalidPackage'
     }
 

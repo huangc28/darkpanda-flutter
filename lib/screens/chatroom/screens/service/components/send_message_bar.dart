@@ -24,15 +24,18 @@ class _SendMessageBarState extends State<SendMessageBar> {
   bool _showSendButton = false;
 
   Widget _buildImageGalleryIconButton() {
-    return IconButton(
-      icon: Image.asset(
-        'lib/screens/chatroom/assets/image_gallery.png',
+    return Opacity(
+      opacity: widget.isDisabledChat ? 0.4 : 1.0,
+      child: IconButton(
+        icon: Image.asset(
+          'lib/screens/chatroom/assets/image_gallery.png',
+        ),
+        iconSize: 22,
+        color: Colors.white,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onPressed: widget.isDisabledChat ? null : widget.onImageGallery,
       ),
-      iconSize: 22,
-      color: Colors.white,
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onPressed: widget.isDisabledChat ? null : widget.onImageGallery,
     );
   }
 
@@ -49,16 +52,19 @@ class _SendMessageBarState extends State<SendMessageBar> {
   }
 
   Widget _buildCameraIconButton() {
-    return IconButton(
-      icon: Icon(
-        Icons.camera_alt_rounded,
+    return Opacity(
+      opacity: widget.isDisabledChat ? 0.4 : 1.0,
+      child: IconButton(
+        icon: Icon(
+          Icons.camera_alt_rounded,
+        ),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        iconSize: 22,
+        color: Colors.white,
+        onPressed: widget.isDisabledChat ? null : widget.onCamera,
+        disabledColor: Colors.grey,
       ),
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      iconSize: 22,
-      color: Colors.white,
-      onPressed: widget.isDisabledChat ? null : widget.onCamera,
-      disabledColor: Colors.grey,
     );
   }
 
