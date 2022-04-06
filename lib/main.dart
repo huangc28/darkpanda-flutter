@@ -372,6 +372,7 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 /// Media query initialization
                 /// https://flutteragency.com/solve-mediaquery-of-called-with-a-context
                 SizeConfig().init(context);
+                Object argument = settings.arguments;
 
                 if (settings.name == MainRoutes.landing) {
                   final LandingScreenArguments landingScreenArguments =
@@ -380,55 +381,13 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                     jwt: widget.jwt,
                   );
 
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, landingScreenArguments);
-
-                  return routeBuilder[settings.name](context);
+                  argument = landingScreenArguments;
                 }
 
-                if (settings.name == MainRoutes.chatroom) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                if (settings.name == MainRoutes.serviceChatroom) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                if (settings.name == MainRoutes.maleChatroom) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                if (settings.name == MainRoutes.male) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                if (settings.name == MainRoutes.female) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                if (settings.name == MainRoutes.directChatroom) {
-                  final routeBuilder =
-                      mainRoutes.routeBuilder(context, settings.arguments);
-
-                  return routeBuilder[settings.name](context);
-                }
-
-                return mainRoutes.routeBuilder(context)[settings.name](context);
+                return mainRoutes.routeBuilder(
+                  context,
+                  argument,
+                )[settings.name](context);
               },
             );
           },

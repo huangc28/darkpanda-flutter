@@ -71,9 +71,7 @@ class MainRoutes extends BaseRoutes {
         return MaleApp(selectedTab: args);
       },
       MainRoutes.chatroom: (context) {
-        final ChatroomScreenArguments chatroomArgs = args;
-
-        return Chatroom(args: chatroomArgs);
+        return Chatroom(args: args);
       },
       MainRoutes.serviceChatroom: (context) {
         final ServiceChatroomScreenArguments serviceChatroomArgs = args;
