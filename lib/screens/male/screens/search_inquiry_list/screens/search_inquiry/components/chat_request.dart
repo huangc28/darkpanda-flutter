@@ -252,8 +252,7 @@ class _ChatRequestState extends State<ChatRequest> {
                               Row(
                                 children: <Widget>[
                                   Text(
-                                    // userProfile.username,
-                                    'Jenny',
+                                    userProfile.username,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.white,

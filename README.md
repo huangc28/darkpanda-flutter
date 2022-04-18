@@ -3,6 +3,18 @@
 
 Prompt the following command: `flutter build apk --release`
 
+## Compatibility 
+
+**flutter version**: 2.10.4  
+
+## Run Dev
+
+We use flutter virtual manager to run flutter command
+
+```
+fvm flutter run -d "DEVICE_ID"
+```
+
 ## Release
 
 We will be using `appCenter` to release darkpanda app. The approach used is referencing [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
@@ -28,20 +40,6 @@ flutter build \
     --dart-define=ENV=$ENV \
     apk --release
 ```
-
-## Dashbook
-
-Dashbook is like storybookjs in react community. It provides isolated dev environment for flutter widget. it works as a development enviroment for the project widgets and also a showcase for common widgets on the app. 
-
-### Android
-
-First open android emulator from android studio AVD manager. Then prompt the following command:
-
-```
- flutter run -d "[YOUR_EMULATOR_ID]" lib/main_dashbook.dart
-```
-
-You should see dashboard installed on you emulator.
 
 ## TODOs 
 

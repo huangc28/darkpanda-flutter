@@ -362,6 +362,7 @@ class _DirectChatroomState extends State<DirectChatroom>
                                                 .avatarUrl,
                                           );
                                         } else {
+                                          print('check!!');
                                           return ChatBubble(
                                             isMe: _sender.uuid == message.from,
                                             message: message,
@@ -384,8 +385,7 @@ class _DirectChatroomState extends State<DirectChatroom>
                             ),
                           ),
 
-                          // 1. When male receive inquiry from female, a
-                          // inquiry detail dialog will pop up
+                          // When male receive inquiry from female, a inquiry detail dialog will pop up
                           BlocListener<UpdateInquiryNotifierBloc,
                               UpdateInquiryNotifierState>(
                             listener: (context, state) {
