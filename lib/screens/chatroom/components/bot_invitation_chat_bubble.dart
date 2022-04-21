@@ -9,20 +9,20 @@ import './chat_bubble.dart';
 class BotInvitationChatBubble extends StatelessWidget {
   const BotInvitationChatBubble({
     this.isMe = false,
-    this.myGender = Gender.female,
     this.message,
-    this.avatarUrl = '',
+    this.myGender,
+    this.avatarUrl,
   });
 
   final bool isMe;
-  final Gender myGender;
   final BotInvitationChatMessage message;
+  final Gender myGender;
   final String avatarUrl;
 
   @override
   Widget build(BuildContext context) {
-    // Check gender, if I am male, i'm talking to a picker
-    // if I am female, i'm talking to an inquirer
+    // Check gender, if I am male, i'm talking to a picker.
+    // If I am female, i'm talking to an inquirer.
 
     return ChatBubble(
       message: Message(

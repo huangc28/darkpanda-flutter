@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+
+import 'package:darkpanda_flutter/components/chat_bubble_renderer.dart';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
@@ -26,12 +27,8 @@ import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/models/chat_image.dart';
-import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
@@ -40,13 +37,7 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/se
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/screen_arguements/topup_dp_arguements.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
@@ -305,82 +296,43 @@ class _InquiryChatroomState extends State<InquiryChatroom>
                                       currentMessages: state.currentMessages,
                                       isSendingImage: _isSendingImage,
                                       builder: (BuildContext context, message) {
-                                        if (message
-                                            is ServiceConfirmedMessage) {
-                                          return ConfirmedServiceBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is UpdateInquiryMessage) {
-                                          return UpdateInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onTapMessage:
-                                                (UpdateInquiryMessage message) {
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  _negotiatingServiceDetail
-                                                      .copyWithUpdateInquiryMessage(
-                                                          message);
+                                        return ChatBubbleRenderer(
+                                          message: message,
+                                          isMe: _sender.uuid == message.from,
+                                          myGender: _sender.gender,
+                                          avatarURL: _inquirerProfile.avatarUrl,
+                                          onTabUpdateInquiryBubble:
+                                              (updateInquiryMessage) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                _negotiatingServiceDetail
+                                                    .copyWithUpdateInquiryMessage(
+                                                  updateInquiryMessage,
+                                                );
 
-                                                  return InquiryDetailDialog(
-                                                    negotiatingInquiryDetail:
-                                                        _negotiatingServiceDetail,
+                                                return InquiryDetailDialog(
+                                                  negotiatingInquiryDetail:
+                                                      _negotiatingServiceDetail,
+                                                );
+                                              },
+                                            );
+                                          },
+                                          onTabImageBubble: (imageMessage) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) {
+                                                  return FullScreenImage(
+                                                    imageUrl: imageMessage
+                                                        .imageUrls[0],
+                                                    tag: "chat_image",
                                                   );
                                                 },
-                                              );
-                                            },
-                                          );
-                                        } else if (message
-                                            is DisagreeInquiryMessage) {
-                                          return DisagreeInquiryBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message
-                                            is QuitChatroomMessage) {
-                                          return QuitChatroomBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                          );
-                                        } else if (message is ImageMessage) {
-                                          return ImageBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            onEnlarge: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) {
-                                                    return FullScreenImage(
-                                                      imageUrl:
-                                                          message.imageUrls[0],
-                                                      tag: "chat_image",
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        } else if (message
-                                            is BotInvitationChatMessage) {
-                                          return BotInvitationChatBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            myGender: _sender.gender,
-                                            message: message,
-                                            avatarUrl: _negotiatingServiceDetail
-                                                .avatarUrl,
-                                          );
-                                        } else {
-                                          return ChatBubble(
-                                            isMe: _sender.uuid == message.from,
-                                            message: message,
-                                            avatarUrl: _negotiatingServiceDetail
-                                                .avatarUrl,
-                                          );
-                                        }
+                                              ),
+                                            );
+                                          },
+                                        );
                                       },
                                     ),
                                   );

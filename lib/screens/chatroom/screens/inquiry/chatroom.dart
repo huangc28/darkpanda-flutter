@@ -9,6 +9,9 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/components/chat_bubble_renderer.dart';
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
+
 import 'bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
@@ -23,27 +26,11 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 
-import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/chat_image.dart';
-import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/image_message.dart';
-import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
-import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
-
-import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
@@ -58,8 +45,6 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatr
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
-import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
@@ -426,76 +411,35 @@ class _ChatroomState extends State<Chatroom>
                                               }
                                             },
                                             child: ChatroomWindow(
-                                              scrollController:
-                                                  scrollController,
-                                              historicalMessages:
-                                                  state.historicalMessages,
-                                              currentMessages:
-                                                  state.currentMessages,
-                                              isSendingImage: _isSendingImage,
-                                              builder: (BuildContext context,
-                                                  message) {
-                                                // Render different chat bubble based on message type.
-                                                if (message
-                                                    is ServiceConfirmedMessage) {
-                                                  return ConfirmedServiceBubble(
+                                                scrollController:
+                                                    scrollController,
+                                                historicalMessages:
+                                                    state.historicalMessages,
+                                                currentMessages:
+                                                    state.currentMessages,
+                                                isSendingImage: _isSendingImage,
+                                                builder: (BuildContext context,
+                                                    message) {
+                                                  return ChatBubbleRenderer(
+                                                    message: message,
                                                     isMe: _sender.uuid ==
                                                         message.from,
-                                                    message: message,
-                                                  );
-                                                } else if (message
-                                                    is UpdateInquiryMessage) {
-                                                  return UpdateInquiryBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                    onTapMessage: (message) {
-                                                      // Slideup inquiry pannel.
+                                                    myGender: _sender.gender,
+                                                    avatarURL: _inquirerProfile
+                                                        .avatarUrl,
+                                                    onTabUpdateInquiryBubble:
+                                                        (message) {
                                                       _animationController
                                                           .forward();
                                                     },
-                                                  );
-                                                } else if (message
-                                                    is DisagreeInquiryMessage) {
-                                                  return DisagreeInquiryBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                  );
-                                                } else if (message
-                                                    is QuitChatroomMessage) {
-                                                  return QuitChatroomBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                  );
-                                                } else if (message
-                                                    is PaymentCompletedMessage) {
-                                                  return PaymentCompletedBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                  );
-                                                } else if (message
-                                                    is CancelServiceMessage) {
-                                                  return CancelServiceBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                  );
-                                                } else if (message
-                                                    is ImageMessage) {
-                                                  return ImageBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                    onEnlarge: () {
+                                                    onTabImageBubble:
+                                                        (imageMessage) {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                           builder: (_) {
                                                             return FullScreenImage(
-                                                              imageUrl: message
+                                                              imageUrl: imageMessage
                                                                   .imageUrls[0],
                                                               tag: "chat_image",
                                                             );
@@ -504,27 +448,7 @@ class _ChatroomState extends State<Chatroom>
                                                       );
                                                     },
                                                   );
-                                                } else if (message
-                                                    is BotInvitationChatMessage) {
-                                                  return BotInvitationChatBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    myGender: _sender.gender,
-                                                    message: message,
-                                                    avatarUrl: _inquirerProfile
-                                                        .avatarUrl,
-                                                  );
-                                                } else {
-                                                  return ChatBubble(
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    message: message,
-                                                    avatarUrl: _inquirerProfile
-                                                        .avatarUrl,
-                                                  );
-                                                }
-                                              },
-                                            ),
+                                                }),
                                           );
                                         } else {
                                           return Center(
