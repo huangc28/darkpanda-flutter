@@ -82,6 +82,9 @@ class MainRoutes extends BaseRoutes {
         InquiryChatroomScreenArguments inquiryChatroomScreenArguments = args;
         return FemaleInquiryChatroom(args: inquiryChatroomScreenArguments);
       },
+      MainRoutes.maleInquiryChatroom: (context) {
+        return Container();
+      },
       MainRoutes.serviceChatroom: (context) {
         // final ServiceChatroomScreenArguments serviceChatroomArgs = args;
 

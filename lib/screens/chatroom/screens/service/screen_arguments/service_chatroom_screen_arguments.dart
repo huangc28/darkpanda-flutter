@@ -1,24 +1,21 @@
-part of '../chatroom.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 
-class ChatroomScreenArguments {
+class ServiceChatroomScreenArguments {
   final String channelUUID;
   final String inquiryUUID;
   final String counterPartUUID;
-  final String serviceType;
-  final RouteTypes routeTypes;
   final String serviceUUID;
+  final RouteTypes routeTypes;
 
-  ChatroomScreenArguments({
+  ServiceChatroomScreenArguments({
     this.channelUUID,
     this.inquiryUUID,
     this.counterPartUUID,
-    this.serviceType,
-    this.routeTypes,
     this.serviceUUID,
+    this.routeTypes,
   })  : assert(channelUUID != null),
         assert(inquiryUUID != null),
         assert(counterPartUUID != null),
-        assert(serviceType != null),
-        assert(routeTypes != null),
-        assert(serviceUUID != null);
+        assert(serviceUUID != null),
+        assert(routeTypes != null);
 }

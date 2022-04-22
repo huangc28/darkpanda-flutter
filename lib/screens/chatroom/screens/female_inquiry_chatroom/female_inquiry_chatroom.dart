@@ -46,7 +46,7 @@ import '../../components/send_message_bar.dart';
 // TODO move to chatroom/bloc
 import '../../bloc/load_service_detail_bloc.dart';
 import '../../bloc/send_update_inquiry_message_bloc.dart';
-import '../../screen_arguments/service_chatroom_screen_arguments.dart';
+import '../../screens/service/screen_arguments/service_chatroom_screen_arguments.dart';
 import '../../bloc/send_image_message_bloc.dart';
 import '../../bloc/send_message_bloc.dart';
 import '../../bloc/upload_image_message_bloc.dart';

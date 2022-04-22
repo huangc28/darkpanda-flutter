@@ -86,7 +86,7 @@ import '../../components/chatroom_window.dart';
 import 'services/service_apis.dart';
 import 'components/service_alert_dialog.dart';
 
-import '../../screen_arguments/service_chatroom_screen_arguments.dart';
+import 'screen_arguments/service_chatroom_screen_arguments.dart';
 import 'components/notification_banner.dart';
 
 import '../../bloc/load_service_detail_bloc.dart';
