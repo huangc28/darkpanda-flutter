@@ -12,15 +12,7 @@ import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/components/confirmed_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/update_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubbles/chat_bubbles.dart';
 
 /// ChatroomMessageRendererMixin encapsulate logic that renders different types of message bubble.
 /// Chatroom can incorporate this mixin to render message properly.

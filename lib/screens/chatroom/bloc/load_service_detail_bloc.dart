@@ -6,7 +6,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
+
+// TODO move to chatroom services directory
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 
 part 'load_service_detail_event.dart';

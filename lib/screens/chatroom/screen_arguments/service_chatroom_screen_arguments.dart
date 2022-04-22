@@ -1,4 +1,4 @@
-part of '../service_chatroom.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
 
 class ServiceChatroomScreenArguments {
   final String channelUUID;

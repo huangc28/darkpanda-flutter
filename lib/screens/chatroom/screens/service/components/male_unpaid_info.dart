@@ -1,4 +1,8 @@
-part of '../service_chatroom.dart';
+import 'package:flutter/material.dart';
+
+import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 
 class MaleUnpaidInfo extends StatelessWidget {
   const MaleUnpaidInfo({

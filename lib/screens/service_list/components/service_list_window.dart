@@ -10,12 +10,17 @@ import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_serv
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/service_alert_dialog.dart';
 import 'package:darkpanda_flutter/screens/rate/rate.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
+
+// TODO: there should not be a chatroom/screens/service.
+// It should be
+//   - chatroom/screens/male_service_chatroom
+//   - chatroom/screens/female_service_chatroom
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 
 import '../bloc/load_incoming_service_bloc.dart';
 

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
 import 'package:flutter/material.dart';
@@ -184,8 +184,8 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
       rootNavigator: true,
     )
         .pushNamed(
-      MainRoutes.chatroom,
-      arguments: ChatroomScreenArguments(
+      MainRoutes.femaleInquiryChatroom,
+      arguments: InquiryChatroomScreenArguments(
         channelUUID: agreeInquiryResponse.channelUuid,
         inquiryUUID: inquiryUuid,
         counterPartUUID: agreeInquiryResponse.inquirer.uuid,

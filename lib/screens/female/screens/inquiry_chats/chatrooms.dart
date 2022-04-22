@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
@@ -8,8 +7,6 @@ import 'dart:developer' as developer;
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
@@ -114,25 +111,27 @@ class _ChatRoomsState extends State<ChatRooms> {
                         ),
                         child: ChatroomGrid(
                           onEnterChat: (chatroomModel.Chatroom chatroom) {
-                            Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            )
-                                .pushNamed(
-                              MainRoutes.chatroom,
-                              arguments: ChatroomScreenArguments(
-                                channelUUID: chatroom.channelUUID,
-                                inquiryUUID: chatroom.inquiryUUID,
-                                counterPartUUID: chatroom.inquirerUUID,
-                                serviceType: chatroom.serviceType,
-                                routeTypes: RouteTypes.fromInquiryChats,
-                                serviceUUID: chatroom.serviceUUID,
-                              ),
-                            )
-                                .then((value) {
-                              BlocProvider.of<InquiryChatroomsBloc>(context)
-                                  .add(FetchChatrooms());
-                            });
+                            print('navigate to female inquiry chatroom');
+                            // Navigate to inquiry_chat_room.
+                            // Navigator.of(
+                            //   context,
+                            //   rootNavigator: true,
+                            // )
+                            //     .pushNamed(
+                            //   MainRoutes.chatroom,
+                            //   arguments: ChatroomScreenArguments(
+                            //     channelUUID: chatroom.channelUUID,
+                            //     inquiryUUID: chatroom.inquiryUUID,
+                            //     counterPartUUID: chatroom.inquirerUUID,
+                            //     serviceType: chatroom.serviceType,
+                            //     routeTypes: RouteTypes.fromInquiryChats,
+                            //     serviceUUID: chatroom.serviceUUID,
+                            //   ),
+                            // )
+                            //     .then((value) {
+                            //   BlocProvider.of<InquiryChatroomsBloc>(context)
+                            //       .add(FetchChatrooms());
+                            // });
                           },
                           chatroom: chatroom,
 

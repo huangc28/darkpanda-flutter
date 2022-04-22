@@ -1,20 +1,16 @@
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
-import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/add_user_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/models/service_settings.dart';
-import 'package:darkpanda_flutter/components/bullet.dart';
-import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
@@ -23,10 +19,10 @@ import 'slideup_controller.dart';
 import 'slideup_provider.dart';
 import 'user_service_selector/user_service_selector_list.dart';
 
-part 'price_field.dart';
-part 'address_field.dart';
-part 'appointment_time_field.dart';
-part 'service_duration_field.dart';
+import 'components/price_field.dart';
+import 'components/address_field.dart';
+import 'components/appointment_time_field.dart';
+import 'components/service_duration_field.dart';
 
 // @reference: https://stackoverflow.com/questions/51908187/how-to-make-a-full-screen-dialog-in-flutter
 class ServiceSettingsSheet extends StatefulWidget {

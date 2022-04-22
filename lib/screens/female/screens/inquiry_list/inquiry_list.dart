@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/inquiry.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,9 +58,6 @@ class _InqiuryListState extends State<InqiuryList> {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
     super.initState();
-    // BlocProvider.of<InquiryChatroomsBloc>(context).add(
-    //   ClearInquiryList(),
-    // );
   }
 
   @override
@@ -218,8 +215,8 @@ class _InqiuryListState extends State<InqiuryList> {
                       context,
                       rootNavigator: true,
                     ).pushNamed(
-                      MainRoutes.chatroom,
-                      arguments: ChatroomScreenArguments(
+                      MainRoutes.femaleInquiryChatroom,
+                      arguments: InquiryChatroomScreenArguments(
                         channelUUID: inquiryDetail.channelUuid,
                         inquiryUUID: inquiryDetail.uuid,
                         counterPartUUID: inquiryDetail.inquirer.uuid,

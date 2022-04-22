@@ -1,7 +1,7 @@
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'package:darkpanda_flutter/models/service_details.dart';
 import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_cancel_service_bloc.dart';
 
@@ -11,7 +12,6 @@ import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dar
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 
 import 'components/body.dart';
 import '../components/service_alert_dialog.dart';

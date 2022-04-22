@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/service_detail_message.dart';
 
-import './chat_bubble.dart';
+import 'chat_bubble.dart';
 
 /// We need to compose service detail message content from
 /// model [ServiceDetailMessage].

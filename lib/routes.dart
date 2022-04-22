@@ -11,8 +11,12 @@ import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import './screens/login/login_navigator.dart';
 import './screens/register/auth_navigator.dart';
 
-import 'screens/chatroom/screens/inquiry/chatroom.dart';
-import 'screens/chatroom/screens/service/service_chatroom.dart';
+import './contracts/chatroom.dart';
+// import 'screens/chatroom/screens/female_inquiry_chatroom/female_inquiry_chatroom.dart';
+// import 'screens/chatroom/screens/female_inquiry_chatroom/female_inquiry_chatroom.dart';
+// import 'screens/chatroom/screens/female_inquiry_chatroom/screen_arguments/female_inquiry_chatroom.dart';
+// import 'screens/chatroom/screens/inquiry/chatroom.dart';
+// import 'screens/chatroom/screens/service/service_chatroom.dart';
 
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
@@ -34,10 +38,14 @@ class MainRoutes extends BaseRoutes {
   static const male = '/male';
 
   static const chatroom = '/chatroom';
+
+  static const femaleInquiryChatroom = '/female-inquiry-chatroom';
+  static const femaleServiceChatroom = '/female-service-chatroom';
+  static const maleInquiryChatroom = '/male-inquiry-chatroom';
+  static const maleserviceChatroom = '/male-service-chatroom';
+
   static const serviceChatroom = '/service-chatroom';
-
   static const maleChatroom = '/male-chatroom';
-
   static const directChatroom = '/direct-chatroom';
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
@@ -70,13 +78,15 @@ class MainRoutes extends BaseRoutes {
 
         return MaleApp(selectedTab: args);
       },
-      MainRoutes.chatroom: (context) {
-        return Chatroom(args: args);
+      MainRoutes.femaleInquiryChatroom: (context) {
+        InquiryChatroomScreenArguments inquiryChatroomScreenArguments = args;
+        return FemaleInquiryChatroom(args: inquiryChatroomScreenArguments);
       },
       MainRoutes.serviceChatroom: (context) {
-        final ServiceChatroomScreenArguments serviceChatroomArgs = args;
+        // final ServiceChatroomScreenArguments serviceChatroomArgs = args;
 
-        return ServiceChatroom(args: serviceChatroomArgs);
+        // return ServiceChatroom(args: serviceChatroomArgs);
+        return Container();
       },
       MainRoutes.maleChatroom: (context) {
         final MaleChatroomScreenArguments maleChatroomArgs = args;

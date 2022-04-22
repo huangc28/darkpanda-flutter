@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 import 'package:darkpanda_flutter/models/message.dart';
-import './chat_bubble.dart';
+import 'chat_bubble.dart';
 
 class BotInvitationChatBubble extends StatelessWidget {
   const BotInvitationChatBubble({

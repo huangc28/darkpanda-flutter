@@ -1,4 +1,8 @@
-part of '../../../../screens/inquiry/components/service_settings/service_settings_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:darkpanda_flutter/components/bullet.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 
 class PriceField extends StatelessWidget {
   const PriceField({

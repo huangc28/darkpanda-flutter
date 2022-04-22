@@ -9,8 +9,7 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';

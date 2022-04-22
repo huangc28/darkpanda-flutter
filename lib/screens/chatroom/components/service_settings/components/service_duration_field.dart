@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
+import 'package:flutter/services.dart';
 
 import 'package:darkpanda_flutter/components/bullet.dart';
-import 'package:flutter/services.dart';
+import 'package:darkpanda_flutter/components/dp_text_form_field.dart';
 
 class ServiceDurationField extends StatelessWidget {
   const ServiceDurationField({
@@ -11,12 +11,14 @@ class ServiceDurationField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.fontColor = Colors.black,
+    this.readOnly = false,
   }) : super(key: key);
 
   final TextEditingController controller;
   final ValueChanged<String> validator;
   final ValueChanged<String> onSaved;
   final Color fontColor;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,8 @@ class ServiceDurationField extends StatelessWidget {
           ),
           SizedBox(height: 12),
           DPTextFormField(
-            hintText: '請輸入服務時長',
+            readOnly: readOnly,
+            hintText: '服務時長',
             onSaved: onSaved,
             controller: controller,
             theme: DPTextFieldThemes.inquiryForm,

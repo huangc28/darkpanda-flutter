@@ -92,6 +92,7 @@ girl_cancel_after_appointment_time ---> man can comment or bypass
 guy_cancel_before_appointment_time ---> girl can comment or bypass
 guy_cancel_after_appointment_time --->  girl can comment or bypass
 ## Reference
+- [Folder structure](https://codewithandrea.com/articles/flutter-project-structure/)
 - [Postgres how to shuffle records with pagination so it looks random](https://nathanmlong.com/2017/11/a-shuffled-order-that-works-with-pagination/)
 - [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)
 - [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)

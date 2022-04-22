@@ -1,78 +1,72 @@
 import 'dart:async';
 import 'dart:io';
-
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/components/exit_chatroom_confirmation_dialog.dart';
-import 'package:image/image.dart' as img;
 import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
-import 'package:darkpanda_flutter/components/chat_bubble_renderer.dart';
-import 'package:darkpanda_flutter/components/full_screen_image.dart';
-
-import 'bloc/current_chatroom_bloc.dart';
-import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_update_inquiry_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
-import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
-import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
-
-import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/models/chat_image.dart';
-import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
-
-import 'package:darkpanda_flutter/routes.dart';
-
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
-import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
-
-import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
-import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
+import 'package:darkpanda_flutter/contracts/female.dart';
+import 'package:darkpanda_flutter/contracts/male.dart';
+import 'package:darkpanda_flutter/contracts/profile.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-import 'package:darkpanda_flutter/components/camera_screen.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
-
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/service_settings.dart';
+import 'package:darkpanda_flutter/models/chat_image.dart';
+import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 
-import 'package:darkpanda_flutter/components/user_avatar.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+
+// TODO we should expose this bloc in service_list entry script
+import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
+import 'package:darkpanda_flutter/routes.dart';
+
+// TODO move to chatroom/components
+import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
+import 'package:darkpanda_flutter/components/chat_bubble_renderer.dart';
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'components/send_message_bar.dart';
-import 'components/service_settings/service_settings.dart';
+// TODO ExitChatroomBloc move to chatroom/blocs
+import 'package:darkpanda_flutter/screens/male/male.dart';
 
+// TODO move to chatroom/bloc
+import '../inquiry/bloc/current_chatroom_bloc.dart';
+
+// TODO move to chatroom/bloc
+import '../../components/send_message_bar.dart';
+
+// TODO move to chatroom/bloc
+import '../../bloc/load_service_detail_bloc.dart';
+import '../../bloc/send_update_inquiry_message_bloc.dart';
+import '../../screen_arguments/service_chatroom_screen_arguments.dart';
+import '../../bloc/send_image_message_bloc.dart';
+import '../../bloc/send_message_bloc.dart';
+import '../../bloc/upload_image_message_bloc.dart';
+import '../../bloc/service_confirm_notifier_bloc.dart';
+import '../../components/service_settings/service_settings.dart';
 import '../../components/chatroom_window.dart';
-import '../../../../models/service_settings.dart';
+import '../../screen_arguments/inquiry_chatroom_screen_arguments.dart';
 
-part 'screen_arguments/chatroom_screen_arguments.dart';
-part 'components/notification_banner.dart';
-
-class Chatroom extends StatefulWidget {
-  const Chatroom({
+class FemaleInquiryChatroom extends StatefulWidget {
+  const FemaleInquiryChatroom({
     this.args,
   });
 
-  final ChatroomScreenArguments args;
+  final InquiryChatroomScreenArguments args;
 
   @override
-  _ChatroomState createState() => _ChatroomState();
+  State<FemaleInquiryChatroom> createState() => FemaleInquiryChatroomState();
 }
 
-class _ChatroomState extends State<Chatroom>
+class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -461,9 +455,6 @@ class _ChatroomState extends State<Chatroom>
                                       },
                                     ),
                                   ),
-
-                                  // When we receive service confirmed message, we will
-                                  // display this top notification banner.
                                   BlocListener<LoadIncomingServiceBloc,
                                       LoadIncomingServiceState>(
                                     listener: (context, state) {
@@ -506,18 +497,7 @@ class _ChatroomState extends State<Chatroom>
                                         }
                                       }
                                     },
-                                    child:
-                                        // _serviceConfirmed
-                                        //     ? NotificationBanner(
-                                        //         avatarUrl: _inquirerProfile.avatarUrl,
-                                        //         goToServiceChatroom: () {
-                                        //           BlocProvider.of<
-                                        //                       LoadIncomingServiceBloc>(
-                                        //                   context)
-                                        //               .add(LoadIncomingService());
-                                        //         })
-                                        // :
-                                        Container(),
+                                    child: Container(),
                                   )
                                 ],
                               );
@@ -568,12 +548,6 @@ class _ChatroomState extends State<Chatroom>
                           }
                         },
                       ),
-                      // BlocListener<UpdateInquiryBloc, UpdateInquiryState>(
-                      //     listener: (_, state) {
-                      //   if (state.status == AsyncLoadingStatus.done) {
-                      //     _animationController.reverse();
-                      //   }
-                      // }),
                       BlocListener<SendUpdateInquiryMessageBloc,
                           SendUpdateInquiryMessageState>(listener: (_, state) {
                         if (state.status == AsyncLoadingStatus.initial ||

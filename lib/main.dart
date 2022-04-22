@@ -53,7 +53,7 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
 import 'package:darkpanda_flutter/screen_arguments/landing_screen_arguments.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/load_service_detail_bloc.dart';
+import './contracts/chatroom.dart';
 
 import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/service_list/services/service_chatroom_api.dart';
