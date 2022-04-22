@@ -216,7 +216,7 @@ class _InqiuryListState extends State<InqiuryList> {
                       rootNavigator: true,
                     ).pushNamed(
                       MainRoutes.femaleInquiryChatroom,
-                      arguments: InquiryChatroomScreenArguments(
+                      arguments: FemaleInquiryChatroomScreenArguments(
                         channelUUID: inquiryDetail.channelUuid,
                         inquiryUUID: inquiryDetail.uuid,
                         counterPartUUID: inquiryDetail.inquirer.uuid,

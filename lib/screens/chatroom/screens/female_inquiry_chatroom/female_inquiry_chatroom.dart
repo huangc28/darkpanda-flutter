@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/contracts/female.dart';
-import 'package:darkpanda_flutter/contracts/male.dart';
 import 'package:darkpanda_flutter/contracts/profile.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
@@ -35,10 +34,10 @@ import 'package:darkpanda_flutter/components/full_screen_image.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 
 // TODO ExitChatroomBloc move to chatroom/blocs
-import 'package:darkpanda_flutter/screens/male/male.dart';
+// import 'package:darkpanda_flutter/screens/male/male.dart';
 
 // TODO move to chatroom/bloc
-import '../inquiry/bloc/current_chatroom_bloc.dart';
+import '../../bloc/current_chatroom_bloc.dart';
 
 // TODO move to chatroom/bloc
 import '../../components/send_message_bar.dart';
@@ -51,16 +50,18 @@ import '../../bloc/send_image_message_bloc.dart';
 import '../../bloc/send_message_bloc.dart';
 import '../../bloc/upload_image_message_bloc.dart';
 import '../../bloc/service_confirm_notifier_bloc.dart';
+import '../../bloc/exit_chatroom_bloc.dart';
 import '../../components/service_settings/service_settings.dart';
 import '../../components/chatroom_window.dart';
-import '../../screen_arguments/inquiry_chatroom_screen_arguments.dart';
+import '../../components/exit_chatroom_confirmation_dialog.dart';
+import '../../screen_arguments/female_inquiry_chatroom_screen_arguments.dart';
 
 class FemaleInquiryChatroom extends StatefulWidget {
   const FemaleInquiryChatroom({
     this.args,
   });
 
-  final InquiryChatroomScreenArguments args;
+  final FemaleInquiryChatroomScreenArguments args;
 
   @override
   State<FemaleInquiryChatroom> createState() => FemaleInquiryChatroomState();

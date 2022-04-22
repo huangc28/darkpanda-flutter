@@ -17,7 +17,6 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
 import 'package:darkpanda_flutter/components/full_screen_image.dart';
@@ -42,28 +41,29 @@ import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.da
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
-import 'bloc/disagree_inquiry_bloc.dart';
-import 'bloc/exit_chatroom_bloc.dart';
-import 'bloc/update_inquitry_notifier_bloc.dart';
-import 'components/exit_chatroom_confirmation_dialog.dart';
-import 'components/inquiry_detail_dialog.dart';
-import 'screen_arguments/service_chatroom_screen_arguments.dart';
-import 'screens/male_inquiry_detail.dart';
+import './bloc/disagree_inquiry_bloc.dart';
+import '../../components/exit_chatroom_confirmation_dialog.dart';
+import './screens/male_inquiry_detail.dart';
+import './components/inquiry_detail_dialog.dart';
+import '../../screen_arguments/male_inquiry_chatroom_screen_arguments.dart';
+import '../../bloc/exit_chatroom_bloc.dart';
+import '../../bloc/update_inquitry_notifier_bloc.dart';
+import '../../bloc/current_chatroom_bloc.dart';
 
-class InquiryChatroom extends StatefulWidget {
-  InquiryChatroom({
+class MaleInquiryChatroom extends StatefulWidget {
+  MaleInquiryChatroom({
     this.args,
     this.onPush,
   });
 
-  final MaleChatroomScreenArguments args;
+  final MaleInquiryChatroomScreenArguments args;
   final Function(String, TopUpDpArguments) onPush;
 
   @override
-  _InquiryChatroomState createState() => _InquiryChatroomState();
+  _MaleInquiryChatroomState createState() => _MaleInquiryChatroomState();
 }
 
-class _InquiryChatroomState extends State<InquiryChatroom>
+class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
     with SingleTickerProviderStateMixin {
   final _editMessageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();

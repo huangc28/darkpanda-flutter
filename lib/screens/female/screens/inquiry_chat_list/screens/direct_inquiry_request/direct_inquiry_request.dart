@@ -185,7 +185,7 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
     )
         .pushNamed(
       MainRoutes.femaleInquiryChatroom,
-      arguments: InquiryChatroomScreenArguments(
+      arguments: FemaleInquiryChatroomScreenArguments(
         channelUUID: agreeInquiryResponse.channelUuid,
         inquiryUUID: inquiryUuid,
         counterPartUUID: agreeInquiryResponse.inquirer.uuid,

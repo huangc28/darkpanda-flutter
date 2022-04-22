@@ -1,10 +1,10 @@
-class MaleChatroomScreenArguments {
+class MaleInquiryChatroomScreenArguments {
   final String channelUUID;
   final String inquiryUUID;
   final String counterPartUUID;
   final String serviceUUID;
 
-  MaleChatroomScreenArguments({
+  MaleInquiryChatroomScreenArguments({
     this.channelUUID,
     this.inquiryUUID,
     this.counterPartUUID,

@@ -1,7 +1,7 @@
 // TODO what the fuck is route types?
 import 'package:darkpanda_flutter/enums/route_types.dart';
 
-class InquiryChatroomScreenArguments {
+class FemaleInquiryChatroomScreenArguments {
   final String channelUUID;
   final String inquiryUUID;
   final String counterPartUUID;
@@ -9,7 +9,7 @@ class InquiryChatroomScreenArguments {
   final RouteTypes routeTypes;
   final String serviceUUID;
 
-  InquiryChatroomScreenArguments({
+  FemaleInquiryChatroomScreenArguments({
     this.channelUUID,
     this.inquiryUUID,
     this.counterPartUUID,

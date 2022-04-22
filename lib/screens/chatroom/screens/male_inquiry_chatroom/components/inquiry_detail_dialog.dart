@@ -9,8 +9,9 @@ import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
+
+import '../bloc/send_emit_service_confirm_message_bloc.dart';
 
 class InquiryDetailDialog extends StatefulWidget {
   const InquiryDetailDialog({

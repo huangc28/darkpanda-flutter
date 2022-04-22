@@ -11,7 +11,6 @@ import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart';
 
-import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import './bloc/load_direct_inquiry_chatrooms_bloc.dart';
 
 import 'components/chatroom_grid.dart';

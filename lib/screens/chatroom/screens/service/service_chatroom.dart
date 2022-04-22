@@ -56,7 +56,6 @@ import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 import 'package:darkpanda_flutter/screens/chatroom/components/chat_bubbles/components/payment_completed_bubble.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
 
@@ -90,6 +89,7 @@ import 'screen_arguments/service_chatroom_screen_arguments.dart';
 import 'components/notification_banner.dart';
 
 import '../../bloc/load_service_detail_bloc.dart';
+import '../../models/inquiry_detail.dart';
 
 class ServiceChatroom extends StatefulWidget {
   const ServiceChatroom({
@@ -854,7 +854,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {

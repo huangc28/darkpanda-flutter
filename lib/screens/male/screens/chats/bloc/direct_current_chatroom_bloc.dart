@@ -29,7 +29,8 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show UpdateInquiryNotifierBloc, UpdateInquiryConfirmed;
 
 import 'load_direct_inquiry_chatrooms_bloc.dart';
 

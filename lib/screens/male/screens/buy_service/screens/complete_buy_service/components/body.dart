@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+
+import 'package:darkpanda_flutter/contracts/chatroom.dart' show InquiryDetail;
 
 class Body extends StatefulWidget {
   const Body({

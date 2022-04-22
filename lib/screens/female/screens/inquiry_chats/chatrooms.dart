@@ -121,7 +121,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                             )
                                 .pushNamed(
                               MainRoutes.femaleInquiryChatroom,
-                              arguments: InquiryChatroomScreenArguments(
+                              arguments: FemaleInquiryChatroomScreenArguments(
                                 channelUUID: chatroom.channelUUID,
                                 inquiryUUID: chatroom.inquiryUUID,
                                 counterPartUUID: chatroom.inquirerUUID,

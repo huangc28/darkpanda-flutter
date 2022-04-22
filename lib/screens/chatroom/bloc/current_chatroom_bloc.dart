@@ -30,7 +30,8 @@ import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dar
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
+
+import './update_inquitry_notifier_bloc.dart';
 
 part 'current_chatroom_event.dart';
 part 'current_chatroom_state.dart';

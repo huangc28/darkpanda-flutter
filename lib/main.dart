@@ -32,7 +32,6 @@ import 'package:darkpanda_flutter/screens/register/services/register_api_client.
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/service_confirm_notifier_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/current_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
@@ -44,10 +43,6 @@ import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/current_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/disagree_inquiry_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/exit_chatroom_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/bloc/update_inquitry_notifier_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis.dart';
@@ -65,8 +60,6 @@ import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
 void main() async {
-  // runZonedGuarded<Future<void>>(
-  //   () async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseApp app = await Firebase.initializeApp();
 
@@ -186,6 +179,8 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 BlocProvider.of<InquiryChatroomsBloc>(context),
           ),
         ),
+
+        // TODO why is DisagreeInquiryBloc in global scope?
         BlocProvider(
           create: (context) => DisagreeInquiryBloc(
             searchInquiryAPIs: SearchInquiryAPIs(),
@@ -198,6 +193,8 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
                 BlocProvider.of<InquiryChatroomsBloc>(context),
           ),
         ),
+
+        // TODO why is SendEmitServiceConfirmMessageBloc in global scope?
         BlocProvider(
           create: (context) => SendEmitServiceConfirmMessageBloc(
             searchInquiryAPIs: SearchInquiryAPIs(),

@@ -18,8 +18,8 @@ import './contracts/chatroom.dart';
 // import 'screens/chatroom/screens/inquiry/chatroom.dart';
 // import 'screens/chatroom/screens/service/service_chatroom.dart';
 
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_chatroom.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+// import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_chatroom.dart';
+// import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 
 import './screens/female/female_app.dart';
 import './screens/male/male_app.dart';
@@ -79,12 +79,24 @@ class MainRoutes extends BaseRoutes {
         return MaleApp(selectedTab: args);
       },
       MainRoutes.femaleInquiryChatroom: (context) {
-        InquiryChatroomScreenArguments inquiryChatroomScreenArguments = args;
-        return FemaleInquiryChatroom(args: inquiryChatroomScreenArguments);
+        FemaleInquiryChatroomScreenArguments iqArgs = args;
+        return FemaleInquiryChatroom(args: iqArgs);
       },
       MainRoutes.maleInquiryChatroom: (context) {
+        MaleInquiryChatroomScreenArguments iqArgs = args;
+
+        return MaleInquiryChatroom(args: iqArgs);
+      },
+
+      MainRoutes.femaleServiceChatroom: (context) {
         return Container();
       },
+
+      MainRoutes.maleserviceChatroom: (context) {
+        return Container();
+      },
+
+      //--------------------------- Deprecating ------------------------------
       MainRoutes.serviceChatroom: (context) {
         // final ServiceChatroomScreenArguments serviceChatroomArgs = args;
 
@@ -92,14 +104,16 @@ class MainRoutes extends BaseRoutes {
         return Container();
       },
       MainRoutes.maleChatroom: (context) {
-        final MaleChatroomScreenArguments maleChatroomArgs = args;
+        return Container();
+        // final MaleChatroomScreenArguments maleChatroomArgs = args;
 
-        return InquiryChatroom(args: maleChatroomArgs);
+        // return InquiryChatroom(args: maleChatroomArgs);
       },
       MainRoutes.directChatroom: (context) {
-        final DirectChatroomScreenArguments maleChatroomArgs = args;
+        return Container();
+        // final DirectChatroomScreenArguments maleChatroomArgs = args;
 
-        return DirectChatroom(args: maleChatroomArgs);
+        // return DirectChatroom(args: maleChatroomArgs);
       }
     };
   }

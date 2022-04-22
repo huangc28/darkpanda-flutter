@@ -3,12 +3,13 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/emit_service_confirm_message_response.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+
+import '../models/emit_service_confirm_message_response.dart';
 
 part 'send_emit_service_confirm_message_event.dart';
 part 'send_emit_service_confirm_message_state.dart';

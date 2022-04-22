@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:darkpanda_flutter/contracts/chatroom.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show InquiryDetail, ServiceChatroomScreenArguments;
 import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/components/loading_screen.dart';

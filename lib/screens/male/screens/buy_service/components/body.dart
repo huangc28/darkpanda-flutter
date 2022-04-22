@@ -11,7 +11,8 @@ import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/screens/complete_buy_service/complete_buy_service.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
+
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 
 class Body extends StatefulWidget {
   const Body({
