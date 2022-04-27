@@ -178,8 +178,6 @@ class CurrentChatroomBloc
 
       // Convert response data to list of messages and store them to historical messages.
       final historicalMessages = respMap['messages'].map<Message>((data) {
-        print('historicalMessages 1 ${data}');
-
         if (data['type'] == MessageType.service_detail.name) {
           return ServiceDetailMessage.fromMap(data);
         } else if (data['type'] == MessageType.confirmed_service.name) {

@@ -77,6 +77,7 @@ class _ChatroomsState extends State<Chatrooms> {
                   }
                 },
                 builder: (context, state) {
+                  print('chatrooms state ${state.chatrooms}');
                   if (state.status == AsyncLoadingStatus.loading ||
                       state.status == AsyncLoadingStatus.initial) {
                     return LoadingScreen();

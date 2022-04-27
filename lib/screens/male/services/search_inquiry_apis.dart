@@ -310,7 +310,7 @@ class SearchInquiryAPIs extends BaseClient {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/chat/direct-inquiry-chatrooms', {
+        buildUri('/v1/chat/inquiry', {
           'offset': '$offset',
         }),
       );
