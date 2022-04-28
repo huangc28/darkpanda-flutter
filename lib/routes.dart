@@ -1,12 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/widgets.dart';
+import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 
 import './screens/login/login_navigator.dart';
 import './screens/register/auth_navigator.dart';
@@ -40,9 +43,10 @@ class MainRoutes extends BaseRoutes {
   static const chatroom = '/chatroom';
 
   static const femaleInquiryChatroom = '/female-inquiry-chatroom';
-  static const femaleServiceChatroom = '/female-service-chatroom';
   static const maleInquiryChatroom = '/male-inquiry-chatroom';
-  static const maleserviceChatroom = '/male-service-chatroom';
+
+  static const femaleServiceChatroom = '/female-service-chatroom';
+  static const maleServiceChatroom = '/male-service-chatroom';
 
   static const serviceChatroom = '/service-chatroom';
   static const maleChatroom = '/male-chatroom';
@@ -58,6 +62,7 @@ class MainRoutes extends BaseRoutes {
         );
       },
       MainRoutes.register: (context) => AuthNavigator(),
+
       MainRoutes.female: (context) {
         if (args == null) {
           args = TabItem.inquiries;
@@ -66,7 +71,24 @@ class MainRoutes extends BaseRoutes {
           );
         }
 
-        return FemaleApp(selectedTab: args);
+        BlocProvider.of<InquiryChatroomsBloc>(context)..add(FetchChatrooms());
+
+        return BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
+          listener: (context, state) {
+            if (state.status == AsyncLoadingStatus.error) {
+              // TODO use i18n for error text
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('failed to fetch chatrooms list'),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            // TODO display a loading icon when fetching inqury chatrooms
+            return FemaleApp(selectedTab: args);
+          },
+        );
       },
       MainRoutes.male: (context) {
         if (args == null) {
@@ -76,15 +98,32 @@ class MainRoutes extends BaseRoutes {
           );
         }
 
-        return MaleApp(selectedTab: args);
+        BlocProvider.of<InquiryChatroomsBloc>(context)..add(FetchChatrooms());
+
+        return BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
+          listener: (context, state) {
+            if (state.status == AsyncLoadingStatus.error) {
+              // TODO use i18n for error text
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('failed to fetch chatrooms list'),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            // TODO display a loading icon when fetching inqury chatrooms
+            return MaleApp(selectedTab: args);
+          },
+        );
       },
       MainRoutes.femaleInquiryChatroom: (context) {
         FemaleInquiryChatroomScreenArguments iqArgs = args;
         return FemaleInquiryChatroom(args: iqArgs);
       },
       MainRoutes.maleInquiryChatroom: (context) {
+        // Fetch inquiry chatrooms before proceeds
         MaleInquiryChatroomScreenArguments iqArgs = args;
-
         return MaleInquiryChatroom(args: iqArgs);
       },
 
@@ -92,7 +131,7 @@ class MainRoutes extends BaseRoutes {
         return Container();
       },
 
-      MainRoutes.maleserviceChatroom: (context) {
+      MainRoutes.maleServiceChatroom: (context) {
         return Container();
       },
 

@@ -10,8 +10,7 @@ class InquiryChatroomApis extends BaseClient {
     try {
       final request = http.Request(
         'GET',
-        buildUri('/v1/chat', {
-          'chatroom_type': 'inquiry',
+        buildUri('/v1/chat/inquiry', {
           'offset': '$offset',
         }),
       );

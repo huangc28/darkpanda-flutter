@@ -227,7 +227,8 @@ class CurrentChatroomBloc
         state,
         e,
       );
-    } on Exception catch (e) {
+    } catch (e) {
+      print('DEBUG*~ error ${e}');
       yield CurrentChatroomState.loadFailed(
         state,
         AppGeneralExeption(

@@ -174,9 +174,9 @@ class _ChatRequestState extends State<ChatRequest> {
                 theme: DPTextButtonThemes.deepGrey,
                 assetImage: "lib/screens/male/assets/deleteButton.png",
                 onPressed: () {
-                  print('DEBUG on tap where am I?');
-                  // BlocProvider.of<AgreeInquiryBloc>(context)
-                  //     .add(AgreeInquiry(widget.activeInquiry.uuid));
+                  // print('DEBUG on tap where am I?');
+                  BlocProvider.of<AgreeInquiryBloc>(context)
+                      .add(AgreeInquiry(widget.activeInquiry.uuid));
                 },
                 text: '馬上聊聊',
               ),

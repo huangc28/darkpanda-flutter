@@ -60,9 +60,7 @@ class InquiryChatroomsBloc
       yield* _mapAddChatroomToState(event);
     } else if (event is ClearInquiryList) {
       yield* _mapClearInquiryListToState(event);
-    }
-
-    if (event is LeaveMaleChatroom) {
+    } else if (event is LeaveMaleChatroom) {
       yield* _mapLeaveMaleChatroomToState(event);
     }
   }
@@ -272,7 +270,7 @@ class InquiryChatroomsBloc
       );
 
       yield InquiryChatroomsState.loadFailed(state, err);
-    } on AppGeneralExeption catch (e) {
+    } catch (e) {
       developer.log(
         e.toString(),
         name: "AppGeneralExeption: fetch_chats_bloc",

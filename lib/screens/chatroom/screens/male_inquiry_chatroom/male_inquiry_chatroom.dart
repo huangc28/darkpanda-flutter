@@ -29,6 +29,7 @@ import 'package:darkpanda_flutter/models/chat_image.dart';
 import 'package:darkpanda_flutter/models/auth_user.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
+import 'package:darkpanda_flutter/models/message.dart';
 
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/inquirer_profile.dart';
@@ -71,12 +72,10 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
   String _message;
   AuthUser _sender;
 
-  /// Lock the message bar functionalities if we are still initialzing chatroom.
-  /// until chatroom is done initializing.
-  bool _doneInitChatroom = false;
-
   /// Information of the inquirer that the current user is talking with.
   UserProfile _inquirerProfile = UserProfile();
+
+  bool _doneInitChatroom = false;
 
   UpdateInquiryMessage updatedInquiryMessage = UpdateInquiryMessage();
   InquirerProfileArguments _inquirerProfileArguments;
@@ -111,8 +110,9 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
 
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(
-          channelUUID: widget.args.channelUUID,
-          inquirerUUID: widget.args.counterPartUUID),
+        channelUUID: widget.args.channelUUID,
+        inquirerUUID: widget.args.counterPartUUID,
+      ),
     );
 
     _editMessageController.addListener(_handleEditMessage);
@@ -225,219 +225,191 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
 
   Widget _body() {
     return SafeArea(
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: LoadMoreScrollable(
-                    scrollController: _scrollController,
-                    onLoadMore: () {
-                      BlocProvider.of<CurrentChatroomBloc>(context).add(
-                        FetchMoreHistoricalMessages(
-                          channelUUID: widget.args.channelUUID,
-                        ),
-                      );
-                    },
-                    builder: (context, scrollController) {
-                      return Stack(
-                        children: <Widget>[
-                          BlocListener<ServiceConfirmNotifierBloc,
-                              ServiceConfirmNotifierState>(
-                            listener: (context, state) {
-                              setState(() {});
-                            },
-                            child: BlocConsumer<CurrentChatroomBloc,
-                                CurrentChatroomState>(
-                              listener: (context, state) {
-                                if (state.status == AsyncLoadingStatus.error) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.error.message),
-                                    ),
-                                  );
-                                }
+        child: Stack(alignment: Alignment.bottomCenter, children: [
+      Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: LoadMoreScrollable(
+                scrollController: _scrollController,
+                onLoadMore: () {
+                  BlocProvider.of<CurrentChatroomBloc>(context).add(
+                    FetchMoreHistoricalMessages(
+                      channelUUID: widget.args.channelUUID,
+                    ),
+                  );
+                },
+                builder: (context, scrollController) {
+                  return Stack(
+                    children: [
+                      BlocConsumer<CurrentChatroomBloc, CurrentChatroomState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.done) {
+                            _doneInitChatroom = true;
+                          }
+                        },
+                        builder: (context, state) {
+                          print(
+                              'current chatroom loading status ${state.status}');
+                          if (state.status == AsyncLoadingStatus.done) {
+                            return GestureDetector(
+                                onTap: () {
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
 
-                                // Enable message bar once done initializing.
-                                if (state.status == AsyncLoadingStatus.done) {
-                                  setState(() {
-                                    _doneInitChatroom = true;
-
-                                    _inquirerProfile = state.userProfile;
-                                  });
-                                }
-
-                                if (state.currentMessages.isNotEmpty &&
-                                    state.currentMessages.first
-                                        is QuitChatroomMessage) {
-                                  setState(() {
-                                    _isDisabledChat = true;
-                                  });
-                                }
-                              },
-                              builder: (context, state) {
-                                if (_doneInitChatroom) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      FocusScopeNode currentFocus =
-                                          FocusScope.of(context);
-
-                                      // Dismiss keyboard when user clicks on chat window.
-                                      if (!currentFocus.hasPrimaryFocus) {
-                                        currentFocus.unfocus();
-                                      }
-                                    },
-                                    child: ChatroomWindow(
-                                      scrollController: scrollController,
-                                      historicalMessages:
-                                          state.historicalMessages,
-                                      currentMessages: state.currentMessages,
-                                      isSendingImage: _isSendingImage,
-                                      builder: (BuildContext context, message) {
-                                        return ChatBubbleRenderer(
-                                          message: message,
-                                          isMe: _sender.uuid == message.from,
-                                          myGender: _sender.gender,
-                                          avatarURL: _inquirerProfile.avatarUrl,
-                                          onTabUpdateInquiryBubble:
-                                              (updateInquiryMessage) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                _negotiatingServiceDetail
-                                                    .copyWithUpdateInquiryMessage(
-                                                  updateInquiryMessage,
-                                                );
-
-                                                return InquiryDetailDialog(
-                                                  negotiatingInquiryDetail:
-                                                      _negotiatingServiceDetail,
-                                                );
-                                              },
-                                            );
-                                          },
-                                          onTabImageBubble: (imageMessage) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) {
-                                                  return FullScreenImage(
-                                                    imageUrl: imageMessage
-                                                        .imageUrls[0],
-                                                    tag: "chat_image",
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return Center(
-                                    child: Container(
-                                      height: 50,
-                                      child: LoadingIcon(),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-
-                          // When male receive inquiry updated message from female, an inquiry detail dialog will pop up.
-                          BlocListener<UpdateInquiryNotifierBloc,
-                              UpdateInquiryNotifierState>(
-                            listener: (context, state) {
-                              setState(() {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (_) {
-                                    _negotiatingServiceDetail
-                                        .copyWithUpdateInquiryMessage(
-                                            state.message);
-                                    return InquiryDetailDialog(
-                                      negotiatingInquiryDetail:
-                                          _negotiatingServiceDetail,
-                                    );
-                                  },
-                                ).then((value) {
-                                  // Reject inquiry
-                                  if (!value) {
-                                    BlocProvider.of<DisagreeInquiryBloc>(
-                                            context)
-                                        .add(
-                                      DisagreeInquiry(widget.args.channelUUID),
-                                    );
+                                  // Dismiss keyboard when user clicks on chat window.
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
                                   }
-                                });
-                              });
+                                },
+                                child: _buildChatWindow(
+                                  scrollController,
+                                  state.historicalMessages,
+                                  state.currentMessages,
+                                ));
+                          } else {
+                            return Center(
+                              child: Container(
+                                height: 50,
+                                child: LoadingIcon(),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+
+                      // When male receive inquiry updated message from female, an inquiry detail dialog will pop up.
+                      BlocListener<UpdateInquiryNotifierBloc,
+                          UpdateInquiryNotifierState>(
+                        listener: (context, state) {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (_) {
+                              _negotiatingServiceDetail
+                                  .copyWithUpdateInquiryMessage(state.message);
+
+                              return InquiryDetailDialog(
+                                negotiatingInquiryDetail:
+                                    _negotiatingServiceDetail,
+                              );
                             },
-                            child: SizedBox.shrink(),
-                          ),
+                          ).then((value) {
+                            // Reject inquiry
+                            if (!value) {
+                              BlocProvider.of<DisagreeInquiryBloc>(context).add(
+                                DisagreeInquiry(widget.args.channelUUID),
+                              );
+                            }
+                          });
+                        },
+                        child: SizedBox.shrink(),
+                      ),
 
-                          // Upload image bloc
-                          BlocListener<UploadImageMessageBloc,
-                              UploadImageMessageState>(
-                            listener: (context, state) {
-                              if (state.status == AsyncLoadingStatus.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(state.error.message),
-                                  ),
-                                );
-                              }
+                      // Upload image bloc
+                      BlocListener<UploadImageMessageBloc,
+                          UploadImageMessageState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
 
-                              if (state.status == AsyncLoadingStatus.done) {
-                                chatImages = state.chatImages;
+                          if (state.status == AsyncLoadingStatus.done) {
+                            chatImages = state.chatImages;
 
-                                BlocProvider.of<SendImageMessageBloc>(context)
-                                    .add(
-                                  SendImageMessage(
-                                    imageUrl: chatImages.thumbnails[0],
-                                    channelUUID: widget.args.channelUUID,
-                                  ),
-                                );
-                              }
-                            },
-                            child: SizedBox.shrink(),
-                          ),
+                            BlocProvider.of<SendImageMessageBloc>(context).add(
+                              SendImageMessage(
+                                imageUrl: chatImages.thumbnails[0],
+                                channelUUID: widget.args.channelUUID,
+                              ),
+                            );
+                          }
+                        },
+                        child: SizedBox.shrink(),
+                      ),
 
-                          // Send image bloc
-                          BlocListener<SendImageMessageBloc,
-                              SendImageMessageState>(
-                            listener: (context, state) {
-                              if (state.status == AsyncLoadingStatus.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(state.error.message),
-                                  ),
-                                );
-                              }
+                      BlocListener<SendImageMessageBloc, SendImageMessageState>(
+                        listener: (context, state) {
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
 
-                              if (state.status == AsyncLoadingStatus.done) {
-                                setState(() {
-                                  _isSendingImage = false;
-                                });
-                              }
-                            },
-                            child: SizedBox.shrink(),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                _doneInitChatroom ? _buildMessageBar() : SizedBox.shrink(),
-              ],
-            ),
-          ),
-        ],
-      ),
+                          if (state.status == AsyncLoadingStatus.done) {
+                            setState(() {
+                              _isSendingImage = false;
+                            });
+                          }
+                        },
+                        child: SizedBox.shrink(),
+                      ),
+
+                      _doneInitChatroom
+                          ? _buildMessageBar()
+                          : SizedBox.shrink(),
+                    ],
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      )
+    ]));
+  }
+
+  Widget _buildChatWindow(
+    ScrollController scrollController,
+    List<Message> historicalMessages,
+    List<Message> currentMessages,
+  ) {
+    return ChatroomWindow(
+      scrollController: scrollController,
+      historicalMessages: historicalMessages,
+      currentMessages: currentMessages,
+      isSendingImage: _isSendingImage,
+      builder: (BuildContext context, message) {
+        return ChatBubbleRenderer(
+          message: message,
+          isMe: _sender.uuid == message.from,
+          myGender: _sender.gender,
+          avatarURL: _inquirerProfile.avatarUrl,
+          onTabUpdateInquiryBubble: (updateInquiryMessage) {
+            showDialog(
+              context: context,
+              builder: (_) {
+                _negotiatingServiceDetail.copyWithUpdateInquiryMessage(
+                  updateInquiryMessage,
+                );
+
+                return InquiryDetailDialog(
+                  negotiatingInquiryDetail: _negotiatingServiceDetail,
+                );
+              },
+            );
+          },
+          onTabImageBubble: (imageMessage) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) {
+                  return FullScreenImage(
+                    imageUrl: imageMessage.imageUrls[0],
+                    tag: "chat_image",
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

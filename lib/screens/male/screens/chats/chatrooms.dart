@@ -1,7 +1,4 @@
 import 'dart:async';
-
-import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,12 +7,14 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show MaleInquiryChatroomScreenArguments;
+import 'package:darkpanda_flutter/routes.dart';
 
 import './bloc/load_direct_inquiry_chatrooms_bloc.dart';
 
 import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
-import 'screen_arguments/direct_chatroom_screen_arguments.dart';
 
 class Chatrooms extends StatefulWidget {
   const Chatrooms({Key key}) : super(key: key);
@@ -77,7 +76,6 @@ class _ChatroomsState extends State<Chatrooms> {
                   }
                 },
                 builder: (context, state) {
-                  print('chatrooms state ${state.chatrooms}');
                   if (state.status == AsyncLoadingStatus.loading ||
                       state.status == AsyncLoadingStatus.initial) {
                     return LoadingScreen();
@@ -111,13 +109,12 @@ class _ChatroomsState extends State<Chatrooms> {
                                 rootNavigator: true,
                               )
                                   .pushNamed(
-                                MainRoutes.directChatroom,
-                                arguments: DirectChatroomScreenArguments(
+                                MainRoutes.maleInquiryChatroom,
+                                arguments: MaleInquiryChatroomScreenArguments(
                                   channelUUID: chatroom.channelUUID,
                                   inquiryUUID: chatroom.inquiryUUID,
                                   counterPartUUID: chatroom.pickerUUID,
                                   serviceUUID: chatroom.serviceUUID,
-                                  routeTypes: RouteTypes.fromMaleChats,
                                 ),
                               )
                                   .then((value) {
