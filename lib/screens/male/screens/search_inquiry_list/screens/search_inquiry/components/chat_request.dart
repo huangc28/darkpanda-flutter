@@ -11,8 +11,8 @@ import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dar
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
 
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/contracts/chatroom.dart';
-
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 
@@ -145,21 +145,21 @@ class _ChatRequestState extends State<ChatRequest> {
             ),
           );
         } else if (state.status == AsyncLoadingStatus.done) {
-          // setState(() {
-          //   agreeInquiryResponse = state.agreeInquiry;
-          //   Navigator.of(
-          //     context,
-          //     rootNavigator: true,
-          //   ).pushNamed(
-          //     MainRoutes.maleChatroom,
-          //     arguments: MaleChatroomScreenArguments(
-          //       channelUUID: agreeInquiryResponse.channelUuid,
-          //       inquiryUUID: widget.activeInquiry.uuid,
-          //       counterPartUUID: agreeInquiryResponse.picker.uuid,
-          //       serviceUUID: agreeInquiryResponse.serviceUuid,
-          //     ),
-          //   );
-          // });
+          setState(() {
+            agreeInquiryResponse = state.agreeInquiry;
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushNamed(
+              MainRoutes.maleInquiryChatroom,
+              arguments: MaleInquiryChatroomScreenArguments(
+                channelUUID: agreeInquiryResponse.channelUuid,
+                inquiryUUID: widget.activeInquiry.uuid,
+                counterPartUUID: agreeInquiryResponse.picker.uuid,
+                serviceUUID: agreeInquiryResponse.serviceUuid,
+              ),
+            );
+          });
         }
       },
       builder: (context, state) {
@@ -174,7 +174,6 @@ class _ChatRequestState extends State<ChatRequest> {
                 theme: DPTextButtonThemes.deepGrey,
                 assetImage: "lib/screens/male/assets/deleteButton.png",
                 onPressed: () {
-                  // print('DEBUG on tap where am I?');
                   BlocProvider.of<AgreeInquiryBloc>(context)
                       .add(AgreeInquiry(widget.activeInquiry.uuid));
                 },

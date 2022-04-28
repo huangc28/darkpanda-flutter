@@ -137,24 +137,20 @@ class InquiryChatroomsBloc
     }
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
+    // Update latest message for each chatroom. This message is being displayed in inquiry chatroom list is being displayed in inquiry chatroom list
+    final chatroomLastMessage = state.chatroomLastMessage;
+    for (final chatroom in event.chatrooms) {
+      if (chatroom.messages.length > 0) {
+        chatroomLastMessage[chatroom.channelUUID] = chatroom.messages[0];
+      }
+    }
+
     yield InquiryChatroomsState.updateChatrooms(
       state,
       chatrooms: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
-      // currentPage: state.currentPage + 1,
+      chatroomLastMessage: chatroomLastMessage,
     );
-
-    for (final chatroom in event.chatrooms) {
-      if (chatroom.messages.length > 0) {
-        // Update latest message for each chatroom.
-        add(
-          PutLatestMessage(
-            channelUUID: chatroom.channelUUID,
-            message: chatroom.messages[0],
-          ),
-        );
-      }
-    }
   }
 
   _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
@@ -235,6 +231,7 @@ class InquiryChatroomsBloc
 
   Stream<InquiryChatroomsState> _mapFetchChatroomToState(
       FetchChatrooms event) async* {
+    print('trigger _mapFetchChatroomToState');
     try {
       yield InquiryChatroomsState.loading(state);
       yield InquiryChatroomsState.clearInqiuryChatList(state);

@@ -519,15 +519,6 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
                   position: _offsetAnimation,
                   child: MultiBlocListener(
                     listeners: [
-                      // BlocListener<GetInquiryBloc, GetInquiryState>(
-                      //   listener: (_, state) {
-                      //     if (state.status == AsyncLoadingStatus.done) {
-                      //       setState(() {
-                      //         _serviceSettings = state.serviceSettings;
-                      //       });
-                      //     }
-                      //   },
-                      // ),
                       BlocListener<LoadServiceDetailBloc,
                           LoadServiceDetailState>(
                         listener: (_, state) {

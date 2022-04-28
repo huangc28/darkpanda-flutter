@@ -45,7 +45,6 @@ class _InqiuryListState extends State<InqiuryList> {
   Inquiry inquiryDetail;
 
   InquiryChatroomsBloc _inquiryChatroomsBloc;
-  int isFirstCall = 0;
 
   bool pickupIsLoading = false;
 
@@ -157,7 +156,6 @@ class _InqiuryListState extends State<InqiuryList> {
                     height: SizeConfig.screenHeight * 0.2,
                     child: InquiryList(
                       onLoadMore: () {
-                        print('DEBUG trigger load more');
                         BlocProvider.of<InquiriesBloc>(context).add(
                           LoadMoreInquiries(),
                         );
@@ -207,25 +205,20 @@ class _InqiuryListState extends State<InqiuryList> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  isFirstCall++;
-
-                  // status done will be called twice, so implement isFirstCall to solve this issue
-                  if (isFirstCall == 1) {
-                    Navigator.of(
-                      context,
-                      rootNavigator: true,
-                    ).pushNamed(
-                      MainRoutes.femaleInquiryChatroom,
-                      arguments: FemaleInquiryChatroomScreenArguments(
-                        channelUUID: inquiryDetail.channelUuid,
-                        inquiryUUID: inquiryDetail.uuid,
-                        counterPartUUID: inquiryDetail.inquirer.uuid,
-                        serviceType: inquiryDetail.serviceType,
-                        routeTypes: RouteTypes.fromInquiryList,
-                        serviceUUID: inquiryDetail.serviceUuid,
-                      ),
-                    );
-                  }
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(
+                    MainRoutes.femaleInquiryChatroom,
+                    arguments: FemaleInquiryChatroomScreenArguments(
+                      channelUUID: inquiryDetail.channelUuid,
+                      inquiryUUID: inquiryDetail.uuid,
+                      counterPartUUID: inquiryDetail.inquirer.uuid,
+                      serviceType: inquiryDetail.serviceType,
+                      routeTypes: RouteTypes.fromInquiryList,
+                      serviceUUID: inquiryDetail.serviceUuid,
+                    ),
+                  );
                 }
               },
               child: SizedBox.shrink(),
@@ -264,11 +257,27 @@ class _InqiuryListState extends State<InqiuryList> {
   }
 
   _handleStartChat(Inquiry inquiry) {
-    print('DEBUG handle start chatting ${inquiry.uuid}');
+    print('DEBUG* _handleStartChat ~~');
     // We need to redirect female to chatroom and clear the inquiry
     // item from inquiry list.
     inquiryDetail = inquiry;
-    BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+    _inquiryChatroomsBloc.add(FetchChatrooms());
+    // BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
+
+    // Navigator.of(
+    //   context,
+    //   rootNavigator: true,
+    // ).pushNamed(
+    //   MainRoutes.femaleInquiryChatroom,
+    //   arguments: FemaleInquiryChatroomScreenArguments(
+    //     channelUUID: inquiryDetail.channelUuid,
+    //     inquiryUUID: inquiryDetail.uuid,
+    //     counterPartUUID: inquiryDetail.inquirer.uuid,
+    //     serviceType: inquiryDetail.serviceType,
+    //     routeTypes: RouteTypes.fromInquiryList,
+    //     serviceUUID: inquiryDetail.serviceUuid,
+    //   ),
+    // );
   }
 
   _handleClearInquiry(String uuid) {

@@ -242,15 +242,42 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
                 builder: (context, scrollController) {
                   return Stack(
                     children: [
+                      BlocListener<ServiceConfirmNotifierBloc,
+                          ServiceConfirmNotifierState>(
+                        listener: (context, state) {
+                          // state.message
+                          setState(() {});
+                        },
+                        child: Container(),
+                      ),
                       BlocConsumer<CurrentChatroomBloc, CurrentChatroomState>(
                         listener: (context, state) {
+                          // TODO text should be displayed in i18n
+                          if (state.status == AsyncLoadingStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error.message),
+                              ),
+                            );
+                          }
+
                           if (state.status == AsyncLoadingStatus.done) {
-                            _doneInitChatroom = true;
+                            setState(() {
+                              _doneInitChatroom = true;
+
+                              _inquirerProfile = state.userProfile;
+                            });
+                          }
+
+                          if (state.currentMessages.isNotEmpty &&
+                              state.currentMessages.first
+                                  is QuitChatroomMessage) {
+                            setState(() {
+                              _isDisabledChat = true;
+                            });
                           }
                         },
                         builder: (context, state) {
-                          print(
-                              'current chatroom loading status ${state.status}');
                           if (state.status == AsyncLoadingStatus.done) {
                             return GestureDetector(
                                 onTap: () {
@@ -350,15 +377,12 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
                         },
                         child: SizedBox.shrink(),
                       ),
-
-                      _doneInitChatroom
-                          ? _buildMessageBar()
-                          : SizedBox.shrink(),
                     ],
                   );
                 },
               ),
-            )
+            ),
+            _doneInitChatroom ? _buildMessageBar() : SizedBox.shrink(),
           ],
         ),
       )

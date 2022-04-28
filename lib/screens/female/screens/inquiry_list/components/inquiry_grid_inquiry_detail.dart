@@ -9,8 +9,6 @@ class InquiryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('項目:  + inquiry.serviceType ${inquiry.serviceType}');
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
