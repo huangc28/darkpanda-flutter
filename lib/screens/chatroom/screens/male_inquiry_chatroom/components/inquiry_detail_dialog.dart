@@ -25,8 +25,6 @@ class InquiryDetailDialog extends StatefulWidget {
 }
 
 class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
-  int isFirstCall = 0;
-
   @override
   Widget build(BuildContext context) {
     return ButtonBarTheme(
@@ -67,28 +65,24 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                     }
 
                     if (state.status == AsyncLoadingStatus.done) {
-                      isFirstCall++;
-
-                      // status done will be called twice, so implement isFirstCall to solve this issue
-                      if (isFirstCall == 1) {
-                        Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        ).pushNamed(
-                          MainRoutes.serviceChatroom,
-                          arguments: ServiceChatroomScreenArguments(
-                            channelUUID:
-                                widget.negotiatingInquiryDetail.channelUUID,
-                            inquiryUUID:
-                                widget.negotiatingInquiryDetail.inquiryUUID,
-                            counterPartUUID:
-                                widget.negotiatingInquiryDetail.counterPartUUID,
-                            serviceUUID:
-                                widget.negotiatingInquiryDetail.serviceUUID,
-                            routeTypes: RouteTypes.fromBuyService,
-                          ),
-                        );
-                      }
+                      // TODO push to maleServiceChatroom
+                      // Navigator.of(
+                      //   context,
+                      //   rootNavigator: true,
+                      // ).pushNamed(
+                      //   MainRoutes.maleServiceChatroom
+                      //   arguments: ServiceChatroomScreenArguments(
+                      //     channelUUID:
+                      //         widget.negotiatingInquiryDetail.channelUUID,
+                      //     inquiryUUID:
+                      //         widget.negotiatingInquiryDetail.inquiryUUID,
+                      //     counterPartUUID:
+                      //         widget.negotiatingInquiryDetail.counterPartUUID,
+                      //     serviceUUID:
+                      //         widget.negotiatingInquiryDetail.serviceUUID,
+                      //     routeTypes: RouteTypes.fromBuyService,
+                      //   ),
+                      // );
                     }
                   },
                   child: _payButton(context),
@@ -135,7 +129,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
                 ),
               );
             },
-            text: '接受', //'去支付',
+            text: '接受',
           ),
         );
       },

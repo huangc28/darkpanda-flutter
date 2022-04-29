@@ -245,7 +245,6 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
                       BlocListener<ServiceConfirmNotifierBloc,
                           ServiceConfirmNotifierState>(
                         listener: (context, state) {
-                          // state.message
                           setState(() {});
                         },
                         child: Container(),

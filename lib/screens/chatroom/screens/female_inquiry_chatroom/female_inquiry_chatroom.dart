@@ -345,7 +345,7 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
                                     listener: (context, state) {
                                       setState(() {
                                         // If male user confirmed the service, toggle the _serviceConfirmed to be true.
-                                        // so that the female user can not edit the service anymore.
+                                        // so that the female user can no longer edit the service anymore.
                                         _serviceConfirmed = true;
                                       });
 

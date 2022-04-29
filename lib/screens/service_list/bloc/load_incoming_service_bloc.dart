@@ -76,13 +76,11 @@ class LoadIncomingServiceBloc
 
       final Map<String, dynamic> respMap = json.decode(res.body);
 
-      final serviceList = respMap['services'].map<IncomingService>((v) {
-        return IncomingService.fromMap(v);
-      }).toList();
+      final serviceList = respMap['services']
+          .map<IncomingService>((v) => IncomingService.fromMap(v))
+          .toList();
 
-      add(
-        AddChatrooms(serviceList),
-      );
+      add(AddChatrooms(serviceList));
     } on APIException catch (err) {
       yield LoadIncomingServiceState.loadFailed(
         state,
@@ -169,36 +167,35 @@ class LoadIncomingServiceBloc
 
       state.serviceStreamMap[chatroom.serviceUuid] = streamSubChatroomService;
     }
-    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
+    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
     final newServiceStreamMap = Map.of(state.serviceStreamMap);
+
+    final chatroomLatestMessageMap = event.chatrooms.fold<Map<String, Message>>(
+      {},
+      (prev, chatroom) {
+        prev[chatroom.channelUuid] = chatroom.messages[0];
+
+        return prev;
+      },
+    );
+
+    final serviceStatusMap =
+        event.chatrooms.fold<Map<String, ServiceStatus>>({}, (prev, chatroom) {
+      prev[chatroom.serviceUuid] = chatroom.status.toServiceStatusEnum();
+
+      return prev;
+    });
 
     yield LoadIncomingServiceState.updateChatrooms(
       state,
       services: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
       serviceStreamMap: newServiceStreamMap,
+      chatroomLastMessage: chatroomLatestMessageMap,
+      service: serviceStatusMap,
       currentPage: state.currentPage + 1,
     );
-
-    for (final chatroom in event.chatrooms) {
-      if (chatroom.messages.length > 0) {
-        // Update latest message for each chatroom.
-        add(
-          PutLatestMessage(
-            channelUUID: chatroom.channelUuid,
-            message: chatroom.messages[0],
-          ),
-        );
-
-        add(
-          UpdateChatroomServiceStatus(
-            serviceUuid: chatroom.serviceUuid,
-            status: chatroom.status.toServiceStatusEnum(),
-          ),
-        );
-      }
-    }
   }
 
   StreamSubscription<QuerySnapshot> _createChatroomSubscriptionStream(
