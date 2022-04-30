@@ -10,13 +10,16 @@ export 'package:darkpanda_flutter/screens/chatroom/screens/male_inquiry_chatroom
 export 'package:darkpanda_flutter/screens/chatroom/screens/male_inquiry_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
 
 /// Screens
+// TODO Rename service/service_chatroom.dart' to service_chatroom/service_chatroom.dart
 export 'package:darkpanda_flutter/screens/chatroom/screens/female_inquiry_chatroom/female_inquiry_chatroom.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screens/male_inquiry_chatroom/male_inquiry_chatroom.dart';
+export 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 
 /// Screen Arguments
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/female_inquiry_chatroom_screen_arguments.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/male_inquiry_chatroom_screen_arguments.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
+// export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/male_service_chatroom_screen_arguments.dart';
 
 /// Models
 export 'package:darkpanda_flutter/screens/chatroom/models/inquiry_detail.dart';

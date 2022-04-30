@@ -35,12 +35,15 @@ class InquiryChatMessagesBloc
     );
 
     // Merge incoming message to appropriate channel uuid.
-    state.chatroomMessages[event.chatroomUUID] =
-        state.chatroomMessages.update(event.chatroomUUID, (value) {
-      value.add(event.message);
+    state.chatroomMessages[event.chatroomUUID] = state.chatroomMessages.update(
+      event.chatroomUUID,
+      (value) {
+        value.add(event.message);
 
-      return value;
-    }, ifAbsent: () => [event.message]);
+        return value;
+      },
+      ifAbsent: () => [event.message],
+    );
 
     yield PrivateChatsState.updateChatRoomMessage(state.chatroomMessages);
   }

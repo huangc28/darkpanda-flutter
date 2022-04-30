@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
-import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
-import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
+// import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
+// import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/base_routes.dart';
@@ -128,11 +128,15 @@ class MainRoutes extends BaseRoutes {
       },
 
       MainRoutes.femaleServiceChatroom: (context) {
-        return Container();
+        ServiceChatroomScreenArguments chatroomArgs = args;
+
+        return ServiceChatroom(args: chatroomArgs);
       },
 
       MainRoutes.maleServiceChatroom: (context) {
-        return Container();
+        ServiceChatroomScreenArguments chatroomArgs = args;
+
+        return ServiceChatroom(args: chatroomArgs);
       },
 
       //--------------------------- Deprecating ------------------------------

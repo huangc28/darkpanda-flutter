@@ -231,7 +231,6 @@ class InquiryChatroomsBloc
 
   Stream<InquiryChatroomsState> _mapFetchChatroomToState(
       FetchChatrooms event) async* {
-    print('trigger _mapFetchChatroomToState');
     try {
       yield InquiryChatroomsState.loading(state);
       yield InquiryChatroomsState.clearInqiuryChatList(state);
@@ -257,9 +256,7 @@ class InquiryChatroomsBloc
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      add(
-        AddChatrooms(chatrooms),
-      );
+      add(AddChatrooms(chatrooms));
     } on APIException catch (err) {
       developer.log(
         err.toString(),

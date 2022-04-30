@@ -147,21 +147,7 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                     ),
                     child: ServiceChatroomGrid(
                       onEnterChat: (chatroom) {
-                        if (serviceStatus == ServiceStatus.expired) {
-                          // - Display popup saying service has expired
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) {
-                                return ServiceExpiredDialog(
-                                    okText: AppLocalizations.of(context).ok,
-                                    content: AppLocalizations.of(context)
-                                        .serviceExpiredDialog,
-                                    onDismiss: () async {
-                                      Navigator.pop(context, true);
-                                    });
-                              });
-                        } else if (serviceStatus == ServiceStatus.canceled) {
+                        if (serviceStatus == ServiceStatus.canceled) {
                           // - Display popup saying the counter part has cancel the service. Showing buttons to comment or leave the chatroom
                           showDialog(
                               barrierDismissible: false,
@@ -211,7 +197,7 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                             context,
                             rootNavigator: true,
                           ).pushNamed(
-                            MainRoutes.serviceChatroom,
+                            MainRoutes.maleServiceChatroom,
                             arguments: ServiceChatroomScreenArguments(
                               channelUUID: chatroom.channelUuid,
                               inquiryUUID: chatroom.inquiryUuid,

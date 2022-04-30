@@ -90,11 +90,11 @@ class CurrentServiceChatroomState<E extends AppBaseException>
   CurrentServiceChatroomState.putService(CurrentServiceChatroomState state,
       {IncomingService service})
       : this._(
-          page: state.page,
           status: state.status,
           historicalMessages: state.historicalMessages,
-          userProfile: state.userProfile,
           currentMessages: state.currentMessages,
+          userProfile: state.userProfile,
+          page: state.page,
           serviceStreamMap: state.serviceStreamMap,
           service: service ?? state.service,
         );
@@ -132,8 +132,8 @@ class CurrentServiceChatroomState<E extends AppBaseException>
   List<Object> get props => [
         status,
         error,
-        historicalMessages,
-        currentMessages,
+        historicalMessages.length,
+        currentMessages.length,
         messages,
         serviceStreamMap,
         service,

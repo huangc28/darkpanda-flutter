@@ -472,6 +472,8 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
                                       // Enable message bar once done initializing.
                                       if (state.status ==
                                           AsyncLoadingStatus.done) {
+                                        print(
+                                            'DEBUG * trigger load incoming service');
                                         isFirstCall++;
 
                                         // status done will be called twice, so implement isFirstCall to solve this issue

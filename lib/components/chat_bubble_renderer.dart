@@ -8,6 +8,7 @@ import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
 import 'package:darkpanda_flutter/models/payment_completed_message.dart';
+import 'package:darkpanda_flutter/models/start_service_message.dart';
 import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/image_message.dart';
 import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
@@ -68,6 +69,11 @@ class ChatBubbleRenderer extends StatelessWidget {
         );
       case PaymentCompletedMessage:
         return PaymentCompletedBubble(
+          isMe: isMe,
+          message: message,
+        );
+      case StartServiceMessage:
+        return StartServiceBubble(
           isMe: isMe,
           message: message,
         );

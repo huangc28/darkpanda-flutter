@@ -1,4 +1,5 @@
 export 'components/bot_invitation_chat_bubble.dart';
+export 'components/start_service_bubble.dart';
 export 'components/cancel_service_bubble.dart';
 export 'components/chat_bubble.dart';
 export 'components/confirmed_service_bubble.dart';

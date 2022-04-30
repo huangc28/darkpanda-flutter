@@ -39,6 +39,8 @@ import 'package:darkpanda_flutter/screens/service_list/bloc/load_incoming_servic
 part 'current_service_chatroom_event.dart';
 part 'current_service_chatroom_state.dart';
 
+// TODO we should create service chatroom stream when fetching service chatroom list
+// instead of creating service chatroom stream after redirected to service chatroom.
 class CurrentServiceChatroomBloc
     extends Bloc<CurrentServiceChatroomEvent, CurrentServiceChatroomState> {
   CurrentServiceChatroomBloc({
@@ -232,14 +234,15 @@ class CurrentServiceChatroomBloc
 
       final service = loadIncomingServiceBloc.state.services
           .where((element) => element.channelUuid == event.channelUUID)
-          .toList();
+          .toList()
+          .first;
 
       yield CurrentServiceChatroomState.loaded(
         state,
-        inquirerProfile: inquirerProfile,
         historicalMessages: historicalMessages,
-        service: service[0],
-        serviceStreamMap: _createServiceSubscriptionStreamMap(service[0]),
+        inquirerProfile: inquirerProfile,
+        service: service,
+        serviceStreamMap: _createServiceSubscriptionStreamMap(service),
       );
     } on APIException catch (e) {
       yield CurrentServiceChatroomState.loadFailed(
@@ -378,18 +381,16 @@ class CurrentServiceChatroomBloc
 
   Stream<CurrentServiceChatroomState> _mapUpdateServiceStatusToState(
       UpdateServiceStatus event) async* {
-    IncomingService service = new IncomingService();
     developer.log(
         'Service found: ${event.serviceUuid}, updating status: ${event.status.toString()}');
 
-    service = service.copyWith(
+    final newService = state.service.copyWith(
       status: event.status.name,
     );
 
-    // Replace current service list witht updated list.
     yield CurrentServiceChatroomState.putService(
       state,
-      service: service,
+      service: newService,
     );
   }
 }

@@ -66,23 +66,23 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
 
                     if (state.status == AsyncLoadingStatus.done) {
                       // TODO push to maleServiceChatroom
-                      // Navigator.of(
-                      //   context,
-                      //   rootNavigator: true,
-                      // ).pushNamed(
-                      //   MainRoutes.maleServiceChatroom
-                      //   arguments: ServiceChatroomScreenArguments(
-                      //     channelUUID:
-                      //         widget.negotiatingInquiryDetail.channelUUID,
-                      //     inquiryUUID:
-                      //         widget.negotiatingInquiryDetail.inquiryUUID,
-                      //     counterPartUUID:
-                      //         widget.negotiatingInquiryDetail.counterPartUUID,
-                      //     serviceUUID:
-                      //         widget.negotiatingInquiryDetail.serviceUUID,
-                      //     routeTypes: RouteTypes.fromBuyService,
-                      //   ),
-                      // );
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).pushNamed(
+                        MainRoutes.maleServiceChatroom,
+                        arguments: ServiceChatroomScreenArguments(
+                          channelUUID:
+                              widget.negotiatingInquiryDetail.channelUUID,
+                          inquiryUUID:
+                              widget.negotiatingInquiryDetail.inquiryUUID,
+                          counterPartUUID:
+                              widget.negotiatingInquiryDetail.counterPartUUID,
+                          serviceUUID:
+                              widget.negotiatingInquiryDetail.serviceUUID,
+                          routeTypes: RouteTypes.fromBuyService,
+                        ),
+                      );
                     }
                   },
                   child: _payButton(context),
