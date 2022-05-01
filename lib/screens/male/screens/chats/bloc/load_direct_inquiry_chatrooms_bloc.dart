@@ -11,10 +11,11 @@ import 'package:darkpanda_flutter/util/util.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show InquiryChatMessagesBloc, DispatchMessage;
 
 part 'load_direct_inquiry_chatrooms_event.dart';
 part 'load_direct_inquiry_chatrooms_state.dart';

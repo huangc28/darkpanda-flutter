@@ -12,7 +12,8 @@ import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show InquiryChatMessagesBloc, DispatchMessage;
 
 import '../models/incoming_service.dart';
 import '../services/service_chatroom_api.dart';

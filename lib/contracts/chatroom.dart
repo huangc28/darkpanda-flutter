@@ -8,6 +8,8 @@ export 'package:darkpanda_flutter/screens/chatroom/bloc/update_inquitry_notifier
 export 'package:darkpanda_flutter/screens/chatroom/bloc/exit_chatroom_bloc.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screens/male_inquiry_chatroom/bloc/disagree_inquiry_bloc.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screens/male_inquiry_chatroom/bloc/send_emit_service_confirm_message_bloc.dart';
+export 'package:darkpanda_flutter/screens/chatroom/bloc/inquiry_chat_messages_bloc.dart';
+export 'package:darkpanda_flutter/screens/chatroom/bloc/update_inquiry_bloc.dart';
 
 /// Screens
 // TODO Rename service/service_chatroom.dart' to service_chatroom/service_chatroom.dart
@@ -19,7 +21,6 @@ export 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatr
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/female_inquiry_chatroom_screen_arguments.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/male_inquiry_chatroom_screen_arguments.dart';
 export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
-// export 'package:darkpanda_flutter/screens/chatroom/screen_arguments/male_service_chatroom_screen_arguments.dart';
 
 /// Models
 export 'package:darkpanda_flutter/screens/chatroom/models/inquiry_detail.dart';
