@@ -147,10 +147,7 @@ class _ChatRequestState extends State<ChatRequest> {
         } else if (state.status == AsyncLoadingStatus.done) {
           setState(() {
             agreeInquiryResponse = state.agreeInquiry;
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamed(
+            Navigator.of(context, rootNavigator: true).pushReplacementNamed(
               MainRoutes.maleInquiryChatroom,
               arguments: MaleInquiryChatroomScreenArguments(
                 channelUUID: agreeInquiryResponse.channelUuid,

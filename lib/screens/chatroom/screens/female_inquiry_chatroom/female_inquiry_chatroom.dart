@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/contracts/female.dart';
+import 'package:darkpanda_flutter/contracts/male.dart' show MaleAppTabItem;
 import 'package:darkpanda_flutter/contracts/profile.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
@@ -53,7 +53,9 @@ import '../../bloc/service_confirm_notifier_bloc.dart';
 import '../../bloc/exit_chatroom_bloc.dart';
 import '../../components/service_settings/service_settings.dart';
 import '../../components/chatroom_window.dart';
+import '../../components/exit_chatroom_button.dart';
 import '../../components/exit_chatroom_confirmation_dialog.dart';
+
 import '../../screen_arguments/female_inquiry_chatroom_screen_arguments.dart';
 
 class FemaleInquiryChatroom extends StatefulWidget {
@@ -303,161 +305,51 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
           ).pushNamedAndRemoveUntil(
             MainRoutes.female,
             ModalRoute.withName('/'),
-            arguments: TabItem.inquiryChats,
+            arguments: FemaleTabItem.inquiryChats,
           );
         }
 
         return false;
       },
-      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
-        listener: (context, state) {
-          if (state.status == AsyncLoadingStatus.done) {
-            Navigator.of(context).pop(true);
-            developer.log('exit chatroom');
-          }
-        },
-        child: Scaffold(
-          appBar: _appBar(),
-          body: SafeArea(
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: LoadMoreScrollable(
-                            scrollController: _scrollController,
-                            onLoadMore: () {
-                              BlocProvider.of<CurrentChatroomBloc>(context).add(
-                                FetchMoreHistoricalMessages(
-                                  channelUUID: widget.args.channelUUID,
-                                ),
-                              );
-                            },
-                            builder: (context, scrollController) {
-                              return Stack(
-                                children: [
-                                  BlocListener<ServiceConfirmNotifierBloc,
-                                      ServiceConfirmNotifierState>(
-                                    listener: (context, state) {
-                                      setState(() {
-                                        // If male user confirmed the service, toggle the _serviceConfirmed to be true.
-                                        // so that the female user can no longer edit the service anymore.
-                                        _serviceConfirmed = true;
-                                      });
+      child: Scaffold(
+        appBar: _appBar(),
+        body: SafeArea(
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: LoadMoreScrollable(
+                          scrollController: _scrollController,
+                          onLoadMore: () {
+                            BlocProvider.of<CurrentChatroomBloc>(context).add(
+                              FetchMoreHistoricalMessages(
+                                channelUUID: widget.args.channelUUID,
+                              ),
+                            );
+                          },
+                          builder: (context, scrollController) {
+                            return Stack(
+                              children: [
+                                BlocListener<ServiceConfirmNotifierBloc,
+                                    ServiceConfirmNotifierState>(
+                                  listener: (context, state) {
+                                    setState(() {
+                                      // If male user confirmed the service, toggle the _serviceConfirmed to be true.
+                                      // so that the female user can no longer edit the service anymore.
+                                      _serviceConfirmed = true;
+                                    });
 
-                                      BlocProvider.of<LoadIncomingServiceBloc>(
-                                              context)
-                                          .add(LoadIncomingService());
-                                    },
-                                    child: BlocConsumer<CurrentChatroomBloc,
-                                        CurrentChatroomState>(
-                                      listener: (context, state) {
-                                        if (state.status ==
-                                            AsyncLoadingStatus.error) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content:
-                                                  Text(state.error.message),
-                                            ),
-                                          );
-                                        }
-
-                                        // Enable message bar once done initializing.
-                                        if (state.status ==
-                                            AsyncLoadingStatus.done) {
-                                          setState(() {
-                                            _doneInitChatroom = true;
-
-                                            _inquirerProfile =
-                                                state.userProfile;
-                                          });
-                                        }
-
-                                        if (state.currentMessages.isNotEmpty &&
-                                            state.currentMessages.first
-                                                is QuitChatroomMessage) {
-                                          setState(() {
-                                            _isDisabledChat = true;
-                                          });
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        if (_doneInitChatroom) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              // Dismiss inquiry detail pannel.
-                                              if (!_animationController
-                                                  .isDismissed) {
-                                                _animationController.reverse();
-                                              }
-
-                                              FocusScopeNode currentFocus =
-                                                  FocusScope.of(context);
-
-                                              // Dismiss keyboard when user clicks on chat window.
-                                              if (!currentFocus
-                                                  .hasPrimaryFocus) {
-                                                currentFocus.unfocus();
-                                              }
-                                            },
-                                            child: ChatroomWindow(
-                                                scrollController:
-                                                    scrollController,
-                                                historicalMessages:
-                                                    state.historicalMessages,
-                                                currentMessages:
-                                                    state.currentMessages,
-                                                isSendingImage: _isSendingImage,
-                                                builder: (BuildContext context,
-                                                    message) {
-                                                  return ChatBubbleRenderer(
-                                                    message: message,
-                                                    isMe: _sender.uuid ==
-                                                        message.from,
-                                                    myGender: _sender.gender,
-                                                    avatarURL: _inquirerProfile
-                                                        .avatarUrl,
-                                                    onTabUpdateInquiryBubble:
-                                                        (message) {
-                                                      _animationController
-                                                          .forward();
-                                                    },
-                                                    onTabImageBubble:
-                                                        (imageMessage) {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (_) {
-                                                            return FullScreenImage(
-                                                              imageUrl: imageMessage
-                                                                  .imageUrls[0],
-                                                              tag: "chat_image",
-                                                            );
-                                                          },
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                }),
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: Container(
-                                              height: 50,
-                                              child: LoadingIcon(),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                  BlocListener<LoadIncomingServiceBloc,
-                                      LoadIncomingServiceState>(
+                                    BlocProvider.of<LoadIncomingServiceBloc>(
+                                            context)
+                                        .add(LoadIncomingService());
+                                  },
+                                  child: BlocConsumer<CurrentChatroomBloc,
+                                      CurrentChatroomState>(
                                     listener: (context, state) {
                                       if (state.status ==
                                           AsyncLoadingStatus.error) {
@@ -472,171 +364,268 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
                                       // Enable message bar once done initializing.
                                       if (state.status ==
                                           AsyncLoadingStatus.done) {
-                                        print(
-                                            'DEBUG * trigger load incoming service');
-                                        isFirstCall++;
+                                        setState(() {
+                                          _doneInitChatroom = true;
 
-                                        // status done will be called twice, so implement isFirstCall to solve this issue
-                                        if (isFirstCall == 1) {
-                                          Navigator.of(
-                                            context,
-                                            rootNavigator: true,
-                                          ).pushNamed(
-                                            MainRoutes.serviceChatroom,
-                                            arguments:
-                                                ServiceChatroomScreenArguments(
-                                              channelUUID:
-                                                  widget.args.channelUUID,
-                                              inquiryUUID:
-                                                  widget.args.inquiryUUID,
-                                              counterPartUUID:
-                                                  widget.args.counterPartUUID,
-                                              serviceUUID:
-                                                  widget.args.serviceUUID,
-                                              routeTypes:
-                                                  RouteTypes.fromInquiry,
-                                            ),
-                                          );
-                                        }
+                                          _inquirerProfile = state.userProfile;
+                                        });
+                                      }
+
+                                      if (state.currentMessages.isNotEmpty &&
+                                          state.currentMessages.first
+                                              is QuitChatroomMessage) {
+                                        setState(() {
+                                          _isDisabledChat = true;
+                                        });
                                       }
                                     },
-                                    child: Container(),
-                                  )
-                                ],
-                              );
-                            },
-                          ),
+                                    builder: (context, state) {
+                                      if (_doneInitChatroom) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            // Dismiss inquiry detail pannel.
+                                            if (!_animationController
+                                                .isDismissed) {
+                                              _animationController.reverse();
+                                            }
+
+                                            FocusScopeNode currentFocus =
+                                                FocusScope.of(context);
+
+                                            // Dismiss keyboard when user clicks on chat window.
+                                            if (!currentFocus.hasPrimaryFocus) {
+                                              currentFocus.unfocus();
+                                            }
+                                          },
+                                          child: ChatroomWindow(
+                                              scrollController:
+                                                  scrollController,
+                                              historicalMessages:
+                                                  state.historicalMessages,
+                                              currentMessages:
+                                                  state.currentMessages,
+                                              isSendingImage: _isSendingImage,
+                                              builder: (BuildContext context,
+                                                  message) {
+                                                return ChatBubbleRenderer(
+                                                  message: message,
+                                                  isMe: _sender.uuid ==
+                                                      message.from,
+                                                  myGender: _sender.gender,
+                                                  avatarURL: _inquirerProfile
+                                                      .avatarUrl,
+                                                  onTabUpdateInquiryBubble:
+                                                      (message) {
+                                                    _animationController
+                                                        .forward();
+                                                  },
+                                                  onTabImageBubble:
+                                                      (imageMessage) {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) {
+                                                          return FullScreenImage(
+                                                            imageUrl: imageMessage
+                                                                .imageUrls[0],
+                                                            tag: "chat_image",
+                                                          );
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              }),
+                                        );
+                                      } else {
+                                        return Center(
+                                          child: Container(
+                                            height: 50,
+                                            child: LoadingIcon(),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                BlocListener<LoadIncomingServiceBloc,
+                                    LoadIncomingServiceState>(
+                                  listener: (context, state) {
+                                    if (state.status ==
+                                        AsyncLoadingStatus.error) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(state.error.message),
+                                        ),
+                                      );
+                                    }
+
+                                    // Enable message bar once done initializing.
+                                    if (state.status ==
+                                        AsyncLoadingStatus.done) {
+                                      print(
+                                          'DEBUG * trigger load incoming service');
+                                      isFirstCall++;
+
+                                      // status done will be called twice, so implement isFirstCall to solve this issue
+                                      if (isFirstCall == 1) {
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pushNamed(
+                                          MainRoutes.serviceChatroom,
+                                          arguments:
+                                              ServiceChatroomScreenArguments(
+                                            channelUUID:
+                                                widget.args.channelUUID,
+                                            inquiryUUID:
+                                                widget.args.inquiryUUID,
+                                            counterPartUUID:
+                                                widget.args.counterPartUUID,
+                                            serviceUUID:
+                                                widget.args.serviceUUID,
+                                            routeTypes: RouteTypes.fromInquiry,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: Container(),
+                                )
+                              ],
+                            );
+                          },
                         ),
-                        _doneInitChatroom
-                            ? _buildMessageBar()
-                            : SizedBox.shrink(),
-                      ],
-                    ),
+                      ),
+                      _doneInitChatroom
+                          ? _buildMessageBar()
+                          : SizedBox.shrink(),
+                    ],
                   ),
                 ),
+              ),
 
-                // Listen the loading status of `GetInquiryBloc`. If status is loading,
-                // display spinner on service settings sheet.
-                SlideTransition(
-                  position: _offsetAnimation,
-                  child: MultiBlocListener(
-                    listeners: [
-                      BlocListener<LoadServiceDetailBloc,
-                          LoadServiceDetailState>(
-                        listener: (_, state) {
-                          if (state.status == AsyncLoadingStatus.done) {
-                            setState(() {
-                              _serviceDetails = state.serviceDetails;
-                              _serviceSettings = ServiceSettings(
-                                uuid: _serviceDetails.uuid,
-                                serviceDate:
-                                    _serviceDetails.appointmentTime.toLocal(),
-                                serviceTime: TimeOfDay.fromDateTime(
-                                    _serviceDetails.appointmentTime.toLocal()),
-                                price: _serviceDetails.price,
-                                duration: _serviceDetails.duration,
-                                serviceType: _serviceDetails.serviceType,
-                                address: _serviceDetails.address,
-                              );
-                            });
-                          }
-                        },
-                      ),
-                      BlocListener<SendUpdateInquiryMessageBloc,
-                          SendUpdateInquiryMessageState>(listener: (_, state) {
-                        if (state.status == AsyncLoadingStatus.initial ||
-                            state.status == AsyncLoadingStatus.loading) {
-                          setState(() {
-                            sendUpdateInquiryIsLoading = true;
-                          });
-                        }
-
-                        if (state.status == AsyncLoadingStatus.error) {
-                          setState(() {
-                            sendUpdateInquiryIsLoading = false;
-                          });
-                        }
-
+              // Listen the loading status of `GetInquiryBloc`. If status is loading,
+              // display spinner on service settings sheet.
+              SlideTransition(
+                position: _offsetAnimation,
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<LoadServiceDetailBloc, LoadServiceDetailState>(
+                      listener: (_, state) {
                         if (state.status == AsyncLoadingStatus.done) {
                           setState(() {
-                            sendUpdateInquiryIsLoading = false;
+                            _serviceDetails = state.serviceDetails;
+                            _serviceSettings = ServiceSettings(
+                              uuid: _serviceDetails.uuid,
+                              serviceDate:
+                                  _serviceDetails.appointmentTime.toLocal(),
+                              serviceTime: TimeOfDay.fromDateTime(
+                                  _serviceDetails.appointmentTime.toLocal()),
+                              price: _serviceDetails.price,
+                              duration: _serviceDetails.duration,
+                              serviceType: _serviceDetails.serviceType,
+                              address: _serviceDetails.address,
+                            );
                           });
-
-                          _animationController.reverse();
                         }
-                      }),
-                    ],
-                    child: ServiceSettingsSheet(
-                      serviceSettings: _serviceSettings,
-                      controller: _slideUpController,
-                      onTapClose: () {
-                        _animationController.reverse();
                       },
-                      onUpdateInquiry: (ServiceSettings data) {
+                    ),
+                    BlocListener<SendUpdateInquiryMessageBloc,
+                        SendUpdateInquiryMessageState>(listener: (_, state) {
+                      if (state.status == AsyncLoadingStatus.initial ||
+                          state.status == AsyncLoadingStatus.loading) {
                         setState(() {
-                          _serviceSettings = data;
+                          sendUpdateInquiryIsLoading = true;
+                        });
+                      }
+
+                      if (state.status == AsyncLoadingStatus.error) {
+                        setState(() {
+                          sendUpdateInquiryIsLoading = false;
+                        });
+                      }
+
+                      if (state.status == AsyncLoadingStatus.done) {
+                        setState(() {
+                          sendUpdateInquiryIsLoading = false;
                         });
 
-                        /// Send inquiry settings message when done editing inquiry.
-                        BlocProvider.of<SendUpdateInquiryMessageBloc>(context)
-                            .add(
-                          SendUpdateInquiryMessage(
-                            channelUUID: widget.args.channelUUID,
-                            serviceSettings: data,
-                          ),
-                        );
-                      },
-                      isLoading: sendUpdateInquiryIsLoading,
-                    ),
+                        _animationController.reverse();
+                      }
+                    }),
+                  ],
+                  child: ServiceSettingsSheet(
+                    serviceSettings: _serviceSettings,
+                    controller: _slideUpController,
+                    onTapClose: () {
+                      _animationController.reverse();
+                    },
+                    onUpdateInquiry: (ServiceSettings data) {
+                      setState(() {
+                        _serviceSettings = data;
+                      });
+
+                      /// Send inquiry settings message when done editing inquiry.
+                      BlocProvider.of<SendUpdateInquiryMessageBloc>(context)
+                          .add(
+                        SendUpdateInquiryMessage(
+                          channelUUID: widget.args.channelUUID,
+                          serviceSettings: data,
+                        ),
+                      );
+                    },
+                    isLoading: sendUpdateInquiryIsLoading,
                   ),
                 ),
+              ),
 
-                // Upload image bloc
-                BlocListener<UploadImageMessageBloc, UploadImageMessageState>(
-                  listener: (context, state) {
-                    if (state.status == AsyncLoadingStatus.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.error.message),
-                        ),
-                      );
-                    }
+              // Upload image bloc
+              BlocListener<UploadImageMessageBloc, UploadImageMessageState>(
+                listener: (context, state) {
+                  if (state.status == AsyncLoadingStatus.error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error.message),
+                      ),
+                    );
+                  }
 
-                    if (state.status == AsyncLoadingStatus.done) {
-                      chatImages = state.chatImages;
+                  if (state.status == AsyncLoadingStatus.done) {
+                    chatImages = state.chatImages;
 
-                      BlocProvider.of<SendImageMessageBloc>(context).add(
-                        SendImageMessage(
-                          imageUrl: chatImages.thumbnails[0],
-                          channelUUID: widget.args.channelUUID,
-                        ),
-                      );
-                    }
-                  },
-                  child: SizedBox.shrink(),
-                ),
+                    BlocProvider.of<SendImageMessageBloc>(context).add(
+                      SendImageMessage(
+                        imageUrl: chatImages.thumbnails[0],
+                        channelUUID: widget.args.channelUUID,
+                      ),
+                    );
+                  }
+                },
+                child: SizedBox.shrink(),
+              ),
 
-                // Send image bloc
-                BlocListener<SendImageMessageBloc, SendImageMessageState>(
-                  listener: (context, state) {
-                    if (state.status == AsyncLoadingStatus.error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.error.message),
-                        ),
-                      );
-                    }
+              // Send image bloc
+              BlocListener<SendImageMessageBloc, SendImageMessageState>(
+                listener: (context, state) {
+                  if (state.status == AsyncLoadingStatus.error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.error.message),
+                      ),
+                    );
+                  }
 
-                    if (state.status == AsyncLoadingStatus.done) {
-                      setState(() {
-                        _isSendingImage = false;
-                      });
-                    }
-                  },
-                  child: SizedBox.shrink(),
-                ),
-              ],
-            ),
+                  if (state.status == AsyncLoadingStatus.done) {
+                    setState(() {
+                      _isSendingImage = false;
+                    });
+                  }
+                },
+                child: SizedBox.shrink(),
+              ),
+            ],
           ),
         ),
       ),
@@ -665,7 +654,7 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
             ).pushNamedAndRemoveUntil(
               MainRoutes.female,
               ModalRoute.withName('/'),
-              arguments: TabItem.inquiryChats,
+              arguments: FemaleTabItem.inquiryChats,
             );
           }
         },
@@ -722,29 +711,61 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
   }
 
   Widget _exitChatroomButton() {
-    return IconButton(
-      icon: Icon(
-        Icons.logout_outlined,
-        color: Colors.white,
-      ),
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      onPressed: () async {
-        await showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) {
-            return ExitChatroomConfirmationDialog();
-          },
-        ).then((value) {
+    return BlocListener<ExitChatroomBloc, ExitChatroomState>(
+      listener: (context, state) {
+        if (state.status == AsyncLoadingStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error.message),
+            ),
+          );
+        }
+
+        if (state.status == AsyncLoadingStatus.loading) {
+          setState(() {
+            _isDisabledChat = true;
+          });
+        }
+
+        if (state.status == AsyncLoadingStatus.done) {
+          Navigator.of(context).pushReplacementNamed(
+            MainRoutes.male,
+            arguments: MaleAppTabItem.waitingInquiry,
+          );
+        }
+      },
+      child: ExitChatroomButton(
+        onExit: () async {
+          final value = await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => ExitChatroomConfirmationDialog(),
+          );
+
           if (value) {
             BlocProvider.of<ExitChatroomBloc>(context).add(
               QuitChatroom(widget.args.channelUUID),
             );
           }
-        });
-      },
+        },
+      ),
     );
+    // return ExitChatroomButtonView(
+    //   channelUUID: widget.args.channelUUID,
+    //   exitingChatroom: () {
+    //     print('DEBUG female exiting chatroom');
+    //     setState(() {
+    //       _isDisabledChat = true;
+    //     });
+    //   },
+    //   exitedChatroom: () {
+    //     print('DEBUG female exitedChatroom');
+    //     Navigator.of(context).pushReplacementNamed(
+    //       MainRoutes.female,
+    //       arguments: FemaleTabItem.inquiryChats,
+    //     );
+    //   },
+    // );
   }
 
   _handleTapEditInquiry() {

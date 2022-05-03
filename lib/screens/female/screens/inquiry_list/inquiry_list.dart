@@ -195,8 +195,6 @@ class _InqiuryListState extends State<InqiuryList> {
             // Fetch inquiry chatrooms
             BlocListener<InquiryChatroomsBloc, InquiryChatroomsState>(
               listener: (context, state) {
-                print('state.status ${state.status}');
-
                 if (state.status == AsyncLoadingStatus.loading ||
                     state.status == AsyncLoadingStatus.initial) {
                   return Row(
@@ -210,7 +208,7 @@ class _InqiuryListState extends State<InqiuryList> {
                   Navigator.of(
                     context,
                     rootNavigator: true,
-                  ).pushNamed(
+                  ).pushReplacementNamed(
                     MainRoutes.femaleInquiryChatroom,
                     arguments: FemaleInquiryChatroomScreenArguments(
                       channelUUID: inquiryDetail.channelUuid,
@@ -259,8 +257,6 @@ class _InqiuryListState extends State<InqiuryList> {
   }
 
   _handleStartChat(Inquiry inquiry) {
-    print('start _handleStartChat');
-
     // We need to redirect female to chatroom and clear the inquiry
     // item from inquiry list.
     inquiryDetail = inquiry;

@@ -42,14 +42,19 @@ import 'package:darkpanda_flutter/screens/chatroom/components/chatroom_window.da
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/screens/male/models/negotiating_inquiry_detail.dart';
 
+import 'package:darkpanda_flutter/contracts/male.dart' show MaleAppTabItem;
+import 'package:darkpanda_flutter/routes.dart';
+
 import './bloc/disagree_inquiry_bloc.dart';
-import '../../components/exit_chatroom_confirmation_dialog.dart';
 import './screens/male_inquiry_detail.dart';
 import './components/inquiry_detail_dialog.dart';
+import '../../components/exit_chatroom_button.dart';
+import '../../components/exit_chatroom_confirmation_dialog.dart';
 import '../../screen_arguments/male_inquiry_chatroom_screen_arguments.dart';
 import '../../bloc/exit_chatroom_bloc.dart';
 import '../../bloc/update_inquitry_notifier_bloc.dart';
 import '../../bloc/current_chatroom_bloc.dart';
+// import '../../views/exit_chatroom_button_view.dart';
 
 class MaleInquiryChatroom extends StatefulWidget {
   MaleInquiryChatroom({
@@ -209,16 +214,9 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         }
         return false;
       },
-      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
-        listener: (context, state) {
-          if (state.status == AsyncLoadingStatus.done) {
-            Navigator.of(context).pop(true);
-          }
-        },
-        child: Scaffold(
-          appBar: _appBar(),
-          body: _body(),
-        ),
+      child: Scaffold(
+        appBar: _appBar(),
+        body: _body(),
       ),
     );
   }
@@ -447,25 +445,11 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         ),
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        onPressed: () async {
-          // If female quit chatroom, user can back to chatroom list screen
-          if (_isDisabledChat) {
-            Navigator.of(context).pop(true);
-          } else {
-            await showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (_) {
-                return ExitChatroomConfirmationDialog();
-              },
-            ).then((value) {
-              if (value) {
-                BlocProvider.of<ExitChatroomBloc>(context).add(
-                  QuitChatroom(widget.args.channelUUID),
-                );
-              }
-            });
-          }
+        onPressed: () {
+          Navigator.of(context).pushReplacementNamed(
+            MainRoutes.male,
+            arguments: MaleAppTabItem.chat,
+          );
         },
       ),
       title: BlocBuilder<CurrentChatroomBloc, CurrentChatroomState>(
@@ -517,13 +501,23 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         },
       ),
       actions: <Widget>[
-        _isDisabledChat ? SizedBox.shrink() : _serviceDetailButton(),
+        _isDisabledChat ? SizedBox.shrink() : _buildChatroomActionBar(),
         SizedBox(width: 20),
       ],
     );
   }
 
-  Widget _serviceDetailButton() {
+  Widget _buildChatroomActionBar() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildServiceDetailButton(),
+        _buildExitChatroomButton(),
+      ],
+    );
+  }
+
+  Widget _buildServiceDetailButton() {
     return Align(
       child: GestureDetector(
         onTap: () {
@@ -542,6 +536,51 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
             color: Color.fromRGBO(255, 255, 255, 1),
             fontSize: 16,
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExitChatroomButton() {
+    return Container(
+      margin: const EdgeInsets.only(left: 5),
+      child: BlocListener<ExitChatroomBloc, ExitChatroomState>(
+        listener: (context, state) {
+          if (state.status == AsyncLoadingStatus.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error.message),
+              ),
+            );
+          }
+
+          if (state.status == AsyncLoadingStatus.loading) {
+            setState(() {
+              _isDisabledChat = true;
+            });
+          }
+
+          if (state.status == AsyncLoadingStatus.done) {
+            Navigator.of(context).pushReplacementNamed(
+              MainRoutes.male,
+              arguments: MaleAppTabItem.waitingInquiry,
+            );
+          }
+        },
+        child: ExitChatroomButton(
+          onExit: () async {
+            final value = await showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => ExitChatroomConfirmationDialog(),
+            );
+
+            if (value) {
+              BlocProvider.of<ExitChatroomBloc>(context).add(
+                QuitChatroom(widget.args.channelUUID),
+              );
+            }
+          },
         ),
       ),
     );

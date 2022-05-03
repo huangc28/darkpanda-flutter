@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
-import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
@@ -40,7 +39,9 @@ import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
 
-import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/contracts/female.dart' show FemaleTabItem;
+import 'package:darkpanda_flutter/contracts/male.dart' show MaleAppTabItem;
+
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
@@ -271,7 +272,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             ).pushNamedAndRemoveUntil(
               MainRoutes.female,
               ModalRoute.withName('/'),
-              arguments: TabItem.manage,
+              arguments: FemaleTabItem.manage,
             );
           } else {
             Navigator.of(context).pop();
@@ -736,7 +737,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               ).pushNamedAndRemoveUntil(
                 MainRoutes.female,
                 ModalRoute.withName('/'),
-                arguments: TabItem.manage,
+                arguments: FemaleTabItem.manage,
               );
             } else {
               Navigator.of(context).pop();

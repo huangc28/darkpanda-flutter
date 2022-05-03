@@ -46,11 +46,12 @@ class ExitChatroomBloc extends Bloc<ExitChatroomEvent, ExitChatroomState> {
         );
       }
 
-      // **
-      // Have to delete chatroom message as well
+      // TODO Have to delete chatroom message as well
       inquiryChatroomsBloc.add(
         LeaveMaleChatroom(channelUUID: event.channelUuid),
       );
+
+      print('DEBUG before exit');
 
       yield ExitChatroomState.done(state);
     } on APIException catch (e) {

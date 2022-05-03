@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
-// import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
-// import 'package:darkpanda_flutter/screens/male/screens/chats/screens/direct_chatroom/direct_chatroom.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import 'package:darkpanda_flutter/base_routes.dart';
@@ -15,15 +13,6 @@ import './screens/login/login_navigator.dart';
 import './screens/register/auth_navigator.dart';
 
 import './contracts/chatroom.dart';
-// import 'screens/chatroom/screens/female_inquiry_chatroom/female_inquiry_chatroom.dart';
-// import 'screens/chatroom/screens/female_inquiry_chatroom/female_inquiry_chatroom.dart';
-// import 'screens/chatroom/screens/female_inquiry_chatroom/screen_arguments/female_inquiry_chatroom.dart';
-// import 'screens/chatroom/screens/inquiry/chatroom.dart';
-// import 'screens/chatroom/screens/service/service_chatroom.dart';
-
-// import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/inquiry_chatroom.dart';
-// import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
-
 import './screens/female/female_app.dart';
 import './screens/male/male_app.dart';
 
@@ -65,7 +54,7 @@ class MainRoutes extends BaseRoutes {
 
       MainRoutes.female: (context) {
         if (args == null) {
-          args = TabItem.inquiries;
+          args = FemaleTabItem.inquiries;
           BlocProvider.of<AuthUserBloc>(context).add(
             FetchUserInfo(),
           );

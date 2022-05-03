@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/main.dart';
 import 'package:darkpanda_flutter/components/navigate_to_login.dart';
 import 'package:darkpanda_flutter/util/firebase_messaging_service.dart';
 import 'package:darkpanda_flutter/util/notification_service.dart';
-import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
 
-Map<MaleAppTabItem, GlobalKey<NavigatorState>> _tabGlobalKeyMap = {
-  MaleAppTabItem.waitingInquiry: GlobalKey<NavigatorState>(),
-  MaleAppTabItem.chat: GlobalKey<NavigatorState>(),
-  MaleAppTabItem.manage: GlobalKey<NavigatorState>(),
-  MaleAppTabItem.settings: GlobalKey<NavigatorState>(),
-  MaleAppTabItem.profile: GlobalKey<NavigatorState>(),
+final Map<MaleAppTabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
+  MaleAppTabItem.waitingInquiry:
+      GlobalKey<NavigatorState>(debugLabel: 'maleWaitingInquiry'),
+  MaleAppTabItem.chat:
+      GlobalKey<NavigatorState>(debugLabel: 'maleChatGlobalKey'),
+  MaleAppTabItem.manage: GlobalKey<NavigatorState>(debugLabel: 'maleManage'),
+  MaleAppTabItem.settings:
+      GlobalKey<NavigatorState>(debugLabel: 'maleSettings'),
+  MaleAppTabItem.profile: GlobalKey<NavigatorState>(debugLabel: 'maleProfile'),
 };
 
 class MaleApp extends StatefulWidget {
@@ -48,7 +48,7 @@ class _MaleAppState extends State<MaleApp> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async =>
-          !await _tabGlobalKeyMap[_currentTab].currentState.maybePop(),
+          !await tabGlobalKeyMap[_currentTab].currentState.maybePop(),
       child: Scaffold(
         body: ValueListenableBuilder(
           valueListenable: DarkPandaApp.valueNotifier,
@@ -74,7 +74,7 @@ class _MaleAppState extends State<MaleApp> {
         if (_currentTab != item) {
           _currentTab = item;
         } else {
-          _tabGlobalKeyMap[_currentTab]
+          tabGlobalKeyMap[_currentTab]
               .currentState
               .popUntil((route) => route.isFirst);
         }
@@ -98,7 +98,7 @@ class _MaleAppState extends State<MaleApp> {
     return Offstage(
       offstage: _currentTab != tabItem,
       child: TabNavigator(
-        navigatorKey: _tabGlobalKeyMap[tabItem],
+        navigatorKey: tabGlobalKeyMap[tabItem],
         tabItem: tabItem,
         currentTab: _currentTab,
       ),

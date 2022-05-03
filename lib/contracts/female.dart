@@ -10,4 +10,4 @@ export 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arg
 
 /// Constants
 export 'package:darkpanda_flutter/screens/female/bottom_navigation.dart'
-    show TabItem;
+    show FemaleTabItem;

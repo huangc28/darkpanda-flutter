@@ -17,7 +17,11 @@ import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
 
 class Chatrooms extends StatefulWidget {
-  const Chatrooms({Key key}) : super(key: key);
+  const Chatrooms({
+    Key key,
+  }) : super(
+          key: key,
+        );
 
   @override
   _ChatroomsState createState() => _ChatroomsState();
@@ -108,7 +112,7 @@ class _ChatroomsState extends State<Chatrooms> {
                                 context,
                                 rootNavigator: true,
                               )
-                                  .pushNamed(
+                                  .pushReplacementNamed(
                                 MainRoutes.maleInquiryChatroom,
                                 arguments: MaleInquiryChatroomScreenArguments(
                                   channelUUID: chatroom.channelUUID,

@@ -57,6 +57,7 @@ flutter build \
  }
  ```
 
+- [] `screens` should be rename to `views`.
 - []Female cancel service now display `對方已取消交易` should be `你已取消交易` 
 - []When participant cancels service chatroom, popup a notification telling the other particiant to rate the service.
 - []When make user emit a direct inqiury, he can still emit another direct inquiry to the same girl in the girl list.

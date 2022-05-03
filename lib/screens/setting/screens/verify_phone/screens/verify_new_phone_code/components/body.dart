@@ -3,7 +3,7 @@ import 'package:darkpanda_flutter/bloc/timer_bloc.dart';
 import 'package:darkpanda_flutter/components/dp_pin_put.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
-import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/contracts/female.dart';
 import 'package:darkpanda_flutter/screens/female/female_app.dart';
 import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/male/male_app.dart';
@@ -117,7 +117,7 @@ class _BodyState extends State<Body> {
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
                                           builder: (c) => FemaleApp(
-                                            selectedTab: TabItem.settings,
+                                            selectedTab: FemaleTabItem.settings,
                                           ),
                                         ),
                                         (route) => false);

@@ -17,7 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+// import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
@@ -57,6 +57,9 @@ import './pkg/secure_store.dart';
 import './providers/secure_store.dart';
 import './bloc/auth_user_bloc.dart';
 
+// Initialize global navigator key to reuse navigator throughout the app.
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseApp app = await Firebase.initializeApp();
@@ -81,23 +84,30 @@ void main() async {
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
 
-    await SentryFlutter.init(
-      (options) {
-        options.dsn =
-            'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
-      },
-      appRunner: () => runApp(
-        DarkPandaApp(
-          gender: _gender,
-          jwt: _jwt,
-        ),
+    runApp(
+      DarkPandaApp(
+        gender: _gender,
+        jwt: _jwt,
       ),
     );
+
+    // await SentryFlutter.init(
+    //   (options) {
+    //     options.dsn =
+    //         'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
+    //   },
+    //   appRunner: () => runApp(
+    //     DarkPandaApp(
+    //       gender: _gender,
+    //       jwt: _jwt,
+    //     ),
+    //   ),
+    // );
   } catch (e, stackTrace) {
-    await Sentry.captureException(
-      e,
-      stackTrace: stackTrace,
-    );
+    // await Sentry.captureException(
+    //   e,
+    //   stackTrace: stackTrace,
+    // );
   }
 }
 
@@ -332,6 +342,7 @@ class _DarkPandaAppState extends State<DarkPandaApp> {
       child: SecureStoreProvider(
         secureStorage: SecureStore().fsc,
         child: MaterialApp(
+          navigatorKey: appNavigatorKey,
           debugShowCheckedModeBanner: false,
 
           /// Set the app language to be chinese TW.
