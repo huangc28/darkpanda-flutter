@@ -54,7 +54,6 @@ import '../../screen_arguments/male_inquiry_chatroom_screen_arguments.dart';
 import '../../bloc/exit_chatroom_bloc.dart';
 import '../../bloc/update_inquitry_notifier_bloc.dart';
 import '../../bloc/current_chatroom_bloc.dart';
-// import '../../views/exit_chatroom_button_view.dart';
 
 class MaleInquiryChatroom extends StatefulWidget {
   MaleInquiryChatroom({

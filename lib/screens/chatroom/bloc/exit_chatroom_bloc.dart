@@ -51,8 +51,6 @@ class ExitChatroomBloc extends Bloc<ExitChatroomEvent, ExitChatroomState> {
         LeaveMaleChatroom(channelUUID: event.channelUuid),
       );
 
-      print('DEBUG before exit');
-
       yield ExitChatroomState.done(state);
     } on APIException catch (e) {
       yield ExitChatroomState.error(e);

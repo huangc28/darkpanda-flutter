@@ -166,26 +166,18 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
         offset: offset,
       );
 
-      print('DEBUG chat respMap direct inquiry chatroom bloc ${resp.body}');
-
-      print('DEBUG 1');
       if (resp.statusCode != HttpStatus.ok) {
         throw APIException.fromJson(
           json.decode(resp.body),
         );
       }
 
-      print('DEBUG 2 ~~');
-
       final Map<String, dynamic> respMap = jsonDecode(resp.body);
-
-      print('DEBUG 3 ${respMap}');
 
       final chatrooms = respMap['chats']
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      print('DEBUG 4');
       add(AddChatrooms(chatrooms));
     } on APIException catch (err) {
       developer.log(
