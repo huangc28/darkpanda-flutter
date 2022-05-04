@@ -207,39 +207,43 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
           _editMessageController.clear();
         }
       },
-      child: SendMessageBar(
-        disable: _serviceConfirmed,
-        editMessageController: _editMessageController,
-        isDisabledChat: _isDisabledChat,
-        onSend: () {
-          if (_message.isEmpty) {
-            return;
-          }
+      child: BlocBuilder<ExitChatroomBloc, ExitChatroomState>(
+        builder: (context, state) {
+          return SendMessageBar(
+            disable: _serviceConfirmed,
+            editMessageController: _editMessageController,
+            isDisabledChat: state.status == AsyncLoadingStatus.loading,
+            onSend: () {
+              if (_message.isEmpty) {
+                return;
+              }
 
-          BlocProvider.of<SendMessageBloc>(context).add(
-            SendTextMessage(
-              content: _message,
-              channelUUID: widget.args.channelUUID,
-            ),
-          );
-        },
-        onEditInquiry: _handleTapEditInquiry,
-        onImageGallery: () {
-          _getGalleryImage();
-        },
-        onCamera: () {
-          Navigator.of(
-            context,
-            rootNavigator: true,
-          ).push(
-            MaterialPageRoute(
-              builder: (context) => CameraScreen(
-                onTakePhoto: (xFile) {
-                  _getCameraImage(xFile);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
+              BlocProvider.of<SendMessageBloc>(context).add(
+                SendTextMessage(
+                  content: _message,
+                  channelUUID: widget.args.channelUUID,
+                ),
+              );
+            },
+            onEditInquiry: _handleTapEditInquiry,
+            onImageGallery: () {
+              _getGalleryImage();
+            },
+            onCamera: () {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).push(
+                MaterialPageRoute(
+                  builder: (context) => CameraScreen(
+                    onTakePhoto: (xFile) {
+                      _getCameraImage(xFile);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
@@ -644,21 +648,6 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onPressed: () {
-          // To avoid Duplicate GlobalKey issue
-          //   if (widget.args.routeTypes == RouteTypes.fromInquiryChats) {
-          //     Navigator.of(context).pop();
-          //   } else {
-          //     Navigator.of(
-          //       context,
-          //       rootNavigator: true,
-          //     ).pushNamedAndRemoveUntil(
-          //       MainRoutes.female,
-          //       ModalRoute.withName('/'),
-          //       arguments: FemaleTabItem.inquiryChats,
-          //     );
-          //   }
-          // },
-
           Navigator.of(context, rootNavigator: true).pushReplacementNamed(
             MainRoutes.female,
             arguments: FemaleTabItem.inquiryChats,
@@ -727,16 +716,10 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
           );
         }
 
-        if (state.status == AsyncLoadingStatus.loading) {
-          setState(() {
-            _isDisabledChat = true;
-          });
-        }
-
         if (state.status == AsyncLoadingStatus.done) {
           Navigator.of(context).pushReplacementNamed(
-            MainRoutes.male,
-            arguments: MaleAppTabItem.waitingInquiry,
+            MainRoutes.female,
+            arguments: FemaleTabItem.inquiryChats,
           );
         }
       },

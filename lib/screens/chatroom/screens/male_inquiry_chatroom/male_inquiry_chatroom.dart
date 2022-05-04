@@ -553,12 +553,6 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
             );
           }
 
-          if (state.status == AsyncLoadingStatus.loading) {
-            setState(() {
-              _isDisabledChat = true;
-            });
-          }
-
           if (state.status == AsyncLoadingStatus.done) {
             Navigator.of(context).pushReplacementNamed(
               MainRoutes.male,
@@ -592,37 +586,41 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
           _editMessageController.clear();
         }
       },
-      child: SendMessageBar(
-        editMessageController: _editMessageController,
-        isDisabledChat: _isDisabledChat,
-        onSend: () {
-          if (_message.isEmpty) {
-            return;
-          }
+      child: BlocBuilder<ExitChatroomBloc, ExitChatroomState>(
+        builder: (context, state) {
+          return SendMessageBar(
+            editMessageController: _editMessageController,
+            isDisabledChat: state.status == AsyncLoadingStatus.loading,
+            onSend: () {
+              if (_message.isEmpty) {
+                return;
+              }
 
-          BlocProvider.of<SendMessageBloc>(context).add(
-            SendTextMessage(
-              content: _message,
-              channelUUID: widget.args.channelUUID,
-            ),
-          );
-        },
-        onImageGallery: () {
-          _getGalleryImage();
-        },
-        onCamera: () {
-          Navigator.of(
-            context,
-            rootNavigator: true,
-          ).push(
-            MaterialPageRoute(
-              builder: (context) => CameraScreen(
-                onTakePhoto: (xFile) {
-                  _getCameraImage(xFile);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
+              BlocProvider.of<SendMessageBloc>(context).add(
+                SendTextMessage(
+                  content: _message,
+                  channelUUID: widget.args.channelUUID,
+                ),
+              );
+            },
+            onImageGallery: () {
+              _getGalleryImage();
+            },
+            onCamera: () {
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).push(
+                MaterialPageRoute(
+                  builder: (context) => CameraScreen(
+                    onTakePhoto: (xFile) {
+                      _getCameraImage(xFile);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
