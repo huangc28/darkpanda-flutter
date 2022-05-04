@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/contracts/female.dart';
-import 'package:darkpanda_flutter/contracts/male.dart' show MaleAppTabItem;
 import 'package:darkpanda_flutter/contracts/profile.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
@@ -58,6 +57,7 @@ import '../../components/exit_chatroom_confirmation_dialog.dart';
 
 import '../../screen_arguments/female_inquiry_chatroom_screen_arguments.dart';
 
+/// TODO remove all [setState] from [BlocListener]. Use [BlocBuilder] instead.
 class FemaleInquiryChatroom extends StatefulWidget {
   const FemaleInquiryChatroom({
     this.args,

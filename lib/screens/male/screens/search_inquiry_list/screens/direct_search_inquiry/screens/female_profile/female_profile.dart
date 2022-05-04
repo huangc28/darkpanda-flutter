@@ -332,23 +332,24 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
+                  print('trigger!!!');
                   isFirstCall++;
 
                   // status done will be called twice, so implement isFirstCall to solve this issue
                   if (isFirstCall == 1) {
-                    Navigator.of(
-                      context,
-                      rootNavigator: true,
-                    ).pushNamed(
-                      MainRoutes.directChatroom,
-                      arguments: DirectChatroomScreenArguments(
-                        channelUUID: _femaleUser.channelUuid,
-                        inquiryUUID: _femaleUser.inquiryUuid,
-                        counterPartUUID: _femaleUser.uuid,
-                        serviceUUID: _femaleUser.serviceUuid,
-                        routeTypes: RouteTypes.fromMaleDirectInqiury,
-                      ),
-                    );
+                    // Navigator.of(
+                    //   context,
+                    //   rootNavigator: true,
+                    // ).pushNamed(
+                    //   MainRoutes.directChatroom,
+                    //   arguments: DirectChatroomScreenArguments(
+                    //     channelUUID: _femaleUser.channelUuid,
+                    //     inquiryUUID: _femaleUser.inquiryUuid,
+                    //     counterPartUUID: _femaleUser.uuid,
+                    //     serviceUUID: _femaleUser.serviceUuid,
+                    //     routeTypes: RouteTypes.fromMaleDirectInqiury,
+                    //   ),
+                    // );
                   }
                 }
               },

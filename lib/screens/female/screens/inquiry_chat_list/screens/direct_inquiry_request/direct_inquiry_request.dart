@@ -78,8 +78,6 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
                     content: Text(state.error.message),
                   ),
                 );
-
-                // Navigator.of(context, rootNavigator: true).pop();
               }
 
               if (state.status == AsyncLoadingStatus.done) {
@@ -136,27 +134,49 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
               );
             },
           ),
-          BlocListener<AgreeInquiryBloc, AgreeInquiryState>(
-            listener: (context, state) {
-              if (state.status == AsyncLoadingStatus.initial ||
-                  state.status == AsyncLoadingStatus.loading) {
-                setState(() {
-                  _agreeToChatIsLoading = true;
-                });
-              }
+          MultiBlocListener(
+            listeners: [
+              BlocListener<AgreeInquiryBloc, AgreeInquiryState>(
+                  listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.initial ||
+                    state.status == AsyncLoadingStatus.loading) {
+                  setState(() {
+                    _agreeToChatIsLoading = true;
+                  });
+                }
 
-              if (state.status == AsyncLoadingStatus.error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.error.message),
-                  ),
-                );
-              }
+                if (state.status == AsyncLoadingStatus.error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error.message),
+                    ),
+                  );
+                }
 
-              if (state.status == AsyncLoadingStatus.done) {
-                agreeInquiryResponse = state.agreeInquiry;
-              }
-            },
+                if (state.status == AsyncLoadingStatus.done) {
+                  agreeInquiryResponse = state.agreeInquiry;
+                }
+              }),
+              BlocListener<FetchInquiryChatroomBloc, FetchInquiryChatroomState>(
+                  listener: (context, state) {
+                if (state.status == AsyncLoadingStatus.done) {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushReplacementNamed(
+                    MainRoutes.femaleInquiryChatroom,
+                    arguments: FemaleInquiryChatroomScreenArguments(
+                      channelUUID: agreeInquiryResponse.channelUuid,
+                      inquiryUUID: state.chatroom.inquirerUUID,
+                      counterPartUUID: agreeInquiryResponse.inquirer.uuid,
+                      serviceType: agreeInquiryResponse.serviceType,
+                      routeTypes: RouteTypes.fromInquiryChats,
+                      serviceUUID: agreeInquiryResponse.serviceUuid,
+                    ),
+                  );
+                }
+              }),
+            ],
             child: Container(),
           ),
         ],
@@ -178,31 +198,13 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
     BlocProvider.of<AgreeInquiryBloc>(context).add(AgreeInquiry(inquiryUuid));
   }
 
-  _handleStartToChat(String inquiryUuid) {
-    print('DEBUG _handleStartToChat');
-
-    Navigator.of(
-      context,
-      rootNavigator: true,
-    )
-        .pushReplacementNamed(
-      MainRoutes.femaleInquiryChatroom,
-      arguments: FemaleInquiryChatroomScreenArguments(
-        channelUUID: agreeInquiryResponse.channelUuid,
-        inquiryUUID: inquiryUuid,
-        counterPartUUID: agreeInquiryResponse.inquirer.uuid,
-        serviceType: agreeInquiryResponse.serviceType,
-        routeTypes: RouteTypes.fromInquiryChats,
-        serviceUUID: agreeInquiryResponse.serviceUuid,
-      ),
-    )
-        .then((value) {
-      BlocProvider.of<InquiryChatroomsBloc>(context).add(FetchChatrooms());
-    });
+  _handleStartToChat(String inquiryUUID) {
+    BlocProvider.of<FetchInquiryChatroomBloc>(context)
+        .add(FetchInquiryChatroom(inquiryUUID: inquiryUUID));
 
     // Change tab to 聊天室 because current tab is 聊天請求
     // After user back from chatroom will show 聊天室
-    widget.onTabBarChanged(1);
+    // widget.onTabBarChanged(1);
   }
 
   _handleViewProfile(String inquirerUuid) {

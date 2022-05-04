@@ -16,7 +16,7 @@ part 'fetch_inquiry_chatroom_state.dart';
 
 class FetchInquiryChatroomBloc
     extends Bloc<FetchInquiryChatroomEvent, FetchInquiryChatroomState> {
-  final ApiClient apis;
+  final APIClient apis;
   final InquiryChatroomsBloc inquiryChatroomBloc;
 
   FetchInquiryChatroomBloc({

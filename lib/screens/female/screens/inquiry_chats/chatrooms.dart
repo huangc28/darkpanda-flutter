@@ -111,7 +111,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                         ),
                         child: ChatroomGrid(
                           onEnterChat: (chatroomModel.Chatroom chatroom) {
-                            // Navigate to inquiry_chat_room.
                             Navigator.of(
                               context,
                               rootNavigator: true,

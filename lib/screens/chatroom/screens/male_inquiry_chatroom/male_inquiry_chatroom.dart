@@ -55,6 +55,7 @@ import '../../bloc/exit_chatroom_bloc.dart';
 import '../../bloc/update_inquitry_notifier_bloc.dart';
 import '../../bloc/current_chatroom_bloc.dart';
 
+/// TODO remove all [setState] from [BlocListener]. Use [BlocBuilder] instead.
 class MaleInquiryChatroom extends StatefulWidget {
   MaleInquiryChatroom({
     this.args,
