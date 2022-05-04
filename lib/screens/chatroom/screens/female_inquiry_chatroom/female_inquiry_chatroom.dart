@@ -739,22 +739,6 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
         },
       ),
     );
-    // return ExitChatroomButtonView(
-    //   channelUUID: widget.args.channelUUID,
-    //   exitingChatroom: () {
-    //     print('DEBUG female exiting chatroom');
-    //     setState(() {
-    //       _isDisabledChat = true;
-    //     });
-    //   },
-    //   exitedChatroom: () {
-    //     print('DEBUG female exitedChatroom');
-    //     Navigator.of(context).pushReplacementNamed(
-    //       MainRoutes.female,
-    //       arguments: FemaleTabItem.inquiryChats,
-    //     );
-    //   },
-    // );
   }
 
   _handleTapEditInquiry() {

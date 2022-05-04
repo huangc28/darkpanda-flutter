@@ -38,8 +38,6 @@ class _ChatRoomsState extends State<ChatRooms> {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
 
-    // _inquiryChatroomsBloc.add(FetchChatrooms());
-
     super.initState();
   }
 
@@ -103,7 +101,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                           .add(LoadMoreChatrooms());
                     },
                     chatroomBuilder: (context, chatroom, ___) {
-                      //
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 
@@ -118,8 +115,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                             Navigator.of(
                               context,
                               rootNavigator: true,
-                            )
-                                .pushNamed(
+                            ).pushReplacementNamed(
                               MainRoutes.femaleInquiryChatroom,
                               arguments: FemaleInquiryChatroomScreenArguments(
                                 channelUUID: chatroom.channelUUID,
@@ -129,11 +125,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 routeTypes: RouteTypes.fromInquiryChats,
                                 serviceUUID: chatroom.serviceUUID,
                               ),
-                            )
-                                .then((value) {
-                              BlocProvider.of<InquiryChatroomsBloc>(context)
-                                  .add(FetchChatrooms());
-                            });
+                            );
                           },
                           chatroom: chatroom,
 
