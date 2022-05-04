@@ -13,8 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 
-import './bloc/inquiries_bloc.dart';
-import './bloc/pickup_inquiry_bloc.dart';
+import './bloc/bloc.dart';
 import './components/inquiry_grid.dart';
 import './components/inquiry_list.dart';
 import './screen_arguments/args.dart';
@@ -44,9 +43,9 @@ class _InqiuryListState extends State<InqiuryList> {
 
   Inquiry inquiryDetail;
 
-  InquiryChatroomsBloc _inquiryChatroomsBloc;
-
   bool pickupIsLoading = false;
+
+  InquiryChatroomsBloc _inquiryChatroomsBloc;
 
   // To use for button loading equal to specific inquiry uuid,
   // so only one button will showing loading instead of all button
@@ -56,6 +55,7 @@ class _InqiuryListState extends State<InqiuryList> {
   initState() {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
+
     super.initState();
   }
 
@@ -193,7 +193,7 @@ class _InqiuryListState extends State<InqiuryList> {
               },
             ),
             // Fetch inquiry chatrooms
-            BlocListener<InquiryChatroomsBloc, InquiryChatroomsState>(
+            BlocListener<FetchInquiryChatroomBloc, FetchInquiryChatroomState>(
               listener: (context, state) {
                 if (state.status == AsyncLoadingStatus.loading ||
                     state.status == AsyncLoadingStatus.initial) {
@@ -211,12 +211,12 @@ class _InqiuryListState extends State<InqiuryList> {
                   ).pushReplacementNamed(
                     MainRoutes.femaleInquiryChatroom,
                     arguments: FemaleInquiryChatroomScreenArguments(
-                      channelUUID: inquiryDetail.channelUuid,
-                      inquiryUUID: inquiryDetail.uuid,
-                      counterPartUUID: inquiryDetail.inquirer.uuid,
-                      serviceType: inquiryDetail.serviceType,
+                      channelUUID: state.chatroom.channelUUID,
+                      inquiryUUID: state.chatroom.inquirerUUID,
+                      counterPartUUID: state.chatroom.inquirerUUID,
+                      serviceType: state.chatroom.serviceType,
                       routeTypes: RouteTypes.fromInquiryList,
-                      serviceUUID: inquiryDetail.serviceUuid,
+                      serviceUUID: state.chatroom.serviceUUID,
                     ),
                   );
                 }
@@ -256,11 +256,14 @@ class _InqiuryListState extends State<InqiuryList> {
     );
   }
 
+  // Fetch single chatroom here.
   _handleStartChat(Inquiry inquiry) {
     // We need to redirect female to chatroom and clear the inquiry
     // item from inquiry list.
     inquiryDetail = inquiry;
-    _inquiryChatroomsBloc.add(FetchChatrooms());
+
+    BlocProvider.of<FetchInquiryChatroomBloc>(context)
+        .add(FetchInquiryChatroom(inquiryUUID: inquiryDetail.uuid));
   }
 
   _handleClearInquiry(String uuid) {

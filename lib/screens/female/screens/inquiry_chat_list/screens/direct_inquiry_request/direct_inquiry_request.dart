@@ -179,11 +179,13 @@ class _DirectInquiryRequestState extends State<DirectInquiryRequest> {
   }
 
   _handleStartToChat(String inquiryUuid) {
+    print('DEBUG _handleStartToChat');
+
     Navigator.of(
       context,
       rootNavigator: true,
     )
-        .pushNamed(
+        .pushReplacementNamed(
       MainRoutes.femaleInquiryChatroom,
       arguments: FemaleInquiryChatroomScreenArguments(
         channelUUID: agreeInquiryResponse.channelUuid,

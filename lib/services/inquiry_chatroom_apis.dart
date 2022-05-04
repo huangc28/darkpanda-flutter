@@ -7,81 +7,65 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 
 class InquiryChatroomApis extends BaseClient {
   Future<http.Response> fetchInquiryChatrooms({int offset = 0}) async {
-    try {
-      final request = http.Request(
-        'GET',
-        buildUri('/v1/chat/inquiry', {
-          'offset': '$offset',
-        }),
-      );
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/chat/inquiry', {
+        'offset': '$offset',
+      }),
+    );
 
-      await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
 
-      final res = await sendWithResponse(request);
+    final res = await sendWithResponse(request);
 
-      return res;
-    } catch (e) {
-      rethrow;
-    }
+    return res;
   }
 
   // PerPage int `form:"perpage,default=15"`
   // Page    int `form:"page,default=0"`
   Future<http.Response> fetchInquiryHistoricalMessages(String channelUUID,
       [int perPage = 15, page = 1]) async {
-    try {
-      final request = http.Request(
-        'GET',
-        buildUri('/v1/chat/${channelUUID}/messages', {
-          'perpage': '$perPage',
-          'page': '$page',
-        }),
-      );
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/chat/${channelUUID}/messages', {
+        'perpage': '$perPage',
+        'page': '$page',
+      }),
+    );
 
-      await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
 
-      return sendWithResponse(request);
-    } catch (e) {
-      rethrow;
-    }
+    return sendWithResponse(request);
   }
 
   Future<http.Response> sendChatroomTextMessage(
       String channelUUID, String content) async {
-    try {
-      final request = http.Request(
-        'POST',
-        buildUri('/v1/chat/emit-text-message', {
-          'channel_uuid': channelUUID,
-          'content': content,
-        }),
-      );
+    final request = http.Request(
+      'POST',
+      buildUri('/v1/chat/emit-text-message', {
+        'channel_uuid': channelUUID,
+        'content': content,
+      }),
+    );
 
-      await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
 
-      return sendWithResponse(request);
-    } catch (e) {
-      rethrow;
-    }
+    return sendWithResponse(request);
   }
 
   Future<http.Response> sendChatroomImageMessage(
       String channelUUID, String imageUrl) async {
-    try {
-      final request = http.Request(
-        'POST',
-        buildUri('/v1/chat/emit-image-message', {
-          'channel_uuid': channelUUID,
-          'image_url': imageUrl,
-        }),
-      );
+    final request = http.Request(
+      'POST',
+      buildUri('/v1/chat/emit-image-message', {
+        'channel_uuid': channelUUID,
+        'image_url': imageUrl,
+      }),
+    );
 
-      await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
 
-      return sendWithResponse(request);
-    } catch (e) {
-      rethrow;
-    }
+    return sendWithResponse(request);
   }
 
   Future<http.Response> sendChatroomServiceSettingMessage({
@@ -92,34 +76,29 @@ class InquiryChatroomApis extends BaseClient {
     double price,
     String serviceType,
   }) async {
-    try {
-      String appointmentToUtcToIsoString =
-          serviceTime.toUtc().toIso8601String();
+    String appointmentToUtcToIsoString = serviceTime.toUtc().toIso8601String();
 
-      final request = http.Request(
-        'POST',
-        buildUri(
-          '/v1/chat/emit-service-message',
-        ),
-      );
+    final request = http.Request(
+      'POST',
+      buildUri(
+        '/v1/chat/emit-service-message',
+      ),
+    );
 
-      request.body = json.encode({
-        'channel_uuid': channelUUID,
-        'inquiry_uuid': inquiryUUID,
-        'service_time': appointmentToUtcToIsoString,
-        'service_duration': '$serviceDuration',
-        'price': '$price',
-        'service_type': serviceType,
-      });
+    request.body = json.encode({
+      'channel_uuid': channelUUID,
+      'inquiry_uuid': inquiryUUID,
+      'service_time': appointmentToUtcToIsoString,
+      'service_duration': '$serviceDuration',
+      'price': '$price',
+      'service_type': serviceType,
+    });
 
-      withApplicationJsonHeader(request);
+    withApplicationJsonHeader(request);
 
-      await withTokenFromSecureStore(request);
+    await withTokenFromSecureStore(request);
 
-      return sendWithResponse(request);
-    } catch (e) {
-      rethrow;
-    }
+    return sendWithResponse(request);
   }
 
   Future<http.Response> sendInquiryUpdateMessage({
@@ -157,31 +136,27 @@ class InquiryChatroomApis extends BaseClient {
   }
 
   Future<http.Response> uploadChatroomImage(File imageFile) async {
-    try {
-      var request = new http.MultipartRequest(
-        "POST",
-        buildUri('/v1/images'),
-      );
+    var request = new http.MultipartRequest(
+      "POST",
+      buildUri('/v1/images'),
+    );
 
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'image',
-          imageFile.path.toString(),
-        ),
-      );
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image',
+        imageFile.path.toString(),
+      ),
+    );
 
-      if (request.files.length == 0) {
-        return null;
-      }
-
-      await withTokenFromSecureStore(request);
-      withMultiPart(request);
-
-      final res = await sendWithResponse(request);
-
-      return res;
-    } catch (e) {
-      rethrow;
+    if (request.files.length == 0) {
+      return null;
     }
+
+    await withTokenFromSecureStore(request);
+    withMultiPart(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
   }
 }

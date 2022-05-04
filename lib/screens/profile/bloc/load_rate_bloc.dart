@@ -12,8 +12,9 @@ part 'load_rate_event.dart';
 part 'load_rate_state.dart';
 
 class LoadRateBloc extends Bloc<LoadRateEvent, LoadRateState> {
-  LoadRateBloc({this.rateApiClient})
-      : assert(rateApiClient != null),
+  LoadRateBloc({
+    this.rateApiClient,
+  })  : assert(rateApiClient != null),
         super(LoadRateState.initial());
 
   final RateApiClient rateApiClient;

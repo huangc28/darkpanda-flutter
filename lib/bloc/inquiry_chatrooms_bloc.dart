@@ -45,6 +45,8 @@ class InquiryChatroomsBloc
   ) async* {
     if (event is LeaveChatroom) {
       yield* _mapLeaveChatroomToState(event);
+    } else if (event is AddChatroom) {
+      yield* _mapAddChatroomToState(event);
     } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     } else if (event is FetchChatrooms) {
@@ -55,8 +57,6 @@ class InquiryChatroomsBloc
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearInquiryChatList) {
       yield* _mapClearInquiryChatListToState(event);
-    } else if (event is AddChatroom) {
-      yield* _mapAddChatroomToState(event);
     } else if (event is ClearInquiryList) {
       yield* _mapClearInquiryListToState(event);
     } else if (event is LeaveMaleChatroom) {

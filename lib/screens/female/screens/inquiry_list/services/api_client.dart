@@ -4,6 +4,22 @@ import 'package:darkpanda_flutter/services/base_client.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 
 class ApiClient extends BaseClient {
+  Future<http.Response> fetchInquiryChatroom(String inquiryUUID) async {
+    final request = http.Request(
+      'GET',
+      buildUri('/v1/chat/inquiry', {
+        'inquiry_uuid': inquiryUUID,
+        'offset': '0',
+      }),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    final res = await sendWithResponse(request);
+
+    return res;
+  }
+
   Future<http.Response> fetchInquiries({int offset = 0}) async {
     try {
       final request = http.Request(

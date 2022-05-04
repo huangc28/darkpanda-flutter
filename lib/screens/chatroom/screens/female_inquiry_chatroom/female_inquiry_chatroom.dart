@@ -645,18 +645,24 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
         splashColor: Colors.transparent,
         onPressed: () {
           // To avoid Duplicate GlobalKey issue
-          if (widget.args.routeTypes == RouteTypes.fromInquiryChats) {
-            Navigator.of(context).pop();
-          } else {
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamedAndRemoveUntil(
-              MainRoutes.female,
-              ModalRoute.withName('/'),
-              arguments: FemaleTabItem.inquiryChats,
-            );
-          }
+          //   if (widget.args.routeTypes == RouteTypes.fromInquiryChats) {
+          //     Navigator.of(context).pop();
+          //   } else {
+          //     Navigator.of(
+          //       context,
+          //       rootNavigator: true,
+          //     ).pushNamedAndRemoveUntil(
+          //       MainRoutes.female,
+          //       ModalRoute.withName('/'),
+          //       arguments: FemaleTabItem.inquiryChats,
+          //     );
+          //   }
+          // },
+
+          Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+            MainRoutes.female,
+            arguments: FemaleTabItem.inquiryChats,
+          );
         },
       ),
       actions: <Widget>[
