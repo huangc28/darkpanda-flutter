@@ -53,15 +53,6 @@ class UpdateFemaleInquiryBloc
       _createInquirySubscriptionStreamMap(FemaleUser femaleUsers) {
     Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
 
-    // femaleUsers.forEach(
-    //   (iq) {
-    //     if (iq.inquiryStatus == InquiryStatus.asking ||
-    //         iq.inquiryStatus == InquiryStatus.chatting) {
-    //       _streamMap[iq.inquiryUuid] =
-    //           _createInquirySubscriptionStream(iq.inquiryUuid);
-    //     }
-    //   },
-    // );
     if (femaleUsers.inquiryStatus == InquiryStatus.asking ||
         femaleUsers.inquiryStatus == InquiryStatus.chatting) {
       _streamMap[femaleUsers.inquiryUuid] =
@@ -87,9 +78,11 @@ class UpdateFemaleInquiryBloc
   }
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
-    String iqStatus = snapshot['status'] as String;
-    String iqChannelUuid = snapshot['channel_uuid'] as String;
-    String iqServiceUuid = snapshot['service_uuid'] as String;
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+    String iqStatus = data['status'] as String;
+    String iqChannelUuid = data['channel_uuid'] as String;
+    String iqServiceUuid = data['service_uuid'] as String;
 
     developer.log(
         'firestore inquiry changes recieved: ${snapshot.data().toString()}');

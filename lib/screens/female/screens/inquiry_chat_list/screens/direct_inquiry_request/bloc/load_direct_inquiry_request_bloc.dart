@@ -28,6 +28,7 @@ class LoadDirectInquiryRequestBloc
   Stream<LoadDirectInquiryRequestState> mapEventToState(
     LoadDirectInquiryRequestEvent event,
   ) async* {
+    print('DEBUG trigger LoadDirectInquiryRequestBloc ${event.runtimeType}');
     if (event is FetchDirectInquiries) {
       yield* _mapFetchInquiriesToState(event);
     }
@@ -244,21 +245,22 @@ class LoadDirectInquiryRequestBloc
   }
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
-    print('DEBUG trigger _handleInquiryStatusChange');
-    // String iqStatus = snapshot['status'] as String;
-    // String channelUuid = snapshot['channel_uuid'] as String;
-    // String serviceUuid = snapshot['service_uuid'] as String;
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-    // developer.log(
-    //     'firestore inquiry changes recieved: ${snapshot.data().toString()}');
+    String iqStatus = data['status'] as String;
+    String channelUuid = data['channel_uuid'] as String;
+    String serviceUuid = data['service_uuid'] as String;
 
-    // add(
-    //   UpdateInquiryStatus(
-    //     inquiryUuid: inquiryUuid,
-    //     inquiryStatus: iqStatus.toInquiryStatusEnum(),
-    //     channelUuid: channelUuid,
-    //     serviceUuid: serviceUuid,
-    //   ),
-    // );
+    developer.log(
+        'firestore inquiry changes recieved: ${snapshot.data().toString()}');
+
+    add(
+      UpdateInquiryStatus(
+        inquiryUuid: inquiryUuid,
+        inquiryStatus: iqStatus.toInquiryStatusEnum(),
+        channelUuid: channelUuid,
+        serviceUuid: serviceUuid,
+      ),
+    );
   }
 }
