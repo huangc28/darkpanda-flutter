@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/contracts/chatroom.dart'
-    show FetchInquiryChatroomBloc, APIClient;
+    show
+        FetchInquiryChatroomBloc,
+        APIClient,
+        MaleInquiryChatroomScreenArguments;
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:provider/provider.dart';
@@ -145,12 +149,28 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
               ),
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
-                  onTap: () {
-                    print('[Debug] girl profile $index');
-                    Navigator.of(
+                  onTap: () async {
+                    final chatroom = await Navigator.of(
                       context,
                       rootNavigator: true,
                     ).push(_createRoute(femaleUsers[index]));
+
+                    if (chatroom == null) {
+                      return;
+                    }
+
+                    Navigator.of(
+                      context,
+                      rootNavigator: true,
+                    ).pushReplacementNamed(
+                      MainRoutes.maleInquiryChatroom,
+                      arguments: MaleInquiryChatroomScreenArguments(
+                        channelUUID: chatroom.channelUUID,
+                        inquiryUUID: chatroom.inquirerUUID,
+                        counterPartUUID: chatroom.pickerUUID,
+                        serviceUUID: chatroom.serviceUUID,
+                      ),
+                    );
                   },
                   child: _userList(femaleUsers[index], index),
                 );

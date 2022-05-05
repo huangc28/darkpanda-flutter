@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // TODO remove this bloc entirely
 // import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 
@@ -27,8 +26,7 @@ import 'package:darkpanda_flutter/contracts/chatroom.dart'
     show
         FetchInquiryChatroomBloc,
         FetchInquiryChatroom,
-        FetchInquiryChatroomState,
-        MaleInquiryChatroomScreenArguments;
+        FetchInquiryChatroomState;
 
 import '../../bloc/load_female_list_bloc.dart';
 import 'components/body.dart';
@@ -366,18 +364,33 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushReplacementNamed(
-                    MainRoutes.maleInquiryChatroom,
-                    arguments: MaleInquiryChatroomScreenArguments(
-                      channelUUID: state.chatroom.channelUUID,
-                      inquiryUUID: state.chatroom.inquirerUUID,
-                      counterPartUUID: state.chatroom.pickerUUID,
-                      serviceUUID: state.chatroom.serviceUUID,
-                    ),
-                  );
+                  Navigator.of(context).pop(state.chatroom);
+
+                  // Navigator.of(
+                  //   context,
+                  //   rootNavigator: true,
+                  // ).popAndPushNamed(
+                  //   MainRoutes.maleInquiryChatroom,
+                  //   arguments: MaleInquiryChatroomScreenArguments(
+                  //     channelUUID: state.chatroom.channelUUID,
+                  //     inquiryUUID: state.chatroom.inquirerUUID,
+                  //     counterPartUUID: state.chatroom.pickerUUID,
+                  //     serviceUUID: state.chatroom.serviceUUID,
+                  //   ),
+                  // );
+
+                  // Navigator.of(
+                  //   context,
+                  //   rootNavigator: true,
+                  // ).pushReplacementNamed(
+                  //   MainRoutes.maleInquiryChatroom,
+                  //   arguments: MaleInquiryChatroomScreenArguments(
+                  //     channelUUID: state.chatroom.channelUUID,
+                  //     inquiryUUID: state.chatroom.inquirerUUID,
+                  //     counterPartUUID: state.chatroom.pickerUUID,
+                  //     serviceUUID: state.chatroom.serviceUUID,
+                  //   ),
+                  // );
                 }
               },
             ),
