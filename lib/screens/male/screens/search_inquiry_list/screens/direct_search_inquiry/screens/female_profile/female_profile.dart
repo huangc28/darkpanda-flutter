@@ -365,32 +365,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   Navigator.of(context).pop(state.chatroom);
-
-                  // Navigator.of(
-                  //   context,
-                  //   rootNavigator: true,
-                  // ).popAndPushNamed(
-                  //   MainRoutes.maleInquiryChatroom,
-                  //   arguments: MaleInquiryChatroomScreenArguments(
-                  //     channelUUID: state.chatroom.channelUUID,
-                  //     inquiryUUID: state.chatroom.inquirerUUID,
-                  //     counterPartUUID: state.chatroom.pickerUUID,
-                  //     serviceUUID: state.chatroom.serviceUUID,
-                  //   ),
-                  // );
-
-                  // Navigator.of(
-                  //   context,
-                  //   rootNavigator: true,
-                  // ).pushReplacementNamed(
-                  //   MainRoutes.maleInquiryChatroom,
-                  //   arguments: MaleInquiryChatroomScreenArguments(
-                  //     channelUUID: state.chatroom.channelUUID,
-                  //     inquiryUUID: state.chatroom.inquirerUUID,
-                  //     counterPartUUID: state.chatroom.pickerUUID,
-                  //     serviceUUID: state.chatroom.serviceUUID,
-                  //   ),
-                  // );
                 }
               },
             ),

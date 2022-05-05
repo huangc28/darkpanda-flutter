@@ -113,6 +113,7 @@ class MainRoutes extends BaseRoutes {
       MainRoutes.maleInquiryChatroom: (context) {
         // Fetch inquiry chatrooms before proceeds
         MaleInquiryChatroomScreenArguments iqArgs = args;
+
         return MaleInquiryChatroom(args: iqArgs);
       },
 
