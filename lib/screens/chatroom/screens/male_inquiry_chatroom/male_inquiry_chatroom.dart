@@ -116,7 +116,7 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(
         channelUUID: widget.args.channelUUID,
-        inquirerUUID: widget.args.counterPartUUID,
+        counterPartyUUID: widget.args.counterPartUUID,
       ),
     );
 

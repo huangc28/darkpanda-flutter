@@ -130,8 +130,9 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
 
     BlocProvider.of<CurrentChatroomBloc>(context).add(
       InitCurrentChatroom(
-          channelUUID: widget.args.channelUUID,
-          inquirerUUID: widget.args.counterPartUUID),
+        channelUUID: widget.args.channelUUID,
+        counterPartyUUID: widget.args.counterPartUUID,
+      ),
     );
 
     BlocProvider.of<LoadServiceDetailBloc>(context).add(

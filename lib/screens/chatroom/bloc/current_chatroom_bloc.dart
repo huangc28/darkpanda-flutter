@@ -202,7 +202,7 @@ class CurrentChatroomBloc
       }).toList();
 
       // Fetch inquirer profile.
-      final upResp = await userApis.fetchUser(event.inquirerUUID);
+      final upResp = await userApis.fetchUser(event.counterPartyUUID);
 
       final inquirerProfile = UserProfile.fromJson(
         json.decode(upResp.body),
