@@ -228,7 +228,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 // TODO Fetch single inquiry chatroom instead of loading every chatrooms.
                 if (_performableAction == PerformableActions.Chatting) {
-                  print('DEBUG tab on chatting!! ${_femaleUser}');
                   BlocProvider.of<FetchInquiryChatroomBloc>(context).add(
                     FetchInquiryChatroom(
                       inquiryUUID: _femaleUser.inquiryUuid,
@@ -344,9 +343,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
 
                 if (state.status == AsyncLoadingStatus.done) {
                   setState(() {
-                    print('[Debug] female profile inquiry status ' +
-                        state.femaleUser.inquiryStatus.name);
-
                     _inquiryStatus = state.femaleUser.inquiryStatus;
                     _femaleUser = state.femaleUser;
                   });

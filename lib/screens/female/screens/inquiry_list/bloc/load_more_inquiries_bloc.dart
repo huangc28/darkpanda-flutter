@@ -67,30 +67,19 @@ class LoadMoreInquiriesBloc
           json.decode(resp.body),
         );
       }
-      // print('DEBUG lm 1 ${resp.body}');
-
       final dataMap = json.decode(resp.body);
 
       final newInquiries = dataMap['inquiries']
           .map<Inquiry>((data) => Inquiry.fromJson(data))
           .toList();
 
-      print('DEBUG lm 3 ${newInquiries}');
       inquiriesBloc.add(AppendInquiries(inquiries: newInquiries));
     } on APIException catch (e) {
-      print('DEBUG 2 ${e.message}');
-      // yield InquiriesState.fetchFailed(
-      //   state,
-      //   error: e,
-      // );
+      yield LoadMoreInquiriesState.loadFailed(e);
     } catch (e) {
-      // print('DEBUG 2 $e');
-      // yield InquiriesState.fetchFailed(
-      //   state,
-      //   error: AppGeneralExeption(
-      //     message: e.toString(),
-      //   ),
-      // );
+      yield LoadMoreInquiriesState.loadFailed(
+        AppGeneralExeption(message: e.toString()),
+      );
     }
   }
 

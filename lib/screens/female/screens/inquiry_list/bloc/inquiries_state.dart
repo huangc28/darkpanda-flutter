@@ -1,12 +1,5 @@
 part of 'inquiries_bloc.dart';
 
-// enum FetchInquiryStatus {
-//   initial,
-//   fetching,
-//   fetchFailed,
-//   fetched,
-// }
-
 class InquiriesState<Error extends AppBaseException> extends Equatable {
   final AsyncLoadingStatus status;
   final List<Inquiry> inquiries;

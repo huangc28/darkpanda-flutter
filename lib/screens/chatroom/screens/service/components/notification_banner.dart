@@ -50,16 +50,6 @@ class NotificationBanner extends StatelessWidget {
             SizedBox(width: 12),
 
             _buildStatusBar(),
-
-            // InkWell(
-            //   onTap: () {
-            //     print('DEBUG tap proceed');
-            //   },
-            //   child: Icon(
-            //     Icons.navigate_next,
-            //     size: 22,
-            //   ),
-            // ),
           ],
         ),
         decoration: BoxDecoration(

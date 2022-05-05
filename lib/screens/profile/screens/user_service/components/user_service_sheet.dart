@@ -148,7 +148,6 @@ class _UserServiceSheetState extends State<UserServiceSheet> {
                                   // Check is duplicate service exist
                                   widget.userServiceList.forEach((u) {
                                     if (value.trim() == u.serviceName) {
-                                      print("duplicate ${u.serviceName}");
                                       isDuplicateService = true;
                                     }
                                   });

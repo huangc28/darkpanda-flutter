@@ -244,8 +244,6 @@ class _VerifyRegisterCodeState extends State<VerifyRegisterCode> {
       });
 
   void _handleResend() {
-    print('DEBUG trigger resend');
-
     BlocProvider.of<SendSmsCodeBloc>(context).add(
       SendSMSCode(
         dialCode: widget.args.dialCode,

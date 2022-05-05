@@ -82,7 +82,6 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
 
   Stream<LoadDirectInquiryChatroomsState> _mapAddChatroomsToState(
       AddChatrooms event) async* {
-    print('DEBUG trigger _mapAddChatroomsToState');
     // Iterate through list of chatrooms. Skip channel subscription
     // if channel uuid exists in the current map.
     for (final chatroom in event.chatrooms) {
@@ -105,8 +104,6 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     }
 
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
-
-    print('DEBUG event chatrooms ${event.chatrooms}');
 
     yield LoadDirectInquiryChatroomsState.updateChatrooms(
       state,
