@@ -1,4 +1,4 @@
-// TODO what the fuck is route types?
+// TODO what the fuck is route types? remove it!
 import 'package:darkpanda_flutter/enums/route_types.dart';
 
 class FemaleInquiryChatroomScreenArguments {
@@ -20,6 +20,5 @@ class FemaleInquiryChatroomScreenArguments {
         assert(inquiryUUID != null),
         assert(counterPartUUID != null),
         assert(serviceType != null),
-        assert(routeTypes != null),
         assert(serviceUUID != null);
 }

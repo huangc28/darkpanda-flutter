@@ -1,10 +1,13 @@
-import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
-import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show FetchInquiryChatroomBloc, APIClient;
+import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
+import 'package:darkpanda_flutter/screens/profile/services/user_service_api_client.dart';
 import 'package:provider/provider.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
@@ -37,15 +40,17 @@ class DirectSearchInquiry extends StatefulWidget {
 class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
   List<FemaleUser> femaleUsers = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Route _createRoute(FemaleUser femaleUser) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
         providers: [
+          BlocProvider(
+            create: (context) => FetchInquiryChatroomBloc(
+              apis: APIClient(),
+              inquiryChatroomBloc:
+                  BlocProvider.of<InquiryChatroomsBloc>(context),
+            ),
+          ),
           BlocProvider(
             create: (context) => LoadUserImagesBloc(
               userApi: UserApis(),
@@ -94,16 +99,14 @@ class _DirectSearchInquiryState extends State<DirectSearchInquiry> {
   // Update inquiry status, expect service type to girl list
   _handleInquiryStatusChanged(FemaleUser femaleUser) {
     for (int i = 0; i < femaleUsers.length; i++) {
-      if (femaleUsers[i].hasInquiry) {
-        if (femaleUsers[i].uuid == femaleUser.uuid) {
-          final updatedInquiry = femaleUsers[i].copyWith(
-            inquiryUuid: femaleUser.inquiryUuid,
-            inquiryStatus: femaleUser.inquiryStatus,
-            expectServiceType: femaleUser.expectServiceType,
-          );
+      if (femaleUsers[i].hasInquiry && femaleUsers[i].uuid == femaleUser.uuid) {
+        final updatedInquiry = femaleUsers[i].copyWith(
+          inquiryUuid: femaleUser.inquiryUuid,
+          inquiryStatus: femaleUser.inquiryStatus,
+          expectServiceType: femaleUser.expectServiceType,
+        );
 
-          femaleUsers[i] = updatedInquiry;
-        }
+        femaleUsers[i] = updatedInquiry;
       }
     }
   }

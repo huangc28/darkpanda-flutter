@@ -62,7 +62,7 @@ class _BodyState extends State<Body> {
                 SearchInquiry(
                   onPush: widget.onPush,
                 ),
-                _directSearchInquiry(),
+                _searchDirectInquiry(),
               ],
             ),
           ),
@@ -71,7 +71,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget _directSearchInquiry() {
+  Widget _searchDirectInquiry() {
     return BlocConsumer<LoadFemaleListBloc, LoadFemaleListState>(
       listener: (context, state) {
         if (state.status == AsyncLoadingStatus.error) {

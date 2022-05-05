@@ -2,10 +2,9 @@ import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:darkpanda_flutter/enums/route_types.dart';
+// TODO remove this bloc entirely
+// import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/male/screens/chats/bloc/load_direct_inquiry_chatrooms_bloc.dart';
-import 'package:darkpanda_flutter/screens/male/screens/chats/screen_arguments/direct_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_service_response.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/user_service/bloc/load_user_service_bloc.dart';
 
@@ -24,10 +23,31 @@ import 'package:darkpanda_flutter/models/user_profile.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/models/user_rating.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show
+        FetchInquiryChatroomBloc,
+        FetchInquiryChatroom,
+        FetchInquiryChatroomState,
+        MaleInquiryChatroomScreenArguments;
 
 import '../../bloc/load_female_list_bloc.dart';
 import 'components/body.dart';
 import 'components/direct_inquiry_form.dart';
+
+enum PerformableActions {
+  ChatNow,
+  WaitingForResponse,
+  Chatting,
+  AcceptedServiceInvitation,
+}
+
+/// TODO display text using i18n.
+final Map<PerformableActions, String> actionLabel = {
+  PerformableActions.ChatNow: '馬上聊聊',
+  PerformableActions.WaitingForResponse: '等待回應',
+  PerformableActions.Chatting: '正在聊天',
+  PerformableActions.AcceptedServiceInvitation: '已接受邀请',
+};
 
 class FemaleProfile extends StatefulWidget {
   const FemaleProfile({
@@ -53,7 +73,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
   AsyncLoadingStatus _userImagesStatus = AsyncLoadingStatus.initial;
   AsyncLoadingStatus _userServiceStatus = AsyncLoadingStatus.initial;
 
-  String _chatNowButton = '馬上聊聊';
+  PerformableActions _performableAction;
 
   FemaleUser _femaleUser;
 
@@ -61,8 +81,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
   ServiceStatus _serviceStatus;
 
   List<UserServiceResponse> _userServices;
-
-  int isFirstCall = 0;
 
   @override
   void initState() {
@@ -90,31 +108,41 @@ class _FemaleProfileState extends State<FemaleProfile> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  PerformableActions _siftPerformableAction(
+      InquiryStatus iqStatus, ServiceStatus serviceStatus) {
+    // 1. inquiry_status = canceled
+    // 2. inquiry_status = booked and service_status = canceled
+    // 3. service_status = completed
+    // 4. service_status = expired
     // Chat button text
     // 1. inquiry_status = asking - 等待回應
     // 2. inquiry_status = chatting or inquiry_status = wait_for_inquirer_approve - 正在聊天
     // 3. inquiry_status = booked and service_status = to_be_fulfilled - 已接受邀请
     // 4. inquiry_status = booked and service_status = fulfilling - 已接受邀请
+    PerformableActions action;
+
     if (_inquiryStatus == InquiryStatus.asking) {
-      _chatNowButton = '等待回應';
+      action = PerformableActions.WaitingForResponse;
     } else if (_inquiryStatus == InquiryStatus.chatting ||
         _inquiryStatus == InquiryStatus.wait_for_inquirer_approve) {
-      _chatNowButton = '正在聊天';
+      action = PerformableActions.Chatting;
     } else if (_serviceStatus == ServiceStatus.to_be_fulfilled ||
         _serviceStatus == ServiceStatus.fulfilling) {
-      _chatNowButton = '已接受邀请';
+      action = PerformableActions.AcceptedServiceInvitation;
+    } else {
+      action = PerformableActions.ChatNow;
     }
-    // 1. inquiry_status = canceled
-    // 2. inquiry_status = booked and service_status = canceled
-    // 3. service_status = completed
-    // 4. service_status = expired
-    else {
-      _chatNowButton = '馬上聊聊';
 
-      var female = _femaleUser.copyWith(expectServiceType: "");
-      _femaleUser = female;
+    return action;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _performableAction = _siftPerformableAction(_inquiryStatus, _serviceStatus);
+    final label = actionLabel[_performableAction];
+
+    if (_performableAction == PerformableActions.ChatNow) {
+      _femaleUser = _femaleUser.copyWith(expectServiceType: "");
     }
 
     return Scaffold(
@@ -139,7 +167,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
             padding: EdgeInsets.only(right: 20.0),
             child: InkWell(
               onTap: () {
-                if (_chatNowButton == '馬上聊聊') {
+                if (_performableAction == PerformableActions.ChatNow) {
                   Navigator.of(
                     context,
                     rootNavigator: true,
@@ -192,24 +220,31 @@ class _FemaleProfileState extends State<FemaleProfile> {
                               UpdateFemaleInquiry(femaleUser: _femaleUser));
 
                           BlocProvider.of<LoadFemaleListBloc>(context).add(
-                              UpdateFemaleProfileInList(
-                                  femaleUser: _femaleUser));
+                            UpdateFemaleProfileInList(femaleUser: _femaleUser),
+                          );
                         });
                       }
                     },
                   );
                 }
 
-                if (_chatNowButton == '正在聊天') {
-                  BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
-                      .add(FetchDirectInquiryChatrooms());
+                // TODO Fetch single inquiry chatroom instead of loading every chatrooms.
+                if (_performableAction == PerformableActions.Chatting) {
+                  print('DEBUG tab on chatting!! ${_femaleUser}');
+                  BlocProvider.of<FetchInquiryChatroomBloc>(context).add(
+                    FetchInquiryChatroom(
+                      inquiryUUID: _femaleUser.inquiryUuid,
+                    ),
+                  );
+                  // BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
+                  //     .add(FetchDirectInquiryChatrooms());
                 }
               },
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               child: Align(
                 child: Text(
-                  _chatNowButton,
+                  label,
                   style: TextStyle(
                     color: Color.fromRGBO(255, 255, 255, 1),
                     fontSize: 16,
@@ -320,8 +355,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 }
               },
             ),
-            BlocListener<LoadDirectInquiryChatroomsBloc,
-                LoadDirectInquiryChatroomsState>(
+            BlocListener<FetchInquiryChatroomBloc, FetchInquiryChatroomState>(
               listener: (context, state) {
                 if (state.status == AsyncLoadingStatus.error) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -332,25 +366,18 @@ class _FemaleProfileState extends State<FemaleProfile> {
                 }
 
                 if (state.status == AsyncLoadingStatus.done) {
-                  print('trigger!!!');
-                  isFirstCall++;
-
-                  // status done will be called twice, so implement isFirstCall to solve this issue
-                  if (isFirstCall == 1) {
-                    // Navigator.of(
-                    //   context,
-                    //   rootNavigator: true,
-                    // ).pushNamed(
-                    //   MainRoutes.directChatroom,
-                    //   arguments: DirectChatroomScreenArguments(
-                    //     channelUUID: _femaleUser.channelUuid,
-                    //     inquiryUUID: _femaleUser.inquiryUuid,
-                    //     counterPartUUID: _femaleUser.uuid,
-                    //     serviceUUID: _femaleUser.serviceUuid,
-                    //     routeTypes: RouteTypes.fromMaleDirectInqiury,
-                    //   ),
-                    // );
-                  }
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushReplacementNamed(
+                    MainRoutes.maleInquiryChatroom,
+                    arguments: MaleInquiryChatroomScreenArguments(
+                      channelUUID: state.chatroom.channelUUID,
+                      inquiryUUID: state.chatroom.inquirerUUID,
+                      counterPartUUID: state.chatroom.pickerUUID,
+                      serviceUUID: state.chatroom.serviceUUID,
+                    ),
+                  );
                 }
               },
             ),
@@ -373,8 +400,6 @@ class _FemaleProfileState extends State<FemaleProfile> {
   }
 
   _handleFemaleService(UserServiceResponse userServiceObj) {
-    print('Handle Female Service: ' + userServiceObj.serviceName);
-
     Widget _directInquiryForm() {
       // If price is null, which mean user selected last service
       // with user manual input service
@@ -390,7 +415,7 @@ class _FemaleProfileState extends State<FemaleProfile> {
             );
     }
 
-    if (_chatNowButton == '馬上聊聊') {
+    if (_performableAction == PerformableActions.ChatNow) {
       Navigator.of(
         context,
         rootNavigator: true,

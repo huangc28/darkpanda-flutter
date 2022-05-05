@@ -446,7 +446,10 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onPressed: () {
-          Navigator.of(context).pushReplacementNamed(
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushReplacementNamed(
             MainRoutes.male,
             arguments: MaleAppTabItem.chat,
           );
