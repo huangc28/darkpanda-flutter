@@ -56,11 +56,14 @@ lib
 ```
 
 Please read through this article for more insight [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
-### Environment variables
+## Environment variables
 
 ```
-ENV=development
+ENV=
 
+# Server endpoint 
+# Android emulator to request localhost, http://10.0.2.2:3001
+# IOS emulator to request localhost,  http://127.0.0.1:3001
 SERVER_HOST=
 
 # Pubnub credentials
@@ -93,20 +96,6 @@ flutter build \
 ```
 
 ## TODOs 
-
-- Catch system exception like `json.decode(...)` --- [ok]
- 
- ```dart
- class SomeModel {
-
-     static fromJson(Map<String, dynamic>, data) {
-         if (!data.Contains('err_code') && data.Contains('err_msg')) {
-            return ... 
-         }
-
-     }
- }
- ```
 
 - [] `screens` should be rename to `views`.
 - []Female cancel service now display `對方已取消交易` should be `你已取消交易` 
