@@ -1,28 +1,79 @@
 # darkpanda_flutter
-## Build android APK 
-
-Prompt the following command: `flutter build apk --release`
-
 ## Compatibility 
 
 **flutter version**: 2.10.4  
 
-## Run Dev
+## Run DEV
+### Build via Flutter Version Manager (Suggest) 
 
-We use flutter virtual manager to run flutter command
+I suggest using [flutter version manager](https://fvm.app/) to run app on different flutter version. It will be easier for you to test out different test behaviors on IOS/Android build.
+
+**use fvm**
+
+```sh
+# Check connected devices using
+flutter devices
+
+flutter run -d "DEVICE_ID" // use fvm
+
+# or
+
+fvm flutter run -d "DEVICE_ID" // use fvm
+```
+## Release using appcenter.ms
+
+### Giving a release tag
+
+First we give the commit that we target to release tag using git.  
 
 ```
-fvm flutter run -d "DEVICE_ID"
+git tag -a v1.0.7 -m "darkpanda android v1.0.7 release"
 ```
 
-## Release
+push the tag to remote repository.
+### Android release.
 
-We will be using `appCenter` to release darkpanda app. The approach used is referencing [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
 
-## Folder structure
+We build release bundle using master branch. We use microsoft appcenter to build android production bundle.
+Go to [appcenter.ms](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches) click on `Build` button on the left side bar. Choose master branch and click on `Build now` button. 
+After it's successfully build, go to [build page](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches/master/builds/141) to download the bundle. Submit this bundle to google play console to publish it
+to store.
 
-Please follow this [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
+The approach follows this writeup [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
+## Folder Structure
+
+We use domain driven layout to organize folder structure:
+
+```
+lib
+    contracts
+    enums
+    bloc
+    components
+    views
+    services
+    screens
+```
+
+Please read through this article for more insight [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
 ### Environment variables
+
+```
+ENV=development
+
+SERVER_HOST=
+
+# Pubnub credentials
+PUBNUB_PUBLISH_KEY=
+PUBNUB_SUBSCRIBE_KEY=
+PUBNUB_SECRET_KEY=
+
+# GCP credentials
+GEOCODING_APIS=
+
+# Android app secret
+APPCENTER_ANDROID_APP_SECRET=
+```
 
 The app will retrieve it's environment variables from `.env` on local file system. For production build, the app retrieve environment variables from appcenter. Appcenter provides customed env configurations that are retrievable when building. Please refer to this [official reference](https://docs.microsoft.com/en-us/appcenter/build/custom/variables/).
 
