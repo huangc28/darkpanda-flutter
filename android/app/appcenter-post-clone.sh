@@ -11,7 +11,9 @@ set -x
 
 cd ..
 git clone -b stable https://github.com/flutter/flutter.git
+cd /flutter
 git checkout 2.10.3
+cd ..
 export PATH=`pwd`/flutter/bin:$PATH
 
 # switch flutter channel to 'stable' and upgrade to latest build
