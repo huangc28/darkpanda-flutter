@@ -15,7 +15,8 @@ export PATH=`pwd`/flutter/bin:$PATH
 
 # switch flutter channel to 'stable' and upgrade to latest build
 flutter channel stable
-flutter downgrade
+flutter upgrade
+y | flutter downgrade 2.10.3
 
 # accepting all licenses
 yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
