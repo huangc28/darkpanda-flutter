@@ -161,7 +161,7 @@ class _EditBodyState extends State<EditBody> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: viewPortHeight * 0.05),
-                  _budgetInput(),
+                  // _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   ServiceTypeField(
                     controller: _serviceTypeController,

@@ -116,7 +116,7 @@ class _BodyState extends State<Body> {
           SizedBox(height: 45),
           _buildAddressTimeCardInfo(),
           SizedBox(height: 20),
-          _buildDpCardInfo(),
+          // _buildDpCardInfo(),
           SizedBox(height: 20),
           _buildMyDpPointInfo(),
           SizedBox(height: 50),

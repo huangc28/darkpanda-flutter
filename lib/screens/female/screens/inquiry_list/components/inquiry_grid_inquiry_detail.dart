@@ -59,14 +59,14 @@ class InquiryDetail extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Bullet(
-                    '預算: ${inquiry.budget}',
-                    style: TextStyle(
-                      height: 1.3,
-                      color: Colors.white,
-                      fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
-                    ),
-                  ),
+                  // Bullet(
+                  //   '預算: ${inquiry.budget}',
+                  //   style: TextStyle(
+                  //     height: 1.3,
+                  //     color: Colors.white,
+                  //     fontSize: 13, //SizeConfig.blockSizeVertical * 1.5, // 13,
+                  //   ),
+                  // ),
                   SizedBox(
                     height: SizeConfig.screenHeight * 0.01, //6
                   ),

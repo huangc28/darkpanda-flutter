@@ -39,7 +39,7 @@ class _InquiryDetailDialogState extends State<InquiryDetailDialog> {
               SizedBox(height: 16),
               _inquiryDetail(),
               SizedBox(height: 16),
-              _inquiryAmountDetail(),
+              // _inquiryAmountDetail(),
             ],
           ),
         ),

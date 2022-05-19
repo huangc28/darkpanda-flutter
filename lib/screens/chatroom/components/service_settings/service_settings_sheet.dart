@@ -249,17 +249,17 @@ class _ServiceSettingsSheetState extends State<ServiceSettingsSheet> {
                         children: <Widget>[
                           Column(
                             children: <Widget>[
-                              PriceField(
-                                controller: _priceController,
-                                validator: (String v) {
-                                  return v.isEmpty || v == '0' ? '請輸入價格' : null;
-                                },
-                                onSaved: (String v) {
-                                  _serviceSetting = _serviceSetting.copyWith(
-                                    price: double.tryParse(v),
-                                  );
-                                },
-                              ),
+                              // PriceField(
+                              //   controller: _priceController,
+                              //   validator: (String v) {
+                              //     return v.isEmpty || v == '0' ? '請輸入價格' : null;
+                              //   },
+                              //   onSaved: (String v) {
+                              //     _serviceSetting = _serviceSetting.copyWith(
+                              //       price: double.tryParse(v),
+                              //     );
+                              //   },
+                              // ),
 
                               GestureDetector(
                                 onTap: _navigateToServiceSelector,

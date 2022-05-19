@@ -173,7 +173,7 @@ class _BodyState extends State<Body> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: viewPortHeight * 0.02),
-                  _budgetInput(),
+                  // _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   ServiceTypeField(
                     readOnly: widget.serviceName != null,

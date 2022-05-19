@@ -31,7 +31,7 @@ class ServiceConfirmedMessage extends Message {
       from: data['from'],
       to: data['to'],
       createdAt: Message.fieldToDateTime(data['created_at']),
-      price: data['price'].toDouble() ?? 0,
+      price: data['price'] != null ? data['price'].toDouble() : 0,
       duration: data['duration'],
       serviceTime: DateTime.fromMicrosecondsSinceEpoch(data['service_time']),
       username: data['username'],

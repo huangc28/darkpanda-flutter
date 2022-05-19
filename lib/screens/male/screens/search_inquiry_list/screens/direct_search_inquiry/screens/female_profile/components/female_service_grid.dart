@@ -40,10 +40,10 @@ class FemaleServiceGrid extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              Text(
-                userService.price.toString() + 'TWD',
-                style: TextStyle(color: Colors.white),
-              ),
+              // Text(
+              //   userService.price.toString() + 'TWD',
+              //   style: TextStyle(color: Colors.white),
+              // ),
               Text(
                 userService.duration.toString() + ' 分鐘',
                 style: TextStyle(color: Colors.white),
