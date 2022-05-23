@@ -109,7 +109,8 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
       inquiryUUID: widget.args.inquiryUUID,
     );
 
-    InquirerProfileArguments(uuid: widget.args.counterPartUUID);
+    _inquirerProfileArguments =
+        InquirerProfileArguments(uuid: widget.args.counterPartUUID);
 
     _sender = BlocProvider.of<AuthUserBloc>(context).state.user;
 
@@ -197,20 +198,13 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         if (_isDisabledChat) {
           Navigator.of(context).pop(true);
         } else {
-          await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (_) {
-              return ExitChatroomConfirmationDialog();
-            },
-          ).then((value) {
-            if (value) {
-              BlocProvider.of<ExitChatroomBloc>(context).add(
-                QuitChatroom(widget.args.channelUUID),
-              );
-            }
-            return false;
-          });
+          Navigator.of(
+            context,
+            rootNavigator: true,
+          ).pushReplacementNamed(
+            MainRoutes.male,
+            arguments: MaleAppTabItem.chat,
+          );
         }
         return false;
       },
