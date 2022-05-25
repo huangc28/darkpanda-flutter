@@ -210,6 +210,7 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                       },
                       chatroom: chatroom,
                       lastMessage: lastMsg == null ? "" : lastMsg.content,
+                      isRead: lastMsg?.isRead,
                     ),
                   );
                 },

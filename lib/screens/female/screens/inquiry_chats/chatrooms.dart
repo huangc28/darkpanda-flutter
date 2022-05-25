@@ -130,6 +130,7 @@ class _ChatRoomsState extends State<ChatRooms> {
 
                           // Chatroom grid displays the latest message of a chatroom.
                           lastMessage: lastMsg?.content,
+                          isRead: lastMsg?.isRead,
                         ),
                       );
                     },

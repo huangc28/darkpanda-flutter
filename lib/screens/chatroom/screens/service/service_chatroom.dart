@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/update_is_read_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
@@ -155,6 +156,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
     BlocProvider.of<LoadServiceDetailBloc>(context).add(
       LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+    );
+
+    BlocProvider.of<UpdateIsReadBloc>(context).add(
+      UpdateIsRead(
+        channelUUID: widget.args.channelUUID,
+      ),
     );
 
     _editMessageController.addListener(_handleEditMessage);
@@ -517,6 +524,18 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                             state.historicalMessages,
                                         currentMessages: state.currentMessages,
                                         isSendingImage: _isSendingImage,
+                                        onUpdateIsRead: (message) async {
+                                          if (message.from != _sender.uuid) {
+                                            BlocProvider.of<UpdateIsReadBloc>(
+                                                    context)
+                                                .add(
+                                              UpdateIsRead(
+                                                channelUUID:
+                                                    widget.args.channelUUID,
+                                              ),
+                                            );
+                                          }
+                                        },
                                         builder:
                                             (BuildContext context, message) {
                                           // Render different chat bubble based on message type.

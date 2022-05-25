@@ -133,6 +133,7 @@ class _ChatroomsState extends State<Chatrooms> {
                             },
                             chatroom: chatroom,
                             lastMessage: lastMsg?.content,
+                            isRead: lastMsg?.isRead,
                           ),
                         );
                       },

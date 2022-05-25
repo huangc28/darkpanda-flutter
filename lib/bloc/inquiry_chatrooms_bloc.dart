@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -152,12 +153,26 @@ class InquiryChatroomsBloc
     );
   }
 
-  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) async {
     developer.log('handle private chat on channel ID: $channelUUID');
 
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );
+
+    //check whether inquirer_uuid or picker_uuid is me,
+    //get is read
+    String UserUUID = await SecureStore().readUuid();
+    final parent = event.docChanges.first.doc.reference.parent.parent.get();
+    await parent.then((doc) {
+      if (UserUUID == doc.data()["inquirer_uuid"]) {
+        message.isRead = doc.data()["inquirer_is_read"];
+      }
+
+      if (UserUUID == doc.data()["picker_uuid"]) {
+        message.isRead = doc.data()["picker_is_read"];
+      }
+    });
 
     developer.log('dispatching private chat message: ${message.content}');
 

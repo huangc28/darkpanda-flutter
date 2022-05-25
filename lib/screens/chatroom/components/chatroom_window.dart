@@ -1,6 +1,9 @@
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/update_is_read_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/models/message.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 typedef BubbleBuilder = Widget Function(BuildContext, Message);
 
@@ -11,6 +14,7 @@ class ChatroomWindow extends StatefulWidget {
     this.currentMessages,
     this.builder,
     this.isSendingImage = false,
+    this.onUpdateIsRead,
   });
 
   final List<Message> historicalMessages;
@@ -18,6 +22,7 @@ class ChatroomWindow extends StatefulWidget {
   final BubbleBuilder builder;
   final ScrollController scrollController;
   final bool isSendingImage;
+  final Function(Message) onUpdateIsRead;
 
   @override
   _ChatroomWindowState createState() => _ChatroomWindowState();
@@ -38,6 +43,7 @@ class _ChatroomWindowState extends State<ChatroomWindow> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.currentMessages.length != oldWidget.currentMessages.length) {
+      widget.onUpdateIsRead(widget.currentMessages.first);
       _scrollWindowToBottom();
     }
   }

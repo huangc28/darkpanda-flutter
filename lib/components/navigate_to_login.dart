@@ -15,6 +15,9 @@ class NavitgateToLogin extends StatelessWidget {
 
     // Remove fcm topic
     await SecureStore().delFcmTopic();
+
+    // Remove uuid
+    await SecureStore().delUuid();
   }
 
   @override

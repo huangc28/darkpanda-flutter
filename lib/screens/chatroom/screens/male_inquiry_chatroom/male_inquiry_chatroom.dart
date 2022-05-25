@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/update_is_read_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart' as img;
@@ -118,6 +119,12 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
       InitCurrentChatroom(
         channelUUID: widget.args.channelUUID,
         counterPartyUUID: widget.args.counterPartUUID,
+      ),
+    );
+
+    BlocProvider.of<UpdateIsReadBloc>(context).add(
+      UpdateIsRead(
+        channelUUID: widget.args.channelUUID,
       ),
     );
 
@@ -390,6 +397,15 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
       historicalMessages: historicalMessages,
       currentMessages: currentMessages,
       isSendingImage: _isSendingImage,
+      onUpdateIsRead: (message) async {
+        if (message.from != _sender.uuid) {
+          BlocProvider.of<UpdateIsReadBloc>(context).add(
+            UpdateIsRead(
+              channelUUID: widget.args.channelUUID,
+            ),
+          );
+        }
+      },
       builder: (BuildContext context, message) {
         return ChatBubbleRenderer(
           message: message,

@@ -159,4 +159,17 @@ class InquiryChatroomApis extends BaseClient {
 
     return res;
   }
+
+  Future<http.Response> updateIsRead(String channelUUID) async {
+    final request = http.Request(
+      'POST',
+      buildUri('/v1/chat/emit-update-is-read', {
+        'channel_uuid': channelUUID,
+      }),
+    );
+
+    await withTokenFromSecureStore(request);
+
+    return sendWithResponse(request);
+  }
 }

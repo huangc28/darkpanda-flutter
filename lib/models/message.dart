@@ -8,22 +8,25 @@ class Message extends Equatable {
     this.from,
     this.to,
     this.createdAt,
+    this.isRead,
   });
 
   final String content;
   final String from;
   final String to;
   final DateTime createdAt;
+  bool isRead;
 
   static DateTime fieldToDateTime(dynamic field) => tryParseToDateTime(field);
 
   factory Message.fromMap(Map<String, dynamic> data) {
     return Message(
-      content: data['content'] ?? '',
-      from: data['from'] ?? '',
-      to: data['to'] ?? '',
-      createdAt: Message.fieldToDateTime(data['created_at']),
-    );
+            content: data['content'] ?? '',
+            from: data['from'] ?? '',
+            to: data['to'] ?? '',
+            createdAt: Message.fieldToDateTime(data['created_at']),
+            isRead: data['is_read']) ??
+        true;
   }
 
   @override
@@ -32,5 +35,6 @@ class Message extends Equatable {
         from,
         to,
         createdAt,
+        isRead,
       ];
 }

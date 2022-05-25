@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/dp_not_read_circle.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +12,13 @@ class ServiceChatroomGrid extends StatelessWidget {
     this.chatroom,
     this.onEnterChat,
     this.lastMessage = '',
+    this.isRead,
   });
 
   final IncomingService chatroom;
   final Function(IncomingService) onEnterChat;
   final String lastMessage;
+  final bool isRead;
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +36,25 @@ class ServiceChatroomGrid extends StatelessWidget {
         ),
         child: Column(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: UserAvatar(chatroom.chatPartnerAvatarUrl),
-                  ),
+            Stack(
+              children: [
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: UserAvatar(chatroom.chatPartnerAvatarUrl),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: _buildChatInfoBar(),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 3,
-                  child: _buildChatInfoBar(),
-                ),
+                if (isRead != null)
+                  if (isRead == false) _buildIsReadCircle(),
               ],
             ),
           ],
@@ -101,6 +110,7 @@ class ServiceChatroomGrid extends StatelessWidget {
               vertical: 10.0,
             ),
             child: Container(
+              padding: EdgeInsets.only(right: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -127,6 +137,14 @@ class ServiceChatroomGrid extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildIsReadCircle() {
+    return Positioned(
+      right: 15,
+      top: 20,
+      child: DPNotReadCircle(),
     );
   }
 }

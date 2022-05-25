@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 
@@ -16,6 +18,7 @@ import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/contracts/chatroom.dart'
     show InquiryChatMessagesBloc, DispatchMessage;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'load_direct_inquiry_chatrooms_event.dart';
 part 'load_direct_inquiry_chatrooms_state.dart';
@@ -124,12 +127,27 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     }
   }
 
-  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) async {
     developer.log('handle private chat on channel ID: $channelUUID');
 
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );
+
+    //check whether inquirer_uuid or picker_uuid is me,
+    //get is read
+    String UserUUID = await SecureStore().readUuid();
+
+    final parent = event.docChanges.first.doc.reference.parent.parent.get();
+    await parent.then((doc) {
+      if (UserUUID == doc.data()["inquirer_uuid"]) {
+        message.isRead = doc.data()["inquirer_is_read"];
+      }
+
+      if (UserUUID == doc.data()["picker_uuid"]) {
+        message.isRead = doc.data()["picker_is_read"];
+      }
+    });
 
     developer.log('dispatching private chat message: ${message.content}');
 

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/update_is_read_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -137,6 +139,12 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
 
     BlocProvider.of<LoadServiceDetailBloc>(context).add(
       LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+    );
+
+    BlocProvider.of<UpdateIsReadBloc>(context).add(
+      UpdateIsRead(
+        channelUUID: widget.args.channelUUID,
+      ),
     );
 
     _editMessageController.addListener(_handleEditMessage);
@@ -410,6 +418,20 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
                                               currentMessages:
                                                   state.currentMessages,
                                               isSendingImage: _isSendingImage,
+                                              onUpdateIsRead: (message) {
+                                                if (message.from !=
+                                                    _sender.uuid) {
+                                                  BlocProvider.of<
+                                                              UpdateIsReadBloc>(
+                                                          context)
+                                                      .add(
+                                                    UpdateIsRead(
+                                                      channelUUID: widget
+                                                          .args.channelUUID,
+                                                    ),
+                                                  );
+                                                }
+                                              },
                                               builder: (BuildContext context,
                                                   message) {
                                                 return ChatBubbleRenderer(
