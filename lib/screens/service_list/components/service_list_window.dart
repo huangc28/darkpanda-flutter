@@ -196,7 +196,8 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                           Navigator.of(
                             context,
                             rootNavigator: true,
-                          ).pushNamed(
+                          )
+                              .pushNamed(
                             MainRoutes.maleServiceChatroom,
                             arguments: ServiceChatroomScreenArguments(
                               channelUUID: chatroom.channelUuid,
@@ -205,7 +206,11 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                               serviceUUID: chatroom.serviceUuid,
                               routeTypes: RouteTypes.fromIncomingService,
                             ),
-                          );
+                          )
+                              .then((value) {
+                            BlocProvider.of<LoadIncomingServiceBloc>(context)
+                                .add(LoadIncomingService());
+                          });
                         }
                       },
                       chatroom: chatroom,
