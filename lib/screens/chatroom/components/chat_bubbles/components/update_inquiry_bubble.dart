@@ -38,7 +38,9 @@ class UpdateInquiryBubble extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              onTapMessage(message);
+              if (onTapMessage != null) {
+                onTapMessage(message);
+              }
             },
             child: Container(
               alignment: Alignment.center,
