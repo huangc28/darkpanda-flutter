@@ -25,8 +25,8 @@ import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/services/apis
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/topup_dp.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 
-import '../male_chatroom/bloc/disagree_inquiry_bloc.dart';
-import '../male_chatroom/bloc/exit_chatroom_bloc.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show DisagreeInquiryBloc, ExitChatroomBloc;
 import 'screens/search_inquiry/screens/inquiry_form/inquiry_form.dart';
 import 'screens/search_inquiry/search_inquiry.dart';
 

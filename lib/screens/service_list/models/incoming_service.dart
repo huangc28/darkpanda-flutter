@@ -1,9 +1,9 @@
 import 'dart:developer' as developer;
-
+import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 
-class IncomingService {
-  IncomingService({
+class IncomingService extends Equatable {
+  const IncomingService({
     this.serviceUuid,
     this.status,
     this.appointmentTime,
@@ -16,16 +16,30 @@ class IncomingService {
     this.chatPartnerUserUuid,
   });
 
-  String serviceUuid;
-  String status;
-  DateTime appointmentTime;
-  String channelUuid;
-  String inquiryUuid;
-  String inquirerUuid;
+  final String serviceUuid;
+  final String status;
+  final DateTime appointmentTime;
+  final String channelUuid;
+  final String inquiryUuid;
+  final String inquirerUuid;
   final List<Message> messages;
-  String chatPartnerAvatarUrl;
-  String chatPartnerUsername;
-  String chatPartnerUserUuid;
+  final String chatPartnerAvatarUrl;
+  final String chatPartnerUsername;
+  final String chatPartnerUserUuid;
+
+  @override
+  List<Object> get props => [
+        this.serviceUuid,
+        this.status,
+        this.appointmentTime,
+        this.channelUuid,
+        this.inquiryUuid,
+        this.inquirerUuid,
+        this.messages,
+        this.chatPartnerAvatarUrl,
+        this.chatPartnerUsername,
+        this.chatPartnerUserUuid,
+      ];
 
   Map<String, dynamic> toMap() => {
         'service_uuid': serviceUuid,
@@ -70,8 +84,6 @@ class IncomingService {
       chatPartnerAvatarUrl: data['chat_partner_avatar_url'],
       chatPartnerUsername: data['chat_partner_username'],
       chatPartnerUserUuid: data['chat_partner_user_uuid'],
-      // expiredAt: DateTime.parse(data['expired_at']),
-      // createdAt: DateTime.parse(data['created_at']),
     );
   }
 

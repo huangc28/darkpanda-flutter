@@ -4,19 +4,21 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
+import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-
-// import '../models/chatroom.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show InquiryChatMessagesBloc, DispatchMessage;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'load_direct_inquiry_chatrooms_event.dart';
 part 'load_direct_inquiry_chatrooms_state.dart';
@@ -49,26 +51,13 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
       yield* _mapFetchDirectInquiryChatroomToState(event);
     } else if (event is LoadMoreChatrooms) {
       yield* _mapLoadMoreChatroomsToState(event);
-    }
-    // if (event is LeaveChatroom) {
-    //   yield* _mapLeaveChatroomToState(event);
-    // }
-    else if (event is AddChatrooms) {
+    } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     } else if (event is PutLatestMessage) {
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearDirectInquiryChatList) {
       yield* _mapClearDirectInquiryChatListToState(event);
     }
-    //else if (event is AddChatroom) {
-    //   yield* _mapAddChatroomToState(event);
-    // } else if (event is ClearInquiryList) {
-    //   yield* _mapClearInquiryListToState(event);
-    // }
-
-    // if (event is LeaveMaleChatroom) {
-    //   yield* _mapLeaveMaleChatroomToState(event);
-    // }
   }
 
   StreamSubscription<QuerySnapshot> _createChatroomSubscriptionStream(
@@ -94,31 +83,6 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     );
   }
 
-  // Stream<LoadDirectInquiryChatroomsState> _mapAddChatroomToState(
-  //     AddChatroom event) async* {
-  //   // if channel uuid exists in the current map.
-  //   // Channel uuid does not exists in map, initiate subscription stream.
-  //   // Store the stream in `privateChatStreamMap`.
-  //   final streamSub =
-  //       _createChatroomSubscriptionStream(event.chatroom.channelUUID);
-
-  //   // Put a flag to indicate that the channel has just been created. Ignore
-  //   // the first event from firestore subscription.
-  //   _chatFirstCreateMap[event.chatroom.channelUUID] = true;
-
-  //   state.privateChatStreamMap[event.chatroom.channelUUID] = streamSub;
-
-  //   // Insert new chatroom at the start of the chatroom array.
-  //   state.chatrooms.insert(0, event.chatroom);
-
-  //   final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
-
-  //   yield LoadDirectInquiryChatroomsState.updateChatrooms(
-  //     state,
-  //     privateChatStreamMap: newPrivateChatStreamMap,
-  //   );
-  // }
-
   Stream<LoadDirectInquiryChatroomsState> _mapAddChatroomsToState(
       AddChatrooms event) async* {
     // Iterate through list of chatrooms. Skip channel subscription
@@ -141,13 +105,13 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
       // Insert new chatroom at the start of the chatroom array.
       state.chatrooms.insert(0, chatroom);
     }
+
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
     yield LoadDirectInquiryChatroomsState.updateChatrooms(
       state,
       chatrooms: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
-      // currentPage: state.currentPage + 1,
     );
 
     for (final chatroom in event.chatrooms) {
@@ -163,12 +127,27 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
     }
   }
 
-  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) async {
     developer.log('handle private chat on channel ID: $channelUUID');
 
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );
+
+    //check whether inquirer_uuid or picker_uuid is me,
+    //get is read
+    String UserUUID = await SecureStore().readUuid();
+
+    final parent = event.docChanges.first.doc.reference.parent.parent.get();
+    await parent.then((doc) {
+      if (UserUUID == doc.data()["inquirer_uuid"]) {
+        message.isRead = doc.data()["inquirer_is_read"];
+      }
+
+      if (UserUUID == doc.data()["picker_uuid"]) {
+        message.isRead = doc.data()["picker_is_read"];
+      }
+    });
 
     developer.log('dispatching private chat message: ${message.content}');
 
@@ -186,58 +165,6 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
       ),
     );
   }
-
-  // Stream<InquiryChatroomsState> _mapLeaveChatroomToState(
-  //     LeaveChatroom event) async* {
-  //   // Unsubscribe specified private chat stream.
-  //   if (state.privateChatStreamMap.containsKey(event.channelUUID)) {
-  //     final stream = state.privateChatStreamMap[event.channelUUID];
-
-  //     stream.cancel();
-
-  //     state.privateChatStreamMap.remove(event.channelUUID);
-
-  //     state.chatrooms
-  //         .where((chatroom) => chatroom.channelUUID != event.channelUUID)
-  //         .toList();
-
-  //     yield InquiryChatroomsState.updateChatrooms(state);
-
-  //     // Remove chatroom in the app alone with it's messages.
-  //     inquiryChatMesssagesBloc.add(
-  //       RemovePrivateChatRoom(chatroomUUID: event.channelUUID),
-  //     );
-  //   } else {
-  //     developer.log(
-  //       'Stream intends to unsubscribe is\'t exist for the given  channel UUID',
-  //       name: 'private_chat:unsubscribe_stream',
-  //     );
-  //   }
-
-  //   yield null;
-  // }
-
-  // Stream<InquiryChatroomsState> _mapLeaveMaleChatroomToState(
-  //     LeaveMaleChatroom event) async* {
-  //   // Unsubscribe specified private chat stream.
-  //   if (state.privateChatStreamMap.containsKey(event.channelUUID)) {
-  //     final stream = state.privateChatStreamMap[event.channelUUID];
-
-  //     stream.cancel();
-
-  //     state.privateChatStreamMap.remove(event.channelUUID);
-
-  //     state.chatrooms
-  //         .removeWhere((element) => element.channelUUID == event.channelUUID);
-
-  //     yield InquiryChatroomsState.updateChatrooms(state);
-  //   } else {
-  //     developer.log(
-  //       'Stream intends to unsubscribe is\'t exist for the given  channel UUID',
-  //       name: 'private_chat:unsubscribe_stream',
-  //     );
-  //   }
-  // }
 
   Stream<LoadDirectInquiryChatroomsState> _mapFetchDirectInquiryChatroomToState(
       FetchDirectInquiryChatrooms event) async* {
@@ -260,15 +187,13 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
         );
       }
 
-      final Map<String, dynamic> respMap = json.decode(resp.body);
+      final Map<String, dynamic> respMap = jsonDecode(resp.body);
 
       final chatrooms = respMap['chats']
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      add(
-        AddChatrooms(chatrooms),
-      );
+      add(AddChatrooms(chatrooms));
     } on APIException catch (err) {
       developer.log(
         err.toString(),
@@ -276,7 +201,7 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
       );
 
       yield LoadDirectInquiryChatroomsState.loadFailed(state, err);
-    } on AppGeneralExeption catch (e) {
+    } catch (e) {
       developer.log(
         e.toString(),
         name: "AppGeneralExeption: fetch_chats_bloc",
@@ -360,9 +285,4 @@ class LoadDirectInquiryChatroomsBloc extends Bloc<
       ClearDirectInquiryChatList event) async* {
     yield LoadDirectInquiryChatroomsState.clearInqiuryChatList(state);
   }
-
-  // Stream<InquiryChatroomsState> _mapClearInquiryListToState(
-  //     ClearInquiryList event) async* {
-  //   yield InquiryChatroomsState.init();
-  // }
 }

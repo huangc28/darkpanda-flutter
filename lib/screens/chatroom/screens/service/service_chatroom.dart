@@ -1,27 +1,19 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/bot_invitation_chat_bubble.dart';
+import 'package:darkpanda_flutter/screens/chatroom/bloc/update_is_read_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:darkpanda_flutter/components/camera_screen.dart';
-import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
 import 'package:darkpanda_flutter/screens/rate/rate.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:image/image.dart' as img;
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
-import 'package:darkpanda_flutter/components/full_screen_image.dart';
-import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 import 'package:darkpanda_flutter/models/chat_image.dart';
-import 'package:darkpanda_flutter/models/image_message.dart';
-import 'package:darkpanda_flutter/models/start_service_message.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/send_image_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/chatroom/bloc/upload_image_message_bloc.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/cancel_service_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/image_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/start_service_bubble.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_historical_services_bloc.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/inquirer_profile/bloc/load_user_images_bloc.dart';
@@ -29,16 +21,11 @@ import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screens/in
 import 'package:darkpanda_flutter/screens/profile/bloc/load_rate_bloc.dart';
 import 'package:darkpanda_flutter/screens/profile/services/rate_api_client.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
-
-import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
 import 'package:darkpanda_flutter/components/loading_icon.dart';
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
+import 'package:darkpanda_flutter/components/full_screen_image.dart';
 
-import 'package:darkpanda_flutter/models/disagree_inquiry_message.dart';
-import 'package:darkpanda_flutter/models/quit_chatroom_message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/disagree_inquiry_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/quit_chatroom_bubble.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/screens/service_detail.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
 import 'package:darkpanda_flutter/screens/service_list/screens/historical_service_detail/bloc/load_payment_detail_bloc.dart';
@@ -53,11 +40,10 @@ import 'package:darkpanda_flutter/enums/gender.dart';
 import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
 
-import 'package:darkpanda_flutter/screens/male/bottom_navigation.dart';
+import 'package:darkpanda_flutter/contracts/female.dart' show FemaleTabItem;
+import 'package:darkpanda_flutter/contracts/male.dart' show MaleAppTabItem;
+
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/qr_scanner.dart';
-import 'package:darkpanda_flutter/screens/chatroom/components/payment_completed_bubble.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_qrcode_apis.dart';
 
@@ -65,32 +51,30 @@ import 'package:darkpanda_flutter/screens/chatroom/bloc/send_message_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/load_my_dp_bloc.dart';
 
 import 'package:darkpanda_flutter/models/auth_user.dart';
-import 'package:darkpanda_flutter/models/service_confirmed_message.dart';
 import 'package:darkpanda_flutter/models/update_inquiry_message.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:darkpanda_flutter/models/payment_completed_message.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'bloc/cancel_service_bloc.dart';
 import 'bloc/current_service_chatroom_bloc.dart';
 import 'bloc/load_cancel_service_bloc.dart';
-import 'bloc/load_service_detail_bloc.dart';
 import 'bloc/scan_service_qrcode_bloc.dart';
 import 'bloc/service_qrcode_bloc.dart';
 import 'bloc/service_start_notifier_bloc.dart';
 import 'components/send_message_bar.dart';
 import 'components/service_start_banner.dart';
 import 'screen_arguments/qrscanner_screen_arguments.dart';
-import '../../components/chat_bubble.dart';
-import '../../components/confirmed_service_bubble.dart';
-import '../../components/update_inquiry_bubble.dart';
 import '../../components/chatroom_window.dart';
 import 'services/service_apis.dart';
 import 'components/service_alert_dialog.dart';
 
-part 'screen_arguments/service_chatroom_screen_arguments.dart';
-part 'components/notification_banner.dart';
-part 'components/male_unpaid_info.dart';
+import '../../screen_arguments/service_chatroom_screen_arguments.dart';
+import 'components/notification_banner.dart';
+
+import '../../bloc/load_service_detail_bloc.dart';
+import '../../models/inquiry_detail.dart';
+import 'package:darkpanda_flutter/components/chat_bubble_renderer.dart';
+import 'package:darkpanda_flutter/models/cancel_service_message.dart';
 
 class ServiceChatroom extends StatefulWidget {
   const ServiceChatroom({
@@ -172,6 +156,12 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
     BlocProvider.of<LoadServiceDetailBloc>(context).add(
       LoadServiceDetail(serviceUuid: widget.args.serviceUUID),
+    );
+
+    BlocProvider.of<UpdateIsReadBloc>(context).add(
+      UpdateIsRead(
+        channelUUID: widget.args.channelUUID,
+      ),
     );
 
     _editMessageController.addListener(_handleEditMessage);
@@ -289,7 +279,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             ).pushNamedAndRemoveUntil(
               MainRoutes.female,
               ModalRoute.withName('/'),
-              arguments: TabItem.manage,
+              arguments: FemaleTabItem.manage,
             );
           } else {
             Navigator.of(context).pop();
@@ -534,97 +524,42 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                                             state.historicalMessages,
                                         currentMessages: state.currentMessages,
                                         isSendingImage: _isSendingImage,
+                                        onUpdateIsRead: (message) async {
+                                          if (message.from != _sender.uuid) {
+                                            BlocProvider.of<UpdateIsReadBloc>(
+                                                    context)
+                                                .add(
+                                              UpdateIsRead(
+                                                channelUUID:
+                                                    widget.args.channelUUID,
+                                              ),
+                                            );
+                                          }
+                                        },
                                         builder:
                                             (BuildContext context, message) {
                                           // Render different chat bubble based on message type.
-                                          if (message
-                                              is ServiceConfirmedMessage) {
-                                            return ConfirmedServiceBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is UpdateInquiryMessage) {
-                                            return UpdateInquiryBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                              onTapMessage: (message) {},
-                                            );
-                                          } else if (message
-                                              is DisagreeInquiryMessage) {
-                                            return DisagreeInquiryBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is QuitChatroomMessage) {
-                                            return QuitChatroomBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is PaymentCompletedMessage) {
-                                            return PaymentCompletedBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is StartServiceMessage) {
-                                            return StartServiceBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message
-                                              is CancelServiceMessage) {
-                                            // - Disable all functionalities of the chatroom.
-                                            _isDisabledChat = true;
-
-                                            return CancelServiceBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          } else if (message is ImageMessage) {
-                                            return ImageBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                              onEnlarge: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) {
-                                                      return FullScreenImage(
-                                                        imageUrl: message
-                                                            .imageUrls[0],
-                                                        tag: "chat_image",
-                                                      );
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          } else if (message
-                                              is BotInvitationChatMessage) {
-                                            return BotInvitationChatBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              myGender: _sender.gender,
-                                              message: message,
-                                            );
-                                          } else {
-                                            return ChatBubble(
-                                              isMe:
-                                                  _sender.uuid == message.from,
-                                              message: message,
-                                            );
-                                          }
+                                          return ChatBubbleRenderer(
+                                            message: message,
+                                            isMe: _sender.uuid == message.from,
+                                            myGender: _sender.gender,
+                                            avatarURL:
+                                                _inquirerProfile.avatarUrl,
+                                            onTabImageBubble: (imageMessage) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) {
+                                                    return FullScreenImage(
+                                                      imageUrl: imageMessage
+                                                          .imageUrls[0],
+                                                      tag: "chat_image",
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          );
                                         },
                                       ),
                                     );
@@ -698,7 +633,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
             },
           )).then((value) {
             // Update state for cancel service status
-            // _isDisabledChat
             setState(() {});
           });
         },
@@ -822,7 +756,7 @@ class _ServiceChatroomState extends State<ServiceChatroom>
               ).pushNamedAndRemoveUntil(
                 MainRoutes.female,
                 ModalRoute.withName('/'),
-                arguments: TabItem.manage,
+                arguments: FemaleTabItem.manage,
               );
             } else {
               Navigator.of(context).pop();
@@ -855,7 +789,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
 
           return GestureDetector(
             onTap: () {
-              print('Inquirer profile');
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {

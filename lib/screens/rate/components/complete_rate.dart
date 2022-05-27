@@ -7,7 +7,7 @@ import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/auth_user_bloc.dart';
 import 'package:darkpanda_flutter/enums/gender.dart';
-import 'package:darkpanda_flutter/screens/female/bottom_navigation.dart';
+import 'package:darkpanda_flutter/contracts/female.dart';
 
 class CompleteRate extends StatefulWidget {
   const CompleteRate({
@@ -43,7 +43,7 @@ class _CompleteRateState extends State<CompleteRate>
           ).pushNamedAndRemoveUntil(
             MainRoutes.female,
             ModalRoute.withName('/'),
-            arguments: TabItem.manage,
+            arguments: FemaleTabItem.manage,
           );
         }
 
@@ -114,7 +114,7 @@ class _CompleteRateState extends State<CompleteRate>
                         ).pushNamedAndRemoveUntil(
                           MainRoutes.female,
                           ModalRoute.withName('/'),
-                          arguments: TabItem.manage,
+                          arguments: FemaleTabItem.manage,
                         );
                       }
 

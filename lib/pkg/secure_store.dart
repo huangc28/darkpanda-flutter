@@ -4,6 +4,7 @@ class SecureStore {
   static const JwtTokenKey = 'jwt';
   static const GenderKey = 'gender';
   static const FcmTopicKey = 'fcm_topic';
+  static const UuidKey = 'uuid';
 
   static final SecureStore _secureStore =
       new SecureStore._internal(fsc: new FlutterSecureStorage());
@@ -44,4 +45,14 @@ class SecureStore {
   Future<String> readFcmTopic() => fsc.read(key: SecureStore.FcmTopicKey);
 
   Future<void> delFcmTopic() => fsc.delete(key: SecureStore.FcmTopicKey);
+
+  // Store fcm topic
+  Future<void> writeUuid(String Uuid) => fsc.write(
+        key: SecureStore.UuidKey,
+        value: Uuid,
+      );
+
+  Future<String> readUuid() => fsc.read(key: SecureStore.UuidKey);
+
+  Future<void> delUuid() => fsc.delete(key: SecureStore.UuidKey);
 }

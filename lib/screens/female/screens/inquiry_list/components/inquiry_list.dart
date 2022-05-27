@@ -1,9 +1,8 @@
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:flutter/material.dart';
 
+import 'package:darkpanda_flutter/models/inquiry.dart';
 import 'package:darkpanda_flutter/components/load_more_scrollable.dart';
-
-import '../../../../../models/inquiry.dart';
 
 typedef InquiryItemBuilder = Widget Function(
     BuildContext context, Inquiry inquiry, int index);

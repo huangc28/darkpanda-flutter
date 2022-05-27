@@ -1,11 +1,10 @@
-import 'package:darkpanda_flutter/enums/inquiry_status.dart';
 import 'package:flutter/material.dart';
-import 'package:darkpanda_flutter/util/size_config.dart';
 
+import 'package:darkpanda_flutter/enums/inquiry_status.dart';
+import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_chat_list/screens/direct_inquiry_request/models/direct_inquiry_requests.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/components/cancel_inquiry_confirmation_dialog.dart';
-
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 
 class DirectInquiryRequestDetail extends StatelessWidget {
@@ -82,7 +81,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
               bottom: SizeConfig.screenHeight * 0.025,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 inquiry.inquiryStatus == InquiryStatus.chatting
                     ? _startToChatButton()
@@ -106,11 +105,11 @@ class DirectInquiryRequestDetail extends StatelessWidget {
         child: DPTextButton(
           loading: inquiryUuid == inquiry.inquiryUuid && agreeToChatIsLoading,
           disabled: inquiryUuid == inquiry.inquiryUuid && agreeToChatIsLoading,
-          theme: DPTextButtonThemes.deepGrey,
+          theme: DPTextButtonThemes.purple,
           onPressed: () {
             onTapAgreeToChat(inquiry.inquiryUuid);
           },
-          text: '立即洽談',
+          text: '同意聊天',
         ),
       ),
     );
@@ -125,7 +124,7 @@ class DirectInquiryRequestDetail extends StatelessWidget {
           onPressed: () {
             onTapStartToChat(inquiry.inquiryUuid);
           },
-          text: '開始洽談',
+          text: '開始聊天',
         ),
       ),
     );
@@ -134,30 +133,28 @@ class DirectInquiryRequestDetail extends StatelessWidget {
   Widget _cancelButton(context) {
     return Expanded(
       child: SizedBox(
-        child: InkWell(
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.06,
-            child: Image.asset("lib/screens/male/assets/cancelButton.png"),
-          ),
-          onTap: () {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return CancelInquiryConfirmationDialog(
-                  title: '確定跳過此男生？',
-                  onCancel: '取消',
-                  onConfirm: '確定跳過',
-                );
-              },
-            ).then((value) {
-              if (value) {
-                onTapSkip(inquiry.inquiryUuid);
-              }
-            });
-          },
-        ),
-      ),
+          height: 44,
+          child: DPTextButton(
+            theme: DPTextButtonThemes.lightGrey,
+            onPressed: () {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return CancelInquiryConfirmationDialog(
+                    title: '確定跳過此男生？',
+                    onCancel: '取消',
+                    onConfirm: '確定跳過',
+                  );
+                },
+              ).then((value) {
+                if (value) {
+                  onTapSkip(inquiry.inquiryUuid);
+                }
+              });
+            },
+            text: '跳過',
+          )),
     );
   }
 }

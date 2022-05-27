@@ -9,8 +9,7 @@ import 'package:darkpanda_flutter/components/bullet.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 
 import 'package:darkpanda_flutter/components/unfocus_primary.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
@@ -162,7 +161,7 @@ class _EditBodyState extends State<EditBody> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: viewPortHeight * 0.05),
-                  _budgetInput(),
+                  // _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   ServiceTypeField(
                     controller: _serviceTypeController,

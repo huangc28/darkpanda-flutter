@@ -6,8 +6,9 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/enums/service_types.dart';
 
 // TODO service settings should be extracted to global component directory since both chatroom and inquiry uses it.
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
+// import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_type_field.dart';
+// import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/components/service_settings/service_settings_sheet.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/load_service_list_bloc.dart';
 import 'package:darkpanda_flutter/screens/address_selector/address_selector.dart';
 import 'package:darkpanda_flutter/screens/male/screens/search_inquiry_list/screens/search_inquiry/screens/inquiry_form/models/inquiry_forms.dart';
@@ -172,7 +173,7 @@ class _BodyState extends State<Body> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(height: viewPortHeight * 0.02),
-                  _budgetInput(),
+                  // _budgetInput(),
                   SizedBox(height: viewPortHeight * 0.05),
                   ServiceTypeField(
                     readOnly: widget.serviceName != null,
@@ -333,41 +334,6 @@ class _BodyState extends State<Body> {
                 Duration(minutes: int.tryParse(_durationController.text));
           },
         );
-      },
-    );
-  }
-
-  Widget _serviceTypeRadio() {
-    return BlocConsumer<LoadServiceListBloc, LoadServiceListState>(
-      listener: (context, state) {
-        if (state.status == AsyncLoadingStatus.done) {
-          setState(() {
-            serviceList = state.serviceList;
-            _serviceTypeController.text = serviceList.serviceNames[0].name;
-            _inquiryForms.serviceType = _serviceTypeController.text;
-          });
-        }
-      },
-      builder: (context, state) {
-        if (state.status == AsyncLoadingStatus.done) {
-          return Container(
-            width: double.infinity,
-            child: Column(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    alignment: WrapAlignment.start,
-                    direction: Axis.horizontal,
-                    children: serviceTypeRadioWidget,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
       },
     );
   }

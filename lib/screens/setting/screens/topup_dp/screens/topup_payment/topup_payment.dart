@@ -11,7 +11,6 @@ import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/cancel_s
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/services/service_apis.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/bloc/buy_service_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/screens/buy_service/buy_service.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/models/inquiry_detail.dart';
 import 'package:darkpanda_flutter/screens/male/services/search_inquiry_apis.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/bloc/buy_dp_bloc.dart';
 import 'package:darkpanda_flutter/screens/setting/screens/topup_dp/utils/card_month_input_formatter.dart';
@@ -20,6 +19,8 @@ import 'package:darkpanda_flutter/util/size_config.dart';
 
 import '../../utils//card_utils.dart';
 import '../../models/payment_card.dart';
+
+import 'package:darkpanda_flutter/contracts/chatroom.dart' show InquiryDetail;
 import 'components/topup_payment_confirmation_dialog.dart';
 
 class TopupPayment extends StatefulWidget {

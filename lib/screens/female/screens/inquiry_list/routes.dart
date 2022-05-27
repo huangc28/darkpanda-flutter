@@ -5,8 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show FetchInquiryChatroomBloc, APIClient;
 
 import './inquiry_list.dart';
 import './bloc/inquiries_bloc.dart';
@@ -37,6 +40,13 @@ class InquiriesRoutes extends BaseRoutes {
               create: (context) => PickupInquiryBloc(
                 apiClient: ApiClient(),
                 inquiriesBloc: BlocProvider.of<InquiriesBloc>(context),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => FetchInquiryChatroomBloc(
+                apis: APIClient(),
+                inquiryChatroomBloc:
+                    BlocProvider.of<InquiryChatroomsBloc>(context),
               ),
             ),
           ],

@@ -11,11 +11,15 @@ set -x
 
 cd ..
 git clone -b stable https://github.com/flutter/flutter.git
+cd flutter
+git checkout 2.10.3
+cd ..
 export PATH=`pwd`/flutter/bin:$PATH
 
 # switch flutter channel to 'stable' and upgrade to latest build
-flutter channel stable
-flutter upgrade 2.10.3
+# flutter channel stable
+# # flutter upgrade
+# flutter downgrade 2.10.3
 
 # accepting all licenses
 yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses

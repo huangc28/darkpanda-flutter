@@ -67,5 +67,12 @@
 		<string>https</string>
 		<string>http</string>
 	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Darkpanda 需要存取您的相本</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Darkpanda 需要存取您的相機</string>
 </dict>
 </plist>

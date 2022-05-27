@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum TabItem {
+enum FemaleTabItem {
   inquiries,
   inquiryChats,
   manage,
@@ -20,8 +20,8 @@ class TabItemAsset {
   final Image inactiveIcon;
 }
 
-Map<TabItem, TabItemAsset> TabLabelMap = {
-  TabItem.inquiries: TabItemAsset(
+Map<FemaleTabItem, TabItemAsset> TabLabelMap = {
+  FemaleTabItem.inquiries: TabItemAsset(
     label: '需求',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/inquiries_active.png'),
@@ -30,7 +30,7 @@ Map<TabItem, TabItemAsset> TabLabelMap = {
       image: AssetImage('assets/bottombar_items/inquiries_inactive.png'),
     ),
   ),
-  TabItem.inquiryChats: TabItemAsset(
+  FemaleTabItem.inquiryChats: TabItemAsset(
     label: '聊天',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/chat_active.png'),
@@ -39,7 +39,7 @@ Map<TabItem, TabItemAsset> TabLabelMap = {
       image: AssetImage('assets/bottombar_items/chat_inactive.png'),
     ),
   ),
-  TabItem.manage: TabItemAsset(
+  FemaleTabItem.manage: TabItemAsset(
     label: '服務',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/manage_active.png'),
@@ -48,7 +48,7 @@ Map<TabItem, TabItemAsset> TabLabelMap = {
       image: AssetImage('assets/bottombar_items/manage_inactive.png'),
     ),
   ),
-  TabItem.settings: TabItemAsset(
+  FemaleTabItem.settings: TabItemAsset(
     label: '設定',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/settings_active.png'),
@@ -57,7 +57,7 @@ Map<TabItem, TabItemAsset> TabLabelMap = {
       image: AssetImage('assets/bottombar_items/settings_inactive.png'),
     ),
   ),
-  TabItem.profile: TabItemAsset(
+  FemaleTabItem.profile: TabItemAsset(
     label: '我的',
     activeIcon: Image(
       image: AssetImage('assets/bottombar_items/profile_active.png'),
@@ -79,9 +79,9 @@ class BottomNavigation extends StatelessWidget {
     this.onSelectTab,
   });
 
-  final TabItem currentTab;
+  final FemaleTabItem currentTab;
 
-  final ValueChanged<TabItem> onSelectTab;
+  final ValueChanged<FemaleTabItem> onSelectTab;
 
   @override
   Widget build(BuildContext context) {
@@ -96,19 +96,19 @@ class BottomNavigation extends StatelessWidget {
         fixedColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
-          _buildBarItem(item: TabItem.inquiries),
-          _buildBarItem(item: TabItem.inquiryChats),
-          _buildBarItem(item: TabItem.manage),
-          _buildBarItem(item: TabItem.settings),
-          _buildBarItem(item: TabItem.profile),
+          _buildBarItem(item: FemaleTabItem.inquiries),
+          _buildBarItem(item: FemaleTabItem.inquiryChats),
+          _buildBarItem(item: FemaleTabItem.manage),
+          _buildBarItem(item: FemaleTabItem.settings),
+          _buildBarItem(item: FemaleTabItem.profile),
         ],
-        currentIndex: TabItem.values.indexOf(currentTab),
-        onTap: (index) => onSelectTab(TabItem.values[index]),
+        currentIndex: FemaleTabItem.values.indexOf(currentTab),
+        onTap: (index) => onSelectTab(FemaleTabItem.values[index]),
       ),
     );
   }
 
-  BottomNavigationBarItem _buildBarItem({TabItem item}) {
+  BottomNavigationBarItem _buildBarItem({FemaleTabItem item}) {
     final itemConf = TabLabelMap[item];
     final itemIcon =
         currentTab == item ? itemConf.activeIcon : itemConf.inactiveIcon;

@@ -36,10 +36,10 @@ class UserServiceGrid extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              userService.price.toString() + 'TWD',
-              style: TextStyle(color: Colors.white),
-            ),
+            // Text(
+            //   userService.price.toString() + 'TWD',
+            //   style: TextStyle(color: Colors.white),
+            // ),
             SizedBox(height: 2),
             Text(
               userService.duration.toString() + ' 分鐘',

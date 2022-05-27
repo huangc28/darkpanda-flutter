@@ -1,3 +1,4 @@
+import 'package:darkpanda_flutter/components/dp_not_read_circle.dart';
 import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
@@ -9,11 +10,13 @@ class ChatroomGrid extends StatelessWidget {
     this.chatroom,
     this.onEnterChat,
     this.lastMessage = '',
+    this.isRead,
   }) : super(key: key);
 
   final Chatroom chatroom;
   final Function(Chatroom) onEnterChat;
   final String lastMessage;
+  final bool isRead;
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +33,25 @@ class ChatroomGrid extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Row(
+            Stack(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: UserAvatar(chatroom.avatarURL),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: UserAvatar(chatroom.avatarURL),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: _buildChatInfoBar(),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 3,
-                  child: _buildChatInfoBar(),
-                ),
+                if (isRead != null)
+                  if (isRead == false) _buildIsReadCircle(),
               ],
             ),
           ],
@@ -56,6 +65,7 @@ class ChatroomGrid extends StatelessWidget {
       children: [
         Flexible(
           child: Container(
+            padding: EdgeInsets.only(right: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,6 +92,14 @@ class ChatroomGrid extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildIsReadCircle() {
+    return Positioned(
+      right: 20,
+      top: 20,
+      child: DPNotReadCircle(),
     );
   }
 }

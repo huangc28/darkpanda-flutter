@@ -12,21 +12,21 @@ import 'package:darkpanda_flutter/util/notification_service.dart';
 import './bottom_navigation.dart';
 import './tab_navigator.dart';
 
-Map<TabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
-  TabItem.inquiries: GlobalKey<NavigatorState>(),
-  TabItem.inquiryChats: GlobalKey<NavigatorState>(),
-  TabItem.manage: GlobalKey<NavigatorState>(),
-  TabItem.profile: GlobalKey<NavigatorState>(),
-  TabItem.settings: GlobalKey<NavigatorState>(),
+final Map<FemaleTabItem, GlobalKey<NavigatorState>> tabGlobalKeyMap = {
+  FemaleTabItem.inquiries: GlobalKey<NavigatorState>(),
+  FemaleTabItem.inquiryChats: GlobalKey<NavigatorState>(),
+  FemaleTabItem.manage: GlobalKey<NavigatorState>(),
+  FemaleTabItem.profile: GlobalKey<NavigatorState>(),
+  FemaleTabItem.settings: GlobalKey<NavigatorState>(),
 };
 
 class FemaleApp extends StatefulWidget {
   const FemaleApp({
     Key key,
-    this.selectedTab = TabItem.inquiries,
+    this.selectedTab = FemaleTabItem.inquiries,
   }) : super(key: key);
 
-  final TabItem selectedTab;
+  final FemaleTabItem selectedTab;
 
   @override
   _FemaleAppState createState() => _FemaleAppState();
@@ -37,7 +37,7 @@ class FemaleApp extends StatefulWidget {
 //   - If user has not logged in, we need to navigate user
 //   - To perform login / registration process before proceeding
 class _FemaleAppState extends State<FemaleApp> {
-  TabItem _currentTab;
+  FemaleTabItem _currentTab;
 
   @override
   void initState() {
@@ -58,10 +58,11 @@ class _FemaleAppState extends State<FemaleApp> {
         body: ValueListenableBuilder(
           valueListenable: DarkPandaApp.valueNotifier,
           builder: (context, value, child) {
-            // If value is true which mean token is expired
+            // If value is true which means the token is expired
             if (value == true) {
               return NavitgateToLogin();
             }
+
             return _buildBody();
           },
         ),
@@ -76,16 +77,16 @@ class _FemaleAppState extends State<FemaleApp> {
   Widget _buildBody() {
     return Stack(
       children: [
-        _buildOffstageNavigator(TabItem.inquiries),
-        _buildOffstageNavigator(TabItem.inquiryChats),
-        _buildOffstageNavigator(TabItem.manage),
-        _buildOffstageNavigator(TabItem.settings),
-        _buildOffstageNavigator(TabItem.profile),
+        _buildOffstageNavigator(FemaleTabItem.inquiries),
+        _buildOffstageNavigator(FemaleTabItem.inquiryChats),
+        _buildOffstageNavigator(FemaleTabItem.manage),
+        _buildOffstageNavigator(FemaleTabItem.settings),
+        _buildOffstageNavigator(FemaleTabItem.profile),
       ],
     );
   }
 
-  Widget _buildOffstageNavigator(TabItem tabItem) {
+  Widget _buildOffstageNavigator(FemaleTabItem tabItem) {
     return Offstage(
       offstage: _currentTab != tabItem,
       child: TabNavigator(
@@ -96,7 +97,7 @@ class _FemaleAppState extends State<FemaleApp> {
     );
   }
 
-  void _handleSelectTab(TabItem item) {
+  void _handleSelectTab(FemaleTabItem item) {
     setState(
       () {
         if (_currentTab != item) {

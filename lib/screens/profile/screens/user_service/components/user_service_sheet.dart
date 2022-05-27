@@ -148,7 +148,6 @@ class _UserServiceSheetState extends State<UserServiceSheet> {
                                   // Check is duplicate service exist
                                   widget.userServiceList.forEach((u) {
                                     if (value.trim() == u.serviceName) {
-                                      print("duplicate ${u.serviceName}");
                                       isDuplicateService = true;
                                     }
                                   });
@@ -168,22 +167,22 @@ class _UserServiceSheetState extends State<UserServiceSheet> {
                               ),
                             ],
                           ),
-                          Column(
-                            children: <Widget>[
-                              PriceField(
-                                controller: _priceController,
-                                validator: (String v) {
-                                  return v.isEmpty || v == '0' ? '請輸入價格' : null;
-                                },
-                                onSaved: (String value) {
-                                  _userServiceModel =
-                                      _userServiceModel.copyWith(
-                                    price: double.tryParse(value),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                          // Column(
+                          //   children: <Widget>[
+                          //     PriceField(
+                          //       controller: _priceController,
+                          //       validator: (String v) {
+                          //         return v.isEmpty || v == '0' ? '請輸入價格' : null;
+                          //       },
+                          //       onSaved: (String value) {
+                          //         _userServiceModel =
+                          //             _userServiceModel.copyWith(
+                          //           price: double.tryParse(value),
+                          //         );
+                          //       },
+                          //     ),
+                          //   ],
+                          // ),
                           ServiceDurationField(
                             controller: _durationController,
                             validator: (String v) {

@@ -200,7 +200,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
                     Container(
                       width: SizeConfig.screenWidth / 2.3,
                       child: Text(
-                        'Dark Panda 正在幫您配對中',
+                        'Darkpanda 正在幫您配對中',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -238,7 +238,7 @@ class _WaitingInquiryState extends State<WaitingInquiry> {
           ),
           SizedBox(width: 8),
           Text(
-            '等待女生上門',
+            '等待女生回覆',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,

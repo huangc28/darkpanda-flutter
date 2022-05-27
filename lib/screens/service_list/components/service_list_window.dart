@@ -10,12 +10,17 @@ import 'package:darkpanda_flutter/screens/service_list/bloc/load_historical_serv
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/bloc/current_service_chatroom_bloc.dart';
 
 import 'package:darkpanda_flutter/routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/service_chatroom.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/screens/chatroom/screens/service/components/service_alert_dialog.dart';
 import 'package:darkpanda_flutter/screens/rate/rate.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/incoming_service.dart';
+
+// TODO: there should not be a chatroom/screens/service.
+// It should be
+//   - chatroom/screens/male_service_chatroom
+//   - chatroom/screens/female_service_chatroom
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 
 import '../bloc/load_incoming_service_bloc.dart';
 
@@ -142,21 +147,7 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                     ),
                     child: ServiceChatroomGrid(
                       onEnterChat: (chatroom) {
-                        if (serviceStatus == ServiceStatus.expired) {
-                          // - Display popup saying service has expired
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) {
-                                return ServiceExpiredDialog(
-                                    okText: AppLocalizations.of(context).ok,
-                                    content: AppLocalizations.of(context)
-                                        .serviceExpiredDialog,
-                                    onDismiss: () async {
-                                      Navigator.pop(context, true);
-                                    });
-                              });
-                        } else if (serviceStatus == ServiceStatus.canceled) {
+                        if (serviceStatus == ServiceStatus.canceled) {
                           // - Display popup saying the counter part has cancel the service. Showing buttons to comment or leave the chatroom
                           showDialog(
                               barrierDismissible: false,
@@ -205,8 +196,9 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                           Navigator.of(
                             context,
                             rootNavigator: true,
-                          ).pushNamed(
-                            MainRoutes.serviceChatroom,
+                          )
+                              .pushNamed(
+                            MainRoutes.maleServiceChatroom,
                             arguments: ServiceChatroomScreenArguments(
                               channelUUID: chatroom.channelUuid,
                               inquiryUUID: chatroom.inquiryUuid,
@@ -214,11 +206,16 @@ class _ServiceListWindowState extends State<ServiceListWindow>
                               serviceUUID: chatroom.serviceUuid,
                               routeTypes: RouteTypes.fromIncomingService,
                             ),
-                          );
+                          )
+                              .then((value) {
+                            BlocProvider.of<LoadIncomingServiceBloc>(context)
+                                .add(LoadIncomingService());
+                          });
                         }
                       },
                       chatroom: chatroom,
                       lastMessage: lastMsg == null ? "" : lastMsg.content,
+                      isRead: lastMsg?.isRead,
                     ),
                   );
                 },

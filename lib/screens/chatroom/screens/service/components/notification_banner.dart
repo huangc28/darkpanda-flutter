@@ -1,4 +1,6 @@
-part of '../service_chatroom.dart';
+import 'package:flutter/material.dart';
+
+import 'package:darkpanda_flutter/components/user_avatar.dart';
 
 class NotificationBanner extends StatelessWidget {
   const NotificationBanner({
@@ -48,16 +50,6 @@ class NotificationBanner extends StatelessWidget {
             SizedBox(width: 12),
 
             _buildStatusBar(),
-
-            // InkWell(
-            //   onTap: () {
-            //     print('DEBUG tap proceed');
-            //   },
-            //   child: Icon(
-            //     Icons.navigate_next,
-            //     size: 22,
-            //   ),
-            // ),
           ],
         ),
         decoration: BoxDecoration(

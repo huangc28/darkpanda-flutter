@@ -1,16 +1,82 @@
 # darkpanda_flutter
-## Build android APK 
+## Compatibility 
 
-Prompt the following command: `flutter build apk --release`
+**flutter version**: 2.10.4  
 
-## Release
+## Run DEV
+### Build via Flutter Version Manager (Suggest) 
 
-We will be using `appCenter` to release darkpanda app. The approach used is referencing [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
+I suggest using [flutter version manager](https://fvm.app/) to run app on different flutter version. It will be easier for you to test out different test behaviors on IOS/Android build.
 
-## Folder structure
+**use fvm**
 
-Please follow this [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
-### Environment variables
+```sh
+# Check connected devices using
+flutter devices
+
+flutter run -d "DEVICE_ID" // use fvm
+
+# or
+
+fvm flutter run -d "DEVICE_ID" // use fvm
+```
+## Release using appcenter.ms
+
+### Giving a release tag
+
+First we give the commit that we target to release tag using git.  
+
+```
+git tag -a v1.0.7 -m "darkpanda android v1.0.7 release"
+```
+
+push the tag to remote repository.
+### Android release.
+
+
+We build release bundle using master branch. We use microsoft appcenter to build android production bundle.
+Go to [appcenter.ms](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches) click on `Build` button on the left side bar. Choose master branch and click on `Build now` button. 
+After it's successfully build, go to [build page](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches/master/builds/141) to download the bundle. Submit this bundle to google play console to publish it
+to store.
+
+The approach follows this writeup [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
+## Folder Structure
+
+We use domain driven layout to organize folder structure:
+
+```
+lib
+    contracts
+    enums
+    bloc
+    components
+    views
+    services
+    screens
+```
+
+Please read through this article for more insight [advance project structure](https://medium.com/@alexmngn/how-to-better-organize-your-react-applications-2fd3ea1920f1) when creating widget for better organization.
+## Environment variables
+
+```
+ENV=
+
+# Server endpoint 
+# Android emulator to request localhost, http://10.0.2.2:3001
+# IOS emulator to request localhost,  http://127.0.0.1:3001
+SERVER_HOST=
+
+# Pubnub credentials
+PUBNUB_PUBLISH_KEY=
+PUBNUB_SUBSCRIBE_KEY=
+PUBNUB_SECRET_KEY=
+
+# GCP credentials
+GEOCODING_APIS=
+
+# Android app secret
+APPCENTER_ANDROID_APP_SECRET=
+```
 
 The app will retrieve it's environment variables from `.env` on local file system. For production build, the app retrieve environment variables from appcenter. Appcenter provides customed env configurations that are retrievable when building. Please refer to this [official reference](https://docs.microsoft.com/en-us/appcenter/build/custom/variables/).
 
@@ -29,36 +95,9 @@ flutter build \
     apk --release
 ```
 
-## Dashbook
-
-Dashbook is like storybookjs in react community. It provides isolated dev environment for flutter widget. it works as a development enviroment for the project widgets and also a showcase for common widgets on the app. 
-
-### Android
-
-First open android emulator from android studio AVD manager. Then prompt the following command:
-
-```
- flutter run -d "[YOUR_EMULATOR_ID]" lib/main_dashbook.dart
-```
-
-You should see dashboard installed on you emulator.
-
 ## TODOs 
 
-- Catch system exception like `json.decode(...)` --- [ok]
- 
- ```dart
- class SomeModel {
-
-     static fromJson(Map<String, dynamic>, data) {
-         if (!data.Contains('err_code') && data.Contains('err_msg')) {
-            return ... 
-         }
-
-     }
- }
- ```
-
+- [] `screens` should be rename to `views`.
 - []Female cancel service now display `對方已取消交易` should be `你已取消交易` 
 - []When participant cancels service chatroom, popup a notification telling the other particiant to rate the service.
 - []When make user emit a direct inqiury, he can still emit another direct inquiry to the same girl in the girl list.
@@ -94,6 +133,7 @@ girl_cancel_after_appointment_time ---> man can comment or bypass
 guy_cancel_before_appointment_time ---> girl can comment or bypass
 guy_cancel_after_appointment_time --->  girl can comment or bypass
 ## Reference
+- [Folder structure](https://codewithandrea.com/articles/flutter-project-structure/)
 - [Postgres how to shuffle records with pagination so it looks random](https://nathanmlong.com/2017/11/a-shuffled-order-that-works-with-pagination/)
 - [Methods to connect to server on emulator or devices](https://medium.com/@podcoder/connecting-flutter-application-to-localhost-a1022df63130)
 - [Deploy Flutter Apps Using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf)

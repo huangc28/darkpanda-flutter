@@ -1,7 +1,4 @@
 import 'dart:async';
-
-import 'package:darkpanda_flutter/enums/route_types.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,16 +7,21 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show MaleInquiryChatroomScreenArguments;
+import 'package:darkpanda_flutter/routes.dart';
 
-import 'package:darkpanda_flutter/bloc/get_inquiry_bloc.dart';
 import './bloc/load_direct_inquiry_chatrooms_bloc.dart';
 
 import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
-import 'screen_arguments/direct_chatroom_screen_arguments.dart';
 
 class Chatrooms extends StatefulWidget {
-  const Chatrooms({Key key}) : super(key: key);
+  const Chatrooms({
+    Key key,
+  }) : super(
+          key: key,
+        );
 
   @override
   _ChatroomsState createState() => _ChatroomsState();
@@ -110,14 +112,13 @@ class _ChatroomsState extends State<Chatrooms> {
                                 context,
                                 rootNavigator: true,
                               )
-                                  .pushNamed(
-                                MainRoutes.directChatroom,
-                                arguments: DirectChatroomScreenArguments(
+                                  .pushReplacementNamed(
+                                MainRoutes.maleInquiryChatroom,
+                                arguments: MaleInquiryChatroomScreenArguments(
                                   channelUUID: chatroom.channelUUID,
                                   inquiryUUID: chatroom.inquiryUUID,
                                   counterPartUUID: chatroom.pickerUUID,
                                   serviceUUID: chatroom.serviceUUID,
-                                  routeTypes: RouteTypes.fromMaleChats,
                                 ),
                               )
                                   .then((value) {
@@ -132,6 +133,7 @@ class _ChatroomsState extends State<Chatrooms> {
                             },
                             chatroom: chatroom,
                             lastMessage: lastMsg?.content,
+                            isRead: lastMsg?.isRead,
                           ),
                         );
                       },

@@ -87,6 +87,8 @@ class VerifyLoginCodeBloc
 
       await SecureStore().writeFcmTopic(authUser.fcmTopic);
 
+      await SecureStore().writeUuid(authUser.uuid);
+
       FirebaseMessagingService().fcmSubscribe(authUser.fcmTopic);
 
       authUserBloc.add(

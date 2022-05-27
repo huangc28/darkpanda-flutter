@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
 
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/enums/route_types.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/layouts/system_ui_overlay_layout.dart';
 import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:darkpanda_flutter/base_routes.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/chatroom.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/models/chatroom.dart' as chatroomModel;
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
@@ -37,8 +37,6 @@ class _ChatRoomsState extends State<ChatRooms> {
   void initState() {
     _refreshCompleter = Completer();
     _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
-
-    // _inquiryChatroomsBloc.add(FetchChatrooms());
 
     super.initState();
   }
@@ -103,7 +101,6 @@ class _ChatRoomsState extends State<ChatRooms> {
                           .add(LoadMoreChatrooms());
                     },
                     chatroomBuilder: (context, chatroom, ___) {
-                      //
                       final lastMsg =
                           state.chatroomLastMessage[chatroom.channelUUID];
 
@@ -117,10 +114,9 @@ class _ChatRoomsState extends State<ChatRooms> {
                             Navigator.of(
                               context,
                               rootNavigator: true,
-                            )
-                                .pushNamed(
-                              MainRoutes.chatroom,
-                              arguments: ChatroomScreenArguments(
+                            ).pushReplacementNamed(
+                              MainRoutes.femaleInquiryChatroom,
+                              arguments: FemaleInquiryChatroomScreenArguments(
                                 channelUUID: chatroom.channelUUID,
                                 inquiryUUID: chatroom.inquiryUUID,
                                 counterPartUUID: chatroom.inquirerUUID,
@@ -128,16 +124,13 @@ class _ChatRoomsState extends State<ChatRooms> {
                                 routeTypes: RouteTypes.fromInquiryChats,
                                 serviceUUID: chatroom.serviceUUID,
                               ),
-                            )
-                                .then((value) {
-                              BlocProvider.of<InquiryChatroomsBloc>(context)
-                                  .add(FetchChatrooms());
-                            });
+                            );
                           },
                           chatroom: chatroom,
 
                           // Chatroom grid displays the latest message of a chatroom.
                           lastMessage: lastMsg?.content,
+                          isRead: lastMsg?.isRead,
                         ),
                       );
                     },

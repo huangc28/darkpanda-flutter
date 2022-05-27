@@ -6,13 +6,15 @@ import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:darkpanda_flutter/enums/service_status.dart';
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:darkpanda_flutter/models/message.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show InquiryChatMessagesBloc, DispatchMessage;
 
 import '../models/incoming_service.dart';
 import '../services/service_chatroom_api.dart';
@@ -76,13 +78,11 @@ class LoadIncomingServiceBloc
 
       final Map<String, dynamic> respMap = json.decode(res.body);
 
-      final serviceList = respMap['services'].map<IncomingService>((v) {
-        return IncomingService.fromMap(v);
-      }).toList();
+      final serviceList = respMap['services']
+          .map<IncomingService>((v) => IncomingService.fromMap(v))
+          .toList();
 
-      add(
-        AddChatrooms(serviceList),
-      );
+      add(AddChatrooms(serviceList));
     } on APIException catch (err) {
       yield LoadIncomingServiceState.loadFailed(
         state,
@@ -169,36 +169,35 @@ class LoadIncomingServiceBloc
 
       state.serviceStreamMap[chatroom.serviceUuid] = streamSubChatroomService;
     }
-    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
+    final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
     final newServiceStreamMap = Map.of(state.serviceStreamMap);
+
+    final chatroomLatestMessageMap = event.chatrooms.fold<Map<String, Message>>(
+      {},
+      (prev, chatroom) {
+        prev[chatroom.channelUuid] = chatroom.messages[0];
+
+        return prev;
+      },
+    );
+
+    final serviceStatusMap =
+        event.chatrooms.fold<Map<String, ServiceStatus>>({}, (prev, chatroom) {
+      prev[chatroom.serviceUuid] = chatroom.status.toServiceStatusEnum();
+
+      return prev;
+    });
 
     yield LoadIncomingServiceState.updateChatrooms(
       state,
       services: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
       serviceStreamMap: newServiceStreamMap,
+      chatroomLastMessage: chatroomLatestMessageMap,
+      service: serviceStatusMap,
       currentPage: state.currentPage + 1,
     );
-
-    for (final chatroom in event.chatrooms) {
-      if (chatroom.messages.length > 0) {
-        // Update latest message for each chatroom.
-        add(
-          PutLatestMessage(
-            channelUUID: chatroom.channelUuid,
-            message: chatroom.messages[0],
-          ),
-        );
-
-        add(
-          UpdateChatroomServiceStatus(
-            serviceUuid: chatroom.serviceUuid,
-            status: chatroom.status.toServiceStatusEnum(),
-          ),
-        );
-      }
-    }
   }
 
   StreamSubscription<QuerySnapshot> _createChatroomSubscriptionStream(
@@ -224,12 +223,26 @@ class LoadIncomingServiceBloc
     );
   }
 
-  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) async {
     developer.log('handle private chat on channel ID: $channelUUID');
-
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );
+
+    //check whether inquirer_uuid or picker_uuid is me,
+    //get is read
+    String UserUUID = await SecureStore().readUuid();
+
+    final parent = event.docChanges.first.doc.reference.parent.parent.get();
+    await parent.then((doc) {
+      if (UserUUID == doc.data()["inquirer_uuid"]) {
+        message.isRead = doc.data()["inquirer_is_read"];
+      }
+
+      if (UserUUID == doc.data()["picker_uuid"]) {
+        message.isRead = doc.data()["picker_is_read"];
+      }
+    });
 
     developer.log('dispatching private chat message: ${message.content}');
 

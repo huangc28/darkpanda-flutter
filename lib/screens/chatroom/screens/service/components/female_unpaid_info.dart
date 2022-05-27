@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 
 class FemaleUnpaidInfo extends StatelessWidget {
   const FemaleUnpaidInfo({

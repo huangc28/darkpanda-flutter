@@ -1,5 +1,4 @@
 import 'package:darkpanda_flutter/enums/service_status.dart';
-import 'package:darkpanda_flutter/screens/chatroom/screens/service/models/service_details.dart';
 import 'package:darkpanda_flutter/util/convertZeroDecimalToInt.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +8,7 @@ import 'package:darkpanda_flutter/screens/service_list/models/payment_detail.dar
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/user_avatar.dart';
 import 'package:darkpanda_flutter/screens/service_list/models/historical_service.dart';
+import 'package:darkpanda_flutter/models/service_details.dart';
 
 class Body extends StatefulWidget {
   const Body({
@@ -157,7 +157,7 @@ class _BodyState extends State<Body> with SingleTickerProviderStateMixin {
           SizedBox(height: 20),
           _buildAddressTimeCardInfo(),
           SizedBox(height: 20),
-          _buildDpCardInfo(),
+          // _buildDpCardInfo(),
           SizedBox(height: 50),
           _buildButton(),
         ],

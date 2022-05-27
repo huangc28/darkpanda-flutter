@@ -10,7 +10,7 @@ import 'screens/search_inquiry_list/routes.dart';
 import './bottom_navigation.dart';
 
 // Each tag keeps it's own navigator instance to track navigation history.
-final Map<MaleAppTabItem, String> _initialRouteMap = {
+Map<MaleAppTabItem, String> _initialRouteMap = {
   MaleAppTabItem.waitingInquiry: SearchInquiryRoutes.root,
   MaleAppTabItem.chat: ServiceChatroomRoutes.root,
   MaleAppTabItem.manage: ServiceChatroomRoutes.root,
@@ -43,7 +43,7 @@ class TabNavigator extends StatelessWidget {
     }
 
     if (tabItem == MaleAppTabItem.chat) {
-      return _chatRoutes.routeBuilder(context);
+      return _chatRoutes.routeBuilder(context, navigatorKey);
     }
 
     if (tabItem == MaleAppTabItem.manage) {

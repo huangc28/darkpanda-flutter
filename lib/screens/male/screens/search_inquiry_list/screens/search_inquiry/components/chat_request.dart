@@ -1,19 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:darkpanda_flutter/bloc/load_user_bloc.dart';
 import 'package:darkpanda_flutter/components/dp_button.dart';
 import 'package:darkpanda_flutter/components/loading_screen.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
-import 'package:darkpanda_flutter/enums/route_types.dart';
 import 'package:darkpanda_flutter/models/user_profile.dart';
-import 'package:darkpanda_flutter/routes.dart';
 import 'package:darkpanda_flutter/screens/female/screens/inquiry_list/screen_arguments/args.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/agree_inquiry_bloc.dart';
 import 'package:darkpanda_flutter/screens/male/models/agree_inquiry_response.dart';
-import 'package:darkpanda_flutter/screens/male/screens/male_chatroom/screen_arguments/service_chatroom_screen_arguments.dart';
 import 'package:darkpanda_flutter/screens/profile/screens/components/review_star.dart';
 import 'package:darkpanda_flutter/util/size_config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:darkpanda_flutter/routes.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart';
 import 'package:darkpanda_flutter/screens/male/models/active_inquiry.dart';
 import 'package:darkpanda_flutter/screens/male/bloc/cancel_inquiry_bloc.dart';
 
@@ -148,12 +147,9 @@ class _ChatRequestState extends State<ChatRequest> {
         } else if (state.status == AsyncLoadingStatus.done) {
           setState(() {
             agreeInquiryResponse = state.agreeInquiry;
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushNamed(
-              MainRoutes.maleChatroom,
-              arguments: MaleChatroomScreenArguments(
+            Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+              MainRoutes.maleInquiryChatroom,
+              arguments: MaleInquiryChatroomScreenArguments(
                 channelUUID: agreeInquiryResponse.channelUuid,
                 inquiryUUID: widget.activeInquiry.uuid,
                 counterPartUUID: agreeInquiryResponse.picker.uuid,
@@ -252,8 +248,7 @@ class _ChatRequestState extends State<ChatRequest> {
                               Row(
                                 children: <Widget>[
                                   Text(
-                                    // userProfile.username,
-                                    'Jenny',
+                                    userProfile.username,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.white,

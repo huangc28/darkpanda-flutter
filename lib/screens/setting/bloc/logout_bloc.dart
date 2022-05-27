@@ -53,6 +53,9 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
       // Remove fcm topic
       await SecureStore().delFcmTopic();
 
+      // Remove uuid
+      await SecureStore().delUuid();
+
       // Remove auth user info.
       authUserBloc.add(RemoveAuthUser());
 

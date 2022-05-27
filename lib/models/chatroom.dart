@@ -1,8 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/enums/message_types.dart';
+
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/models/bot_invitation_chat_message.dart';
 
-class Chatroom {
+class Chatroom extends Equatable {
   final String serviceType;
   final String inquiryStatus;
   final String inquirerUUID;
@@ -63,4 +65,20 @@ class Chatroom {
       pickerUUID: data['picker_uuid'],
     );
   }
+
+  @override
+  List<Object> get props => [
+        serviceType,
+        inquiryStatus,
+        inquirerUUID,
+        inquiryUUID,
+        username,
+        avatarURL,
+        channelUUID,
+        expiredAt,
+        createdAt,
+        messages,
+        serviceUUID,
+        pickerUUID,
+      ];
 }

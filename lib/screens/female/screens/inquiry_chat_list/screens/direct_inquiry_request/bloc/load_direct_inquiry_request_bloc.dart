@@ -28,6 +28,7 @@ class LoadDirectInquiryRequestBloc
   Stream<LoadDirectInquiryRequestState> mapEventToState(
     LoadDirectInquiryRequestEvent event,
   ) async* {
+    print('DEBUG trigger LoadDirectInquiryRequestBloc ${event.runtimeType}');
     if (event is FetchDirectInquiries) {
       yield* _mapFetchInquiriesToState(event);
     }
@@ -43,10 +44,6 @@ class LoadDirectInquiryRequestBloc
     if (event is RemoveInquiry) {
       yield* _mapRemoveInquiryToState(event);
     }
-
-    // if (event is AddInquirySubscription) {
-    //   yield* _mapAddInquirySubscriptionToState(event);
-    // }
   }
 
   Stream<LoadDirectInquiryRequestState> _mapFetchInquiriesToState(
@@ -83,8 +80,6 @@ class LoadDirectInquiryRequestBloc
         state,
         inquiries: parsedIqs,
         currentPage: event.nextPage,
-        // hasMore: dataMap['has_more'],
-
         // We need to subscribe those inquiry with status `asking`. Organize an inquiry subscription map here.
         inquiryStreamMap: _createInquirySubscriptionStreamMap(parsedIqs),
       );
@@ -93,7 +88,7 @@ class LoadDirectInquiryRequestBloc
         state,
         error: e,
       );
-    } on AppGeneralExeption catch (e) {
+    } catch (e) {
       yield LoadDirectInquiryRequestState.fetchFailed(
         state,
         error: AppGeneralExeption(
@@ -250,9 +245,11 @@ class LoadDirectInquiryRequestBloc
   }
 
   _handleInquiryStatusChange(String inquiryUuid, DocumentSnapshot snapshot) {
-    String iqStatus = snapshot['status'] as String;
-    String channelUuid = snapshot['channel_uuid'] as String;
-    String serviceUuid = snapshot['service_uuid'] as String;
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+    String iqStatus = data['status'] as String;
+    String channelUuid = data['channel_uuid'] as String;
+    String serviceUuid = data['service_uuid'] as String;
 
     developer.log(
         'firestore inquiry changes recieved: ${snapshot.data().toString()}');
@@ -266,17 +263,4 @@ class LoadDirectInquiryRequestBloc
       ),
     );
   }
-
-  // Stream<InquiriesState> _mapAddInquirySubscriptionToState(
-  //     AddInquirySubscription event) async* {
-  //   developer.log('add inquiry subscription ${event.uuid}');
-
-  //   final streamSub = _createInquirySubscriptionStream(event.uuid);
-  //   state.inquiryStreamMap[event.uuid] = streamSub;
-
-  //   yield InquiriesState.putInquiryStreamMap(
-  //     state,
-  //     inquiryStreamMap: state.inquiryStreamMap,
-  //   );
-  // }
 }

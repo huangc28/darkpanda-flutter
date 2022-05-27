@@ -7,7 +7,6 @@ import 'package:darkpanda_flutter/enums/async_loading_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:darkpanda_flutter/services/user_apis.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
-import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:darkpanda_flutter/models/user_image.dart';
 import 'package:darkpanda_flutter/util/util.dart';
 

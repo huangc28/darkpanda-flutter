@@ -2,18 +2,18 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
-
 import 'package:bloc/bloc.dart';
-import 'package:darkpanda_flutter/util/util.dart';
-
+import 'package:darkpanda_flutter/pkg/secure_store.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:darkpanda_flutter/screens/chatroom/screens/inquiry/bloc/inquiry_chat_messages_bloc.dart';
+import 'package:darkpanda_flutter/util/util.dart';
 import 'package:darkpanda_flutter/models/message.dart';
 import 'package:darkpanda_flutter/exceptions/exceptions.dart';
 import 'package:darkpanda_flutter/services/inquiry_chatroom_apis.dart';
 import 'package:darkpanda_flutter/enums/async_loading_status.dart';
+import 'package:darkpanda_flutter/contracts/chatroom.dart'
+    show DispatchMessage, RemovePrivateChatRoom, InquiryChatMessagesBloc;
 
 import '../models/chatroom.dart';
 
@@ -46,6 +46,8 @@ class InquiryChatroomsBloc
   ) async* {
     if (event is LeaveChatroom) {
       yield* _mapLeaveChatroomToState(event);
+    } else if (event is AddChatroom) {
+      yield* _mapAddChatroomToState(event);
     } else if (event is AddChatrooms) {
       yield* _mapAddChatroomsToState(event);
     } else if (event is FetchChatrooms) {
@@ -56,13 +58,9 @@ class InquiryChatroomsBloc
       yield* _mapPutLatestMessage(event);
     } else if (event is ClearInquiryChatList) {
       yield* _mapClearInquiryChatListToState(event);
-    } else if (event is AddChatroom) {
-      yield* _mapAddChatroomToState(event);
     } else if (event is ClearInquiryList) {
       yield* _mapClearInquiryListToState(event);
-    }
-
-    if (event is LeaveMaleChatroom) {
+    } else if (event is LeaveMaleChatroom) {
       yield* _mapLeaveMaleChatroomToState(event);
     }
   }
@@ -139,32 +137,42 @@ class InquiryChatroomsBloc
     }
     final newPrivateChatStreamMap = Map.of(state.privateChatStreamMap);
 
+    // Update latest message for each chatroom. This message is being displayed in inquiry chatroom list is being displayed in inquiry chatroom list
+    final chatroomLastMessage = state.chatroomLastMessage;
+    for (final chatroom in event.chatrooms) {
+      if (chatroom.messages.length > 0) {
+        chatroomLastMessage[chatroom.channelUUID] = chatroom.messages[0];
+      }
+    }
+
     yield InquiryChatroomsState.updateChatrooms(
       state,
       chatrooms: [...event.chatrooms],
       privateChatStreamMap: newPrivateChatStreamMap,
-      // currentPage: state.currentPage + 1,
+      chatroomLastMessage: chatroomLastMessage,
     );
-
-    for (final chatroom in event.chatrooms) {
-      if (chatroom.messages.length > 0) {
-        // Update latest message for each chatroom.
-        add(
-          PutLatestMessage(
-            channelUUID: chatroom.channelUUID,
-            message: chatroom.messages[0],
-          ),
-        );
-      }
-    }
   }
 
-  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) {
+  _handlePrivateChatEvent(String channelUUID, QuerySnapshot event) async {
     developer.log('handle private chat on channel ID: $channelUUID');
 
     final message = Message.fromMap(
       event.docChanges.first.doc.data(),
     );
+
+    //check whether inquirer_uuid or picker_uuid is me,
+    //get is read
+    String UserUUID = await SecureStore().readUuid();
+    final parent = event.docChanges.first.doc.reference.parent.parent.get();
+    await parent.then((doc) {
+      if (UserUUID == doc.data()["inquirer_uuid"]) {
+        message.isRead = doc.data()["inquirer_is_read"];
+      }
+
+      if (UserUUID == doc.data()["picker_uuid"]) {
+        message.isRead = doc.data()["picker_is_read"];
+      }
+    });
 
     developer.log('dispatching private chat message: ${message.content}');
 
@@ -262,9 +270,7 @@ class InquiryChatroomsBloc
           .map<Chatroom>((chat) => Chatroom.fromMap(chat))
           .toList();
 
-      add(
-        AddChatrooms(chatrooms),
-      );
+      add(AddChatrooms(chatrooms));
     } on APIException catch (err) {
       developer.log(
         err.toString(),
@@ -272,7 +278,7 @@ class InquiryChatroomsBloc
       );
 
       yield InquiryChatroomsState.loadFailed(state, err);
-    } on AppGeneralExeption catch (e) {
+    } catch (e) {
       developer.log(
         e.toString(),
         name: "AppGeneralExeption: fetch_chats_bloc",
