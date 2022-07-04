@@ -33,13 +33,16 @@ git tag -a v1.0.7 -m "darkpanda android v1.0.7 release"
 push the tag to remote repository.
 ### Android release.
 
-
-We build release bundle using master branch. We use microsoft appcenter to build android production bundle.
+We build release bundle using master branch. We use microsoft appcenter to build android production bundle. The build script is located at file `appcenter-post-clone.sh`. Please check the script for detail build / deployment process. 
 Go to [appcenter.ms](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches) click on `Build` button on the left side bar. Choose master branch and click on `Build now` button. 
 After it's successfully build, go to [build page](https://appcenter.ms/orgs/darkpanda/apps/Darkpanda/build/branches/master/builds/141) to download the bundle. Submit this bundle to google play console to publish it
 to store.
 
 The approach follows this writeup [Deploy Flutter Apps using AppCenter](https://medium.com/@maite.daluz11/deploy-flutter-apps-using-appcenter-ec28e8d940bf).
+
+### IOS release
+
+
 ## Folder Structure
 
 We use domain driven layout to organize folder structure:
