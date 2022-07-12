@@ -78,7 +78,7 @@ class _MaleSettingsState extends State<MaleSettings> {
                       onTap: () {
                         final Uri emailLaunchUri = Uri(
                           scheme: 'mailto',
-                          path: 'arthuryap@squareboxtech.com',
+                          path: 'hello@squareboxtech.com',
                         );
 
                         launch(emailLaunchUri.toString());
