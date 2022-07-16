@@ -103,6 +103,11 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
   void initState() {
     super.initState();
 
+    // Clear state before enter chatroom
+    BlocProvider.of<CurrentChatroomBloc>(context).add(
+      LeaveCurrentChatroom(),
+    );
+
     _negotiatingServiceDetail.copy(
       serviceUUID: widget.args.serviceUUID,
       channelUUID: widget.args.channelUUID,

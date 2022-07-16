@@ -129,6 +129,11 @@ class _ServiceChatroomState extends State<ServiceChatroom>
   void initState() {
     super.initState();
 
+    // Clear state before enter chatroom
+    BlocProvider.of<CurrentServiceChatroomBloc>(context).add(
+      LeaveCurrentServiceChatroom(),
+    );
+
     _inquiryDetail.channelUuid = widget.args.channelUUID;
     _inquiryDetail.counterPartUuid = widget.args.counterPartUUID;
     _inquiryDetail.inquiryUuid = widget.args.inquiryUUID;
