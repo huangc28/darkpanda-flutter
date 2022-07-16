@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:darkpanda_flutter/bloc/inquiry_chatrooms_bloc.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,7 @@ import 'package:darkpanda_flutter/contracts/chatroom.dart'
     show MaleInquiryChatroomScreenArguments;
 import 'package:darkpanda_flutter/routes.dart';
 
-import './bloc/load_direct_inquiry_chatrooms_bloc.dart';
+// import './bloc/load_direct_inquiry_chatrooms_bloc.dart';
 
 import 'components/chatroom_grid.dart';
 import 'components/chatrooms_list.dart';
@@ -28,7 +29,7 @@ class Chatrooms extends StatefulWidget {
 }
 
 class _ChatroomsState extends State<Chatrooms> {
-  LoadDirectInquiryChatroomsBloc _loadDirectInquiryChatroomsBloc;
+  InquiryChatroomsBloc _inquiryChatroomsBloc;
   Completer<void> _refreshCompleter;
 
   @override
@@ -36,15 +37,14 @@ class _ChatroomsState extends State<Chatrooms> {
     super.initState();
 
     _refreshCompleter = Completer();
-    _loadDirectInquiryChatroomsBloc =
-        BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context);
+    _inquiryChatroomsBloc = BlocProvider.of<InquiryChatroomsBloc>(context);
 
-    _loadDirectInquiryChatroomsBloc.add(FetchDirectInquiryChatrooms());
+    _inquiryChatroomsBloc.add(FetchChatrooms());
   }
 
   @override
   void dispose() {
-    _loadDirectInquiryChatroomsBloc.add(ClearDirectInquiryChatList());
+    _inquiryChatroomsBloc.add(ClearInquiryChatList());
     super.dispose();
   }
 
@@ -56,8 +56,7 @@ class _ChatroomsState extends State<Chatrooms> {
           child: Column(
             children: <Widget>[
               _buildHeader(),
-              BlocConsumer<LoadDirectInquiryChatroomsBloc,
-                  LoadDirectInquiryChatroomsState>(
+              BlocConsumer<InquiryChatroomsBloc, InquiryChatroomsState>(
                 listener: (context, state) {
                   if (state.status == AsyncLoadingStatus.error) {
                     _refreshCompleter.completeError(state.error);
@@ -89,13 +88,13 @@ class _ChatroomsState extends State<Chatrooms> {
                     child: ChatroomList(
                       chatrooms: state.chatrooms,
                       onRefresh: () {
-                        BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
-                            .add(FetchDirectInquiryChatrooms());
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
+                            .add(FetchChatrooms());
 
                         return _refreshCompleter.future;
                       },
                       onLoadMore: () {
-                        BlocProvider.of<LoadDirectInquiryChatroomsBloc>(context)
+                        BlocProvider.of<InquiryChatroomsBloc>(context)
                             .add(LoadMoreChatrooms());
                       },
                       chatroomBuilder: (context, chatroom, ____) {
@@ -124,10 +123,8 @@ class _ChatroomsState extends State<Chatrooms> {
                                   .then((value) {
                                 if (value) {
                                   // Refresh chatroom list after user back from exit chatroom
-                                  BlocProvider.of<
-                                              LoadDirectInquiryChatroomsBloc>(
-                                          context)
-                                      .add(FetchDirectInquiryChatrooms());
+                                  BlocProvider.of<InquiryChatroomsBloc>(context)
+                                      .add(FetchChatrooms());
                                 }
                               });
                             },
