@@ -515,7 +515,6 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
       ),
       actions: <Widget>[
         _isDisabledChat ? SizedBox.shrink() : _buildChatroomActionBar(),
-        SizedBox(width: 20),
       ],
     );
   }
@@ -604,7 +603,8 @@ class _MaleInquiryChatroomState extends State<MaleInquiryChatroom>
         builder: (context, state) {
           return SendMessageBar(
             editMessageController: _editMessageController,
-            isDisabledChat: state.status == AsyncLoadingStatus.loading,
+            isDisabledChat:
+                state.status == AsyncLoadingStatus.loading || _isDisabledChat,
             onSend: () {
               if (_message.isEmpty) {
                 return;

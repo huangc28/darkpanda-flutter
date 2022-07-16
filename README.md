@@ -42,6 +42,14 @@ The approach follows this writeup [Deploy Flutter Apps using AppCenter](https://
 
 ### IOS release
 
+As of now, we archive the app using xcode.
+
+`top bar Product` -> `Archive`
+
+If everything is OK with the build, Xcode will open the Organizer with your app in the Archives tab. follow the step to distribute app bundle to TestFight. Once done testing on TestFlight, you can submit your app to apple review on [appstore connect](https://appstoreconnect.apple.com/).
+
+Please refer to [this writeup](https://www.raywenderlich.com/10868372-testflight-tutorial-ios-beta-testing) for more detail.
+
 
 ## Folder Structure
 

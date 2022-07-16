@@ -219,9 +219,10 @@ class FemaleInquiryChatroomState extends State<FemaleInquiryChatroom>
       child: BlocBuilder<ExitChatroomBloc, ExitChatroomState>(
         builder: (context, state) {
           return SendMessageBar(
-            disable: _serviceConfirmed,
+            disable: _serviceConfirmed || _isDisabledChat,
             editMessageController: _editMessageController,
-            isDisabledChat: state.status == AsyncLoadingStatus.loading,
+            isDisabledChat:
+                state.status == AsyncLoadingStatus.loading || _isDisabledChat,
             onSend: () {
               if (_message.isEmpty) {
                 return;
