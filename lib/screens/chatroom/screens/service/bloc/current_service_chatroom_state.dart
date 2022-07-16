@@ -112,8 +112,7 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           service: state.service,
         );
 
-  CurrentServiceChatroomState.clearCurrentChatroom(
-      CurrentServiceChatroomState state)
+  CurrentServiceChatroomState.clearCurrentChatroom()
       : this._(
           status: AsyncLoadingStatus.initial,
           page: 1,
@@ -121,7 +120,7 @@ class CurrentServiceChatroomState<E extends AppBaseException>
           currentMessages: [],
           userProfile: UserProfile(),
           serviceStreamMap: {},
-          service: state.service,
+          service: IncomingService(),
         );
 
   List<Message> get messages {

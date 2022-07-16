@@ -12,7 +12,7 @@ import './bottom_navigation.dart';
 // Each tag keeps it's own navigator instance to track navigation history.
 Map<MaleAppTabItem, String> _initialRouteMap = {
   MaleAppTabItem.waitingInquiry: SearchInquiryRoutes.root,
-  MaleAppTabItem.chat: ServiceChatroomRoutes.root,
+  MaleAppTabItem.chat: ChatRoutes.root,
   MaleAppTabItem.manage: ServiceChatroomRoutes.root,
   MaleAppTabItem.settings: SettingRoutes.root,
   MaleAppTabItem.profile: ProfileRoutes.root,
