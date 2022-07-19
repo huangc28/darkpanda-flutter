@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>58322964727-v0iloklooguqdcqp8ks2c82q5ho8s5k1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.58322964727-v0iloklooguqdcqp8ks2c82q5ho8s5k1</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAjeIIffwXUdOd6K_srdIRmmB2fPZ57rhY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>58322964727</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.darkpanda.flutter</string>
+	<key>PROJECT_ID</key>
+	<string>dark-panda-6fe35</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dark-panda-6fe35.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:58322964727:ios:b344cb886658504a5983f2</string>
+	<key>DATABASE_URL</key>
+	<string>https://dark-panda-6fe35.firebaseio.com</string>
+</dict>
+</plist>

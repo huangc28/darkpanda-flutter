@@ -18,6 +18,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'firebase_options.dart';
 // import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
@@ -81,7 +83,9 @@ void main() async {
       DeviceOrientation.portraitDown,
     ]);
 
-    // await SecureStore().delJwtToken();
+    // Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
     String _gender = await SecureStore().readGender();
     String _jwt = await SecureStore().readJwtToken();
 
