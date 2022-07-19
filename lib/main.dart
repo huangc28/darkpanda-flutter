@@ -19,8 +19,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'firebase_options.dart';
-// import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:darkpanda_flutter/util/size_config.dart';
 import 'package:darkpanda_flutter/config.dart' as Config;
@@ -95,25 +93,7 @@ void main() async {
         jwt: _jwt,
       ),
     );
-
-    // await SentryFlutter.init(
-    //   (options) {
-    //     options.dsn =
-    //         'https://b4125f33e8e1468f921b6894d970ee50@o1018912.ingest.sentry.io/5984716';
-    //   },
-    //   appRunner: () => runApp(
-    //     DarkPandaApp(
-    //       gender: _gender,
-    //       jwt: _jwt,
-    //     ),
-    //   ),
-    // );
-  } catch (e, stackTrace) {
-    // await Sentry.captureException(
-    //   e,
-    //   stackTrace: stackTrace,
-    // );
-  }
+  } catch (e, stackTrace) {}
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
