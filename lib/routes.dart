@@ -132,15 +132,9 @@ class MainRoutes extends BaseRoutes {
       //--------------------------- Deprecating ------------------------------
       MainRoutes.maleChatroom: (context) {
         return Container();
-        // final MaleChatroomScreenArguments maleChatroomArgs = args;
-
-        // return InquiryChatroom(args: maleChatroomArgs);
       },
       MainRoutes.directChatroom: (context) {
         return Container();
-        // final DirectChatroomScreenArguments maleChatroomArgs = args;
-
-        // return DirectChatroom(args: maleChatroomArgs);
       }
     };
   }

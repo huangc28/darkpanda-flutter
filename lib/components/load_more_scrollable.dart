@@ -50,16 +50,18 @@ class _LoadMoreScrollableState extends State<LoadMoreScrollable> {
   }
 
   void _detectBottomScrollListener() {
-    final offsetFromScrollExtent = 10;
-
-    if (_scrollController.position.pixels >
-        _scrollController.position.maxScrollExtent - offsetFromScrollExtent) {
+    if (_scrollController.position.maxScrollExtent ==
+        _scrollController.offset) {
       if (_loadMoreDebounce != null) {
         _loadMoreDebounce.cancel();
       }
 
-      _loadMoreDebounce = Timer(const Duration(milliseconds: 500),
-          () => new Future.delayed(Duration.zero, widget.onLoadMore));
+      _loadMoreDebounce = Timer(
+        const Duration(milliseconds: 500),
+        () => new Future.delayed(Duration.zero, () {
+          widget.onLoadMore();
+        }),
+      );
     }
   }
 
