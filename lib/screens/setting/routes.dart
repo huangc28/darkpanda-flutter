@@ -72,7 +72,7 @@ class SettingRoutes extends BaseRoutes {
 
   Map<String, WidgetBuilder> routeBuilder(BuildContext context, [Object args]) {
     // Display proper settings page by determining gender from auth user.
-    final gender = BlocProvider.of<AuthUserBloc>(context).state.user.gender;
+    final gender = BlocProvider.of<AuthUserBloc>(context).state.user?.gender;
 
     return {
       SettingRoutes.root: gender == Gender.female
