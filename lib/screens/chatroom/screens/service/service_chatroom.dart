@@ -411,8 +411,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
                     BlocListener<ServiceStartNotifierBloc,
                         ServiceStartNotifierState>(
                       listener: (context, state) {
-                        print('[Debug] Service start notifier');
-
                         setState(() {
                           _serviceDetails.copyWith(
                             serviceStatus: ServiceStatus.fulfilling.name,
@@ -720,7 +718,6 @@ class _ServiceChatroomState extends State<ServiceChatroom>
           _getGalleryImage();
         },
         onCamera: () {
-          // _getCameraImage();
           Navigator.of(
             context,
             rootNavigator: true,

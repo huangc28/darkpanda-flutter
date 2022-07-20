@@ -237,12 +237,19 @@ class CurrentServiceChatroomBloc
           .toList()
           .first;
 
+      Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
+      if (service.status == ServiceStatus.unpaid.name ||
+          service.status == ServiceStatus.to_be_fulfilled.name) {
+        _streamMap[service.serviceUuid] =
+            _createServiceSubscriptionStream(service.serviceUuid);
+      }
+
       yield CurrentServiceChatroomState.loaded(
         state,
         historicalMessages: historicalMessages,
         inquirerProfile: inquirerProfile,
         service: service,
-        serviceStreamMap: _createServiceSubscriptionStreamMap(service),
+        serviceStreamMap: _streamMap,
       );
     } on APIException catch (e) {
       yield CurrentServiceChatroomState.loadFailed(
@@ -337,19 +344,6 @@ class CurrentServiceChatroomBloc
     yield CurrentServiceChatroomState.clearCurrentChatroom();
   }
 
-  Map<String, StreamSubscription<DocumentSnapshot>>
-      _createServiceSubscriptionStreamMap(IncomingService service) {
-    Map<String, StreamSubscription<DocumentSnapshot>> _streamMap = {};
-
-    if (service.status == ServiceStatus.unpaid.name ||
-        service.status == ServiceStatus.to_be_fulfilled.name) {
-      _streamMap[service.serviceUuid] =
-          _createServiceSubscriptionStream(service.serviceUuid);
-    }
-
-    return _streamMap;
-  }
-
   StreamSubscription<DocumentSnapshot> _createServiceSubscriptionStream(
       String serviceUuid) {
     return FirebaseFirestore.instance
@@ -358,8 +352,6 @@ class CurrentServiceChatroomBloc
         .snapshots()
         .listen(
       (DocumentSnapshot snapshot) {
-        // If male user alter the inquiry to either `unpaid` or `to_be_fulfiiled`, We need to update
-        // the service status in the app to reflect on the screen.
         _handleServiceStatusChange(serviceUuid, snapshot);
       },
     );
