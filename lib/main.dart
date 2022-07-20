@@ -62,13 +62,13 @@ import './bloc/auth_user_bloc.dart';
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  FirebaseApp app = await Firebase.initializeApp();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    FirebaseApp app = await Firebase.initializeApp();
 
-  // Receive FCM background messages
-  FirebaseMessaging.onBackgroundMessage(_messageHandler);
+    // Receive FCM background messages
+    FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-  try {
     assert(app != null);
 
     // Initialize application config.
@@ -93,7 +93,7 @@ void main() async {
         jwt: _jwt,
       ),
     );
-  } catch (e, stackTrace) {}
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
