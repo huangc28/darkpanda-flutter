@@ -65,11 +65,10 @@ void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     FirebaseApp app = await Firebase.initializeApp();
+    assert(app != null);
 
     // Receive FCM background messages
     FirebaseMessaging.onBackgroundMessage(_messageHandler);
-
-    assert(app != null);
 
     // Initialize application config.
     await Config.AppConfig.initConfig();
@@ -93,7 +92,10 @@ void main() async {
         jwt: _jwt,
       ),
     );
-  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
+  }, (error, stack) {
+    print('debug 1 ${error}');
+    return FirebaseCrashlytics.instance.recordError(error, stack);
+  });
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {

@@ -106,9 +106,6 @@ class _InqiuryListState extends State<InqiuryList> {
             ),
             BlocConsumer<InquiriesBloc, InquiriesState>(
               listener: (context, state) {
-                if (state.status == AsyncLoadingStatus.initial ||
-                    state.status == AsyncLoadingStatus.loading) {}
-
                 if (state.status == AsyncLoadingStatus.done) {
                   _refreshCompleter.complete();
                   _refreshCompleter = Completer();
@@ -129,7 +126,13 @@ class _InqiuryListState extends State<InqiuryList> {
                     ),
                   );
 
-                  Navigator.of(context, rootNavigator: true).pop();
+                  // TODO we should check whether user uuid exists in the base_api.dart. If the user request to apis that is prohibit against user's gender
+                  // we should redirect the user to login page.
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamedAndRemoveUntil(
+                    MainRoutes.login,
+                    (route) => false,
+                  );
                 }
 
                 return null;

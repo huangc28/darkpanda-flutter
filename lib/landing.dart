@@ -18,13 +18,18 @@ class Landing extends StatelessWidget {
     SchedulerBinding.instance.addPostFrameCallback(
       (_) {
         if (args.jwt == null || args.jwt.isEmpty) {
-          Navigator.pushReplacementNamed(context, MainRoutes.login);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            MainRoutes.login,
+            (Route<dynamic> route) => false,
+          );
         } else {
-          Navigator.pushReplacementNamed(
+          Navigator.pushNamedAndRemoveUntil(
             context,
             args.gender == Gender.female.name
                 ? MainRoutes.female
                 : MainRoutes.male,
+            (Route<dynamic> route) => false,
           );
         }
       },
