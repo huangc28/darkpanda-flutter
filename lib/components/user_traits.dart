@@ -17,17 +17,17 @@ class UserTraits extends StatefulWidget {
 class _UserTraitsState extends State<UserTraits> {
   @override
   Widget build(BuildContext context) {
-    String label = '岁';
+    String label = '歲';
     dynamic value = '';
 
     if (widget.userTrait.type == 'age') {
-      label = '岁';
+      label = '歲';
       value = widget.userTrait.value;
     } else if (widget.userTrait.type == 'height') {
-      label = 'm';
+      label = 'CM';
       value = widget.userTrait.value;
     } else {
-      label = 'kg';
+      label = 'KG';
       value = widget.userTrait.value;
     }
 
